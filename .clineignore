@@ -1,0 +1,25 @@
+# Keep AI context lean — exclude generated/dependency/noise dirs from agent context
+node_modules/
+.next/
+dist/
+build/
+out/
+.venv/
+venv/
+__pycache__/
+.cache/
+.turbo/
+.pnpm/
+coverage/
+.git/
+*.lock
+package-lock.json
+pnpm-lock.yaml
+*.log
+*.db
+*.sqlite
+.env
+.env.*
+dist-ssr/
+.vercel/
+.parcel-cache/
