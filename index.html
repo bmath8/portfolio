@@ -72,6 +72,8 @@
   .proj{display:grid;grid-template-columns:1fr;gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;
     margin-bottom:22px;background:linear-gradient(180deg,var(--ink2),var(--ink));transition:.3s}
   .proj:hover{border-color:#333a2a;transform:translateY(-3px)}
+  .proj.featured{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
+  .proj.featured .role{color:var(--lime)}
   .proj-in{padding:34px 34px 30px}
   .proj-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
   .proj h3{font-family:var(--serif);font-weight:400;font-size:1.9rem;line-height:1.05}
@@ -133,11 +135,18 @@
 <section id="work"><div class="wrap">
   <div class="sec-head rv"><span class="num">02</span><h2>Selected work</h2><span class="mono">real code · github.com/bmath8</span></div>
 
+  <div class="proj rv featured"><div class="proj-in">
+    <div class="proj-top"><h3>Pokémon Drop Intel</h3><span class="role">Live product · Next.js</span></div>
+    <p>A local-first collector cockpit for the Pokémon TCG: track your binder's value against cost basis, watch market movers, queue cards for grading, and catch sealed-product drops — all in one workspace, pulling live official card art from the Pokémon TCG API. <b>Fully interactive on sample data — no login or signup needed.</b></p>
+    <div class="stack"><span>Next.js 16</span><span>React 19</span><span>TypeScript</span><span>Tailwind 4</span><span>Pokémon TCG API</span></div>
+    <div class="links"><a href="https://pokemon-drop-intel.vercel.app" target="_blank" rel="noopener">▶ Open the live demo <span class="arr">↗</span></a><a href="https://github.com/bmath8/pokemon-drop-intel" target="_blank" rel="noopener">View code <span class="arr">↗</span></a></div>
+  </div></div>
+
   <div class="proj rv"><div class="proj-in">
     <div class="proj-top"><h3>AI Job Hunter</h3><span class="role">AI agent · full app</span></div>
     <p>An AI agent that tailors your resume to any job posting and optimizes it to pass ATS screening in about 60 seconds — then drafts a matching cover letter, scores the match, and calls out missing keywords. Built with a provider-agnostic LLM client and a custom ATS keyword algorithm.</p>
     <div class="stack"><span>Python</span><span>FastAPI</span><span>LLM (GPT-4 / Claude)</span><span>Celery + Redis</span><span>SQLAlchemy / Alembic</span><span>Docker</span></div>
-    <div class="links"><a href="https://github.com/bmath8/ai-job-hunter" target="_blank" rel="noopener">View code <span class="arr">↗</span></a><span class="soon">● live demo — deploying soon</span></div>
+    <div class="links"><a href="ats/">▶ Try the live ATS tool <span class="arr">↗</span></a><a href="https://github.com/bmath8/ai-job-hunter" target="_blank" rel="noopener">View code <span class="arr">↗</span></a></div>
   </div></div>
 
   <div class="proj rv"><div class="proj-in">
