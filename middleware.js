@@ -25,15 +25,19 @@ export default function middleware(request) {
   const page = `<!doctype html><html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <title>Brian Mathew — private preview</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=JetBrains+Mono&display=swap" rel="stylesheet">
-<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b0c0e;color:#ece9e2;font-family:"JetBrains Mono",monospace}
-.card{text-align:center;padding:40px;max-width:420px}h1{font-family:"Instrument Serif",serif;font-weight:400;font-size:2.2rem;margin:0 0 8px}
-h1 i{color:#c6f432}p{color:#9aa0aa;font-size:.85rem;line-height:1.6;margin:0 0 26px}
-input{background:#111317;border:1px solid #23262d;color:#ece9e2;font-family:inherit;font-size:1rem;padding:13px 16px;border-radius:3px;width:200px;text-align:center;letter-spacing:.1em}
-input:focus{outline:none;border-color:#c6f432}button{background:#c6f432;color:#0b0c0e;border:none;font-family:inherit;font-size:.85rem;font-weight:500;padding:14px 20px;border-radius:3px;cursor:pointer;margin-left:8px}
-button:hover{opacity:.85}</style></head><body><div class="card">
-<h1>brian<i>.</i>builds</h1>
-<p>Private preview. Enter the access code from Brian's resume or message.</p>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f1ecdf;color:#211d17;font-family:"IBM Plex Mono",monospace}
+.card{text-align:center;padding:44px 40px;max-width:440px;border:1px solid #211d17;box-shadow:6px 6px 0 #dfd8c4;background:#f1ecdf}
+h1{font-family:"Fraunces",serif;font-weight:560;font-size:2.3rem;margin:0 0 6px;letter-spacing:-.01em}
+h1 i{font-style:italic;color:#bf3b1f;font-weight:440}
+.doc{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:#847b6c;margin-bottom:22px}
+p{color:#4a443a;font-size:.8rem;line-height:1.7;margin:0 0 26px}
+input{background:transparent;border:1px solid #211d17;color:#211d17;font-family:inherit;font-size:1rem;padding:13px 16px;width:190px;text-align:center;letter-spacing:.1em}
+input:focus{outline:none;border-color:#bf3b1f}button{background:#211d17;color:#f1ecdf;border:1px solid #211d17;font-family:inherit;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;padding:14px 20px;cursor:pointer;margin-left:8px}
+button:hover{background:#bf3b1f;border-color:#bf3b1f}</style></head><body><div class="card">
+<h1>Operator's <i>Manual</i></h1>
+<div class="doc">Doc. BM-2026-07 · restricted distribution</div>
+<p>Enter the access code printed on Brian's resume or message.</p>
 <form onsubmit="location.href='/?code='+encodeURIComponent(document.getElementById('c').value);return false">
 <input id="c" placeholder="access code" autofocus autocomplete="off"><button>Enter →</button></form>
 </div></body></html>`;
