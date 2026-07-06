@@ -73,8 +73,23 @@
   .proj{display:grid;grid-template-columns:1fr;gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;
     margin-bottom:22px;background:linear-gradient(180deg,var(--ink2),var(--ink));transition:.3s}
   .proj:hover{border-color:#333a2a;transform:translateY(-3px)}
-  .proj.featured{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime)}
-  .proj.featured .role{color:var(--lime)}
+  .proj.featured{border-color:var(--acc-dim);box-shadow:0 0 0 1px var(--acc-dim)}
+  .proj.featured .role{color:var(--acc)}
+  /* hero stat strip */
+  .stats{display:flex;flex-wrap:wrap;gap:0;margin-top:46px;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .stats div{flex:1 1 140px;padding:18px 20px;border-right:1px solid var(--line);background:rgba(17,19,23,.6)}
+  .stats div:last-child{border-right:none}
+  .stats b{display:block;font-family:var(--serif);font-size:1.9rem;color:var(--acc);font-weight:400;line-height:1.1}
+  .stats span{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fog)}
+  /* shipping timeline */
+  .tl{border-left:1px solid var(--line);margin-left:6px;padding-left:30px;max-width:760px}
+  .tl-item{position:relative;padding-bottom:30px}
+  .tl-item::before{content:"";position:absolute;left:-35px;top:7px;width:9px;height:9px;border-radius:50%;
+    background:var(--ink);border:2px solid var(--acc-dim)}
+  .tl-item:first-child::before{background:var(--acc);border-color:var(--acc);box-shadow:0 0 10px var(--acc)}
+  .tl-date{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-dim)}
+  .tl-item h4{font-family:var(--serif);font-weight:400;font-size:1.25rem;margin:6px 0 6px}
+  .tl-item p{color:var(--paper-dim);font-size:.98rem;max-width:640px}
   .proj-in{padding:34px 34px 30px}
   .proj-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
   .proj h3{font-family:var(--serif);font-weight:400;font-size:1.9rem;line-height:1.05}
@@ -110,7 +125,7 @@
 <body>
 <nav id="nav"><div class="nav-in">
   <div class="brand">brian<b>.</b>builds</div>
-  <div class="nav-links"><a href="#work">Work</a><a href="#about">About</a><a href="#stack">Stack</a><a href="#contact">Contact</a></div>
+  <div class="nav-links"><a href="#work">Work</a><a href="#shipping">Shipping log</a><a href="#stack">Stack</a><a href="#contact">Contact</a></div>
 </div></nav>
 
 <header>
@@ -124,6 +139,12 @@
       <a class="btn" href="https://github.com/bmath8" target="_blank" rel="noopener">GitHub ↗</a>
       <a class="btn" href="mailto:mathew.brian@gmail.com">Email</a>
     </div>
+    <div class="stats rv">
+      <div><b>19</b><span>automated agents running daily</span></div>
+      <div><b>78</b><span>passing tests on my AI fleet</span></div>
+      <div><b>$0</b><span>monthly AI infra (all local)</span></div>
+      <div><b>6</b><span>apps shipped end-to-end</span></div>
+    </div>
   </div>
 </header>
 
@@ -131,12 +152,21 @@
   <div class="sec-head rv"><span class="num">01</span><h2>What I do</h2></div>
   <p class="rv">I build <b>real products</b>, end to end — front end, back end, and the AI in between. My edge isn't decades of computer-science theory; it's that I can take a vague idea and <span class="hl">ship a working version fast</span>, using AI tooling (Cursor, Claude, local models) the way a modern team actually works.</p>
   <p class="rv">I've built an AI resume engine, a real-time music app, and an always-on personal AI system that runs my day. I'm honest about where I am: early-career and hungry to learn the fundamentals deeply. Give me a problem and a team, and I'll grow fast.</p>
+  <p class="rv">There's a gap on my resume. Here's what's inside it: <b>I treated the gap as a job.</b> Every day of it, I designed, built, broke, debugged, and shipped — the projects below, plus an autonomous AI system that's been running my job hunt while I build. <span class="hl">The gap is the portfolio.</span></p>
 </div></section>
 
 <section id="work"><div class="wrap">
   <div class="sec-head rv"><span class="num">02</span><h2>Selected work</h2><span class="mono">real code · github.com/bmath8</span></div>
 
   <div class="proj rv featured"><div class="proj-in">
+    <div class="proj-top"><h3>Brian OS — a self-healing AI agent fleet</h3><span class="role">Flagship · runs 24/7</span></div>
+    <p>An always-on personal AI operating system I designed, built, and <b>operate in production</b>: 19 scheduled agents on a local LLM stack ($0/month) that brief me every morning, run my job hunt, draft work overnight with a two-model verification loop, keep my dependencies current with build-verified PRs, and maintain a self-updating wiki of everything they learn. Two-way control from Telegram. <b>78 automated tests.</b></p>
+    <p>The part I'm proudest of isn't the features — it's the <b>operations</b>: when it broke, I root-caused real outages (a silent encoding failure, a self-heal regex that never fired, a host VM teardown bug), wrote the postmortems, and engineered the failure classes away — process-based watchdogs, wedge detection, guarded host upgrades with automatic rollback, and an external dead-man's-switch. That's the difference between writing code and running a system.</p>
+    <div class="stack"><span>Python</span><span>Ollama · Qwen3 (local)</span><span>Multi-model routing</span><span>RAG memory</span><span>Telegram Bot API</span><span>PowerShell</span><span>pytest · 78 tests</span></div>
+    <div class="links"><span class="soon">● code + postmortems — available on request</span><a href="mailto:mathew.brian@gmail.com?subject=Brian%20OS%20code%20access">Request access <span class="arr">↗</span></a></div>
+  </div></div>
+
+  <div class="proj rv"><div class="proj-in">
     <div class="proj-top"><h3>Pokémon Drop Intel</h3><span class="role">Live product · Next.js</span></div>
     <p>A local-first collector cockpit for the Pokémon TCG: track your binder's value against cost basis, watch market movers, queue cards for grading, and catch sealed-product drops — all in one workspace, pulling live official card art from the Pokémon TCG API. <b>Fully interactive on sample data — no login or signup needed.</b></p>
     <div class="stack"><span>Next.js 16</span><span>React 19</span><span>TypeScript</span><span>Tailwind 4</span><span>Pokémon TCG API</span></div>
@@ -158,21 +188,30 @@
   </div></div>
 
   <div class="proj rv"><div class="proj-in">
-    <div class="proj-top"><h3>Brian OS</h3><span class="role">AI agent fleet</span></div>
-    <p>An always-on personal AI operating system: a fleet of 18 scheduled agents that prepare a morning brief, track my job hunt, draft work overnight, and watch themselves — all on a local LLM (<b>$0 to run</b>), controllable from Telegram, with self-healing and 54 automated tests.</p>
-    <div class="stack"><span>Python</span><span>Ollama (local LLM)</span><span>RAG memory</span><span>Telegram bot</span><span>PowerShell</span><span>pytest</span></div>
-    <div class="links"><a href="https://github.com/bmath8" target="_blank" rel="noopener">GitHub <span class="arr">↗</span></a><span class="soon">● write-up + demo video — coming</span></div>
-  </div></div>
-
-  <div class="proj rv"><div class="proj-in">
     <div class="proj-top"><h3>More</h3><span class="role">Giveaway · Viral Forge · Bible App</span></div>
     <p>A handful of other shipped builds — a giveaway/promo web app (with CI, pre-commit, and secret scanning), an AI content tool, and a scripture app. All on GitHub.</p>
     <div class="links"><a href="https://github.com/bmath8" target="_blank" rel="noopener">Browse all repos <span class="arr">↗</span></a></div>
   </div></div>
 </div></section>
 
+<section id="shipping"><div class="wrap">
+  <div class="sec-head rv"><span class="num">03</span><h2>The last 30 days</h2><span class="mono">a real shipping log, newest first</span></div>
+  <div class="tl">
+    <div class="tl-item rv"><span class="tl-date">Jul 6</span><h4>Full-system audit day</h4>
+      <p>Line-by-line audit of the fleet: fixed an outage-class watchdog bug, enabled flash-attention + quantized KV cache (~2× context on the same GPU), added wedge detection, shipped guarded host upgrades with auto-rollback, a living wiki memory, and an external dead-man's-switch.</p></div>
+    <div class="tl-item rv"><span class="tl-date">Jun 24</span><h4>Modernization agent + live demo</h4>
+      <p>Built an agent that watches release feeds and CVEs across all my repos and opens build-verified dependency-upgrade PRs on a branch — never touching main. Deployed the Pokémon Drop Intel demo and this portfolio.</p></div>
+    <div class="tl-item rv"><span class="tl-date">Jun 22</span><h4>42 upgrades in autonomous batches</h4>
+      <p>Shipped 42 backlog items in five tested batches: new career/inbox/boot-check agents, a Telegram command grammar (/tailor, /prep, /digest…), deploy tooling with rollback, and a crash-loop detector.</p></div>
+    <div class="tl-item rv"><span class="tl-date">Jun 20</span><h4>Root-caused a silent total outage</h4>
+      <p>The fleet went quiet: a Windows encoding edge case silently emptied cron output AND the self-heal regex could never fire. Diagnosed both, fixed both, wrote the postmortem, and grew the test suite to catch the class, not just the bug.</p></div>
+    <div class="tl-item rv"><span class="tl-date">Jun 19</span><h4>Migrated the whole system off WSL in a day</h4>
+      <p>Traced overnight fleet deaths to a documented WSL VM teardown bug; migrated everything to native Windows, removing the failure class entirely.</p></div>
+  </div>
+</div></section>
+
 <section id="stack"><div class="wrap">
-  <div class="sec-head rv"><span class="num">03</span><h2>Tools I build with</h2></div>
+  <div class="sec-head rv"><span class="num">04</span><h2>Tools I build with</h2></div>
   <div class="skills">
     <div class="skill rv"><h4>Build</h4><ul><li>React</li><li>Next.js</li><li>TypeScript</li><li>Python</li><li>Node.js</li><li>Tailwind</li></ul></div>
     <div class="skill rv"><h4>AI / LLM</h4><ul><li>OpenAI</li><li>Anthropic</li><li>Ollama (local)</li><li>RAG</li><li>Agents</li><li>Prompting</li></ul></div>
