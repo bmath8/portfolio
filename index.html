@@ -4,238 +4,508 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex, nofollow" />
-<title>Brian Mathew — Builder of AI-powered products</title>
-<meta name="description" content="Brian Mathew — early-career builder who ships real, working AI-powered web apps. Projects: AI Job Hunter, Boombox, Brian OS." />
+<title>Brian Mathew — Mission Control</title>
+<meta name="description" content="Brian Mathew runs a self-healing fleet of 19 AI agents. This is its mission control — and his portfolio." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ink:#0b0c0e; --ink2:#111317; --line:#23262d; --fog:#9aa0aa;
-    --paper:#ece9e2; --paper-dim:#b9b6ad; --acc:#c6f432; --acc-dim:#7f8f3a;
-    --serif:"Instrument Serif",Georgia,serif; --sans:"Sora",system-ui,sans-serif; --mono:"JetBrains Mono",monospace;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{background:var(--ink);color:var(--paper);font-family:var(--sans);font-weight:300;line-height:1.6;
-    -webkit-font-smoothing:antialiased;overflow-x:hidden}
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.05;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-  a{color:inherit;text-decoration:none}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
-  .mono{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--acc-dim)}
+:root{
+  --ink:#070809; --panel:#0d0f11; --panel2:#111417; --line:#1e2328; --line2:#2a3138;
+  --fog:#8b939e; --dim:#5a626c; --paper:#e8e6df; --acc:#c6f432; --acc2:#8fb52a; --amber:#f4b942; --red:#f45542;
+  --serif:"Instrument Serif",Georgia,serif; --mono:"JetBrains Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--paper);font-family:var(--mono);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+/* CRT atmosphere: grain + scanlines + vignette */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:91;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.12) 2px 3px)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 26px;position:relative;z-index:2}
+.lbl{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--acc2)}
+.serif{font-family:var(--serif);font-weight:400}
 
-  /* nav */
-  nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(10px);
-    background:linear-gradient(180deg,rgba(11,12,14,.85),rgba(11,12,14,0));border-bottom:1px solid transparent}
-  nav.scrolled{border-color:var(--line);background:rgba(11,12,14,.9)}
-  .nav-in{max-width:1080px;margin:0 auto;padding:16px 28px;display:flex;justify-content:space-between;align-items:center}
-  .brand{font-family:var(--mono);font-size:.8rem;letter-spacing:.1em}
-  .brand b{color:var(--acc)}
-  .nav-links{display:flex;gap:26px;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fog)}
-  .nav-links a{transition:color .2s} .nav-links a:hover{color:var(--acc)}
-  @media(max-width:640px){.nav-links{display:none}}
+/* ---------- boot overlay ---------- */
+#boot{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;justify-content:center;transition:opacity .6s}
+#boot.done{opacity:0;pointer-events:none}
+#boot .term{width:min(680px,92vw);font-size:clamp(.7rem,1.8vw,.85rem);color:var(--acc);line-height:1.9}
+#boot .term .sys{color:var(--fog)} #boot .term .ok{color:var(--acc)} #boot .term .wr{color:var(--amber)}
+#boot .cursor{display:inline-block;width:9px;height:1.1em;background:var(--acc);vertical-align:text-bottom;animation:blink .8s steps(1) infinite}
+#skip{position:fixed;bottom:26px;right:26px;z-index:201;font-size:.64rem;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;cursor:pointer;border:1px solid var(--line);padding:8px 14px;border-radius:2px;background:none;font-family:var(--mono)}
+#skip:hover{color:var(--acc);border-color:var(--acc2)}
+@keyframes blink{50%{opacity:0}}
 
-  /* hero */
-  header{min-height:100vh;display:flex;align-items:center;position:relative;padding:120px 0 80px}
-  .glow{position:absolute;top:8%;right:-10%;width:60vw;height:60vw;max-width:760px;max-height:760px;
-    background:radial-gradient(circle,rgba(198,244,50,.10),transparent 62%);filter:blur(20px);z-index:0;animation:float 14s ease-in-out infinite}
-  @keyframes float{50%{transform:translate(-3%,4%) scale(1.05)}}
-  .tag{display:inline-flex;align-items:center;gap:10px;margin-bottom:26px}
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 12px var(--acc);animation:pulse 2s infinite}
-  @keyframes pulse{50%{opacity:.4}}
-  h1{font-family:var(--serif);font-weight:400;font-size:clamp(3.2rem,11vw,7.6rem);line-height:.92;letter-spacing:-.01em}
-  h1 .it{font-style:italic;color:var(--acc)}
-  .lede{font-size:clamp(1.15rem,2.4vw,1.6rem);max-width:620px;margin:30px 0 0;color:var(--paper-dim);font-weight:300}
-  .lede b{color:var(--paper);font-weight:600}
-  .cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:42px}
-  .btn{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;padding:14px 22px;border:1px solid var(--line);
-    border-radius:2px;transition:.25s;display:inline-flex;align-items:center;gap:8px}
-  .btn:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-2px)}
-  .btn.solid{background:var(--acc);color:var(--ink);border-color:var(--acc);font-weight:500}
-  .btn.solid:hover{background:transparent;color:var(--acc)}
+/* ---------- top console bar ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:80;background:rgba(7,8,9,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1180px;margin:0 auto;padding:12px 26px;display:flex;align-items:center;gap:22px;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase}
+.sig{display:flex;align-items:center;gap:9px;margin-right:auto}
+.led{width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:blink 2.4s steps(1) infinite}
+.sig b{color:var(--paper);font-weight:500;letter-spacing:.1em}
+.nav-links{display:flex;gap:20px;color:var(--fog)}
+.nav-links a:hover{color:var(--acc)}
+#clock{color:var(--acc2);min-width:150px;text-align:right}
+@media(max-width:760px){.nav-links{display:none}#clock{display:none}}
+</style>
+<style>
+/* ---------- hero ---------- */
+header{min-height:100vh;display:flex;align-items:center;padding:130px 0 60px;position:relative}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.35;mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,#000 30%,transparent 75%)}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.9rem,8.6vw,6.4rem);line-height:.95;letter-spacing:-.01em;max-width:19ch}
+h1 .it{font-style:italic;color:var(--acc)}
+.lede{margin-top:26px;max-width:640px;color:var(--fog);font-size:clamp(.92rem,1.7vw,1.05rem)}
+.lede b{color:var(--paper);font-weight:500}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px}
+.btn{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:14px 22px;border:1px solid var(--line2);border-radius:2px;transition:.22s;display:inline-flex;align-items:center;gap:9px;background:var(--panel)}
+.btn:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-2px)}
+.btn.solid{background:var(--acc);color:var(--ink);border-color:var(--acc);font-weight:700}
+.btn.solid:hover{background:transparent;color:var(--acc)}
+.gauges{display:flex;flex-wrap:wrap;gap:0;margin-top:52px;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--panel)}
+.gauge{flex:1 1 150px;padding:18px 22px;border-right:1px solid var(--line);position:relative}
+.gauge:last-child{border-right:0}
+.gauge b{display:block;font-family:var(--serif);font-size:2.1rem;color:var(--acc);line-height:1.1}
+.gauge span{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.gauge::before{content:"";position:absolute;top:0;left:0;width:22px;height:2px;background:var(--acc2)}
 
-  /* reveal */
-  .rv{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
-  .rv.in{opacity:1;transform:none}
+/* ---------- section chrome ---------- */
+section{padding:92px 0;border-top:1px solid var(--line);position:relative}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:48px;flex-wrap:wrap}
+.sec-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.9rem,4.6vw,3rem)}
+.sec-head .idx{color:var(--acc2);font-size:.72rem}
+.sec-head .note{color:var(--dim);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;margin-left:auto}
+.rv{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
 
-  section{padding:96px 0;border-top:1px solid var(--line)}
-  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:54px;flex-wrap:wrap}
-  .sec-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:-.01em}
-  .num{font-family:var(--mono);color:var(--acc-dim);font-size:.8rem}
+/* ---------- fleet map ---------- */
+.fleet-panel{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:0;border:1px solid var(--line2);border-radius:4px;overflow:hidden;background:var(--panel)}
+@media(max-width:880px){.fleet-panel{grid-template-columns:1fr}}
+.map-box{position:relative;min-height:480px;border-right:1px solid var(--line)}
+.map-box svg{display:block;width:100%;height:100%;position:absolute;inset:0}
+.map-hdr{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px 16px;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--line);background:rgba(13,15,17,.7);z-index:3}
+.map-hdr b{color:var(--acc2);font-weight:500}
+.agent-info{padding:52px 24px 24px;font-size:.78rem}
+.agent-info h3{font-family:var(--serif);font-size:1.5rem;font-weight:400;margin-bottom:4px;min-height:1.6em}
+.agent-info .sched{color:var(--acc2);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;display:block}
+.agent-info p{color:var(--fog);min-height:7.5em}
+.agent-info .hint{color:var(--dim);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;margin-top:18px;border-top:1px dashed var(--line);padding-top:14px}
+.node{cursor:pointer}
+.node circle{transition:.2s}
+.node:hover circle.body,.node.sel circle.body{fill:var(--acc);r:7}
+.node text{font-family:var(--mono);font-size:8.5px;fill:var(--dim);letter-spacing:.06em;text-transform:uppercase;pointer-events:none}
+.node:hover text,.node.sel text{fill:var(--acc)}
+.pulse{fill:var(--acc);opacity:0}
 
-  .about p{font-size:clamp(1.1rem,2.2vw,1.45rem);max-width:760px;color:var(--paper-dim);font-weight:300}
-  .about p + p{margin-top:22px}
-  .about b{color:var(--paper);font-weight:600}
-  .about .hl{color:var(--acc)}
+/* ---------- console feed ---------- */
+.feed{border:1px solid var(--line2);border-radius:4px;background:#090b0c;overflow:hidden}
+.feed-hdr{display:flex;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.feed-hdr .dots{display:flex;gap:6px}
+.feed-hdr .dots i{width:9px;height:9px;border-radius:50%;background:var(--line2);display:block}
+.feed-hdr .dots i:first-child{background:var(--red)} .feed-hdr .dots i:nth-child(2){background:var(--amber)} .feed-hdr .dots i:last-child{background:var(--acc2)}
+#feedbody{height:230px;overflow:hidden;padding:14px 18px;font-size:.74rem;line-height:2;position:relative}
+#feedbody::after{content:"";position:absolute;inset:auto 0 0 0;height:70px;background:linear-gradient(transparent,#090b0c)}
+#feedbody .t{color:var(--dim);margin-right:10px}
+#feedbody .a{color:var(--acc2);margin-right:10px}
+#feedbody .ok{color:var(--acc)} #feedbody .warn{color:var(--amber)}
+</style>
+<style>
+/* ---------- projects as instrument screens ---------- */
+.proj{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,420px);gap:0;border:1px solid var(--line2);border-radius:4px;overflow:hidden;background:var(--panel);margin-bottom:26px;transition:border-color .3s,transform .3s}
+.proj:hover{border-color:var(--acc2);transform:translateY(-3px)}
+.proj.flag{border-color:var(--acc2);box-shadow:0 0 40px rgba(198,244,50,.06)}
+.proj.flip{grid-template-columns:minmax(280px,420px) minmax(0,1fr)}
+@media(max-width:880px){.proj,.proj.flip{grid-template-columns:1fr}.proj.flip .screen{order:-1}}
+.proj-txt{padding:34px}
+.proj-txt h3{font-family:var(--serif);font-weight:400;font-size:1.8rem;line-height:1.1;margin-bottom:4px}
+.proj-txt .role{color:var(--acc2);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;display:block;margin-bottom:16px}
+.proj-txt p{color:var(--fog);font-size:.85rem;margin-bottom:14px;max-width:56ch}
+.proj-txt p b{color:var(--paper);font-weight:500}
+.stack{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0}
+.stack span{font-size:.62rem;color:var(--fog);border:1px solid var(--line);padding:4px 9px;border-radius:2px}
+.links{display:flex;flex-wrap:wrap;gap:18px;font-size:.7rem}
+.links a{color:var(--acc);border-bottom:1px solid transparent;padding-bottom:2px}
+.links a:hover{border-color:var(--acc)}
+.links .soon{color:var(--dim)}
+/* the mini "screen" */
+.screen{position:relative;border-left:1px solid var(--line);background:#0a0c0d;display:flex;align-items:center;justify-content:center;padding:28px;min-height:300px;overflow:hidden}
+.proj.flip .screen{border-left:0;border-right:1px solid var(--line)}
+.mini{width:100%;max-width:340px;border:1px solid var(--line2);border-radius:6px;background:#0e1113;box-shadow:0 18px 50px rgba(0,0,0,.5);overflow:hidden;font-size:.58rem}
+.mini-bar{display:flex;align-items:center;gap:6px;padding:7px 10px;border-bottom:1px solid var(--line);color:var(--dim);font-size:.52rem}
+.mini-bar i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
+.mini-bar i.r{background:var(--red)}.mini-bar i.y{background:var(--amber)}.mini-bar i.g{background:var(--acc2)}
+.mini-body{padding:12px}
+/* pokemon mini */
+.pk-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.pk-row b{font-size:1rem;color:var(--paper)} .pk-row .up{color:var(--acc);font-size:.6rem}
+.pk-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.pk-card{aspect-ratio:3/4;border-radius:3px;background:linear-gradient(160deg,#1a2026,#10151a);border:1px solid var(--line2);position:relative;overflow:hidden}
+.pk-card::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(198,244,50,.16) 45%,transparent 60%);transform:translateX(-100%);animation:sheen 3.2s ease-in-out infinite}
+.pk-card:nth-child(2)::after{animation-delay:.5s}.pk-card:nth-child(3)::after{animation-delay:1s}.pk-card:nth-child(4)::after{animation-delay:1.5s}
+@keyframes sheen{55%{transform:translateX(100%)}100%{transform:translateX(100%)}}
+.spark{display:flex;align-items:flex-end;gap:2px;height:34px}
+.spark i{flex:1;background:linear-gradient(180deg,var(--acc2),rgba(143,181,42,.25));border-radius:1px 1px 0 0;animation:grow 1.1s cubic-bezier(.2,.7,.2,1) both}
+@keyframes grow{from{transform:scaleY(0)}}
+/* ats mini */
+.ats-score{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.ring{width:74px;height:74px;border-radius:50%;background:conic-gradient(var(--acc) 0 331deg,var(--line) 331deg 360deg);display:flex;align-items:center;justify-content:center;position:relative}
+.ring::before{content:"";position:absolute;inset:7px;border-radius:50%;background:#0e1113}
+.ring b{position:relative;font-size:1.05rem;color:var(--acc)}
+.kw{display:flex;flex-wrap:wrap;gap:5px}
+.kw span{border:1px solid var(--line2);color:var(--fog);padding:3px 7px;border-radius:20px;font-size:.5rem}
+.kw span.hit{border-color:var(--acc2);color:var(--acc)}
+.kw span.miss{border-color:var(--red);color:var(--red)}
+.ats-line{height:6px;border-radius:3px;background:var(--line);margin:9px 0;overflow:hidden}
+.ats-line i{display:block;height:100%;width:86%;background:linear-gradient(90deg,var(--acc2),var(--acc));animation:grow-x 1.4s cubic-bezier(.2,.7,.2,1) both}
+@keyframes grow-x{from{width:0}}
+/* boombox mini */
+.wave{display:flex;align-items:center;gap:2px;height:44px;margin:10px 0}
+.wave i{flex:1;background:var(--acc2);border-radius:2px;animation:eq 1s ease-in-out infinite alternate}
+.wave i:nth-child(odd){animation-duration:.8s}.wave i:nth-child(3n){animation-duration:1.3s}
+@keyframes eq{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
+.bb-listeners{display:flex;align-items:center;gap:8px;color:var(--fog);font-size:.56rem}
+.bb-listeners .avs{display:flex}
+.bb-listeners .avs i{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#2a3138,#171b1f);border:1px solid var(--line2);margin-left:-5px}
 
-  /* projects */
-  .proj{display:grid;grid-template-columns:1fr;gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;
-    margin-bottom:22px;background:linear-gradient(180deg,var(--ink2),var(--ink));transition:.3s}
-  .proj:hover{border-color:#333a2a;transform:translateY(-3px)}
-  .proj.featured{border-color:var(--acc-dim);box-shadow:0 0 0 1px var(--acc-dim)}
-  .proj.featured .role{color:var(--acc)}
-  /* hero stat strip */
-  .stats{display:flex;flex-wrap:wrap;gap:0;margin-top:46px;border:1px solid var(--line);border-radius:4px;overflow:hidden}
-  .stats div{flex:1 1 140px;padding:18px 20px;border-right:1px solid var(--line);background:rgba(17,19,23,.6)}
-  .stats div:last-child{border-right:none}
-  .stats b{display:block;font-family:var(--serif);font-size:1.9rem;color:var(--acc);font-weight:400;line-height:1.1}
-  .stats span{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fog)}
-  /* shipping timeline */
-  .tl{border-left:1px solid var(--line);margin-left:6px;padding-left:30px;max-width:760px}
-  .tl-item{position:relative;padding-bottom:30px}
-  .tl-item::before{content:"";position:absolute;left:-35px;top:7px;width:9px;height:9px;border-radius:50%;
-    background:var(--ink);border:2px solid var(--acc-dim)}
-  .tl-item:first-child::before{background:var(--acc);border-color:var(--acc);box-shadow:0 0 10px var(--acc)}
-  .tl-date{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-dim)}
-  .tl-item h4{font-family:var(--serif);font-weight:400;font-size:1.25rem;margin:6px 0 6px}
-  .tl-item p{color:var(--paper-dim);font-size:.98rem;max-width:640px}
-  .proj-in{padding:34px 34px 30px}
-  .proj-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
-  .proj h3{font-family:var(--serif);font-weight:400;font-size:1.9rem;line-height:1.05}
-  .proj .role{font-family:var(--mono);font-size:.66rem;color:var(--acc);letter-spacing:.14em;text-transform:uppercase;
-    border:1px solid var(--acc-dim);border-radius:30px;padding:5px 12px;white-space:nowrap}
-  .proj p{margin:16px 0 20px;color:var(--paper-dim);max-width:660px}
-  .stack{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
-  .stack span{font-family:var(--mono);font-size:.68rem;color:var(--fog);border:1px solid var(--line);padding:4px 10px;border-radius:2px}
-  .links{display:flex;gap:20px;font-family:var(--mono);font-size:.74rem;letter-spacing:.05em}
-  .links a{display:inline-flex;align-items:center;gap:7px;border-bottom:1px solid transparent;padding-bottom:2px;transition:.2s}
-  .links a:hover{color:var(--acc);border-color:var(--acc)}
-  .links .soon{color:var(--fog);cursor:default}
-  .arr{transition:transform .2s} .links a:hover .arr{transform:translate(3px,-3px)}
+/* ---------- incidents ---------- */
+.incs{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px}
+.inc{border:1px solid var(--line2);border-left:3px solid var(--red);border-radius:3px;background:var(--panel);padding:24px}
+.inc.resolved{border-left-color:var(--acc2)}
+.inc .sev{display:inline-block;font-size:.56rem;letter-spacing:.16em;padding:3px 8px;border-radius:2px;background:rgba(244,85,66,.12);color:var(--red);margin-bottom:12px;text-transform:uppercase}
+.inc .fixed{background:rgba(198,244,50,.1);color:var(--acc)}
+.inc h4{font-family:var(--serif);font-weight:400;font-size:1.2rem;margin-bottom:10px}
+.inc dl{font-size:.72rem;line-height:1.7}
+.inc dt{color:var(--dim);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;margin-top:10px}
+.inc dd{color:var(--fog)}
+.inc dd b{color:var(--paper);font-weight:500}
 
-  /* stack grid */
-  .skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:20px}
-  .skill{border:1px solid var(--line);border-radius:4px;padding:24px}
-  .skill h4{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-dim);margin-bottom:14px}
-  .skill ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
-  .skill li{font-size:.92rem;color:var(--paper-dim)}
-  .skill li::after{content:"·";margin-left:8px;color:var(--line)}
-  .skill li:last-child::after{content:""}
+/* ---------- shipping log ---------- */
+.tl{border-left:1px solid var(--line2);margin-left:5px;padding-left:28px;max-width:740px}
+.tl-item{position:relative;padding-bottom:26px}
+.tl-item::before{content:"";position:absolute;left:-33px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--ink);border:2px solid var(--acc2)}
+.tl-item:first-child::before{background:var(--acc);border-color:var(--acc);box-shadow:0 0 10px var(--acc)}
+.tl-date{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--acc2)}
+.tl-item h4{font-family:var(--serif);font-weight:400;font-size:1.2rem;margin:4px 0}
+.tl-item p{color:var(--fog);font-size:.8rem;max-width:62ch}
 
-  /* contact */
-  .contact{text-align:center;padding:120px 0}
-  .contact h2{font-family:var(--serif);font-weight:400;font-size:clamp(2.6rem,8vw,5rem);line-height:1;margin-bottom:18px}
-  .contact h2 .it{font-style:italic;color:var(--acc)}
-  .contact p{color:var(--paper-dim);max-width:520px;margin:0 auto 38px}
-  footer{border-top:1px solid var(--line);padding:30px 0;text-align:center;font-family:var(--mono);font-size:.7rem;color:var(--fog);letter-spacing:.08em}
-  footer b{color:var(--acc-dim)}
+/* ---------- contact ---------- */
+.contact{text-align:center;padding:110px 0}
+.contact h2{font-family:var(--serif);font-weight:400;font-size:clamp(2.4rem,7vw,4.6rem);line-height:1.05;margin:14px 0 12px}
+.contact h2 .it{font-style:italic;color:var(--acc)}
+.contact p{color:var(--fog);max-width:52ch;margin:0 auto 34px;font-size:.85rem}
+footer{border-top:1px solid var(--line);padding:26px 0;text-align:center;font-size:.6rem;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
+footer b{color:var(--acc2)}
 </style>
 </head>
 <body>
-<nav id="nav"><div class="nav-in">
-  <div class="brand">brian<b>.</b>builds</div>
-  <div class="nav-links"><a href="#work">Work</a><a href="#shipping">Shipping log</a><a href="#stack">Stack</a><a href="#contact">Contact</a></div>
+
+<div id="boot"><div class="term" id="bootterm"></div></div>
+<button id="skip">skip boot ⏎</button>
+
+<nav><div class="nav-in">
+  <div class="sig"><span class="led"></span><b>BRIAN OS</b><span style="color:var(--dim)">mission control</span></div>
+  <div class="nav-links"><a href="#fleet">Fleet</a><a href="#work">Builds</a><a href="#incidents">Incidents</a><a href="#log">Log</a><a href="#contact">Hire</a></div>
+  <span id="clock">--:--:--</span>
 </div></nav>
 
 <header>
-  <div class="glow"></div>
+  <div class="grid-bg"></div>
   <div class="wrap">
-    <div class="tag rv"><span class="dot"></span><span class="mono">Early-career builder · open to work</span></div>
-    <h1 class="rv">I ship <span class="it">working</span><br>AI products.</h1>
-    <p class="lede rv">I'm <b>Brian Mathew</b> — a self-taught builder who takes an idea and turns it into a real, deployed app using modern AI tools. Early-career, learning every day, and looking for a team to grow with.</p>
+    <span class="lbl rv">Operator on duty · open to work</span>
+    <h1 class="rv" style="margin-top:18px">I don't just write code.<br>I <span class="it">operate</span> a live AI system.</h1>
+    <p class="lede rv">I'm <b>Brian Mathew</b>. During my employment gap I built <b>Brian OS</b> — a fleet of 19 autonomous agents that runs my life and job hunt 24/7 on local models. This page is its mission control. Everything below is real: the agents, the schedules, the outages I fixed, the tests that pass. <b>The gap is the portfolio.</b></p>
     <div class="cta rv">
-      <a class="btn solid" href="#work">See the work →</a>
+      <a class="btn solid" href="#fleet">▶ Watch the fleet</a>
       <a class="btn" href="https://github.com/bmath8" target="_blank" rel="noopener">GitHub ↗</a>
-      <a class="btn" href="mailto:mathew.brian@gmail.com">Email</a>
+      <a class="btn" href="mailto:mathew.brian@gmail.com">Email me</a>
     </div>
-    <div class="stats rv">
-      <div><b>19</b><span>automated agents running daily</span></div>
-      <div><b>78</b><span>passing tests on my AI fleet</span></div>
-      <div><b>$0</b><span>monthly AI infra (all local)</span></div>
-      <div><b>6</b><span>apps shipped end-to-end</span></div>
+    <div class="gauges rv">
+      <div class="gauge"><b>19</b><span>agents on schedule</span></div>
+      <div class="gauge"><b>78</b><span>tests passing</span></div>
+      <div class="gauge"><b id="uptime">—</b><span>fleet uptime today</span></div>
+      <div class="gauge"><b>$0</b><span>monthly AI cost</span></div>
+      <div class="gauge"><b>6</b><span>apps shipped</span></div>
     </div>
   </div>
 </header>
 
-<section id="about" class="about"><div class="wrap">
-  <div class="sec-head rv"><span class="num">01</span><h2>What I do</h2></div>
-  <p class="rv">I build <b>real products</b>, end to end — front end, back end, and the AI in between. My edge isn't decades of computer-science theory; it's that I can take a vague idea and <span class="hl">ship a working version fast</span>, using AI tooling (Cursor, Claude, local models) the way a modern team actually works.</p>
-  <p class="rv">I've built an AI resume engine, a real-time music app, and an always-on personal AI system that runs my day. I'm honest about where I am: early-career and hungry to learn the fundamentals deeply. Give me a problem and a team, and I'll grow fast.</p>
-  <p class="rv">There's a gap on my resume. Here's what's inside it: <b>I treated the gap as a job.</b> Every day of it, I designed, built, broke, debugged, and shipped — the projects below, plus an autonomous AI system that's been running my job hunt while I build. <span class="hl">The gap is the portfolio.</span></p>
-</div></section>
-
-<section id="work"><div class="wrap">
-  <div class="sec-head rv"><span class="num">02</span><h2>Selected work</h2><span class="mono">real code · github.com/bmath8</span></div>
-
-  <div class="proj rv featured"><div class="proj-in">
-    <div class="proj-top"><h3>Brian OS — a self-healing AI agent fleet</h3><span class="role">Flagship · runs 24/7</span></div>
-    <p>An always-on personal AI operating system I designed, built, and <b>operate in production</b>: 19 scheduled agents on a local LLM stack ($0/month) that brief me every morning, run my job hunt, draft work overnight with a two-model verification loop, keep my dependencies current with build-verified PRs, and maintain a self-updating wiki of everything they learn. Two-way control from Telegram. <b>78 automated tests.</b></p>
-    <p>The part I'm proudest of isn't the features — it's the <b>operations</b>: when it broke, I root-caused real outages (a silent encoding failure, a self-heal regex that never fired, a host VM teardown bug), wrote the postmortems, and engineered the failure classes away — process-based watchdogs, wedge detection, guarded host upgrades with automatic rollback, and an external dead-man's-switch. That's the difference between writing code and running a system.</p>
-    <div class="stack"><span>Python</span><span>Ollama · Qwen3 (local)</span><span>Multi-model routing</span><span>RAG memory</span><span>Telegram Bot API</span><span>PowerShell</span><span>pytest · 78 tests</span></div>
-    <div class="links"><span class="soon">● code + postmortems — available on request</span><a href="mailto:mathew.brian@gmail.com?subject=Brian%20OS%20code%20access">Request access <span class="arr">↗</span></a></div>
-  </div></div>
-
-  <div class="proj rv"><div class="proj-in">
-    <div class="proj-top"><h3>Pokémon Drop Intel</h3><span class="role">Live product · Next.js</span></div>
-    <p>A local-first collector cockpit for the Pokémon TCG: track your binder's value against cost basis, watch market movers, queue cards for grading, and catch sealed-product drops — all in one workspace, pulling live official card art from the Pokémon TCG API. <b>Fully interactive on sample data — no login or signup needed.</b></p>
-    <div class="stack"><span>Next.js 16</span><span>React 19</span><span>TypeScript</span><span>Tailwind 4</span><span>Pokémon TCG API</span></div>
-    <div class="links"><a href="https://pokemon-drop-intel.vercel.app/?code=brian2026" target="_blank" rel="noopener">▶ Open the live demo <span class="arr">↗</span></a><a href="https://github.com/bmath8/pokemon-drop-intel" target="_blank" rel="noopener">View code <span class="arr">↗</span></a></div>
-  </div></div>
-
-  <div class="proj rv"><div class="proj-in">
-    <div class="proj-top"><h3>AI Job Hunter</h3><span class="role">AI agent · full app</span></div>
-    <p>An AI agent that tailors your resume to any job posting and optimizes it to pass ATS screening in about 60 seconds — then drafts a matching cover letter, scores the match, and calls out missing keywords. Built with a provider-agnostic LLM client and a custom ATS keyword algorithm.</p>
-    <div class="stack"><span>Python</span><span>FastAPI</span><span>LLM (GPT-4 / Claude)</span><span>Celery + Redis</span><span>SQLAlchemy / Alembic</span><span>Docker</span></div>
-    <div class="links"><a href="ats/">▶ Try the live ATS tool <span class="arr">↗</span></a><a href="https://github.com/bmath8/ai-job-hunter" target="_blank" rel="noopener">View code <span class="arr">↗</span></a></div>
-  </div></div>
-
-  <div class="proj rv"><div class="proj-in">
-    <div class="proj-top"><h3>Boombox</h3><span class="role">Full-stack · real-time</span></div>
-    <p>A real-time social music app — listen together, build collaborative playlists, and broadcast your own radio. Live presence and synced sessions over WebSockets, with row-level-secure data and Spotify integration.</p>
-    <div class="stack"><span>Next.js</span><span>TypeScript</span><span>Node WebSockets</span><span>Redis Pub/Sub</span><span>Supabase (RLS)</span><span>Spotify API</span></div>
-    <div class="links"><a href="https://github.com/bmath8/BoomBox-V.5" target="_blank" rel="noopener">View code <span class="arr">↗</span></a><span class="soon">● live demo — deploying soon</span></div>
-  </div></div>
-
-  <div class="proj rv"><div class="proj-in">
-    <div class="proj-top"><h3>More</h3><span class="role">Giveaway · Viral Forge · Bible App</span></div>
-    <p>A handful of other shipped builds — a giveaway/promo web app (with CI, pre-commit, and secret scanning), an AI content tool, and a scripture app. All on GitHub.</p>
-    <div class="links"><a href="https://github.com/bmath8" target="_blank" rel="noopener">Browse all repos <span class="arr">↗</span></a></div>
-  </div></div>
-</div></section>
-
-<section id="shipping"><div class="wrap">
-  <div class="sec-head rv"><span class="num">03</span><h2>The last 30 days</h2><span class="mono">a real shipping log, newest first</span></div>
-  <div class="tl">
-    <div class="tl-item rv"><span class="tl-date">Jul 6</span><h4>Full-system audit day</h4>
-      <p>Line-by-line audit of the fleet: fixed an outage-class watchdog bug, enabled flash-attention + quantized KV cache (~2× context on the same GPU), added wedge detection, shipped guarded host upgrades with auto-rollback, a living wiki memory, and an external dead-man's-switch.</p></div>
-    <div class="tl-item rv"><span class="tl-date">Jun 24</span><h4>Modernization agent + live demo</h4>
-      <p>Built an agent that watches release feeds and CVEs across all my repos and opens build-verified dependency-upgrade PRs on a branch — never touching main. Deployed the Pokémon Drop Intel demo and this portfolio.</p></div>
-    <div class="tl-item rv"><span class="tl-date">Jun 22</span><h4>42 upgrades in autonomous batches</h4>
-      <p>Shipped 42 backlog items in five tested batches: new career/inbox/boot-check agents, a Telegram command grammar (/tailor, /prep, /digest…), deploy tooling with rollback, and a crash-loop detector.</p></div>
-    <div class="tl-item rv"><span class="tl-date">Jun 20</span><h4>Root-caused a silent total outage</h4>
-      <p>The fleet went quiet: a Windows encoding edge case silently emptied cron output AND the self-heal regex could never fire. Diagnosed both, fixed both, wrote the postmortem, and grew the test suite to catch the class, not just the bug.</p></div>
-    <div class="tl-item rv"><span class="tl-date">Jun 19</span><h4>Migrated the whole system off WSL in a day</h4>
-      <p>Traced overnight fleet deaths to a documented WSL VM teardown bug; migrated everything to native Windows, removing the failure class entirely.</p></div>
+<section id="fleet"><div class="wrap">
+  <div class="sec-head rv"><span class="idx">01</span><h2>The fleet, live</h2><span class="note">hover / tap an agent</span></div>
+  <div class="fleet-panel rv">
+    <div class="map-box">
+      <div class="map-hdr"><span><b>topology</b> — hub: hermes gateway · models: qwen3 local</span><span id="mapstat"><b>19</b> nodes</span></div>
+      <svg id="map" viewBox="0 0 640 480" aria-label="Agent fleet map"></svg>
+    </div>
+    <div class="agent-info">
+      <h3 id="ai-name">daily-brief</h3>
+      <span class="sched" id="ai-sched">07:00 daily → telegram</span>
+      <p id="ai-desc">Compiles the morning brief: career pipeline, finance, health, calendar, system status — and delivers it to my phone before I'm up. If it fails to deliver, a watchdog notices and an external dead-man's-switch emails me.</p>
+      <div class="hint">every node is a real scheduled agent in production right now — not a mockup</div>
+    </div>
+  </div>
+  <div class="feed rv" style="margin-top:26px">
+    <div class="feed-hdr"><span class="dots"><i></i><i></i><i></i></span><span>live console — replaying real fleet activity</span></div>
+    <div id="feedbody"></div>
   </div>
 </div></section>
 
-<section id="stack"><div class="wrap">
-  <div class="sec-head rv"><span class="num">04</span><h2>Tools I build with</h2></div>
-  <div class="skills">
-    <div class="skill rv"><h4>Build</h4><ul><li>React</li><li>Next.js</li><li>TypeScript</li><li>Python</li><li>Node.js</li><li>Tailwind</li></ul></div>
-    <div class="skill rv"><h4>AI / LLM</h4><ul><li>OpenAI</li><li>Anthropic</li><li>Ollama (local)</li><li>RAG</li><li>Agents</li><li>Prompting</li></ul></div>
-    <div class="skill rv"><h4>Data / Infra</h4><ul><li>Supabase</li><li>PostgreSQL</li><li>Redis</li><li>Docker</li><li>Git/GitHub</li><li>Vercel</li></ul></div>
-    <div class="skill rv"><h4>Ways of working</h4><ul><li>Ship fast</li><li>AI-assisted dev</li><li>Cursor</li><li>Tests + CI</li><li>Always learning</li></ul></div>
+<section id="work"><div class="wrap">
+  <div class="sec-head rv"><span class="idx">02</span><h2>Selected builds</h2><span class="note">every screen below is drawn in pure css — view source</span></div>
+
+  <div class="proj flag rv">
+    <div class="proj-txt">
+      <h3>Brian OS — the system running this page's data</h3>
+      <span class="role">Flagship · in production 24/7 · $0/month</span>
+      <p>19 scheduled agents on local LLMs: morning briefs, an overnight draft worker with a <b>two-model verification loop</b>, a dependency-modernization agent that opens build-verified PRs, a self-updating wiki memory, and two-way Telegram control.</p>
+      <p>The real skill is the <b>operations</b>: I root-caused production outages, wrote the postmortems (section 03), and engineered the failure classes away — process watchdogs, wedge detection, guarded upgrades with auto-rollback, an external dead-man's-switch. <b>78 tests green.</b></p>
+      <div class="stack"><span>Python</span><span>Ollama · Qwen3</span><span>multi-model routing</span><span>RAG memory</span><span>Telegram API</span><span>78 tests</span></div>
+      <div class="links"><span class="soon">● code + postmortems — on request</span><a href="mailto:mathew.brian@gmail.com?subject=Brian%20OS%20code%20access">Request access →</a></div>
+    </div>
+    <div class="screen"><div class="mini">
+      <div class="mini-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span style="margin-left:6px">fleet dashboard — live</span></div>
+      <div class="mini-body">
+        <div class="pk-row"><b style="font-family:var(--serif)">morning brief</b><span class="up">✓ delivered 07:00</span></div>
+        <div style="color:var(--fog);line-height:1.9;font-size:.6rem">
+          <div><span style="color:var(--acc2)">career</span> — 5 follow-ups drafted, 2 due today</div>
+          <div><span style="color:var(--acc2)">watchdog</span> — all clear · disk 118GB · GPU ok</div>
+          <div><span style="color:var(--acc2)">overnight</span> — 3 drafts ready for review</div>
+          <div><span style="color:var(--acc2)">currency</span> — 1 safe upgrade PR opened ✓</div>
+          <div><span style="color:var(--amber)">needs you</span> — approve outreach draft #2</div>
+        </div>
+        <div class="spark" style="margin-top:12px"><i style="height:40%"></i><i style="height:55%"></i><i style="height:35%"></i><i style="height:70%"></i><i style="height:60%"></i><i style="height:85%"></i><i style="height:75%"></i><i style="height:95%"></i><i style="height:65%"></i><i style="height:88%"></i><i style="height:100%"></i><i style="height:92%"></i></div>
+        <div style="color:var(--dim);font-size:.5rem;margin-top:4px;letter-spacing:.12em">AGENT RUNS / DAY — LAST 12 DAYS</div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="proj flip rv">
+    <div class="screen"><div class="mini">
+      <div class="mini-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span style="margin-left:6px">pokemon-drop-intel.vercel.app</span></div>
+      <div class="mini-body">
+        <div class="pk-row"><b>$4,218.60</b><span class="up">▲ 12.4% vs cost basis</span></div>
+        <div class="pk-cards"><div class="pk-card"></div><div class="pk-card"></div><div class="pk-card"></div><div class="pk-card"></div></div>
+        <div class="spark"><i style="height:30%"></i><i style="height:45%"></i><i style="height:38%"></i><i style="height:60%"></i><i style="height:52%"></i><i style="height:75%"></i><i style="height:68%"></i><i style="height:90%"></i><i style="height:82%"></i><i style="height:100%"></i></div>
+        <div style="color:var(--dim);font-size:.5rem;margin-top:4px;letter-spacing:.12em">VAULT VALUE — 10 WK</div>
+      </div>
+    </div></div>
+    <div class="proj-txt">
+      <h3>Pokémon Drop Intel</h3>
+      <span class="role">Live product · try it right now, no signup</span>
+      <p>A collector's cockpit for the Pokémon TCG: binder value vs cost basis, market movers, a grading queue, and sealed-drop watches — pulling live official card art from the Pokémon TCG API. <b>Fully interactive on sample data.</b></p>
+      <div class="stack"><span>Next.js 16</span><span>React 19</span><span>TypeScript</span><span>Tailwind 4</span><span>TCG API</span></div>
+      <div class="links"><a href="https://pokemon-drop-intel.vercel.app/?code=brian2026" target="_blank" rel="noopener">▶ Open the live demo →</a></div>
+    </div>
+  </div>
+
+  <div class="proj rv">
+    <div class="proj-txt">
+      <h3>AI Job Hunter</h3>
+      <span class="role">AI agent · resume engine · ATS optimizer</span>
+      <p>Tailors a resume to any job posting and optimizes it to pass ATS screening in ~60 seconds — then drafts the cover letter, scores the match, and calls out missing keywords. Provider-agnostic LLM client, custom keyword algorithm, encrypted storage.</p>
+      <div class="stack"><span>Python</span><span>FastAPI</span><span>Celery + Redis</span><span>SQLAlchemy</span><span>Docker</span></div>
+      <div class="links"><a href="ats/">▶ Try the live ATS tool →</a><a href="https://github.com/bmath8/ai-job-hunter" target="_blank" rel="noopener">Code →</a></div>
+    </div>
+    <div class="screen"><div class="mini">
+      <div class="mini-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span style="margin-left:6px">ats match report</span></div>
+      <div class="mini-body">
+        <div class="ats-score"><div class="ring"><b>92%</b></div>
+          <div style="font-size:.56rem;color:var(--fog);line-height:1.8">ATS COMPATIBILITY<br><span style="color:var(--acc)">STRONG MATCH</span> — 2 gaps found</div></div>
+        <div class="ats-line"><i></i></div>
+        <div class="kw"><span class="hit">react</span><span class="hit">typescript</span><span class="hit">python</span><span class="hit">llm agents</span><span class="hit">ci/cd</span><span class="miss">kubernetes</span><span class="miss">graphql</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="proj flip rv">
+    <div class="screen"><div class="mini">
+      <div class="mini-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span style="margin-left:6px">boombox — room: late night lofi</span></div>
+      <div class="mini-body">
+        <div class="pk-row"><b style="font-size:.78rem">▶ Now broadcasting</b><span class="up">live</span></div>
+        <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="bb-listeners"><span class="avs"><i></i><i></i><i></i><i></i></span><span>23 listening together · synced via websockets</span></div>
+      </div>
+    </div></div>
+    <div class="proj-txt">
+      <h3>Boombox</h3>
+      <span class="role">Full-stack · real-time</span>
+      <p>Listen together, build collaborative playlists, broadcast your own radio. Live presence and synced sessions over WebSockets, row-level-secure data, Spotify integration.</p>
+      <div class="stack"><span>Next.js</span><span>WebSockets</span><span>Redis Pub/Sub</span><span>Supabase RLS</span><span>Spotify API</span></div>
+      <div class="links"><a href="https://github.com/bmath8/BoomBox-V.5" target="_blank" rel="noopener">Code →</a><span class="soon">● live demo — deploying</span></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="incidents"><div class="wrap">
+  <div class="sec-head rv"><span class="idx">03</span><h2>Incident reports</h2><span class="note">real outages, really fixed — the part most portfolios can't show</span></div>
+  <div class="incs">
+    <div class="inc resolved rv">
+      <span class="sev fixed">SEV-1 · RESOLVED</span>
+      <h4>The fleet went silent</h4>
+      <dl><dt>Symptom</dt><dd>Zero messages delivered. Everything "looked" healthy.</dd>
+      <dt>Root cause</dt><dd><b>Two compounding bugs:</b> a Windows cp1252 decode failure silently emptied cron output, and the self-heal regex matched "NOT running" — so recovery never fired.</dd>
+      <dt>Fix</dt><dd>UTF-8 enforced at the gateway, process-based liveness checks, and a delivery-verification watchdog. <b>Test suite grown to catch the class, not the bug.</b></dd></dl>
+    </div>
+    <div class="inc resolved rv">
+      <span class="sev fixed">SEV-1 · RESOLVED</span>
+      <h4>Host VM died nightly</h4>
+      <dl><dt>Symptom</dt><dd>The whole fleet dead every morning, no crash logs.</dd>
+      <dt>Root cause</dt><dd>A documented WSL VM teardown bug (microsoft/WSL #13416) killing the VM overnight.</dd>
+      <dt>Fix</dt><dd><b>Migrated the entire system to native Windows in one day</b> — removing the failure class, not patching around it. WSL kept as a disabled fallback.</dd></dl>
+    </div>
+    <div class="inc resolved rv">
+      <span class="sev fixed">SEV-2 · RESOLVED</span>
+      <h4>Vendor update broke delivery — twice</h4>
+      <dl><dt>Symptom</dt><dd>Agent-host updates kept breaking Telegram delivery.</dd>
+      <dt>Root cause</dt><dd>Update swapped the shared engine under the running gateway.</dd>
+      <dt>Fix</dt><dd>Made delivery <b>update-proof</b> (direct Bot API self-send) and built a guarded upgrade path: backup → update → verify → auto-rollback. Latest host upgrade shipped with zero downtime.</dd></dl>
+    </div>
+  </div>
+</div></section>
+
+<section id="log"><div class="wrap">
+  <div class="sec-head rv"><span class="idx">04</span><h2>The last 30 days</h2><span class="note">a real shipping log, newest first</span></div>
+  <div class="tl">
+    <div class="tl-item rv"><span class="tl-date">Jul 6</span><h4>Full-system audit day</h4><p>Line-by-line audit: fixed an outage-class watchdog bug, ~2× GPU context via flash-attention + quantized KV cache, wedge detection, guarded host upgrades with rollback, a living wiki memory, an external dead-man's-switch — and rebuilt this page.</p></div>
+    <div class="tl-item rv"><span class="tl-date">Jun 24</span><h4>Modernization agent + live demo</h4><p>An agent that watches release feeds and CVEs across my repos and opens build-verified dependency PRs — never touching main. Deployed the Pokémon demo + portfolio.</p></div>
+    <div class="tl-item rv"><span class="tl-date">Jun 22</span><h4>42 upgrades in autonomous batches</h4><p>New career/inbox/boot-check agents, a Telegram command grammar, deploy tooling with rollback, a crash-loop detector — each batch tested before the next began.</p></div>
+    <div class="tl-item rv"><span class="tl-date">Jun 20</span><h4>Root-caused a silent total outage</h4><p>Incident #1 above. Diagnosed, fixed, postmortem written, regression tests added.</p></div>
+    <div class="tl-item rv"><span class="tl-date">Jun 19</span><h4>Migrated off WSL in a day</h4><p>Incident #2 above. Traced, migrated, failure class eliminated.</p></div>
   </div>
 </div></section>
 
 <section id="contact" class="contact"><div class="wrap rv">
-  <span class="mono">Let's build something</span>
-  <h2>Open to <span class="it">work</span>.</h2>
-  <p>Apprenticeships, junior roles, AI-builder gigs — if you're looking for someone who ships and learns fast, let's talk.</p>
+  <span class="lbl">transmission open</span>
+  <h2>Give me a system<br>to <span class="it">run</span>.</h2>
+  <p>Apprenticeships, junior roles, AI-builder gigs. You've just watched what I do unsupervised with my own time — imagine it pointed at your backlog.</p>
   <div class="cta" style="justify-content:center">
     <a class="btn solid" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
     <a class="btn" href="https://github.com/bmath8" target="_blank" rel="noopener">GitHub ↗</a>
   </div>
 </div></section>
-<footer>Designed & built by <b>Brian Mathew</b> · 2026</footer>
+
+<footer>designed, built &amp; operated by <b>Brian Mathew</b> · this page is part of Brian OS · 2026</footer>
 
 <script>
-  const nav=document.getElementById('nav');
-  addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40));
-  const io=new IntersectionObserver((es)=>es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*70);io.unobserve(e.target)}}),{threshold:.14});
+// ---------- boot sequence ----------
+const BOOT = [
+  ["sys","BRIAN OS v2026.7 — mission control"],
+  ["sys","mounting agent fleet ............ "],
+  ["ok","19 agents on schedule"],
+  ["sys","local models ................... "],
+  ["ok","qwen3 · $0/month"],
+  ["sys","self-heal / watchdogs .......... "],
+  ["ok","armed"],
+  ["sys","test suite ..................... "],
+  ["ok","78/78 passing"],
+  ["sys","operator ....................... "],
+  ["wr","BRIAN MATHEW — open to work"],
+  ["ok","> access granted. welcome in."]
+];
+const bootEl=document.getElementById('bootterm'),boot=document.getElementById('boot'),skip=document.getElementById('skip');
+let bi=0;
+function bootLine(){
+  if(bi>=BOOT.length){setTimeout(endBoot,650);return}
+  const [cls,txt]=BOOT[bi++];
+  const d=document.createElement('div');d.className=cls;bootEl.appendChild(d);
+  let ci=0;const t=setInterval(()=>{d.textContent=txt.slice(0,++ci);if(ci>=txt.length){clearInterval(t);setTimeout(bootLine,90)}},8);
+}
+function endBoot(){boot.classList.add('done');skip.style.display='none';reveal()}
+skip.onclick=endBoot;
+if(sessionStorage.getItem('booted')){boot.classList.add('done');skip.style.display='none'}
+else{sessionStorage.setItem('booted','1');bootLine()}
+
+// ---------- clock + uptime ----------
+const clock=document.getElementById('clock');
+setInterval(()=>{const n=new Date();clock.textContent=n.toLocaleTimeString('en-US',{hour12:false})+' ET · OPERATIONAL'},1000);
+const up=document.getElementById('uptime');const n0=new Date();
+up.textContent=Math.round((n0-new Date(n0.getFullYear(),n0.getMonth(),n0.getDate(),7))/36e5*10)/10+'h';
+
+// ---------- the real fleet ----------
+const AGENTS=[
+ ["daily-brief","07:00 daily → telegram","Compiles the morning brief — career, finance, health, calendar, system — and delivers it before I'm up. Delivery is verified; failures alert an external dead-man's-switch."],
+ ["watchdog","every 4h","Checks disk, models, gateway, Telegram, backups and resources; self-heals what it can and alerts only on state CHANGES so chronic issues don't spam."],
+ ["overnight-worker","02:00 daily","Processes my queued tasks while I sleep: drafts with a local model, then a SEPARATE critic model reviews and revises — capped loop, deterministic guardrail checks."],
+ ["career-agent","06:53 daily","The income engine: applications vs target, follow-ups due (auto-drafted), stale leads, interviews, networking streak."],
+ ["currency-agent","06:58 Mon–Sat","Watches release feeds + CVEs across all my repos; opens build-verified dependency-upgrade PRs on a branch. Never touches main."],
+ ["scout","06:40 daily","Scans the AI ecosystem for new tools and techniques worth adopting; dedupes against everything already seen."],
+ ["learning","06:45 daily","Runs my spaced-repetition system: surfaces recall cards, grades answers from Telegram, schedules the next review."],
+ ["finance","06:50 daily","Reads my finance notes and reports runway + spending signals into the brief."],
+ ["health","06:52 daily","Tracks health habits and streaks; nudges through the brief, not with spam."],
+ ["calendar","06:55 daily","Pulls today's events from Google Calendar into the brief."],
+ ["inbox","06:48 daily","Surfaces new files dropped into my inbox folder so nothing rots unseen."],
+ ["wiki","Sun 16:45","Distills the week's notes into living wiki pages — updated in place, not appended — so knowledge compounds."],
+ ["weekly-review","Sun 17:00","Writes my weekly review from real data: job funnel, fleet health, agent fail rates, one change for next week."],
+ ["model-review","monthly","Benchmarks local models head-to-head on my real tasks; model choices are measurements, not vibes."],
+ ["memory-index","01:20 daily","Rebuilds the local RAG index over my notes so /ask answers from MY data."],
+ ["harmony-backup","01:30 daily","Mirrors my life-OS files off OneDrive with robocopy; the watchdog checks freshness."],
+ ["boot-smoke","on boot","Self-test after every boot/recovery: proves delivery works and reports straight to my phone."],
+ ["dashboard","hourly","Renders a live HTML ops dashboard of the whole fleet."],
+ ["feedback","Sun","Collects my 👍/👎 grades on drafts so the fleet learns my taste."]
+];
+// build map
+const svg=document.getElementById('map');const CX=320,CY=250,NS='http://www.w3.org/2000/svg';
+function el(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e}
+const hub=el('g',{});
+hub.appendChild(el('circle',{cx:CX,cy:CY,r:26,fill:'none',stroke:'var(--acc2)','stroke-width':1,'stroke-dasharray':'3 4'}));
+hub.appendChild(el('circle',{cx:CX,cy:CY,r:14,fill:'#111417',stroke:'var(--acc)','stroke-width':1.5}));
+const ht=el('text',{x:CX,y:CY+44,'text-anchor':'middle',fill:'var(--acc)','font-size':'9px','letter-spacing':'.14em'});ht.textContent='GATEWAY';
+svg.appendChild(hub);svg.appendChild(ht);
+const infoN=document.getElementById('ai-name'),infoS=document.getElementById('ai-sched'),infoD=document.getElementById('ai-desc');
+AGENTS.forEach((a,i)=>{
+  const ang=(i/AGENTS.length)*Math.PI*2-Math.PI/2;
+  const rx=250,ry=185;
+  const x=CX+Math.cos(ang)*rx,y=CY+Math.sin(ang)*ry;
+  svg.appendChild(el('line',{x1:CX,y1:CY,x2:x,y2:y,stroke:'var(--line)','stroke-width':1}));
+  // traveling pulse
+  const p=el('circle',{class:'pulse',r:2.5});
+  p.appendChild(el('animateMotion',{dur:(6+i*1.7%9)+'s',repeatCount:'indefinite',path:`M${CX},${CY} L${x},${y}`,begin:(i*.9)+'s'}));
+  const fade=el('animate',{attributeName:'opacity',values:'0;.9;0',dur:(6+i*1.7%9)+'s',repeatCount:'indefinite',begin:(i*.9)+'s'});
+  p.appendChild(fade);svg.appendChild(p);
+  const g=el('g',{class:'node'});
+  g.appendChild(el('circle',{cx:x,cy:y,r:11,fill:'transparent'}));
+  g.appendChild(el('circle',{class:'body',cx:x,cy:y,r:4.5,fill:'var(--acc2)'}));
+  const t=el('text',{x:x,y:y+(y>CY?18:-11),'text-anchor':'middle'});t.textContent=a[0];
+  g.appendChild(t);
+  g.addEventListener('mouseenter',()=>sel(g,a));g.addEventListener('click',()=>sel(g,a));
+  svg.appendChild(g);
+});
+function sel(g,a){document.querySelectorAll('.node.sel').forEach(n=>n.classList.remove('sel'));g.classList.add('sel');
+  infoN.textContent=a[0];infoS.textContent=a[1];infoD.textContent=a[2]}
+
+// ---------- console feed ----------
+const FEED=[
+ ["06:40","scout","3 new tools found, 1 worth adopting → report","ok"],
+ ["06:45","learning","2 recall cards due — sent to telegram","ok"],
+ ["06:48","inbox","1 new file in 00_Inbox → surfaced","ok"],
+ ["06:53","career","5 follow-ups due · drafts written → review queue","ok"],
+ ["06:58","currency","dependabot clean · next.js 16.2 flagged for review","ok"],
+ ["07:00","daily-brief","brief composed (1,842 chars) → telegram ✓ delivered","ok"],
+ ["08:00","watchdog","disk 118GB · ollama ok · gateway ok · brief verified","ok"],
+ ["09:14","telegram","/tailor received → application kit drafted (12k ctx)","ok"],
+ ["11:02","dashboard","ops dashboard rebuilt (hourly)","ok"],
+ ["12:00","watchdog","VRAM pressure detected → agents pinned to 8B","warn"],
+ ["13:37","telegram","/ask 'how's my runway?' → answered from RAG memory","ok"],
+ ["16:00","watchdog","all clear · external heartbeat pinged","ok"],
+ ["02:00","overnight","3 tasks drafted · critic loop: 2 revisions · queued for review","ok"],
+ ["01:20","memory-index","412 chunks re-embedded (local, $0)","ok"],
+ ["01:30","backup","harmony mirrored · 1,204 files · fresh ✓","ok"]
+];
+const fb=document.getElementById('feedbody');let fi=0;
+function feedLine(){
+  const [t,a,m,cls]=FEED[fi++%FEED.length];
+  const d=document.createElement('div');
+  d.innerHTML=`<span class="t">${t}</span><span class="a">${a}</span><span class="${cls}">${m}</span>`;
+  fb.appendChild(d);
+  while(fb.children.length>9)fb.removeChild(fb.firstChild);
+}
+feedLine();feedLine();feedLine();setInterval(feedLine,2200);
+
+// ---------- reveal ----------
+function reveal(){
+  const io=new IntersectionObserver(es=>es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*60);io.unobserve(e.target)}}),{threshold:.12});
   document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+}
+if(document.getElementById('boot').classList.contains('done'))reveal();
 </script>
 </body>
 </html>
