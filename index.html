@@ -404,15 +404,20 @@ const BOOT = [
 const bootEl=document.getElementById('bootterm'),boot=document.getElementById('boot'),skip=document.getElementById('skip');
 let bi=0;
 function bootLine(){
-  if(bi>=BOOT.length){setTimeout(endBoot,650);return}
+  if(bi>=BOOT.length){setTimeout(endBoot,600);return}
   const [cls,txt]=BOOT[bi++];
   const d=document.createElement('div');d.className=cls;bootEl.appendChild(d);
-  let ci=0;const t=setInterval(()=>{d.textContent=txt.slice(0,++ci);if(ci>=txt.length){clearInterval(t);setTimeout(bootLine,90)}},8);
+  const t0=performance.now();
+  (function step(){
+    const n=Math.min(txt.length,Math.ceil((performance.now()-t0)/9));
+    d.textContent=txt.slice(0,n);
+    if(n<txt.length)requestAnimationFrame(step);else setTimeout(bootLine,70);
+  })();
 }
-function endBoot(){boot.classList.add('done');skip.style.display='none';reveal()}
+function endBoot(){if(boot.classList.contains('done'))return;boot.classList.add('done');skip.style.display='none';reveal()}
 skip.onclick=endBoot;
 if(sessionStorage.getItem('booted')){boot.classList.add('done');skip.style.display='none'}
-else{sessionStorage.setItem('booted','1');bootLine()}
+else{sessionStorage.setItem('booted','1');bootLine();setTimeout(endBoot,6000)}   // hard cap: no visitor ever waits >6s
 
 // ---------- clock + uptime ----------
 const clock=document.getElementById('clock');
@@ -502,7 +507,9 @@ feedLine();feedLine();feedLine();setInterval(feedLine,2200);
 
 // ---------- reveal ----------
 function reveal(){
-  const io=new IntersectionObserver(es=>es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*60);io.unobserve(e.target)}}),{threshold:.12});
+  // CSS transition-delay staggering (no timers): immune to background-tab throttling.
+  const io=new IntersectionObserver(es=>{let i=0;es.forEach(e=>{if(e.isIntersecting){
+    e.target.style.transitionDelay=(i++*70)+'ms';e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1});
   document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 }
 if(document.getElementById('boot').classList.contains('done'))reveal();
