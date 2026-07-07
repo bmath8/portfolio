@@ -38,7 +38,7 @@ button:hover{background:#bf3b1f;border-color:#bf3b1f}</style></head><body><div c
 <h1>Operator's <i>Manual</i></h1>
 <div class="doc">Doc. BM-2026-07 · restricted distribution</div>
 <p>Enter the access code printed on Brian's resume or message.</p>
-<form onsubmit="location.href='/?code='+encodeURIComponent(document.getElementById('c').value);return false">
+<form onsubmit="location.href=location.pathname+'?code='+encodeURIComponent(document.getElementById('c').value);return false">
 <input id="c" placeholder="access code" autofocus autocomplete="off"><button>Enter →</button></form>
 </div></body></html>`;
   return new Response(page, { status: 401, headers: { "Content-Type": "text/html; charset=utf-8" } });
