@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Direction A — Kinetic Type</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#f4f3f0;color:#111;font-family:"Archivo",sans-serif;overflow:hidden;cursor:crosshair}
+.tag{position:fixed;top:22px;left:26px;font-size:11px;letter-spacing:.22em;color:#999;text-transform:uppercase;font-weight:500}
+.tag b{color:#111;font-weight:600}
+.hint{position:fixed;bottom:22px;left:26px;font-size:11px;letter-spacing:.18em;color:#999;text-transform:uppercase}
+.back{position:fixed;top:22px;right:26px;font-size:11px;letter-spacing:.18em;color:#111;text-transform:uppercase;text-decoration:none;border-bottom:1px solid #111;font-weight:600}
+main{height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 4vw;user-select:none}
+.line{display:flex;white-space:pre;line-height:.88}
+.line span{font-size:clamp(3.6rem,12.5vw,11.5rem);font-weight:300;font-stretch:80%;letter-spacing:-.02em;display:inline-block;transition:color .3s;will-change:font-variation-settings}
+.line.red span{color:#e8442e;font-style:italic}
+.sub{margin-top:5vh;font-size:clamp(.85rem,1.4vw,1.05rem);color:#555;max-width:52ch;line-height:1.7;font-weight:400}
+.sub b{color:#111}
+.meta{margin-top:3vh;display:flex;gap:34px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#999}
+.meta b{color:#111;font-weight:600}
+</style></head><body>
+<span class="tag">Direction <b>A</b> — kinetic monochrome · the type is the interface</span>
+<a class="back" href="/">← samples</a>
+<main>
+  <div class="line" data-k>BRIAN</div>
+  <div class="line" data-k>MATHEW</div>
+  <div class="line red" data-k>OPERATES.</div>
+  <p class="sub">A fleet of <b>19 autonomous AI agents</b>, built and run during an employment gap, on local models, for $0 a month. Move your cursor through the letters.</p>
+  <div class="meta"><span><b>19</b> agents</span><span><b>78</b> tests</span><span><b>3</b> postmortems</span><span><b>$0</b>/month</span></div>
+</main>
+<span class="hint">sample hero — one screen only</span>
+<script>
+// per-letter variable-font "gravity": weight+width bulge around the cursor.
+document.querySelectorAll('[data-k]').forEach(line=>{
+  line.innerHTML=[...line.textContent].map(c=>`<span>${c}</span>`).join('');
+});
+const spans=[...document.querySelectorAll('.line span')];
+let mx=-9999,my=-9999,tx=mx,ty=my;
+addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY});
+addEventListener('pointerleave',()=>{tx=-9999;ty=-9999});
+(function loop(){
+  mx+=(tx-mx)*.14; my+=(ty-my)*.14;      // eased cursor = physical feel
+  for(const s of spans){
+    const r=s.getBoundingClientRect(),dx=mx-(r.left+r.width/2),dy=my-(r.top+r.height/2);
+    const d=Math.hypot(dx,dy),R=260;
+    const p=Math.max(0,1-d/R);                       // 0..1 proximity
+    const w=300+p*p*600, wd=80+p*p*45;               // weight 300→900, width 80→125
+    s.style.fontVariationSettings=`"wght" ${w|0}, "wdth" ${wd}`;
+    s.style.transform=p?`translateY(${p*-6}px)`:'none';
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body></html>

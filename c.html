@@ -1,0 +1,64 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Direction C — Tactile Desk</title>
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;700;900&family=Atkinson+Hyperlegible:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#e9e9e4;color:#17171a;font-family:"Atkinson Hyperlegible",sans-serif;overflow:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 90% 80% at 50% 20%,transparent 60%,rgba(0,0,0,.08));}
+.tag{position:fixed;top:22px;left:26px;font-size:11px;letter-spacing:.22em;color:#8b8b86;text-transform:uppercase;font-weight:700;z-index:9}
+.tag b{color:#17171a}
+.back{position:fixed;top:22px;right:26px;font-size:11px;letter-spacing:.18em;color:#17171a;text-transform:uppercase;text-decoration:none;border-bottom:2px solid #17171a;z-index:9;font-weight:700}
+.hint{position:fixed;bottom:22px;left:26px;font-size:11px;letter-spacing:.18em;color:#8b8b86;text-transform:uppercase;z-index:9}
+h1{position:fixed;left:6vw;top:16vh;font-family:"Gabarito",sans-serif;font-weight:900;font-size:clamp(2.6rem,7.5vw,6.2rem);line-height:.95;letter-spacing:-.03em;z-index:1;pointer-events:none}
+h1 span{color:#2b59ff}
+.sub{position:fixed;left:6vw;top:calc(16vh + clamp(6rem,17vw,13.5rem));max-width:40ch;color:#4c4c48;line-height:1.65;z-index:1;pointer-events:none;font-size:clamp(.88rem,1.4vw,1rem)}
+.sub b{color:#17171a}
+.card{position:absolute;width:230px;padding:18px 20px 16px;background:#fff;border-radius:14px;z-index:5;cursor:grab;
+  box-shadow:0 2px 3px rgba(20,20,25,.08),0 14px 34px rgba(20,20,25,.16);touch-action:none;user-select:none;will-change:transform}
+.card:active{cursor:grabbing}
+.card .k{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#8b8b86;font-weight:700}
+.card h3{font-family:"Gabarito",sans-serif;font-weight:700;font-size:1.2rem;margin:6px 0 6px}
+.card p{font-size:.78rem;color:#4c4c48;line-height:1.55}
+.card .n{position:absolute;top:14px;right:16px;font-family:"Gabarito";font-weight:900;font-size:1.5rem;color:#ececec}
+.card.blue{background:#2b59ff;color:#fff}
+.card.blue .k{color:#b9c8ff}.card.blue p{color:#dbe3ff}.card.blue .n{color:#4d73ff}
+.card.lime{background:#d7f455}
+.card.ink{background:#17171a;color:#fff}
+.card.ink .k{color:#8b8b86}.card.ink p{color:#c9c9c4}.card.ink .n{color:#2c2c30}
+</style></head><body>
+<span class="tag">Direction <b>C</b> — tactile desk · grab a card, throw it</span>
+<a class="back" href="/">← samples</a>
+<h1>Work that<br>you can<br><span>pick up.</span></h1>
+<p class="sub">Everything I ship is real enough to touch — so the portfolio is too. <b>Drag the cards. They have weight.</b> Built with hand-rolled spring physics, no libraries.</p>
+<div class="card blue" style="left:56vw;top:14vh" data-r="-4"><span class="n">01</span><span class="k">Flagship</span><h3>Brian OS</h3><p>19 AI agents running my life 24/7 on local models. Self-healing, 78 tests, $0/mo.</p></div>
+<div class="card" style="left:70vw;top:38vh" data-r="5"><span class="n">02</span><span class="k">Live demo</span><h3>Pokémon Drop Intel</h3><p>Collector cockpit — binder value, movers, grading queue. Try it, no signup.</p></div>
+<div class="card lime" style="left:52vw;top:58vh" data-r="-7"><span class="n">03</span><span class="k">AI agent</span><h3>AI Job Hunter</h3><p>Resume tailored + ATS-scored in ~60s, cover letter drafted.</p></div>
+<div class="card ink" style="left:72vw;top:70vh" data-r="3"><span class="n">04</span><span class="k">Ops</span><h3>3 Postmortems</h3><p>Real outages, root-caused and engineered away. Ask me about them.</p></div>
+<span class="hint">sample hero — one screen only</span>
+<script>
+// tiny spring/inertia physics — grab, throw, it settles with weight.
+document.querySelectorAll('.card').forEach(el=>{
+  const r0=+el.dataset.r;let x=0,y=0,vx=0,vy=0,gx=0,gy=0,drag=false,px=0,py=0,rot=r0;
+  el.style.transform=`rotate(${r0}deg)`;
+  el.addEventListener('pointerdown',e=>{drag=true;el.setPointerCapture(e.pointerId);px=e.clientX;py=e.clientY;el.style.zIndex=8});
+  el.addEventListener('pointermove',e=>{if(!drag)return;
+    vx=e.clientX-px;vy=e.clientY-py;gx+=vx;gy+=vy;px=e.clientX;py=e.clientY});
+  el.addEventListener('pointerup',()=>{drag=false;el.style.zIndex=5});
+  (function loop(){
+    if(!drag){
+      vx*=.94;vy*=.94;                 // friction (throw glides)
+      gx+=vx;gy+=vy;
+      const k=.045,dpx=(0-gx)*k,dpy=(0-gy)*k;   // spring home
+      vx+=dpx;vy+=dpy;
+    }
+    x+=(gx-x)*.32;y+=(gy-y)*.32;
+    const tilt=Math.max(-14,Math.min(14,vx*.6));
+    rot+=(r0+tilt-rot)*.15;
+    el.style.transform=`translate(${x}px,${y}px) rotate(${rot}deg)`;
+    requestAnimationFrame(loop);
+  })();
+});
+</script>
+</body></html>

@@ -1,0 +1,72 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Direction B — Living System</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#03060e;color:#eef2f8;font-family:"Figtree",sans-serif;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:22px;left:26px;font-size:11px;letter-spacing:.22em;color:#5c6b85;text-transform:uppercase;font-weight:600;z-index:3}
+.tag b{color:#eef2f8}
+.back{position:fixed;top:22px;right:26px;font-size:11px;letter-spacing:.18em;color:#eef2f8;text-transform:uppercase;text-decoration:none;border-bottom:1px solid #eef2f8;z-index:3;font-weight:600}
+.hint{position:fixed;bottom:22px;left:26px;font-size:11px;letter-spacing:.18em;color:#5c6b85;text-transform:uppercase;z-index:3}
+main{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 6vw;pointer-events:none}
+h1{font-family:"Unbounded",sans-serif;font-weight:300;font-size:clamp(2.2rem,6.4vw,5.4rem);line-height:1.06;letter-spacing:-.01em;max-width:16ch}
+h1 b{font-weight:500;background:linear-gradient(90deg,#ffb46b,#ff7847);-webkit-background-clip:text;background-clip:text;color:transparent}
+p{margin-top:26px;max-width:46ch;color:#9fadc4;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.75}
+p b{color:#eef2f8}
+.meta{margin-top:30px;display:flex;gap:30px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#5c6b85}
+.meta b{color:#ffb46b;font-weight:600}
+</style></head><body>
+<canvas id="gl"></canvas>
+<span class="tag">Direction <b>B</b> — living system · custom shader, cursor is the wind</span>
+<a class="back" href="/">← samples</a>
+<main>
+  <h1>Nineteen agents.<br>One operator.<br><b>Zero dollars.</b></h1>
+  <p>The field behind this text is a hand-written WebGL shader — no libraries. It drifts like the system it represents: <b>autonomous, always on, reacting to you.</b> Move the cursor.</p>
+  <div class="meta"><span><b>19</b> agents</span><span><b>78</b> tests</span><span><b>3</b> postmortems</span><span><b>24/7</b> uptime</span></div>
+</main>
+<span class="hint">sample hero — one screen only</span>
+<script>
+const cv=document.getElementById('gl'),gl=cv.getContext('webgl');
+function fit(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio}
+fit();addEventListener('resize',fit);
+const VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+const FS=`precision highp float;uniform vec2 R;uniform float T;uniform vec2 M;
+// hand-rolled value-noise flow field
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+ return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.04+13.7;a*=.52;}return v;}
+void main(){
+ vec2 uv=gl_FragCoord.xy/R; vec2 q=uv*vec2(R.x/R.y,1.);
+ vec2 m=M*vec2(R.x/R.y,1.);
+ float dm=length(q-m);
+ float pull=.35*exp(-dm*2.6);                       // cursor bends the field
+ vec2 w=q*1.6+vec2(T*.03,-T*.018);
+ float f=fbm(w+pull*8.+fbm(w*1.7-T*.02));
+ float ridge=smoothstep(.42,.5,f)-smoothstep(.5,.58,f); // thin contour bands
+ vec3 deep=vec3(.012,.024,.055), mid=vec3(.04,.09,.19), ember=vec3(1.,.47,.28);
+ vec3 col=mix(deep,mid,smoothstep(.2,.8,f));
+ col+=ember*ridge*(.22+.78*exp(-dm*2.2));           // contours ignite near cursor
+ col+=ember*.10*exp(-dm*7.);                        // soft cursor ember
+ float vg=1.-.5*length(uv-.5);
+ gl_FragColor=vec4(col*vg,1.);}`;
+function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o}
+const pr=gl.createProgram();
+gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));
+gl.linkProgram(pr);gl.useProgram(pr);
+const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+const loc=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+const uR=gl.getUniformLocation(pr,'R'),uT=gl.getUniformLocation(pr,'T'),uM=gl.getUniformLocation(pr,'M');
+let mx=.5,my=.5,tx=.5,ty=.5;
+addEventListener('pointermove',e=>{tx=e.clientX/innerWidth;ty=1-e.clientY/innerHeight});
+(function loop(t){
+  mx+=(tx-mx)*.06;my+=(ty-my)*.06;
+  gl.viewport(0,0,cv.width,cv.height);
+  gl.uniform2f(uR,cv.width,cv.height);gl.uniform1f(uT,t*.001);gl.uniform2f(uM,mx,my);
+  gl.drawArrays(gl.TRIANGLES,0,3);requestAnimationFrame(loop);
+})(0);
+</script>
+</body></html>
