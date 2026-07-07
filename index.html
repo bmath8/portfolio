@@ -4,459 +4,337 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex, nofollow" />
-<title>Operator's Manual — Brian Mathew</title>
-<meta name="description" content="The operator's manual for hiring Brian Mathew: a self-taught builder who runs a live fleet of 19 AI agents." />
+<title>Brian Mathew — I build AI systems that run themselves</title>
+<meta name="description" content="Self-taught builder. 19 autonomous agents in production, 6 shipped apps, 3 postmortems. $0/month." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Figtree:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#f1ecdf; --paper2:#e9e3d2; --paper3:#dfd8c4;
-  --ink:#211d17; --ink2:#4a443a; --faded:#847b6c; --rule:#b8ae99;
-  --red:#bf3b1f; --blue:#2c4f9e; --blue2:#8fa3cd;
-  --disp:"Fraunces",Georgia,serif; --body:"Archivo",system-ui,sans-serif; --mono:"IBM Plex Mono",monospace;
+  --bg:#fbfbf9; --bg2:#f2f3f7; --ink:#101014; --body2:#4c4c54; --mute:#8a8a92; --line:#e6e6ea;
+  --blue:#1741e8; --blue-soft:#e9edfd; --ember:#ff7847;
+  --disp:"Bricolage Grotesque",sans-serif; --sans:"Figtree",sans-serif; --mono:"IBM Plex Mono",monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
-/* paper fiber */
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.35;mix-blend-mode:multiply;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .78 0 0 0 0 .74 0 0 0 0 .64 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E")}
-a{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue2)}
-a:hover{background:var(--blue);color:var(--paper);border-color:var(--blue)}
-.wrap{max-width:1060px;margin:0 auto;padding:0 30px;position:relative}
-.mono{font-family:var(--mono)}
-.tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink2)}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:var(--blue);color:#fff}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1140px;margin:0 auto;padding:0 28px;position:relative}
+#progress{position:fixed;top:0;left:0;height:2px;background:var(--blue);width:0;z-index:99}
 
-/* ---------- document header ---------- */
-.dochead{border-bottom:2px solid var(--ink);position:sticky;top:0;background:var(--paper);z-index:60}
-.dochead::after{content:"";display:block;border-bottom:1px solid var(--ink);margin-top:2px}
-.dh-in{max-width:1060px;margin:0 auto;padding:12px 30px;display:flex;gap:26px;align-items:baseline;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase}
-.dh-in b{font-weight:500}
-.dh-in .doc{margin-right:auto}
-.dh-in nav{display:flex;gap:18px}
-.dh-in nav a{border-bottom:none;color:var(--ink2)}
-.dh-in nav a:hover{color:var(--paper);background:var(--ink)}
-#stamp-time{color:var(--red)}
-@media(max-width:820px){.dh-in nav{display:none}}
+/* nav */
+nav{position:sticky;top:0;background:rgba(251,251,249,.88);backdrop-filter:blur(10px);z-index:80;border-bottom:1px solid var(--line)}
+.nav-in{max-width:1140px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;gap:26px}
+.nav-in .name{font-family:var(--disp);font-weight:640;font-size:1rem;letter-spacing:-.02em;margin-right:auto}
+.nav-in .l{display:flex;gap:22px;font-size:.8rem;font-weight:600;color:var(--body2)}
+.nav-in .l a:hover{color:var(--blue)}
+.pill{background:var(--ink);color:#fff;padding:9px 18px;border-radius:99px;font-size:.74rem;font-weight:600;transition:.2s}
+.pill:hover{background:var(--blue);transform:translateY(-1px)}
+@media(max-width:760px){.nav-in .l{display:none}}
 
-/* ---------- cover ---------- */
-.cover{padding:72px 0 64px;border-bottom:1px solid var(--ink)}
-.cover .kicker{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:44px}
-h1{font-family:var(--disp);font-weight:560;font-variation-settings:"opsz" 120;font-size:clamp(3.4rem,10.5vw,8.2rem);line-height:.92;letter-spacing:-.015em}
-h1 em{font-style:italic;font-weight:420;color:var(--red)}
-.cover .sub{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(230px,1fr);gap:44px;margin-top:44px;align-items:start}
-@media(max-width:820px){.cover .sub{grid-template-columns:1fr}}
-.cover .sub p{font-size:1.02rem;max-width:54ch;color:var(--ink2)}
-.cover .sub p b{color:var(--ink);font-weight:600}
-.spec{border:1px solid var(--ink);font-family:var(--mono);font-size:.68rem}
-.spec div{display:flex;justify-content:space-between;gap:12px;padding:8px 12px;border-bottom:1px solid var(--rule)}
-.spec div:last-child{border-bottom:none}
-.spec span:first-child{color:var(--faded);letter-spacing:.12em;text-transform:uppercase}
-.spec b{font-weight:500}
-.stamp{position:absolute;right:24px;top:8px;transform:rotate(7deg);border:3px double var(--red);color:var(--red);
-  font-family:var(--mono);font-weight:500;letter-spacing:.24em;text-transform:uppercase;font-size:.72rem;padding:10px 16px;opacity:.85;
-  border-radius:3px;mix-blend-mode:multiply;pointer-events:none}
-.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
-.btn{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--ink);
-  padding:13px 20px;color:var(--ink);transition:.15s;background:transparent}
-.btn:hover{background:var(--ink);color:var(--paper)}
-.btn.pri{background:var(--ink);color:var(--paper)}
-.btn.pri:hover{background:var(--red);border-color:var(--red)}
+/* hero */
+header{padding:88px 0 72px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);gap:52px;align-items:center}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
+.status{display:inline-flex;align-items:center;gap:9px;font-size:.76rem;font-weight:600;color:var(--blue);background:var(--blue-soft);border-radius:99px;padding:8px 15px;margin-bottom:26px}
+.status i{width:7px;height:7px;border-radius:50%;background:var(--blue);animation:pulse 2.2s infinite}
+@keyframes pulse{50%{opacity:.25}}
+h1{font-family:var(--disp);font-weight:520;font-size:clamp(2.7rem,6.4vw,4.9rem);line-height:1.02;letter-spacing:-.035em}
+h1 span{display:inline-block;will-change:font-variation-settings}
+h1 em{font-style:normal;color:var(--blue)}
+.lede{margin-top:24px;font-size:1.08rem;color:var(--body2);max-width:50ch}
+.lede b{color:var(--ink);font-weight:600}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.btn{padding:14px 24px;border-radius:10px;font-weight:600;font-size:.86rem;transition:.18s;display:inline-block}
+.btn.p{background:var(--ink);color:#fff}.btn.p:hover{background:var(--blue);transform:translateY(-2px)}
+.btn.s{border:1.5px solid var(--line);color:var(--ink)}.btn.s:hover{border-color:var(--ink)}
+/* the living panel */
+.field{position:relative;border-radius:20px;overflow:hidden;border:1.5px solid var(--line);box-shadow:0 30px 70px -30px rgba(16,16,20,.25);aspect-ratio:1/1.06;min-height:340px;background:#0b1020}
+.field canvas{position:absolute;inset:0;width:100%;height:100%}
+.field .cap{position:absolute;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#8fa0bd;z-index:2}
+.field .cap b{color:#ffb46b;font-weight:500}
+.proof{display:flex;flex-wrap:wrap;gap:0;margin-top:64px;border-top:1px solid var(--line)}
+.proof div{flex:1 1 150px;padding:24px 26px 0 0}
+.proof b{font-family:var(--disp);font-weight:640;font-size:2rem;letter-spacing:-.02em;display:block;line-height:1.15}
+.proof span{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
 
-/* ---------- section chrome ---------- */
-section{padding:76px 0;border-bottom:1px solid var(--ink)}
-.sec-h{display:flex;align-items:baseline;gap:18px;margin-bottom:8px}
-.sec-h .no{font-family:var(--mono);font-size:.66rem;color:var(--red);letter-spacing:.1em}
-.sec-h h2{font-family:var(--disp);font-weight:540;font-size:clamp(1.8rem,4.4vw,2.9rem);letter-spacing:-.01em}
-.sec-sub{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faded);margin-bottom:46px;border-bottom:1px solid var(--rule);padding-bottom:12px}
+/* section chrome */
+section{padding:88px 0}
+.k{display:flex;align-items:center;gap:12px;font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+.k::before{content:"";width:26px;height:1.5px;background:var(--blue)}
+h2{font-family:var(--disp);font-weight:560;font-size:clamp(1.9rem,4.2vw,3rem);letter-spacing:-.03em;margin:14px 0 10px}
+.sub{color:var(--body2);max-width:60ch;margin-bottom:44px}
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:none}
 </style>
 <style>
-/* ---------- schematic (blueprint on paper) ---------- */
-.schem{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(250px,1fr);border:1px solid var(--ink);background:var(--paper2)}
-@media(max-width:860px){.schem{grid-template-columns:1fr}}
-.schem-map{position:relative;min-height:470px;border-right:1px solid var(--ink)}
-@media(max-width:860px){.schem-map{border-right:none;border-bottom:1px solid var(--ink)}}
-.schem-map svg{position:absolute;inset:0;width:100%;height:100%}
-.schem-cap{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;padding:9px 14px;font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faded);border-top:1px solid var(--rule)}
-.legend{font-family:var(--mono);font-size:.66rem;max-height:470px;overflow:auto}
-.legend-h{padding:10px 14px;border-bottom:1px solid var(--ink);letter-spacing:.16em;text-transform:uppercase;font-size:.58rem;background:var(--paper3)}
-.legend-row{display:flex;gap:10px;padding:6px 14px;border-bottom:1px dotted var(--rule);cursor:pointer;align-items:baseline}
-.legend-row:hover,.legend-row.on{background:var(--ink);color:var(--paper)}
-.legend-row .n{color:var(--red);min-width:2ch}
-.legend-row:hover .n,.legend-row.on .n{color:#f0b7a8}
-.legend-row .s{margin-left:auto;color:var(--faded);font-size:.56rem}
-.legend-row:hover .s,.legend-row.on .s{color:var(--blue2)}
-.agent-note{grid-column:1/-1;border-top:1px solid var(--ink);padding:16px 20px;display:flex;gap:22px;align-items:baseline;background:var(--paper)}
-.agent-note b{font-family:var(--disp);font-size:1.15rem;font-weight:540;white-space:nowrap}
-.agent-note span{color:var(--ink2);font-size:.84rem}
-/* svg bits */
-.bp-line{stroke:var(--blue);stroke-width:.8;opacity:.55}
-.bp-node{fill:var(--paper);stroke:var(--ink);stroke-width:1.1;cursor:pointer}
-.bp-node.on,.bp-node:hover{fill:var(--red);stroke:var(--red)}
-.bp-num{font-family:var(--mono);font-size:8px;fill:var(--ink2);pointer-events:none}
-.bp-hub{fill:none;stroke:var(--ink);stroke-width:1.4}
-
-/* ---------- ops log ledger ---------- */
-.ledger{border:1px solid var(--ink);font-family:var(--mono);font-size:.7rem}
-.ledger-h{display:grid;grid-template-columns:70px 130px 1fr;background:var(--paper3);border-bottom:1px solid var(--ink);padding:8px 14px;letter-spacing:.16em;text-transform:uppercase;font-size:.56rem}
-#ledgerbody{max-height:250px;overflow:hidden}
-#ledgerbody .lrow{display:grid;grid-template-columns:70px 130px 1fr;padding:7px 14px;border-bottom:1px dotted var(--rule)}
-#ledgerbody .lrow:first-child{background:rgba(191,59,31,.06)}
-#ledgerbody .who{color:var(--blue)}
-#ledgerbody .warn .what{color:var(--red)}
-
-/* ---------- figures (projects) ---------- */
-.fig{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,400px);gap:0;border:1px solid var(--ink);margin-bottom:30px;background:var(--paper)}
-.fig.rev{grid-template-columns:minmax(280px,400px) minmax(0,1fr)}
-@media(max-width:860px){.fig,.fig.rev{grid-template-columns:1fr}.fig.rev .plate{order:-1}}
-.fig-txt{padding:34px 36px}
-.fig-txt .fno{font-family:var(--mono);font-size:.6rem;color:var(--red);letter-spacing:.2em;text-transform:uppercase}
-.fig-txt h3{font-family:var(--disp);font-weight:560;font-size:1.75rem;margin:8px 0 14px;letter-spacing:-.01em}
-.fig-txt p{color:var(--ink2);font-size:.92rem;margin-bottom:12px;max-width:56ch}
-.fig-txt p b{color:var(--ink);font-weight:600}
-.specline{font-family:var(--mono);font-size:.62rem;color:var(--faded);border-top:1px dotted var(--rule);border-bottom:1px dotted var(--rule);padding:9px 0;margin:16px 0;letter-spacing:.06em}
-.fig-links{display:flex;gap:20px;font-family:var(--mono);font-size:.68rem}
-.plate{border-left:1px solid var(--ink);background:var(--paper2);display:flex;flex-direction:column;justify-content:center;padding:30px;position:relative}
-.fig.rev .plate{border-left:none;border-right:1px solid var(--ink)}
-.plate-cap{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faded)}
-.doc{border:1px solid var(--ink);background:var(--paper);font-family:var(--mono);font-size:.6rem;box-shadow:4px 4px 0 var(--paper3)}
-.doc-bar{border-bottom:1px solid var(--ink);padding:6px 10px;display:flex;justify-content:space-between;color:var(--ink2);letter-spacing:.1em;text-transform:uppercase;font-size:.52rem}
-.doc-body{padding:12px}
-.row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
-.row b{font-family:var(--disp);font-size:1.05rem;font-weight:560}
-.up{color:var(--blue);font-size:.56rem}
-.bars{display:flex;align-items:flex-end;gap:3px;height:38px;border-bottom:1px solid var(--ink);padding-bottom:0;margin:10px 0 4px}
-.bars i{flex:1;background:var(--blue);opacity:.75}
-.caption{color:var(--faded);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase}
-.cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
-.cards4 i{aspect-ratio:3/4;border:1px solid var(--ink);background:repeating-linear-gradient(45deg,var(--paper2) 0 3px,var(--paper) 3px 6px)}
-.ring2{width:66px;height:66px;border-radius:50%;background:conic-gradient(var(--blue) 0 331deg,var(--paper3) 331deg 360deg);display:flex;align-items:center;justify-content:center;position:relative;flex:none}
-.ring2::before{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--paper)}
-.ring2 b{position:relative;font-family:var(--disp);font-size:1rem}
-.kwrow{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
-.kwrow span{border:1px solid var(--rule);padding:2px 7px;font-size:.5rem;letter-spacing:.06em}
-.kwrow .hit{border-color:var(--blue);color:var(--blue)}
-.kwrow .miss{border-color:var(--red);color:var(--red);text-decoration:line-through}
-.eq{display:flex;align-items:center;gap:3px;height:40px;margin:10px 0}
-.eq i{flex:1;background:var(--ink);animation:eq 1.1s ease-in-out infinite alternate;transform-origin:bottom}
-.eq i:nth-child(odd){animation-duration:.85s}.eq i:nth-child(3n){animation-duration:1.35s}
+/* work index (D4 structure + floating live preview) */
+#work{background:var(--bg)}
+.works{border-top:1px solid var(--ink)}
+.work{display:grid;grid-template-columns:70px minmax(0,1fr) auto auto;gap:26px;align-items:center;padding:30px 6px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .2s,padding .2s;position:relative}
+.work:hover{background:var(--bg2);padding-left:16px}
+.work .no{font-family:var(--mono);font-size:.72rem;color:var(--mute)}
+.work:hover .no{color:var(--blue)}
+.work h3{font-family:var(--disp);font-weight:560;font-size:clamp(1.4rem,3.4vw,2.3rem);letter-spacing:-.025em;line-height:1.05}
+.work .what{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);text-align:right}
+.work .go{font-size:1.2rem;color:var(--mute);transition:.2s}
+.work:hover .go{color:var(--blue);transform:translate(4px,-4px)}
+@media(max-width:760px){.work{grid-template-columns:44px 1fr auto}.work .what{display:none}}
+/* floating preview follows cursor */
+#float{position:fixed;z-index:70;width:290px;pointer-events:none;opacity:0;transform:scale(.92) rotate(-2deg);transition:opacity .22s,transform .25s;will-change:left,top}
+#float.on{opacity:1;transform:scale(1) rotate(-2deg)}
+#float .fr{background:#fff;border:1.5px solid var(--ink);border-radius:14px;overflow:hidden;box-shadow:0 24px 50px -12px rgba(16,16,20,.35)}
+#float .fr-bar{display:flex;gap:5px;padding:8px 12px;border-bottom:1px solid var(--line)}
+#float .fr-bar i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+#float .fr-b{padding:14px;font-family:var(--mono);font-size:.62rem}
+.pv{display:none}.pv.on{display:block}
+.pvrow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.pvrow b{font-family:var(--disp);font-size:1.05rem;font-weight:640}
+.pvrow em{font-style:normal;color:var(--blue);font-size:.58rem;font-weight:600}
+.pvbars{display:flex;align-items:flex-end;gap:3px;height:44px;margin-top:8px}
+.pvbars i{flex:1;background:var(--blue);border-radius:2px 2px 0 0;animation:gr .8s cubic-bezier(.2,.7,.2,1) both}
+@keyframes gr{from{transform:scaleY(0)}}
+.pvlines{color:var(--body2);line-height:1.9}
+.pvlines em{font-style:normal;color:var(--ember)}
+.pvcards{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:8px 0}
+.pvcards i{aspect-ratio:3/4;border-radius:3px;border:1px solid var(--line);background:linear-gradient(150deg,#eef1fb,#fff)}
+.pvring{display:flex;gap:12px;align-items:center}
+.pvring .rg{width:56px;height:56px;border-radius:50%;background:conic-gradient(var(--blue) 0 331deg,var(--line) 331deg 360deg);position:relative;display:flex;align-items:center;justify-content:center;flex:none}
+.pvring .rg::before{content:"";position:absolute;inset:6px;border-radius:50%;background:#fff}
+.pvring .rg b{position:relative;font-size:.8rem}
+.pveq{display:flex;align-items:center;gap:3px;height:40px}
+.pveq i{flex:1;background:var(--ink);border-radius:2px;animation:eq 1s ease-in-out infinite alternate;transform-origin:bottom}
+.pveq i:nth-child(odd){animation-duration:.8s}.pveq i:nth-child(3n){animation-duration:1.25s}
 @keyframes eq{from{transform:scaleY(.15)}to{transform:scaleY(.95)}}
 
-/* ---------- incident forms ---------- */
-.forms{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px}
-.form{border:1px solid var(--ink);background:var(--paper);position:relative;box-shadow:5px 5px 0 var(--paper3)}
-.form-h{border-bottom:1px solid var(--ink);padding:10px 16px;font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;display:flex;justify-content:space-between;background:var(--paper2)}
-.form-h b{color:var(--red);font-weight:500}
-.form-b{padding:18px 20px 22px}
-.form-b h4{font-family:var(--disp);font-weight:560;font-size:1.3rem;margin-bottom:12px}
-.fld{margin-bottom:12px}
-.fld label{display:block;font-family:var(--mono);font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faded);margin-bottom:3px}
-.fld div{font-size:.84rem;color:var(--ink2);border-bottom:1px dotted var(--rule);padding-bottom:6px}
-.fld div b{color:var(--ink);font-weight:600}
-.rstamp{position:absolute;right:14px;top:44px;transform:rotate(-9deg);border:2px solid var(--red);color:var(--red);font-family:var(--mono);font-size:.6rem;letter-spacing:.3em;padding:5px 10px;text-transform:uppercase;opacity:.8;mix-blend-mode:multiply}
+/* ops band — dark contrast section for flow */
+#ops{background:var(--ink);color:#f3f3f0}
+#ops .k{color:var(--ember)}#ops .k::before{background:var(--ember)}
+#ops .sub{color:#a9a9b2}
+.incs{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px}
+.inc{border:1px solid #2a2a32;border-radius:16px;padding:26px;background:#16161c;transition:.2s}
+.inc:hover{border-color:var(--ember);transform:translateY(-3px)}
+.inc .sev{display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;color:var(--ember);border:1px solid rgba(255,120,71,.4);border-radius:99px;padding:4px 10px;margin-bottom:14px}
+.inc h4{font-family:var(--disp);font-weight:560;font-size:1.25rem;margin-bottom:10px;letter-spacing:-.01em}
+.inc p{font-size:.85rem;color:#a9a9b2;margin-bottom:8px}
+.inc p b{color:#f3f3f0;font-weight:600}
+.inc .fix{border-top:1px solid #2a2a32;padding-top:12px;margin-top:12px}
+.inc .fix b{color:var(--ember)}
 
-/* ---------- ledger log + contact ---------- */
-.shiplog .lrow{display:grid;grid-template-columns:90px 1fr;gap:20px;padding:18px 0;border-bottom:1px dotted var(--rule)}
-.shiplog .d{font-family:var(--mono);font-size:.64rem;color:var(--red);letter-spacing:.1em;padding-top:5px}
-.shiplog h4{font-family:var(--disp);font-weight:560;font-size:1.2rem;margin-bottom:4px}
-.shiplog p{color:var(--ink2);font-size:.88rem;max-width:68ch}
-.contact{text-align:center;padding:96px 0}
-.contact h2{font-family:var(--disp);font-weight:560;font-size:clamp(2.4rem,7vw,4.8rem);line-height:1;letter-spacing:-.015em;margin:14px 0 16px}
-.contact h2 em{font-style:italic;color:var(--red);font-weight:440}
-.contact p{color:var(--ink2);max-width:52ch;margin:0 auto 32px}
-footer{padding:22px 0;font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faded);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.rv{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
-.rv.in{opacity:1;transform:none}
+/* log + contact */
+#log{background:var(--bg2)}
+.loggrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.logi{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:22px;transition:.2s}
+.logi:hover{border-color:var(--ink);transform:translateY(-2px)}
+.logi .d{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;color:var(--blue);font-weight:500}
+.logi h4{font-family:var(--disp);font-weight:560;font-size:1.1rem;margin:6px 0 6px}
+.logi p{font-size:.82rem;color:var(--body2)}
+.contact{text-align:center;padding:110px 0}
+.contact h2{font-size:clamp(2.4rem,6.6vw,4.6rem)}
+.contact h2 em{font-style:normal;color:var(--blue)}
+.contact p{color:var(--body2);max-width:50ch;margin:6px auto 36px}
+footer{border-top:1px solid var(--line);padding:24px 0;font-size:.72rem;color:var(--mute);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 </style>
 </head>
 <body>
+<div id="progress"></div>
+<nav><div class="nav-in">
+  <span class="name">brian mathew</span>
+  <div class="l"><a href="#work">Work</a><a href="#ops">Operations</a><a href="#log">Log</a></div>
+  <a class="pill" href="mailto:mathew.brian@gmail.com">Hire me</a>
+</div></nav>
 
-<div class="dochead"><div class="dh-in">
-  <span class="doc"><b>DOC. BM-2026-07</b> · OPERATOR'S MANUAL · REV. 3</span>
-  <nav><a href="#schematic">Schematic</a><a href="#figures">Figures</a><a href="#incidents">Incidents</a><a href="#log">Log</a><a href="#contact">Contact</a></nav>
-  <span id="stamp-time" class="mono">SYSTEM OPERATIONAL</span>
-</div></div>
-
-<header class="cover"><div class="wrap">
-  <div class="stamp">Open to work</div>
-  <div class="kicker"><span class="tag">Technical documentation · issued July 2026</span><span class="tag">Brian Mathew · builder &amp; operator</span></div>
-  <h1 class="rv">Operator's<br><em>Manual</em></h1>
-  <div class="sub">
+<header><div class="wrap">
+  <div class="hero-grid">
     <div class="rv">
-      <p><b>Subject: what one person shipped during an employment gap.</b> I'm Brian Mathew, a self-taught builder. Instead of explaining my gap, I documented it: I designed, built, and now <b>operate a live fleet of 19 autonomous AI agents</b> that runs my job hunt, finances, learning, and infrastructure around the clock — on local models, for $0 a month.</p>
-      <p style="margin-top:14px">This manual contains the system schematic, operating figures, and the incident reports from real production outages I diagnosed and fixed. Every entry is real and running today.</p>
-      <div class="cta-row">
-        <a class="btn pri" href="#schematic">Read the schematic ↓</a>
-        <a class="btn" href="https://github.com/bmath8" target="_blank" rel="noopener">GitHub</a>
-        <a class="btn" href="mailto:mathew.brian@gmail.com">Email</a>
-      </div>
+      <span class="status"><i></i>All 19 agents operational right now</span>
+      <h1 id="kin">I build AI systems that <em>run themselves.</em></h1>
+      <p class="lede">Self-taught builder. During my employment gap I shipped <b>6 products and a fleet of 19 autonomous agents</b> that operates my life 24/7 — on local models, for $0 a month. The panel on the right is its live portrait: <b>move your cursor through it.</b></p>
+      <div class="cta"><a class="btn p" href="#work">See the work</a><a class="btn s" href="#ops">Read a postmortem</a></div>
     </div>
-    <div class="spec rv">
-      <div><span>Agents in service</span><b>19</b></div>
-      <div><span>Automated tests</span><b>78 passing</b></div>
-      <div><span>Monthly AI cost</span><b>$0 (local)</b></div>
-      <div><span>Apps shipped</span><b>6</b></div>
-      <div><span>Outages survived</span><b>3 · postmortems inside</b></div>
-      <div><span>Availability</span><b style="color:var(--red)">Immediate</b></div>
+    <div class="field rv">
+      <canvas id="gl"></canvas>
+      <div class="cap"><span>the system — live field</span><span><b>19</b> agents · reacts to you</span></div>
     </div>
+  </div>
+  <div class="proof rv">
+    <div><b>19</b><span>agents in production</span></div>
+    <div><b>78</b><span>tests passing</span></div>
+    <div><b>3</b><span>postmortems written</span></div>
+    <div><b>$0</b><span>monthly AI cost</span></div>
+    <div><b>6</b><span>apps shipped</span></div>
   </div>
 </div></header>
 
-<section id="schematic"><div class="wrap">
-  <div class="sec-h rv"><span class="no">SEC. 01</span><h2>System schematic</h2></div>
-  <p class="sec-sub rv">Fig. 1 — the agent fleet as wired · hover or tap a component or its index entry</p>
-  <div class="schem rv">
-    <div class="schem-map">
-      <svg id="bp" viewBox="0 0 620 470" aria-label="Blueprint of the 19-agent fleet"></svg>
-      <div class="schem-cap"><span>drawn from the production cron table</span><span>scale: none · all times ET</span></div>
-    </div>
-    <div class="legend">
-      <div class="legend-h">Component index</div>
-      <div id="legendbody"></div>
-    </div>
-    <div class="agent-note"><b id="an-name">daily-brief</b><span id="an-desc">Compiles the morning brief — career, finance, health, calendar, system — and delivers it to my phone before I wake. Delivery is verified; a failed brief raises an alert.</span></div>
-  </div>
-
-  <p class="sec-sub rv" style="margin:46px 0 14px;border-bottom:none">Table 1 — operations log, excerpt (replaying real activity)</p>
-  <div class="ledger rv">
-    <div class="ledger-h"><span>Time</span><span>Component</span><span>Entry</span></div>
-    <div id="ledgerbody"></div>
+<section id="work"><div class="wrap">
+  <span class="k rv">01 — Work</span>
+  <h2 class="rv">Selected builds.</h2>
+  <p class="sub rv">Hover an entry — every preview is a live, code-drawn miniature of the real thing, not a screenshot.</p>
+  <div class="works rv">
+    <div class="work" data-pv="pv1" data-href="mailto:mathew.brian@gmail.com?subject=Brian%20OS%20code%20access">
+      <span class="no">01</span><h3>Brian OS</h3><span class="what">AI fleet · flagship · 24/7</span><span class="go">↗</span></div>
+    <div class="work" data-pv="pv2" data-href="https://pokemon-drop-intel.vercel.app/?code=brian2026">
+      <span class="no">02</span><h3>Pokémon Drop Intel</h3><span class="what">Live product · Next.js</span><span class="go">↗</span></div>
+    <div class="work" data-pv="pv3" data-href="ats/">
+      <span class="no">03</span><h3>AI Job Hunter</h3><span class="what">AI agent · ATS engine</span><span class="go">↗</span></div>
+    <div class="work" data-pv="pv4" data-href="https://github.com/bmath8/BoomBox-V.5">
+      <span class="no">04</span><h3>Boombox</h3><span class="what">Real-time · WebSockets</span><span class="go">↗</span></div>
   </div>
 </div></section>
 
-<section id="figures"><div class="wrap">
-  <div class="sec-h rv"><span class="no">SEC. 02</span><h2>Operating figures</h2></div>
-  <p class="sec-sub rv">Selected builds · each plate is drawn in pure CSS — view source</p>
-
-  <div class="fig rv">
-    <div class="fig-txt">
-      <span class="fno">FIG. 2 · Flagship — in production 24/7</span>
-      <h3>Brian OS — the system this manual documents</h3>
-      <p>19 scheduled agents on local models: morning briefs, an overnight worker whose drafts are reviewed by a <b>second, different model</b> before I see them, a dependency agent that opens build-verified PRs, a self-updating wiki memory, two-way Telegram control.</p>
-      <p>The hard part isn't the features — it's <b>operating</b> them: watchdogs, wedge detection, guarded upgrades with automatic rollback, an external dead-man's-switch, and three real postmortems (Sec. 03).</p>
-      <div class="specline">PYTHON · OLLAMA/QWEN3 · MULTI-MODEL ROUTING · RAG MEMORY · TELEGRAM API · 78 TESTS</div>
-      <div class="fig-links"><a href="mailto:mathew.brian@gmail.com?subject=Brian%20OS%20code%20access">Request code + postmortems</a></div>
+<div id="float"><div class="fr">
+  <div class="fr-bar"><i></i><i></i><i></i></div>
+  <div class="fr-b">
+    <div class="pv" id="pv1">
+      <div class="pvrow"><b>Morning brief</b><em>✓ DELIVERED 07:00</em></div>
+      <div class="pvlines">career — 5 follow-ups drafted<br>watchdog — all clear · GPU ok<br>overnight — 3 drafts ready<br><em>needs you — approve outreach #2</em></div>
+      <div class="pvbars"><i style="height:40%"></i><i style="height:58%"></i><i style="height:44%"></i><i style="height:72%"></i><i style="height:62%"></i><i style="height:86%"></i><i style="height:76%"></i><i style="height:96%"></i><i style="height:68%"></i><i style="height:100%"></i></div>
     </div>
-    <div class="plate"><div class="doc">
-      <div class="doc-bar"><span>morning brief — delivered 07:00</span><span>✓</span></div>
-      <div class="doc-body">
-        <div class="row"><b>Fleet status</b><span class="up">ALL CLEAR</span></div>
-        <div style="line-height:1.9;color:var(--ink2)">
-          career — 5 follow-ups drafted, 2 due<br>
-          watchdog — disk 118 GB · GPU ok<br>
-          overnight — 3 drafts await review<br>
-          currency — 1 safe upgrade PR ✓<br>
-          <span style="color:var(--red)">needs you — approve outreach #2</span>
-        </div>
-        <div class="bars"><i style="height:40%"></i><i style="height:55%"></i><i style="height:35%"></i><i style="height:70%"></i><i style="height:60%"></i><i style="height:85%"></i><i style="height:75%"></i><i style="height:95%"></i><i style="height:65%"></i><i style="height:88%"></i><i style="height:100%"></i><i style="height:92%"></i></div>
-        <span class="caption">agent runs per day — last 12 days</span>
-      </div>
-    </div><span class="plate-cap">Plate II — fleet dashboard</span></div>
-  </div>
-
-  <div class="fig rev rv">
-    <div class="plate"><div class="doc">
-      <div class="doc-bar"><span>pokemon-drop-intel</span><span>live</span></div>
-      <div class="doc-body">
-        <div class="row"><b>$4,218.60</b><span class="up">▲ 12.4% vs cost</span></div>
-        <div class="cards4"><i></i><i></i><i></i><i></i></div>
-        <div class="bars"><i style="height:30%"></i><i style="height:45%"></i><i style="height:38%"></i><i style="height:60%"></i><i style="height:52%"></i><i style="height:75%"></i><i style="height:68%"></i><i style="height:90%"></i><i style="height:82%"></i><i style="height:100%"></i></div>
-        <span class="caption">vault value — 10 weeks</span>
-      </div>
-    </div><span class="plate-cap">Plate III — collector cockpit</span></div>
-    <div class="fig-txt">
-      <span class="fno">FIG. 3 · Live product — no signup needed</span>
-      <h3>Pokémon Drop Intel</h3>
-      <p>A collector's cockpit for the Pokémon TCG: binder value against cost basis, market movers, a grading queue, sealed-drop watches — live official card art from the TCG API. <b>Fully interactive on sample data; click and it just works.</b></p>
-      <div class="specline">NEXT.JS 16 · REACT 19 · TYPESCRIPT · TAILWIND 4 · TCG API</div>
-      <div class="fig-links"><a href="https://pokemon-drop-intel.vercel.app/?code=brian2026" target="_blank" rel="noopener">Open the live demo</a></div>
+    <div class="pv" id="pv2">
+      <div class="pvrow"><b>$4,218.60</b><em>▲ 12.4% VS COST</em></div>
+      <div class="pvcards"><i></i><i></i><i></i><i></i></div>
+      <div class="pvbars"><i style="height:30%"></i><i style="height:46%"></i><i style="height:38%"></i><i style="height:62%"></i><i style="height:54%"></i><i style="height:76%"></i><i style="height:70%"></i><i style="height:92%"></i><i style="height:84%"></i><i style="height:100%"></i></div>
+    </div>
+    <div class="pv" id="pv3">
+      <div class="pvring"><div class="rg"><b>92%</b></div>
+        <div class="pvlines">ATS COMPATIBILITY<br><em>STRONG MATCH</em> — 2 gaps<br>cover letter drafted ✓</div></div>
+    </div>
+    <div class="pv" id="pv4">
+      <div class="pvrow"><b>Late night lofi</b><em>23 LISTENING</em></div>
+      <div class="pveq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="pvlines">synced rooms over websockets</div>
     </div>
   </div>
+</div></div>
 
-  <div class="fig rv">
-    <div class="fig-txt">
-      <span class="fno">FIG. 4 · AI agent — resume engine</span>
-      <h3>AI Job Hunter</h3>
-      <p>Tailors a resume to any posting and optimizes it for ATS screening in about a minute — then drafts the cover letter, scores the match, and lists the missing keywords. Provider-agnostic LLM client, custom keyword algorithm, encrypted storage.</p>
-      <div class="specline">PYTHON · FASTAPI · CELERY + REDIS · SQLALCHEMY · DOCKER</div>
-      <div class="fig-links"><a href="ats/">Try the live ATS tool</a><a href="https://github.com/bmath8/ai-job-hunter" target="_blank" rel="noopener">Code</a></div>
-    </div>
-    <div class="plate"><div class="doc">
-      <div class="doc-bar"><span>ats match report</span><span>run 61s</span></div>
-      <div class="doc-body">
-        <div style="display:flex;gap:14px;align-items:center">
-          <div class="ring2"><b>92%</b></div>
-          <div style="font-size:.56rem;letter-spacing:.1em;color:var(--ink2)">ATS COMPATIBILITY<br><span style="color:var(--blue)">STRONG MATCH</span> — 2 GAPS FOUND</div>
-        </div>
-        <div class="kwrow"><span class="hit">react</span><span class="hit">typescript</span><span class="hit">python</span><span class="hit">llm agents</span><span class="hit">ci/cd</span><span class="miss">kubernetes</span><span class="miss">graphql</span></div>
-      </div>
-    </div><span class="plate-cap">Plate IV — match report</span></div>
-  </div>
-
-  <div class="fig rev rv">
-    <div class="plate"><div class="doc">
-      <div class="doc-bar"><span>boombox — late night lofi</span><span>on air</span></div>
-      <div class="doc-body">
-        <div class="row"><b>Now broadcasting</b><span class="up">23 LISTENING</span></div>
-        <div class="eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <span class="caption">synced rooms over websockets</span>
-      </div>
-    </div><span class="plate-cap">Plate V — listening room</span></div>
-    <div class="fig-txt">
-      <span class="fno">FIG. 5 · Full-stack — real-time</span>
-      <h3>Boombox</h3>
-      <p>Listen together, build collaborative playlists, broadcast your own radio. Live presence and synced sessions over WebSockets, row-level-secure data, Spotify integration.</p>
-      <div class="specline">NEXT.JS · WEBSOCKETS · REDIS PUB/SUB · SUPABASE RLS · SPOTIFY API</div>
-      <div class="fig-links"><a href="https://github.com/bmath8/BoomBox-V.5" target="_blank" rel="noopener">Code</a></div>
-    </div>
-  </div>
-</div></section>
-
-<section id="incidents"><div class="wrap">
-  <div class="sec-h rv"><span class="no">SEC. 03</span><h2>Incident reports</h2></div>
-  <p class="sec-sub rv">Real production failures, diagnosed and engineered away — the section most portfolios can't write</p>
-  <div class="forms">
-    <div class="form rv"><span class="rstamp">Resolved</span>
-      <div class="form-h"><span>INCIDENT FORM 20-A</span><b>SEV-1</b></div>
-      <div class="form-b">
-        <h4>The fleet went silent</h4>
-        <div class="fld"><label>Symptom</label><div>Zero messages delivered; everything "looked" healthy.</div></div>
-        <div class="fld"><label>Root cause</label><div><b>Two compounding bugs:</b> a Windows cp1252 decode failure silently emptied cron output, and the self-heal regex matched "NOT running" — recovery never fired.</div></div>
-        <div class="fld"><label>Corrective action</label><div>UTF-8 enforced at the gateway; process-based liveness checks; a watchdog that verifies <b>delivery</b>, not just execution. Tests grown to catch the class.</div></div>
-      </div>
-    </div>
-    <div class="form rv"><span class="rstamp">Resolved</span>
-      <div class="form-h"><span>INCIDENT FORM 19-B</span><b>SEV-1</b></div>
-      <div class="form-b">
-        <h4>Host VM died nightly</h4>
-        <div class="fld"><label>Symptom</label><div>Whole fleet dead every morning; no crash logs.</div></div>
-        <div class="fld"><label>Root cause</label><div>A documented WSL VM teardown bug killing the virtual machine overnight.</div></div>
-        <div class="fld"><label>Corrective action</label><div><b>Migrated the entire system to native Windows in one day</b> — removed the failure class rather than patching around it.</div></div>
-      </div>
-    </div>
-    <div class="form rv"><span class="rstamp">Resolved</span>
-      <div class="form-h"><span>INCIDENT FORM 23-C</span><b>SEV-2</b></div>
-      <div class="form-b">
-        <h4>Vendor update broke delivery — twice</h4>
-        <div class="fld"><label>Symptom</label><div>Agent-host updates kept breaking message delivery.</div></div>
-        <div class="fld"><label>Root cause</label><div>Updates swapped the shared engine under the running gateway.</div></div>
-        <div class="fld"><label>Corrective action</label><div>Delivery made <b>update-proof</b> (direct API self-send) + a guarded upgrade path: backup → update → verify → auto-rollback. Latest host upgrade: zero downtime.</div></div>
-      </div>
-    </div>
+<section id="ops"><div class="wrap">
+  <span class="k rv">02 — Operations</span>
+  <h2 class="rv">It broke. I fixed it. Here's proof.</h2>
+  <p class="sub rv">Anyone can demo a happy path. These are real production incidents from my own system — root-caused, documented, engineered away. It's the part of the job most portfolios can't show.</p>
+  <div class="incs">
+    <div class="inc rv"><span class="sev">SEV-1 · RESOLVED</span>
+      <h4>The fleet went silent</h4>
+      <p>Zero messages delivered — while everything <b>looked</b> healthy.</p>
+      <p><b>Two compounding bugs:</b> an encoding failure silently emptied cron output, and the self-heal regex matched "NOT running", so recovery never fired.</p>
+      <p class="fix"><b>Fix:</b> UTF-8 enforced, process-based liveness, a watchdog that verifies <b>delivery</b> — and tests that catch the class, not the bug.</p></div>
+    <div class="inc rv"><span class="sev">SEV-1 · RESOLVED</span>
+      <h4>Host VM died nightly</h4>
+      <p>The whole fleet dead every morning. No crash logs.</p>
+      <p><b>Root cause:</b> a documented WSL VM teardown bug killing the virtual machine overnight.</p>
+      <p class="fix"><b>Fix:</b> migrated the entire system to native Windows <b>in one day</b> — removed the failure class instead of patching around it.</p></div>
+    <div class="inc rv"><span class="sev">SEV-2 · RESOLVED</span>
+      <h4>Vendor update broke delivery — twice</h4>
+      <p>Host updates kept swapping the engine under the running gateway.</p>
+      <p class="fix"><b>Fix:</b> delivery made <b>update-proof</b> (direct API self-send) plus a guarded upgrade path — backup → verify → auto-rollback. Latest upgrade: zero downtime.</p></div>
   </div>
 </div></section>
 
 <section id="log"><div class="wrap">
-  <div class="sec-h rv"><span class="no">SEC. 04</span><h2>Maintenance log</h2></div>
-  <p class="sec-sub rv">The last 30 days, newest first — velocity during the gap, documented</p>
-  <div class="shiplog">
-    <div class="lrow rv"><span class="d">JUL 06</span><div><h4>Full-system audit day</h4><p>Line-by-line audit: fixed an outage-class watchdog bug, doubled usable GPU context via flash-attention + quantized KV cache, added wedge detection, guarded host upgrades with rollback, a living wiki memory, an external dead-man's-switch — and rewrote this manual.</p></div></div>
-    <div class="lrow rv"><span class="d">JUN 24</span><div><h4>Modernization agent + live demo</h4><p>Built an agent that watches release feeds and CVEs across my repos and opens build-verified dependency PRs — never touching main. Deployed the Pokémon demo and this site.</p></div></div>
-    <div class="lrow rv"><span class="d">JUN 22</span><div><h4>42 upgrades in autonomous batches</h4><p>New career/inbox/boot-check agents, a Telegram command grammar, deploy tooling with rollback, a crash-loop detector — each batch tested before the next began.</p></div></div>
-    <div class="lrow rv"><span class="d">JUN 20</span><div><h4>Root-caused a silent total outage</h4><p>Incident form 20-A. Diagnosed, fixed, postmortem written, regression tests added.</p></div></div>
-    <div class="lrow rv"><span class="d">JUN 19</span><div><h4>Migrated off WSL in a day</h4><p>Incident form 19-B. Traced, migrated, failure class eliminated.</p></div></div>
+  <span class="k rv">03 — Shipping log</span>
+  <h2 class="rv">The last 30 days.</h2>
+  <p class="sub rv">Velocity during the gap, documented — newest first.</p>
+  <div class="loggrid">
+    <div class="logi rv"><span class="d">JUL 06</span><h4>Full-system audit day</h4><p>Fixed an outage-class watchdog bug, 2× GPU context via flash-attention, wedge detection, guarded upgrades with rollback, living wiki memory, external dead-man's switch.</p></div>
+    <div class="logi rv"><span class="d">JUN 24</span><h4>Modernization agent</h4><p>Watches releases + CVEs across my repos, opens build-verified dependency PRs. Deployed the Pokémon demo and this site.</p></div>
+    <div class="logi rv"><span class="d">JUN 22</span><h4>42 upgrades, tested batches</h4><p>New career/inbox/boot-check agents, Telegram command grammar, deploy tooling with rollback, crash-loop detector.</p></div>
+    <div class="logi rv"><span class="d">JUN 20</span><h4>Root-caused a silent outage</h4><p>Diagnosed, fixed, postmortem written, regression tests added — see Operations.</p></div>
+    <div class="logi rv"><span class="d">JUN 19</span><h4>Migrated off WSL in a day</h4><p>Traced nightly fleet deaths to a VM bug; eliminated the failure class.</p></div>
+    <div class="logi rv"><span class="d">NEXT</span><h4>Your backlog</h4><p>This is one month of my own time. Point it at your problems.</p></div>
   </div>
 </div></section>
 
-<section id="contact" class="contact" style="border-bottom:none"><div class="wrap rv">
-  <span class="tag">Section 05 — requisition</span>
-  <h2>Give me a system<br>to <em>run</em>.</h2>
-  <p>Apprenticeships, junior roles, AI-builder work. This manual shows what I do unsupervised with my own time — imagine it pointed at your backlog.</p>
-  <div class="cta-row" style="justify-content:center">
-    <a class="btn pri" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
-    <a class="btn" href="https://github.com/bmath8" target="_blank" rel="noopener">GitHub</a>
-  </div>
+<section class="contact"><div class="wrap rv">
+  <span class="k" style="justify-content:center">04 — Contact</span>
+  <h2>Give me a system to <em>run.</em></h2>
+  <p>Apprenticeships, junior roles, AI-builder work. You've seen what I do unsupervised with my own time — imagine it pointed at yours.</p>
+  <div class="cta" style="justify-content:center"><a class="btn p" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a><a class="btn s" href="https://github.com/bmath8" target="_blank" rel="noopener">GitHub ↗</a></div>
 </div></section>
 
-<div class="wrap"><footer>
-  <span>Doc. BM-2026-07 · designed, built &amp; operated by Brian Mathew</span>
-  <span>This page is maintained by the system it documents</span>
-</footer></div>
+<div class="wrap"><footer><span>© 2026 Brian Mathew — designed &amp; built by hand</span><span>This page is maintained by the system it documents</span></footer></div>
 
 <script>
-// header clock — a printed doc with a live pulse
-setInterval(()=>{const n=new Date();
-  document.getElementById('stamp-time').textContent='SYSTEM OPERATIONAL · '+n.toLocaleTimeString('en-US',{hour12:false})+' ET'},1000);
+// ---- scroll progress hairline ----
+addEventListener('scroll',()=>{const h=document.documentElement;
+  document.getElementById('progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'},{passive:true});
 
-// ---- the real fleet (name, schedule, note) ----
-const AGENTS=[
- ["daily-brief","07:00","Compiles the morning brief — career, finance, health, calendar, system — and delivers it to my phone before I wake. Delivery is verified; a failed brief raises an alert."],
- ["watchdog","every 4h","Checks disk, models, gateway, Telegram, backups, resources; self-heals what it can and alerts only on state changes."],
- ["overnight-worker","02:00","Drafts my queued tasks while I sleep; a separate critic model reviews and revises before anything reaches me."],
- ["career-agent","06:53","The income engine: applications vs target, follow-ups due (auto-drafted), stale leads, interviews, networking streak."],
- ["currency-agent","06:58","Watches release feeds + CVEs across all repos; opens build-verified dependency PRs on a branch. Never touches main."],
- ["scout","06:40","Scans the AI ecosystem for tools worth adopting; dedupes against everything already seen."],
- ["learning","06:45","Runs my spaced-repetition system: recall cards to Telegram, grading, scheduling."],
- ["finance","06:50","Reads my finance notes; reports runway and spending signals into the brief."],
- ["health","06:52","Tracks habits and streaks; nudges through the brief, not with spam."],
- ["calendar","06:55","Pulls today's events from Google Calendar into the brief."],
- ["inbox","06:48","Surfaces new files dropped in my inbox folder so nothing rots unseen."],
- ["wiki","Sun 16:45","Distills the week's notes into living wiki pages — updated in place so knowledge compounds."],
- ["weekly-review","Sun 17:00","Writes my weekly review from real data: job funnel, fleet health, one change for next week."],
- ["model-review","monthly","Benchmarks local models head-to-head on my real tasks — measurements, not vibes."],
- ["memory-index","01:20","Rebuilds the local RAG index over my notes so /ask answers from my data."],
- ["harmony-backup","01:30","Mirrors my life-OS files off OneDrive; the watchdog checks freshness."],
- ["boot-smoke","on boot","Self-test after every boot/recovery: proves delivery works, reports to my phone."],
- ["dashboard","hourly","Renders a live HTML ops dashboard of the whole fleet."],
- ["feedback","Sun","Collects my grades on drafts so the fleet learns my taste."]
-];
-// ---- blueprint schematic ----
-const NS='http://www.w3.org/2000/svg',svg=document.getElementById('bp'),CX=310,CY=225;
-function E(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e}
-// frame ticks
-for(let x=20;x<620;x+=40){svg.appendChild(E('line',{x1:x,y1:0,x2:x,y2:6,stroke:'var(--rule)','stroke-width':.8}))}
-svg.appendChild(E('circle',{cx:CX,cy:CY,r:30,class:'bp-hub','stroke-dasharray':'5 4'}));
-svg.appendChild(E('circle',{cx:CX,cy:CY,r:14,class:'bp-hub'}));
-const hubT=E('text',{x:CX,y:CY+3.5,class:'bp-num','text-anchor':'middle','font-size':'7px'});hubT.textContent='HUB';svg.appendChild(hubT);
-const anN=document.getElementById('an-name'),anD=document.getElementById('an-desc'),leg=document.getElementById('legendbody');
-const nodes=[];
-AGENTS.forEach((a,i)=>{
-  const ang=(i/AGENTS.length)*Math.PI*2-Math.PI/2, rx=245, ry=170;
-  const x=CX+Math.cos(ang)*rx, y=CY+Math.sin(ang)*ry;
-  // elbow connector (drafting style): horizontal then diagonal
-  const mx=CX+Math.cos(ang)*38, my=CY+Math.sin(ang)*38;
-  svg.appendChild(E('path',{d:`M${mx},${my} L${x},${y}`,class:'bp-line',fill:'none'}));
-  const g=E('g',{class:'bp-nodeg'});
-  const c=E('circle',{cx:x,cy:y,r:6,class:'bp-node'});
-  const t=E('text',{x:x,y:y+2.6,class:'bp-num','text-anchor':'middle'});t.textContent=i+1;
-  g.appendChild(c);g.appendChild(t);svg.appendChild(g);
-  const row=document.createElement('div');row.className='legend-row';
-  row.innerHTML=`<span class="n">${String(i+1).padStart(2,'0')}</span><span>${a[0]}</span><span class="s">${a[1]}</span>`;
-  leg.appendChild(row);
-  nodes.push({c,row,a});
-  const on=()=>{nodes.forEach(n=>{n.c.classList.remove('on');n.row.classList.remove('on')});
-    c.classList.add('on');row.classList.add('on');anN.textContent=a[0];anD.textContent=a[2]};
-  c.addEventListener('mouseenter',on);c.addEventListener('click',on);
-  row.addEventListener('mouseenter',on);row.addEventListener('click',on);
+// ---- contained living field (hero panel) ----
+const cv=document.getElementById('gl'),gl=cv.getContext('webgl');
+if(gl){
+  function fit(){const r=cv.getBoundingClientRect();cv.width=r.width*devicePixelRatio;cv.height=r.height*devicePixelRatio}
+  fit();addEventListener('resize',fit);
+  const FS=`precision highp float;uniform vec2 R;uniform float T;uniform vec2 M;
+  float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+  float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+   return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+  float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.04+13.7;a*=.52;}return v;}
+  void main(){
+   vec2 uv=gl_FragCoord.xy/R;vec2 q=uv*vec2(R.x/R.y,1.);vec2 m=M*vec2(R.x/R.y,1.);
+   float dm=length(q-m);float pull=.32*exp(-dm*2.6);
+   vec2 w=q*1.9+vec2(T*.03,-T*.017);
+   float f=fbm(w+pull*8.+fbm(w*1.7-T*.02));
+   float ridge=smoothstep(.44,.5,f)-smoothstep(.5,.56,f);
+   vec3 deep=vec3(.03,.05,.13),mid=vec3(.08,.15,.35),ember=vec3(1.,.5,.29);
+   vec3 col=mix(deep,mid,smoothstep(.15,.85,f));
+   col+=vec3(.24,.4,.95)*ridge*.5;
+   col+=ember*ridge*exp(-dm*2.2)*.9;
+   col+=ember*.08*exp(-dm*6.);
+   gl_FragColor=vec4(col,1.);}`;
+  const VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+  function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o}
+  const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));
+  gl.linkProgram(pr);gl.useProgram(pr);
+  const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const lo=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(lo);gl.vertexAttribPointer(lo,2,gl.FLOAT,false,0,0);
+  const uR=gl.getUniformLocation(pr,'R'),uT=gl.getUniformLocation(pr,'T'),uM=gl.getUniformLocation(pr,'M');
+  let mx=.5,my=.5,tx=.5,ty=.5;
+  cv.parentElement.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();
+    tx=(e.clientX-r.left)/r.width;ty=1-(e.clientY-r.top)/r.height});
+  (function loop(t){mx+=(tx-mx)*.07;my+=(ty-my)*.07;
+   gl.viewport(0,0,cv.width,cv.height);gl.uniform2f(uR,cv.width,cv.height);
+   gl.uniform1f(uT,t*.001);gl.uniform2f(uM,mx,my);
+   gl.drawArrays(gl.TRIANGLES,0,3);requestAnimationFrame(loop)})(0);
+}
+
+// ---- subtle kinetic headline (weight only, restrained) ----
+const kin=document.getElementById('kin');
+kin.innerHTML=kin.innerHTML.replace(/(<em>|<\/em>)/g,'$1').split('').map(part=>{
+  if(part.startsWith('<'))return part;
+  return [...part].map(c=>c===' '?' ':`<span>${c}</span>`).join('');
+}).join('');
+const kspans=[...kin.querySelectorAll('span')];
+let kx=-9e3,ky=-9e3,ktx=kx,kty=ky;
+addEventListener('pointermove',e=>{ktx=e.clientX;kty=e.clientY});
+(function kloop(){kx+=(ktx-kx)*.12;ky+=(kty-ky)*.12;
+ for(const s of kspans){const r=s.getBoundingClientRect();
+  if(r.bottom<0||r.top>innerHeight)continue;
+  const p=Math.max(0,1-Math.hypot(kx-(r.left+r.width/2),ky-(r.top+r.height/2))/180);
+  s.style.fontVariationSettings=`"wght" ${520+p*p*260|0}`;}
+ requestAnimationFrame(kloop)})();
+
+// ---- floating live preview on the work index ----
+const fl=document.getElementById('float');
+let fx=0,fy=0,fxt=0,fyt=0,active=null;
+addEventListener('pointermove',e=>{fxt=e.clientX+26;fyt=e.clientY-90});
+(function floop(){fx+=(fxt-fx)*.16;fy+=(fyt-fy)*.16;
+ fl.style.left=Math.min(fx,innerWidth-320)+'px';fl.style.top=Math.max(12,fy)+'px';
+ requestAnimationFrame(floop)})();
+document.querySelectorAll('.work').forEach(w=>{
+  w.addEventListener('pointerenter',()=>{
+    document.querySelectorAll('.pv').forEach(p=>p.classList.remove('on'));
+    document.getElementById(w.dataset.pv).classList.add('on');
+    fl.classList.add('on');active=w;
+    // restart bar animations
+    fl.querySelectorAll('.pvbars i').forEach(i=>{i.style.animation='none';void i.offsetWidth;i.style.animation=''});
+  });
+  w.addEventListener('pointerleave',()=>{fl.classList.remove('on')});
+  w.addEventListener('click',()=>{const h=w.dataset.href;
+    if(h.startsWith('http'))window.open(h,'_blank');else location.href=h});
 });
-nodes[0].c.classList.add('on');nodes[0].row.classList.add('on');
+if(matchMedia('(pointer:coarse)').matches)fl.style.display='none'; // touch: no floating preview
 
-// ---- operations ledger ----
-const LOG=[
- ["06:40","scout","3 new tools found · 1 worth adopting → report",0],
- ["06:45","learning","2 recall cards due — sent to telegram",0],
- ["06:48","inbox","1 new file in 00_Inbox → surfaced",0],
- ["06:53","career-agent","5 follow-ups due · drafts written → review queue",0],
- ["06:58","currency-agent","dependabot clean · next.js 16.2 flagged for review",0],
- ["07:00","daily-brief","brief composed (1,842 chars) → telegram, delivery verified",0],
- ["08:00","watchdog","disk 118 GB · ollama ok · gateway ok · brief confirmed",0],
- ["09:14","telegram","/tailor received → application kit drafted (12k ctx)",0],
- ["12:00","watchdog","VRAM pressure detected → agents pinned to small model",1],
- ["13:37","telegram","/ask 'how's my runway?' → answered from RAG memory",0],
- ["16:00","watchdog","all clear · external heartbeat pinged",0],
- ["02:00","overnight-worker","3 tasks drafted · critic loop: 2 revisions → review",0],
- ["01:20","memory-index","412 chunks re-embedded (local, $0)",0],
- ["01:30","harmony-backup","1,204 files mirrored · fresh ✓",0]
-];
-const lb=document.getElementById('ledgerbody');let li=0;
-function lrow(){const [t,w,m,warn]=LOG[li++%LOG.length];
-  const d=document.createElement('div');d.className='lrow'+(warn?' warn':'');
-  d.innerHTML=`<span>${t}</span><span class="who">${w}</span><span class="what">${m}</span>`;
-  lb.prepend(d);while(lb.children.length>7)lb.removeChild(lb.lastChild)}
-lrow();lrow();lrow();lrow();setInterval(lrow,2600);
-
-// ---- reveals (CSS-delay staggered, throttle-immune) ----
+// ---- reveals (CSS-delay stagger, throttle-immune) ----
 const io=new IntersectionObserver(es=>{let i=0;es.forEach(e=>{if(e.isIntersecting){
   e.target.style.transitionDelay=(i++*60)+'ms';e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
