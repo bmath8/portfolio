@@ -61,8 +61,8 @@ h2{font-size:clamp(1.7rem,4.6vw,3.4rem);line-height:1.12;margin:18px 0 20px}
 h2 em{font-style:normal;color:var(--ember2)}
 .lede{color:var(--dim);max-width:52ch;font-size:clamp(.95rem,1.6vw,1.12rem)}
 .lede b{color:var(--txt);font-weight:600}
-.scroll-cue{position:absolute;bottom:1.5vh;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--faint);z-index:11;animation:cue 2.4s ease-in-out infinite}
-@keyframes cue{50%{transform:translate(-50%,8px);opacity:.4}}
+.scroll-cue{display:block;margin-top:9vh;font-family:var(--mono);font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--faint);animation:cue 2.4s ease-in-out infinite}
+@keyframes cue{50%{transform:translateY(8px);opacity:.4}}
 .rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
 </style>
