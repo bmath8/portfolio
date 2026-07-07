@@ -50,11 +50,27 @@ h1 em{font-style:normal;color:var(--blue)}
 .btn{padding:14px 24px;border-radius:10px;font-weight:600;font-size:.86rem;transition:.18s;display:inline-block}
 .btn.p{background:var(--ink);color:#fff}.btn.p:hover{background:var(--blue);transform:translateY(-2px)}
 .btn.s{border:1.5px solid var(--line);color:var(--ink)}.btn.s:hover{border-color:var(--ink)}
-/* the living panel */
-.field{position:relative;border-radius:20px;overflow:hidden;border:1.5px solid var(--line);box-shadow:0 30px 70px -30px rgba(16,16,20,.25);aspect-ratio:1/1.06;min-height:340px;background:#0b1020}
-.field canvas{position:absolute;inset:0;width:100%;height:100%}
-.field .cap{position:absolute;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#8fa0bd;z-index:2}
-.field .cap b{color:#ffb46b;font-weight:500}
+/* the day dial — his REAL cron table as a live clock */
+.field{position:relative;border-radius:20px;border:1.5px solid var(--line);box-shadow:0 30px 70px -30px rgba(16,16,20,.18);background:#fff;padding:22px 22px 14px}
+.field svg{display:block;width:100%;height:auto}
+.dial-tick{stroke:var(--line);stroke-width:1}
+.dial-hour{font-family:var(--mono);font-size:9px;fill:var(--mute)}
+.dial-ring{fill:none;stroke:var(--line);stroke-width:1.2}
+.dial-arc{fill:none;stroke:var(--blue);stroke-width:2.4;stroke-linecap:round;opacity:.85}
+.dial-hand{stroke:var(--ember);stroke-width:2;stroke-linecap:round}
+.dial-hub{fill:var(--ember)}
+.ag{cursor:pointer}
+.ag circle{fill:#fff;stroke:var(--mute);stroke-width:1.4;transition:.15s}
+.ag.ran circle{fill:var(--blue);stroke:var(--blue)}
+.ag:hover circle,.ag.sel circle{stroke:var(--ember);fill:var(--ember)}
+.ag.next circle{stroke:var(--ember);stroke-width:2;stroke-dasharray:2 2;animation:spinner 6s linear infinite}
+@keyframes spinner{to{stroke-dashoffset:-24}}
+.dial-read{border-top:1px solid var(--line);margin-top:14px;padding-top:12px;font-family:var(--mono);font-size:.64rem;line-height:1.8}
+.dial-read b{font-family:var(--sans);font-weight:600;font-size:.82rem}
+.dial-read .st{color:var(--blue);font-weight:500}
+.dial-read .desc{color:var(--body2);font-family:var(--sans);font-size:.78rem;display:block}
+.dial-cap{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-top:10px}
+.dial-cap b{color:var(--blue);font-weight:500}
 .proof{display:flex;flex-wrap:wrap;gap:0;margin-top:64px;border-top:1px solid var(--line)}
 .proof div{flex:1 1 150px;padding:24px 26px 0 0}
 .proof b{font-family:var(--disp);font-weight:640;font-size:2rem;letter-spacing:-.02em;display:block;line-height:1.15}
@@ -150,13 +166,14 @@ footer{border-top:1px solid var(--line);padding:24px 0;font-size:.72rem;color:va
   <div class="hero-grid">
     <div class="rv">
       <span class="status"><i></i>All 19 agents operational right now</span>
-      <h1 id="kin">I build AI systems that <em>run themselves.</em></h1>
-      <p class="lede">Self-taught builder. During my employment gap I shipped <b>6 products and a fleet of 19 autonomous agents</b> that operates my life 24/7 — on local models, for $0 a month. The panel on the right is its live portrait: <b>move your cursor through it.</b></p>
+      <h1>I build AI systems that <em>run themselves.</em></h1>
+      <p class="lede">Self-taught builder. During my employment gap I shipped <b>6 products and a fleet of 19 autonomous agents</b> that operates my life 24/7 — on local models, for $0 a month. The dial on the right is <b>my actual schedule, live</b>: every dot is a real agent at its real run time, and the hand is the time right now. <b id="ranline">—</b></p>
       <div class="cta"><a class="btn p" href="#work">See the work</a><a class="btn s" href="#ops">Read a postmortem</a></div>
     </div>
     <div class="field rv">
-      <canvas id="gl"></canvas>
-      <div class="cap"><span>the system — live field</span><span><b>19</b> agents · reacts to you</span></div>
+      <svg id="dial" viewBox="0 0 340 340" aria-label="Live 24-hour dial of the agent fleet's real schedule"></svg>
+      <div class="dial-read" id="dialread"><b>daily-brief</b> · <span class="st">07:00</span><span class="desc">Compiles the morning brief and delivers it to my phone — verified, or an alert fires.</span></div>
+      <div class="dial-cap"><span>rendered from the fleet's real cron table</span><span><b id="dialclock">--:--</b> ET</span></div>
     </div>
   </div>
   <div class="proof rv">
@@ -259,65 +276,71 @@ footer{border-top:1px solid var(--line);padding:24px 0;font-size:.72rem;color:va
 addEventListener('scroll',()=>{const h=document.documentElement;
   document.getElementById('progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'},{passive:true});
 
-// ---- contained living field (hero panel) ----
-const cv=document.getElementById('gl'),gl=cv.getContext('webgl');
-if(gl){
-  function fit(){const r=cv.getBoundingClientRect();cv.width=r.width*devicePixelRatio;cv.height=r.height*devicePixelRatio}
-  fit();addEventListener('resize',fit);
-  const FS=`precision highp float;uniform vec2 R;uniform float T;uniform vec2 M;
-  float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-  float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
-   return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
-  float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.04+13.7;a*=.52;}return v;}
-  void main(){
-   vec2 uv=gl_FragCoord.xy/R;vec2 q=uv*vec2(R.x/R.y,1.);vec2 m=M*vec2(R.x/R.y,1.);
-   float dm=length(q-m);float pull=.32*exp(-dm*2.6);
-   vec2 w=q*1.9+vec2(T*.03,-T*.017);
-   float f=fbm(w+pull*8.+fbm(w*1.7-T*.02));
-   float ridge=smoothstep(.44,.5,f)-smoothstep(.5,.56,f);
-   vec3 deep=vec3(.03,.05,.13),mid=vec3(.08,.15,.35),ember=vec3(1.,.5,.29);
-   vec3 col=mix(deep,mid,smoothstep(.15,.85,f));
-   col+=vec3(.24,.4,.95)*ridge*.5;
-   col+=ember*ridge*exp(-dm*2.2)*.9;
-   col+=ember*.08*exp(-dm*6.);
-   gl_FragColor=vec4(col,1.);}`;
-  const VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-  function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o}
-  const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));
-  gl.linkProgram(pr);gl.useProgram(pr);
-  const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);
-  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
-  const lo=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(lo);gl.vertexAttribPointer(lo,2,gl.FLOAT,false,0,0);
-  const uR=gl.getUniformLocation(pr,'R'),uT=gl.getUniformLocation(pr,'T'),uM=gl.getUniformLocation(pr,'M');
-  let mx=.5,my=.5,tx=.5,ty=.5;
-  cv.parentElement.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();
-    tx=(e.clientX-r.left)/r.width;ty=1-(e.clientY-r.top)/r.height});
-  (function loop(t){mx+=(tx-mx)*.07;my+=(ty-my)*.07;
-   gl.viewport(0,0,cv.width,cv.height);gl.uniform2f(uR,cv.width,cv.height);
-   gl.uniform1f(uT,t*.001);gl.uniform2f(uM,mx,my);
-   gl.drawArrays(gl.TRIANGLES,0,3);requestAnimationFrame(loop)})(0);
+// ---- the day dial: the fleet's REAL cron table, rendered live ----
+const FLEET=[
+ ["memory-index",1.33,"01:20 daily","Rebuilds the local RAG index over my notes so /ask answers from my data."],
+ ["harmony-backup",1.5,"01:30 daily","Mirrors my life-OS files off OneDrive; the watchdog checks freshness."],
+ ["overnight-worker",2.0,"02:00 daily","Drafts my queued tasks; a separate critic model reviews before I see them."],
+ ["scout",6.67,"06:40 daily","Scans the AI ecosystem for tools worth adopting; dedupes what's been seen."],
+ ["learning",6.75,"06:45 daily","Spaced-repetition: recall cards to my phone, grading, scheduling."],
+ ["inbox",6.8,"06:48 daily","Surfaces new files dropped in my inbox folder so nothing rots unseen."],
+ ["finance",6.83,"06:50 daily","Reads my finance notes; reports runway into the brief."],
+ ["health",6.87,"06:52 daily","Tracks habits and streaks; nudges through the brief."],
+ ["career-agent",6.883,"06:53 daily","The income engine: apps vs target, follow-ups auto-drafted, interviews."],
+ ["calendar",6.92,"06:55 daily","Pulls today's events from Google Calendar into the brief."],
+ ["currency-agent",6.97,"06:58 Mon–Sat","Watches releases + CVEs; opens build-verified dependency PRs."],
+ ["daily-brief",7.0,"07:00 daily","Compiles the morning brief and delivers it to my phone — verified, or an alert fires."],
+ ["watchdog",8.0,"every 4 hours","Checks disk, models, gateway, backups; self-heals; alerts only on change."],
+ ["boot-smoke",9.0,"on every boot","Self-test after boot/recovery: proves delivery works, reports to my phone."],
+ ["dashboard",11.0,"every hour","Renders a live HTML ops dashboard of the whole fleet."],
+ ["model-review",14.0,"monthly","Benchmarks local models head-to-head on my real tasks."],
+ ["feedback",15.0,"Sundays","Collects my grades on drafts so the fleet learns my taste."],
+ ["wiki",16.75,"Sun 16:45","Distills the week's notes into living wiki pages that compound."],
+ ["weekly-review",17.0,"Sun 17:00","Writes my weekly review from real data + one change for next week."]
+];
+const dial=document.getElementById('dial'),DNS='http://www.w3.org/2000/svg',DC=170,DR=128;
+function DE(t,a){const e=document.createElementNS(DNS,t);for(const k in a)e.setAttribute(k,a[k]);return e}
+function ang(h){return h/24*2*Math.PI-Math.PI/2}
+function pt(h,r){const a=ang(h);return[DC+Math.cos(a)*r,DC+Math.sin(a)*r]}
+dial.appendChild(DE('circle',{cx:DC,cy:DC,r:DR,class:'dial-ring'}));
+for(let h=0;h<24;h++){const[x1,y1]=pt(h,DR-4),[x2,y2]=pt(h,DR+(h%6?4:8));
+  dial.appendChild(DE('line',{x1,y1,x2,y2,class:'dial-tick'}))}
+[[0,'00'],[6,'06'],[12,'12'],[18,'18']].forEach(([h,t])=>{const[x,y]=pt(h,DR+20);
+  const e=DE('text',{x,y:y+3,'text-anchor':'middle',class:'dial-hour'});e.textContent=t;dial.appendChild(e)});
+const arc=DE('path',{class:'dial-arc'});dial.appendChild(arc);
+const hand=DE('line',{class:'dial-hand'});dial.appendChild(hand);
+dial.appendChild(DE('circle',{cx:DC,cy:DC,r:4,class:'dial-hub'}));
+// place agents; fan out the dense morning cluster
+const dots=[];let lastH=-9,alt=1;
+FLEET.forEach((a,i)=>{
+  let r=DR;if(a[1]-lastH<0.55){alt=-alt;r=DR+alt*13;if(Math.abs(a[1]-lastH)<0.1)r=DR+alt*24}lastH=a[1];
+  const[x,y]=pt(a[1],r);
+  const g=DE('g',{class:'ag'});
+  g.appendChild(DE('circle',{cx:x,cy:y,r:12,fill:'transparent',stroke:'none'}));
+  const c=DE('circle',{cx:x,cy:y,r:5});g.appendChild(c);
+  const show=()=>{document.querySelectorAll('.ag.sel').forEach(n=>n.classList.remove('sel'));g.classList.add('sel');
+    document.getElementById('dialread').innerHTML=
+      `<b>${a[0]}</b> · <span class="st">${a[2]}</span><span class="desc">${a[3]}</span>`};
+  g.addEventListener('pointerenter',show);g.addEventListener('click',show);
+  dial.appendChild(g);dots.push({g,h:a[1],a});
+});
+function tickDial(){
+  const n=new Date(),nowH=n.getHours()+n.getMinutes()/60+n.getSeconds()/3600;
+  const[hx,hy]=pt(nowH,DR-14);
+  hand.setAttribute('x1',DC);hand.setAttribute('y1',DC);hand.setAttribute('x2',hx);hand.setAttribute('y2',hy);
+  const[sx,sy]=pt(0,DR),[ex,ey]=pt(nowH,DR);
+  arc.setAttribute('d',`M${sx},${sy} A${DR},${DR} 0 ${nowH>12?1:0} 1 ${ex},${ey}`);
+  let ran=0,next=null;
+  dots.forEach(d=>{const isRan=d.h<=nowH;d.g.classList.toggle('ran',isRan);
+    if(isRan)ran++;else if(!next||d.h<next.h)next=d});
+  dots.forEach(d=>d.g.classList.toggle('next',next&&d===next));
+  const fmt=h=>`${String(Math.floor(h)).padStart(2,'0')}:${String(Math.round(h%1*60)).padStart(2,'0')}`;
+  document.getElementById('ranline').textContent=next
+    ?`${ran} of 19 have already run today — next up: ${next.a[0]} at ${fmt(next.h)}.`
+    :`All 19 ran today. The overnight shift starts at 01:20.`;
+  document.getElementById('dialclock').textContent=n.toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});
 }
-
-// ---- subtle kinetic headline (weight only, restrained) ----
-const kin=document.getElementById('kin');
-(function wrapWords(el){[...el.childNodes].forEach(nd=>{
-  if(nd.nodeType===3){const f=document.createDocumentFragment();
-    nd.textContent.split(/(\s+)/).forEach(tok=>{
-      if(!tok||/^\s+$/.test(tok)){f.append(tok);return}
-      const w=document.createElement('span');w.className='w';
-      [...tok].forEach(c=>{const s=document.createElement('span');s.textContent=c;w.append(s)});
-      f.append(w)});
-    nd.replaceWith(f)}
-  else wrapWords(nd)})})(kin);
-const kspans=[...kin.querySelectorAll('span')];
-let kx=-9e3,ky=-9e3,ktx=kx,kty=ky;
-addEventListener('pointermove',e=>{ktx=e.clientX;kty=e.clientY});
-(function kloop(){kx+=(ktx-kx)*.12;ky+=(kty-ky)*.12;
- for(const s of kspans){const r=s.getBoundingClientRect();
-  if(r.bottom<0||r.top>innerHeight)continue;
-  const p=Math.max(0,1-Math.hypot(kx-(r.left+r.width/2),ky-(r.top+r.height/2))/180);
-  s.style.fontVariationSettings=`"wght" ${520+p*p*260|0}`;}
- requestAnimationFrame(kloop)})();
+tickDial();setInterval(tickDial,1000);
 
 // ---- floating live preview on the work index ----
 const fl=document.getElementById('float');
