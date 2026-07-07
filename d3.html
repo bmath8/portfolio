@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>D3 — Color Block</title>
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;700;900&family=Atkinson+Hyperlegible:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f2f1ec;color:#17171a;font-family:"Atkinson Hyperlegible",sans-serif;line-height:1.6}
+.tagline{position:fixed;bottom:18px;left:24px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#9a9a94;z-index:9}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 30px;border-bottom:3px solid #17171a}
+nav b{font-family:"Gabarito";font-weight:900;font-size:1.05rem}
+nav .l{display:flex;gap:22px;font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
+nav a{color:inherit;text-decoration:none}
+nav .hire{background:#2b59ff;color:#fff;padding:9px 18px;border-radius:99px;border:2px solid #17171a;box-shadow:3px 3px 0 #17171a}
+header{padding:76px 30px 70px;border-bottom:3px solid #17171a;position:relative;overflow:hidden}
+.hwrap{max-width:1080px;margin:0 auto}
+.badge{position:absolute;right:6vw;top:52px;background:#d7f455;border:2.5px solid #17171a;border-radius:99px;padding:16px 20px;font-family:"Gabarito";font-weight:900;font-size:.86rem;transform:rotate(8deg);box-shadow:4px 4px 0 #17171a}
+h1{font-family:"Gabarito";font-weight:900;font-size:clamp(3rem,9vw,7rem);line-height:.94;letter-spacing:-.03em;max-width:13ch}
+h1 .b{color:#2b59ff}
+h1 .o{-webkit-text-stroke:2.5px #17171a;color:transparent}
+.lede{margin-top:26px;font-size:1.06rem;color:#4c4c48;max-width:52ch}
+.lede b{color:#17171a}
+.stats{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap}
+.stat{background:#fff;border:2.5px solid #17171a;border-radius:14px;padding:14px 20px;box-shadow:4px 4px 0 #17171a}
+.stat b{font-family:"Gabarito";font-weight:900;font-size:1.6rem;display:block;line-height:1}
+.stat span{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8b8b86}
+.band{background:#2b59ff;color:#fff;border-bottom:3px solid #17171a;padding:80px 30px}
+.bwrap{max-width:1080px;margin:0 auto}
+.k{font-family:"Gabarito";font-weight:700;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:#b9c8ff}
+.band h2{font-family:"Gabarito";font-weight:900;font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.02em;margin:10px 0 34px;max-width:22ch}
+.card{background:#fff;color:#17171a;border:2.5px solid #17171a;border-radius:18px;box-shadow:6px 6px 0 #17171a;display:grid;grid-template-columns:1.15fr .85fr;overflow:hidden;transition:.18s}
+.card:hover{transform:translate(-2px,-2px);box-shadow:9px 9px 0 #17171a}
+@media(max-width:820px){.card{grid-template-columns:1fr}}
+.card-t{padding:38px}
+.card-t h3{font-family:"Gabarito";font-weight:900;font-size:1.7rem;margin-bottom:12px}
+.card-t p{color:#4c4c48;font-size:.94rem;margin-bottom:12px}
+.card-t p b{color:#17171a}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.chips span{font-weight:700;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;border:2px solid #17171a;border-radius:99px;padding:5px 11px}
+.card-v{background:#d7f455;border-left:2.5px solid #17171a;padding:30px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.card-v .row{background:#fff;border:2px solid #17171a;border-radius:10px;padding:10px 14px;font-size:.74rem;font-weight:700;display:flex;justify-content:space-between;box-shadow:3px 3px 0 rgba(23,23,26,.25)}
+.card-v .row em{font-style:normal;color:#2b59ff}
+</style></head><body>
+<span class="tagline">Sample D3 — color block · bold, human, sticker energy</span>
+<nav><b>BRIAN MATHEW</b><div class="l"><a href="#">Work</a><a href="#">System</a><a href="#">Log</a><a class="hire" href="#">HIRE ME</a></div></nav>
+<header><div class="hwrap">
+  <div class="badge">19 AGENTS<br>RUNNING NOW</div>
+  <h1>I don't wait<br>for a job.<br><span class="b">I build</span> <span class="o">one.</span></h1>
+  <p class="lede">Self-taught. During my gap I shipped <b>6 real products</b> and an autonomous AI fleet that runs my life 24/7 — <b>on my own hardware, for $0 a month.</b> It briefed me this morning. It'll brief me tomorrow. Imagine it working for you.</p>
+  <div class="stats">
+    <div class="stat"><b>19</b><span>agents live</span></div>
+    <div class="stat"><b>78</b><span>tests passing</span></div>
+    <div class="stat"><b>3</b><span>postmortems</span></div>
+    <div class="stat"><b>$0</b><span>monthly AI cost</span></div>
+  </div>
+</div></header>
+<div class="band"><div class="bwrap">
+  <span class="k">Flagship build</span>
+  <h2>Brian OS — the machine that never stops working.</h2>
+  <div class="card">
+    <div class="card-t">
+      <h3>19 agents. Self-healing. Battle-tested.</h3>
+      <p>Morning briefs, overnight drafting checked by a <b>second critic model</b>, build-verified dependency PRs, a self-updating memory — all driven from Telegram.</p>
+      <p><b>It broke three times. I root-caused every outage,</b> wrote the postmortems, and made the failure classes impossible.</p>
+      <div class="chips"><span>Python</span><span>Local LLMs</span><span>RAG</span><span>Telegram</span></div>
+    </div>
+    <div class="card-v">
+      <div class="row"><span>☀ Morning brief</span><em>delivered ✓</em></div>
+      <div class="row"><span>✎ Overnight drafts</span><em>3 ready</em></div>
+      <div class="row"><span>⛨ Watchdog</span><em>all clear</em></div>
+      <div class="row"><span>⬆ Safe upgrade PR</span><em>opened ✓</em></div>
+    </div>
+  </div>
+</div></div>
+</body></html>
