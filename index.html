@@ -303,7 +303,7 @@ const kin=document.getElementById('kin');
 (function wrapWords(el){[...el.childNodes].forEach(nd=>{
   if(nd.nodeType===3){const f=document.createDocumentFragment();
     nd.textContent.split(/(\s+)/).forEach(tok=>{
-      if(!tok||/^\s+\$/.test(tok)){f.append(tok);return}
+      if(!tok||/^\s+$/.test(tok)){f.append(tok);return}
       const w=document.createElement('span');w.className='w';
       [...tok].forEach(c=>{const s=document.createElement('span');s.textContent=c;w.append(s)});
       f.append(w)});
