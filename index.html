@@ -45,6 +45,17 @@ a{color:inherit;text-decoration:none}
 @media(max-width:880px){.hero{grid-template-columns:1fr}}
 .card{background:var(--panel);border:1px solid var(--frame);border-radius:16px;box-shadow:0 2px 3px rgba(30,35,50,.04),0 18px 40px -22px rgba(30,35,50,.18)}
 .intro{padding:30px 32px;display:flex;flex-direction:column}
+.hello{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.hello .ava{position:relative;width:52px;height:52px;border-radius:50%;background:linear-gradient(140deg,var(--indigo),var(--indigo2));color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:560;font-size:1.05rem;flex:none;box-shadow:0 6px 16px -6px rgba(59,74,143,.5)}
+.hello .ava i{position:absolute;right:1px;bottom:1px;width:13px;height:13px;border-radius:50%;background:#2fae6b;border:2.5px solid #fff}
+.hello b{display:block;font-family:var(--disp);font-weight:560;font-size:1.05rem;line-height:1.3}
+.hello span{font-size:.74rem;color:var(--mute)}
+.about3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:22px 26px}
+@media(max-width:820px){.about3{grid-template-columns:1fr}}
+.about3 h4{font-family:var(--disp);font-weight:560;font-size:1rem;margin-bottom:6px}
+.about3 h4 i{font-style:normal;color:var(--ember)}
+.about3 p{font-size:.8rem;color:var(--body2)}
+.about3 p b{color:var(--ink);font-weight:600}
 h1{font-family:var(--disp);font-weight:560;font-size:clamp(1.65rem,3.3vw,2.4rem);line-height:1.16;margin-bottom:14px}
 h1 i{font-style:italic;color:var(--ember);font-weight:420}
 .intro p{color:var(--body2);font-size:.93rem;max-width:52ch}
@@ -121,8 +132,11 @@ footer{text-align:center;padding:24px 0 2px;font-family:var(--mono);font-size:.5
 
 <div class="hero">
   <div class="card intro rv">
-    <h1>My employment gap ships <i>real software.</i></h1>
-    <p>I design, build, and <b>operate</b> AI systems — not just demos. The brain beside this card is my actual agent fleet: <b>19 autonomous agents</b> that brief me every morning, draft my work overnight, and patch my repos — on local models, for <b>$0 a month</b>. When it broke, <b>I root-caused the outages myself.</b></p>
+    <div class="hello"><span class="ava">BM<i></i></span>
+      <div><b>Hi, I'm Brian.</b><span>Self-taught builder · replies fast · <a href="mailto:mathew.brian@gmail.com" style="color:var(--indigo);border-bottom:1px solid var(--frame)">mathew.brian@gmail.com</a></span></div></div>
+    <h1>I taught myself to build by <i>building.</i></h1>
+    <p>The thing I'm proudest of is beside this card: <b>my actual AI fleet</b> — 19 agents that wake up before I do, brief me, draft my work overnight, and patch my own repos. It runs on my desk, on local models, for <b>$0 a month</b>. And when it broke at 2am? <b>I'm the one who fixed it</b> — three times, documented below.</p>
+    <p style="margin-top:10px">I'm looking for a team that wants someone who <b>ships, learns fast, and doesn't wait to be told.</b></p>
     <div class="stats">
       <div class="stat"><b>19</b><span>agents live</span></div>
       <div class="stat"><b>78</b><span>tests passing</span></div>
@@ -165,7 +179,14 @@ footer{text-align:center;padding:24px 0 2px;font-family:var(--mono);font-size:.5
       <span class="go">Open the live demo →</span></div></div></a>
 </div>
 
-<div class="lbl rv"><b>02</b> Operations &amp; contact</div>
+<div class="lbl rv"><b>02</b> A bit about me</div>
+<div class="card about3 rv">
+  <div><h4>How I got here <i>·</i></h4><p>No CS degree — <b>curiosity and stubbornness.</b> I learned by shipping: every project on this page exists because I wanted it to exist and refused to stop until it worked.</p></div>
+  <div><h4>What I'm good at <i>·</i></h4><p><b>Building fast with modern AI tooling</b> (Cursor, Claude, local models), Python and TypeScript/Next.js, and — the rarer thing — <b>keeping systems alive</b>: monitoring, self-healing, postmortems.</p></div>
+  <div><h4>What I'm like to work with <i>·</i></h4><p>I over-communicate, I document everything (you're reading proof), and I treat feedback as fuel. Give me a problem and check back — <b>it'll be further along than you expect.</b></p></div>
+</div>
+
+<div class="lbl rv"><b>03</b> Operations &amp; contact</div>
 <div class="bottom">
   <div class="card vit rv">
     <div class="vhead"><span>It broke. I fixed it. — real production incidents</span><span>3 postmortems · all resolved</span></div>
