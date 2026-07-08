@@ -4,296 +4,299 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex, nofollow" />
-<title>Brian Mathew — Builder & Systems Operator</title>
-<meta name="description" content="Self-taught builder. 19 autonomous agents in production, 6 shipped apps, $0/month." />
+<title>Brian Mathew — Builder of AI systems that run themselves</title>
+<meta name="description" content="Self-taught builder. 19 autonomous agents in production, real products, real postmortems." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500&family=Figtree:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,420..600;1,9..144,420..600&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0b0d12; --card:#11141b; --card2:#151924; --line:#232838; --line2:#303852;
-  --txt:#edf0f7; --dim:#98a2b8; --faint:#5b6478;
-  --blue:#5d7cff; --ember:#ff7847; --ember2:#ffb46b; --green:#6fe3a5;
-  --disp:"Unbounded",sans-serif; --sans:"Figtree",sans-serif; --mono:"IBM Plex Mono",monospace;
+  --bg:#f4f6f9; --panel:#ffffff; --frame:#dfe3ea; --ink:#171a21; --body2:#4e5461; --mute:#8b91a0;
+  --indigo:#3b4a8f; --indigo2:#5d6fc4; --ember:#e2571f; --ember2:#f0803f;
+  --disp:"Fraunces",serif; --sans:"Figtree",sans-serif; --mono:"IBM Plex Mono",monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;
-  background-image:radial-gradient(1100px 500px at 75% -10%,rgba(93,124,255,.07),transparent 60%),
-                   radial-gradient(800px 400px at 10% 110%,rgba(255,120,71,.05),transparent 60%)}
-::selection{background:var(--ember);color:var(--bg)}
+body{background:linear-gradient(165deg,#eef2f8 0%,#f6f7f9 45%,#f9f2ea 100%);color:var(--ink);
+  font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh}
+::selection{background:var(--ember);color:#fff}
 a{color:inherit;text-decoration:none}
-.page{max-width:1240px;margin:0 auto;padding:26px 26px 40px}
+.page{max-width:1180px;margin:0 auto;padding:22px 26px 36px}
 
-/* header: name in the corner, bold, styled */
-.top{display:flex;align-items:center;gap:20px;padding:6px 4px 24px}
-.top .name{font-family:var(--disp);font-weight:500;font-size:1.25rem;letter-spacing:.01em}
-.top .name em{font-style:normal;color:var(--ember)}
-.top .role{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-right:auto;padding-top:4px}
-.top .links{display:flex;gap:10px}
-.chip{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--line2);border-radius:10px;transition:.18s;color:var(--dim)}
-.chip:hover{color:var(--txt);border-color:var(--dim);transform:translateY(-1px)}
-.chip.hot{background:var(--txt);color:var(--bg);border-color:var(--txt);font-weight:500}
-.chip.hot:hover{background:var(--ember);border-color:var(--ember)}
-@media(max-width:700px){.top{flex-wrap:wrap}.top .role{width:100%;order:3}}
+/* header — name in the corner, resume one click away */
+.top{display:flex;align-items:center;gap:18px;padding-bottom:20px}
+.top .name{font-family:var(--disp);font-weight:560;font-size:1.5rem;letter-spacing:-.01em}
+.top .name i{font-style:italic;color:var(--ember);font-weight:420}
+.top .role{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-right:auto;padding-top:6px}
+.btn{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:11px 18px;border-radius:10px;border:1.5px solid var(--frame);color:var(--body2);transition:.18s;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{border-color:var(--ink);color:var(--ink);transform:translateY(-1px)}
+.btn.res{background:var(--indigo);border-color:var(--indigo);color:#fff;font-weight:500}
+.btn.res:hover{background:var(--ember);border-color:var(--ember)}
+.btn.hire{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn.hire:hover{background:var(--ember);border-color:var(--ember)}
+@media(max-width:760px){.top{flex-wrap:wrap}.top .role{width:100%;order:5}}
 
-/* bento grid */
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
-.card:hover{border-color:var(--line2);transform:translateY(-2px)}
-.chead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
-.chead .t{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
-.chead .s{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;color:var(--blue)}
-.chead .s.live{color:var(--green)}
-.chead .s.live::before{content:"●";margin-right:6px;animation:blink 2s infinite}
-@keyframes blink{50%{opacity:.3}}
-h2{font-family:var(--disp);font-weight:400;font-size:1.3rem;line-height:1.25;letter-spacing:0}
-h2 em{font-style:normal;color:var(--ember2)}
-.c-intro{grid-column:span 5;grid-row:span 2;display:flex;flex-direction:column}
-.c-fleet{grid-column:span 7;grid-row:span 2;display:flex;flex-direction:column;min-height:430px}
-.c-proj{grid-column:span 3;display:flex;flex-direction:column}
-.c-ops{grid-column:span 6}
-.c-log{grid-column:span 3}
-.c-hire{grid-column:span 3;background:linear-gradient(145deg,#1b1410,#12141b);border-color:#3a2c22}
-@media(max-width:1020px){.c-intro,.c-fleet{grid-column:span 12}.c-proj,.c-log,.c-hire{grid-column:span 6}.c-ops{grid-column:span 12}}
-@media(max-width:640px){.c-proj,.c-log,.c-hire{grid-column:span 12}}
-</style>
-<style>
-/* intro card */
-.c-intro .big{font-family:var(--disp);font-weight:400;font-size:clamp(1.5rem,3vw,2.15rem);line-height:1.22;margin:6px 0 16px}
-.c-intro .big em{font-style:normal;color:var(--ember2)}
-.c-intro p{color:var(--dim);font-size:.95rem;max-width:52ch}
-.c-intro p b{color:var(--txt);font-weight:600}
+/* section labels — the thread that creates flow */
+.lbl{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);margin:26px 2px 14px}
+.lbl::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--frame),transparent)}
+.lbl b{color:var(--ember);font-weight:500}
+
+/* hero: intro + the brain */
+.hero{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:20px;align-items:stretch}
+@media(max-width:880px){.hero{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--frame);border-radius:16px;box-shadow:0 2px 3px rgba(30,35,50,.04),0 18px 40px -22px rgba(30,35,50,.18)}
+.intro{padding:30px 32px;display:flex;flex-direction:column}
+h1{font-family:var(--disp);font-weight:560;font-size:clamp(1.65rem,3.3vw,2.4rem);line-height:1.16;margin-bottom:14px}
+h1 i{font-style:italic;color:var(--ember);font-weight:420}
+.intro p{color:var(--body2);font-size:.93rem;max-width:52ch}
+.intro p b{color:var(--ink);font-weight:600}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:auto;padding-top:22px}
-.stat{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 14px 10px}
-.stat b{font-family:var(--disp);font-weight:400;font-size:1.45rem;display:block;line-height:1.2}
-.stat span{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
-@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:#f6f8fb;border:1px solid var(--frame);border-radius:11px;padding:12px 12px 9px;text-align:center}
+.stat b{font-family:var(--disp);font-weight:560;font-size:1.4rem;display:block;line-height:1.2}
+.stat span{font-family:var(--mono);font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+@media(max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}}
+.brainbox{position:relative;overflow:hidden;min-height:360px;display:flex;flex-direction:column}
+.brainbox .art{position:relative;flex:1;min-height:280px;background:radial-gradient(ellipse 75% 70% at 50% 45%,#fdfefe 0%,#eef2f9 70%,#e9edf6 100%)}
+.brainbox canvas{position:absolute;inset:0;width:100%;height:100%}
+.brainbox .cap{position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.brainbox .cap b{color:var(--ember);font-weight:500}
+.brainbox .who{border-top:1px solid var(--frame);padding:12px 18px;font-size:.8rem;color:var(--body2);display:flex;gap:10px;align-items:baseline;background:var(--panel)}
+.brainbox .who b{font-family:var(--disp);font-weight:560;color:var(--ink);white-space:nowrap}
+.brainbox .who em{font-style:normal;font-family:var(--mono);font-size:.58rem;color:var(--ember);margin-left:auto;white-space:nowrap}
 
-/* fleet card */
-.c-fleet .netwrap{position:relative;flex:1;min-height:250px;border-radius:12px;background:radial-gradient(closest-side,rgba(93,124,255,.06),transparent),var(--card2);border:1px solid var(--line);overflow:hidden}
-.c-fleet canvas{position:absolute;inset:0;width:100%;height:100%}
-.fleet-foot{display:flex;justify-content:space-between;gap:14px;align-items:baseline;margin-top:12px;font-family:var(--mono);font-size:.62rem}
-.fleet-foot .who{color:var(--txt);font-weight:500}
-.fleet-foot .what{color:var(--dim);font-family:var(--sans);font-size:.78rem;flex:1;margin-left:8px}
-.fleet-foot .when{color:var(--ember2);white-space:nowrap}
-.tickline{font-family:var(--mono);font-size:.6rem;color:var(--faint);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tickline em{font-style:normal;color:var(--blue)}
-
-/* project cards — grouped, swappable */
-.c-proj .mini{border:1px solid var(--line);border-radius:10px;background:var(--card2);padding:12px;font-family:var(--mono);font-size:.56rem;margin-bottom:14px}
-.mrow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-.mrow b{font-family:var(--disp);font-weight:400;font-size:.95rem}
-.mrow em{font-style:normal;color:var(--blue);font-size:.52rem}
-.mbars{display:flex;align-items:flex-end;gap:2px;height:30px}
-.mbars i{flex:1;background:linear-gradient(180deg,var(--blue),rgba(93,124,255,.15));border-radius:1px}
-.mlines{color:var(--dim);line-height:1.9}
-.mlines em{font-style:normal;color:var(--ember2)}
-.mring{display:flex;gap:10px;align-items:center}
-.mring .rg{width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--blue) 0 331deg,var(--line) 331deg 360deg);position:relative;display:flex;align-items:center;justify-content:center;flex:none}
-.mring .rg::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--card2)}
-.mring .rg b{position:relative;font-size:.66rem}
-.meq{display:flex;align-items:center;gap:2px;height:28px}
-.meq i{flex:1;background:var(--dim);border-radius:1px;animation:eq 1s ease-in-out infinite alternate;transform-origin:bottom}
-.meq i:nth-child(odd){animation-duration:.8s}.meq i:nth-child(3n){animation-duration:1.25s}
-@keyframes eq{from{transform:scaleY(.15)}to{transform:scaleY(.9)}}
-.c-proj h3{font-family:var(--disp);font-weight:400;font-size:1.02rem;margin-bottom:6px}
-.c-proj p{color:var(--dim);font-size:.8rem;flex:1}
-.c-proj .go{margin-top:14px;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
-.card:hover .go{color:var(--ember2)}
-
-/* ops + log + hire */
-.oprow{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:.82rem}
-.oprow:last-child{border-bottom:none}
-.oprow .sev{font-family:var(--mono);font-size:.54rem;letter-spacing:.14em;color:var(--ember2);padding-top:4px}
-.oprow b{color:var(--txt);font-weight:600}
-.oprow span{color:var(--dim)}
-.logrow{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.78rem;color:var(--dim)}
-.logrow:last-child{border-bottom:none}
-.logrow .d{font-family:var(--mono);font-size:.56rem;color:var(--blue);letter-spacing:.1em;padding-top:4px;white-space:nowrap}
-.logrow b{color:var(--txt);font-weight:600}
-.c-hire h2{margin-bottom:8px}
-.c-hire p{color:var(--dim);font-size:.8rem;margin-bottom:18px}
-.mailbtn{display:block;text-align:center;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;background:var(--txt);color:var(--bg);border-radius:10px;padding:13px 10px;font-weight:500;transition:.18s}
-.mailbtn:hover{background:var(--ember)}
-footer{text-align:center;padding:26px 0 4px;font-family:var(--mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
-.rv{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+/* works — N3 frames, tighter flow */
+.works{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:880px){.works{grid-template-columns:1fr}}
+.piece{display:block;transition:.2s}
+.piece:hover{transform:translateY(-4px)}
+.frame{background:var(--panel);border:1px solid var(--frame);border-radius:16px;padding:14px;box-shadow:0 2px 3px rgba(30,35,50,.04),0 18px 40px -22px rgba(30,35,50,.18);transition:.25s}
+.piece:hover .frame{box-shadow:0 2px 3px rgba(30,35,50,.05),0 28px 54px -22px rgba(226,87,31,.28);border-color:#cfd5e0}
+.art2{position:relative;min-height:150px;border-radius:10px;background:#f6f8fb;border:1px solid var(--frame);display:flex;align-items:center;justify-content:center;overflow:hidden;font-family:var(--mono)}
+.placard{padding:14px 8px 6px}
+.placard .med{font-family:var(--mono);font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ember);display:block;margin-bottom:5px}
+.placard h3{font-family:var(--disp);font-weight:560;font-size:1.3rem;margin-bottom:6px}
+.placard p{font-size:.8rem;color:var(--body2)}
+.placard .go{font-family:var(--mono);font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--indigo);display:block;margin-top:10px}
+.piece:hover .go{color:var(--ember)}
+/* art contents */
+.brief{width:82%;font-size:.6rem;color:var(--body2);line-height:2}
+.brief .r{display:flex;justify-content:space-between;border-bottom:1px dotted var(--frame)}
+.brief .r b{color:var(--ink);font-family:var(--sans)}
+.brief .r em{font-style:normal;color:var(--indigo)}
+.brief .r em.warn{color:var(--ember)}
+.bars2{display:flex;align-items:flex-end;gap:4px;height:76px;width:72%}
+.bars2 i{flex:1;background:linear-gradient(180deg,var(--indigo2),var(--indigo));border-radius:2px 2px 0 0}
+/* bottom row */
+.bottom{display:grid;grid-template-columns:1.35fr .65fr;gap:20px}
+@media(max-width:880px){.bottom{grid-template-columns:1fr}}
+.vit{padding:20px 24px}
+.vhead{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--frame);padding-bottom:10px;margin-bottom:8px}
+.vrow{display:flex;gap:14px;font-size:.79rem;color:var(--body2);padding:9px 0;border-bottom:1px dotted var(--frame)}
+.vrow:last-child{border:none}
+.vrow .sv{font-family:var(--mono);font-size:.5rem;color:var(--ember);white-space:nowrap;padding-top:4px;letter-spacing:.08em}
+.vrow b{color:var(--ink)}
+.hireC{background:linear-gradient(160deg,#1c202c,#171a21);color:#f2f3f6;padding:24px;border-radius:16px;display:flex;flex-direction:column}
+.hireC .k{font-family:var(--mono);font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:#8b91a0;margin-bottom:8px}
+.hireC h2{font-family:var(--disp);font-weight:560;font-size:1.45rem;line-height:1.2}
+.hireC h2 i{font-style:italic;color:var(--ember2);font-weight:420}
+.hireC p{font-size:.78rem;color:#b8bcc6;margin:6px 0 16px}
+.hireC .mail{display:block;text-align:center;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;background:#f2f3f6;color:var(--ink);border-radius:10px;padding:12px;transition:.16s;margin-top:auto}
+.hireC .mail:hover{background:var(--ember);color:#fff}
+.hireC .res2{display:block;text-align:center;font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;color:#b8bcc6;margin-top:10px;text-transform:uppercase}
+.hireC .res2:hover{color:var(--ember2)}
+footer{text-align:center;padding:24px 0 2px;font-family:var(--mono);font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.rv{opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease}
 .rv.in{opacity:1;transform:none}
 </style>
 </head>
 <body>
 <div class="page">
+
 <div class="top">
-  <span class="name">Brian Mathew<em>.</em></span>
-  <span class="role">Builder · AI systems that run themselves</span>
-  <div class="links"><a class="chip" href="https://github.com/bmath8" target="_blank" rel="noopener">GitHub</a><a class="chip hot" href="mailto:mathew.brian@gmail.com">Hire me</a></div>
+  <span class="name">Brian <i>Mathew</i></span>
+  <span class="role">Self-taught builder · AI systems that run themselves · open to work</span>
+  <a class="btn res" href="resume.pdf" target="_blank" rel="noopener">↓ Resume</a>
+  <a class="btn" href="https://github.com/bmath8" target="_blank" rel="noopener">GitHub</a>
+  <a class="btn hire" href="mailto:mathew.brian@gmail.com">Hire me</a>
 </div>
 
-<div class="grid">
-
-  <div class="card c-intro rv">
-    <div class="chead"><span class="t">About</span><span class="s live">Open to work</span></div>
-    <div class="big">Self-taught builder. My employment gap ships <em>real software.</em></div>
-    <p>I design, build, and <b>operate</b> AI systems — not just demos. The card on the right is my actual agent fleet, live: it briefed me this morning, it will draft work for me tonight, and when it broke, <b>I root-caused the outages myself</b> (see below). All local models. <b>$0 a month.</b></p>
+<div class="hero">
+  <div class="card intro rv">
+    <h1>My employment gap ships <i>real software.</i></h1>
+    <p>I design, build, and <b>operate</b> AI systems — not just demos. The brain beside this card is my actual agent fleet: <b>19 autonomous agents</b> that brief me every morning, draft my work overnight, and patch my repos — on local models, for <b>$0 a month</b>. When it broke, <b>I root-caused the outages myself.</b></p>
     <div class="stats">
       <div class="stat"><b>19</b><span>agents live</span></div>
       <div class="stat"><b>78</b><span>tests passing</span></div>
       <div class="stat"><b>6</b><span>apps shipped</span></div>
-      <div class="stat"><b>$0</b><span>ai cost / mo</span></div>
+      <div class="stat"><b>$0</b><span>ai / month</span></div>
     </div>
   </div>
-
-  <div class="card c-fleet rv">
-    <div class="chead"><span class="t">Brian OS — my agent fleet, running now</span><span class="s live">LIVE</span></div>
-    <div class="netwrap"><canvas id="net"></canvas></div>
-    <div class="fleet-foot"><span class="who" id="fw">daily-brief</span><span class="what" id="fd">Compiles my morning brief and delivers it to my phone — verified, or an alert fires.</span><span class="when" id="ft">07:00</span></div>
-    <div class="tickline" id="tick"><em>07:00</em> daily-brief — brief delivered · verified ✓</div>
+  <div class="card brainbox rv">
+    <div class="art"><canvas id="brain"></canvas>
+      <span class="cap">the system, live — <b>a synapse fires each time an agent acts</b> · hover a bright neuron</span></div>
+    <div class="who"><b id="fw">daily-brief</b><span id="fd">compiles my morning brief and delivers it to my phone — verified, or an alert fires.</span><em id="ft">07:00</em></div>
   </div>
-
-  <div class="card c-proj rv">
-    <a href="mailto:mathew.brian@gmail.com?subject=Brian%20OS%20code%20access">
-    <div class="chead"><span class="t">Flagship</span><span class="s">Python · local LLMs</span></div>
-    <div class="mini">
-      <div class="mrow"><b>Morning brief</b><em>✓ 07:00</em></div>
-      <div class="mlines">watchdog — all clear<br><em>needs you</em> — approve draft #2</div>
-      <div class="mbars" style="margin-top:8px"><i style="height:40%"></i><i style="height:58%"></i><i style="height:46%"></i><i style="height:74%"></i><i style="height:62%"></i><i style="height:88%"></i><i style="height:70%"></i><i style="height:100%"></i></div>
-    </div>
-    <h3>Brian OS</h3>
-    <p>19 agents, two-model draft verification, build-verified dependency PRs, self-healing. 3 documented postmortems.</p>
-    <span class="go">Request the code →</span></a>
-  </div>
-
-  <div class="card c-proj rv">
-    <a href="https://pokemon-drop-intel.vercel.app/?code=brian2026" target="_blank" rel="noopener">
-    <div class="chead"><span class="t">Live product</span><span class="s">Next.js 16 · React 19</span></div>
-    <div class="mini">
-      <div class="mrow"><b>$4,218.60</b><em>▲ 12.4%</em></div>
-      <div class="mbars" style="margin-top:10px"><i style="height:30%"></i><i style="height:48%"></i><i style="height:40%"></i><i style="height:64%"></i><i style="height:55%"></i><i style="height:78%"></i><i style="height:72%"></i><i style="height:94%"></i><i style="height:85%"></i><i style="height:100%"></i></div>
-      <div style="color:var(--faint);margin-top:6px;letter-spacing:.12em">VAULT VALUE — 10 WK</div>
-    </div>
-    <h3>Pokémon Drop Intel</h3>
-    <p>Collector cockpit for the TCG — vault value, movers, grading queue. Fully interactive, no signup.</p>
-    <span class="go">Open the live demo →</span></a>
-  </div>
-
-  <div class="card c-proj rv">
-    <a href="ats/">
-    <div class="chead"><span class="t">AI agent</span><span class="s">FastAPI · Celery</span></div>
-    <div class="mini"><div class="mring"><div class="rg"><b>92%</b></div>
-      <div class="mlines">ATS MATCH<br><em>STRONG</em> — 2 gaps<br>cover letter ✓</div></div></div>
-    <h3>AI Job Hunter</h3>
-    <p>Resume tailored to any posting + ATS-scored in ~60s. Try the live tool.</p>
-    <span class="go">Try it now →</span></a>
-  </div>
-
-  <div class="card c-proj rv">
-    <a href="https://github.com/bmath8/BoomBox-V.5" target="_blank" rel="noopener">
-    <div class="chead"><span class="t">Real-time</span><span class="s">WebSockets · Redis</span></div>
-    <div class="mini">
-      <div class="mrow"><b>Late night lofi</b><em>23 listening</em></div>
-      <div class="meq" style="margin-top:8px"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    </div>
-    <h3>Boombox</h3>
-    <p>Listen together — synced rooms, live presence, collaborative radio.</p>
-    <span class="go">View the code →</span></a>
-  </div>
-
-  <div class="card c-ops rv">
-    <div class="chead"><span class="t">Operations — it broke, I fixed it</span><span class="s">3 postmortems</span></div>
-    <div class="oprow"><span class="sev">SEV-1 · FIXED</span><span><b>The fleet went silent.</b> Encoding bug emptied cron output + a self-heal regex that never fired. Fixed both; tests now catch the class.</span></div>
-    <div class="oprow"><span class="sev">SEV-1 · FIXED</span><span><b>Host VM died nightly.</b> WSL teardown bug — migrated the whole system to native Windows in one day.</span></div>
-    <div class="oprow"><span class="sev">SEV-2 · FIXED</span><span><b>Vendor updates broke delivery twice.</b> Made delivery update-proof + guarded upgrades with auto-rollback.</span></div>
-  </div>
-
-  <div class="card c-log rv">
-    <div class="chead"><span class="t">Last 30 days</span><span class="s">shipping log</span></div>
-    <div class="logrow"><span class="d">JUL 06</span><span><b>System audit day</b> — outage-class bug fixed, 2× GPU context, guarded upgrades.</span></div>
-    <div class="logrow"><span class="d">JUN 24</span><span><b>Modernization agent</b> — CVE watch + build-verified PRs.</span></div>
-    <div class="logrow"><span class="d">JUN 22</span><span><b>42 upgrades</b> in tested autonomous batches.</span></div>
-  </div>
-
-  <div class="card c-hire rv">
-    <div class="chead"><span class="t">Contact</span><span class="s live">replies fast</span></div>
-    <h2>Give me a system to <em>run.</em></h2>
-    <p>Apprenticeships, junior roles, AI-builder work.</p>
-    <a class="mailbtn" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
-  </div>
-
 </div>
-<footer>© 2026 Brian Mathew · every card is real & running · built by hand, no libraries</footer>
+
+<div class="lbl rv"><b>01</b> Selected work — real, running, clickable</div>
+<div class="works">
+  <a class="piece rv" href="mailto:mathew.brian@gmail.com?subject=Brian%20OS%20code%20access">
+    <div class="frame"><div class="art2"><div class="brief">
+      <div class="r"><b>Morning brief</b><em>✓ delivered 07:00</em></div>
+      <div class="r"><span>watchdog</span><em>all clear · GPU ok</em></div>
+      <div class="r"><span>overnight worker</span><em>3 drafts await review</em></div>
+      <div class="r"><span>dependency agent</span><em>1 safe PR opened ✓</em></div>
+      <div class="r"><span>needs you</span><em class="warn">approve outreach #2</em></div>
+    </div></div>
+    <div class="placard"><span class="med">Flagship · in production 24/7 · Python · local models</span>
+      <h3>Brian OS</h3>
+      <p>The brain above. Overnight drafts pass a <b>second critic model</b> before I see them; dependency upgrades arrive as build-verified PRs; delivery is update-proof. 78 tests. Three documented postmortems (below).</p>
+      <span class="go">Request the code + postmortems →</span></div></div></a>
+
+  <a class="piece rv" href="https://pokemon-drop-intel.vercel.app/?code=brian2026" target="_blank" rel="noopener">
+    <div class="frame"><div class="art2"><div style="width:78%">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:.62rem;margin-bottom:8px">
+        <b style="font-family:var(--disp);font-size:1.05rem">$4,218.60</b><em style="font-style:normal;color:var(--indigo)">▲ 12.4% vs cost</em></div>
+      <div class="bars2"><i style="height:30%"></i><i style="height:47%"></i><i style="height:39%"></i><i style="height:63%"></i><i style="height:54%"></i><i style="height:77%"></i><i style="height:70%"></i><i style="height:93%"></i><i style="height:84%"></i><i style="height:100%"></i></div>
+      <div style="font-size:.5rem;color:var(--mute);margin-top:5px;letter-spacing:.14em">VAULT VALUE — 10 WEEKS</div>
+    </div></div>
+    <div class="placard"><span class="med">Live product · try it now, no signup · Next.js 16 · React 19</span>
+      <h3>Pokémon Drop Intel</h3>
+      <p>A collector's cockpit for the Pokémon TCG — binder value against cost basis, market movers, a grading queue, live card art from the TCG API. <b>Fully interactive on sample data.</b></p>
+      <span class="go">Open the live demo →</span></div></div></a>
+</div>
+
+<div class="lbl rv"><b>02</b> Operations &amp; contact</div>
+<div class="bottom">
+  <div class="card vit rv">
+    <div class="vhead"><span>It broke. I fixed it. — real production incidents</span><span>3 postmortems · all resolved</span></div>
+    <div class="vrow"><span class="sv">SEV-1</span><span><b>The fleet went silent.</b> An encoding failure emptied cron output while the self-heal regex could never fire. Fixed both — the test suite now guards the whole failure class.</span></div>
+    <div class="vrow"><span class="sv">SEV-1</span><span><b>The host VM died nightly.</b> A documented WSL teardown bug. I migrated the entire system to native Windows in one day — failure class removed, not patched.</span></div>
+    <div class="vrow"><span class="sv">SEV-2</span><span><b>Vendor updates broke delivery — twice.</b> Delivery made update-proof; upgrades now run guarded with automatic rollback. Latest upgrade: zero downtime.</span></div>
+  </div>
+  <div class="hireC rv"><span class="k">Contact — replies fast</span>
+    <h2>Give me a system to <i>run.</i></h2>
+    <p>Apprenticeships, junior roles, AI-builder work. You've seen what I do unsupervised with my own time.</p>
+    <a class="mail" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+    <a class="res2" href="resume.pdf" target="_blank" rel="noopener">↓ download my resume (pdf)</a>
+  </div>
+</div>
+
+<footer>© 2026 Brian Mathew · the brain above is his real agent fleet · built by hand, no libraries</footer>
 </div>
 
 <script>
-// contained fleet constellation — always assembled, slow orbit, hover = agent info
-const FLEET=[
- ["daily-brief","07:00","Compiles my morning brief and delivers it to my phone — verified, or an alert fires."],
- ["watchdog","every 4h","Disk, models, gateway, backups — self-heals, alerts only on change."],
- ["overnight-worker","02:00","Drafts my queued tasks; a second critic model reviews them first."],
- ["career-agent","06:53","Applications vs target, follow-ups auto-drafted, interviews tracked."],
- ["currency-agent","06:58","Watches releases + CVEs; opens build-verified dependency PRs."],
- ["scout","06:40","Scans the AI ecosystem for tools worth adopting."],
- ["learning","06:45","Spaced-repetition recall cards, graded from my phone."],
- ["finance","06:50","Runway and spending signals into the brief."],
- ["health","06:52","Habit streaks, nudged gently."],
- ["calendar","06:55","Today's events pulled into the brief."],
- ["inbox","06:48","Surfaces new dropped files."],
- ["wiki","Sun","Distills the week into living wiki pages."],
- ["weekly-review","Sun","My weekly review, written from real data."],
- ["model-review","monthly","Benchmarks local models on my real tasks."],
- ["memory-index","01:20","Rebuilds the RAG index over my notes."],
- ["harmony-backup","01:30","Mirrors my life files nightly."],
- ["boot-smoke","boot","Proves delivery works after every recovery."],
- ["dashboard","hourly","Live HTML ops dashboard."],
- ["feedback","Sun","Learns my taste from graded drafts."]
-];
-const cv=document.getElementById('net'),ctx=cv.getContext('2d');
-let W=0,H=0;
+// ============ the neural brain: his fleet as a living brain ============
+const AG=[["daily-brief","07:00","compiles my morning brief and delivers it to my phone — verified, or an alert fires."],
+["watchdog","every 4h","checks disk, models, gateway, backups — self-heals, alerts only on change."],
+["overnight-worker","02:00","drafts my queued tasks; a second critic model reviews them first."],
+["career-agent","06:53","applications vs target, follow-ups auto-drafted, interviews tracked."],
+["currency-agent","06:58","watches releases + CVEs; opens build-verified dependency PRs."],
+["scout","06:40","scans the AI ecosystem for tools worth adopting."],
+["learning","06:45","spaced-repetition recall cards, graded from my phone."],
+["finance","06:50","runway and spending signals into the brief."],
+["health","06:52","habit streaks, nudged gently."],
+["calendar","06:55","today's events pulled into the brief."],
+["inbox","06:48","surfaces new dropped files so nothing rots."],
+["wiki","Sun 16:45","distills the week into living wiki pages."],
+["weekly-review","Sun 17:00","writes my weekly review from real data."],
+["model-review","monthly","benchmarks local models on my real tasks."],
+["memory-index","01:20","rebuilds the RAG index over my notes."],
+["harmony-backup","01:30","mirrors my life files nightly."],
+["boot-smoke","on boot","proves delivery works after every recovery."],
+["dashboard","hourly","renders a live ops dashboard."],
+["feedback","Sun","learns my taste from graded drafts."]];
+const cv=document.getElementById('brain'),ctx=cv.getContext('2d');
+let W,H;
 function fit(){const r=cv.parentElement.getBoundingClientRect();W=r.width;H=r.height;
-  cv.width=W*devicePixelRatio;cv.height=H*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
+  cv.width=W*devicePixelRatio;cv.height=H*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);build()}
+// brain silhouette (side profile, facing right): union of lobes, minus a notch for the stem
+function inBrain(x,y){ // x,y in [-1,1] space
+  const inE=(cx,cy,rx,ry)=>((x-cx)/rx)**2+((y-cy)/ry)**2<1;
+  return (inE(-.05,-.06,.72,.52)          // main cerebrum
+       || inE(.42,.02,.36,.38)            // frontal lobe (right)
+       || inE(-.52,.18,.32,.3)            // occipital/cerebellum (left-low)
+       || inE(-.28,.34,.22,.18))          // cerebellum bump
+       && !(x<-.34&&y>.42);               // stem notch
+}
+let NEUR=[],EDGES=[],LEADS=[];
+function build(){
+  NEUR=[];EDGES=[];LEADS=[];
+  const n=170,cx=W*.5,cy=H*.52,sx=W*.42,sy=H*.4;
+  let guard=0;
+  while(NEUR.length<n&&guard++<9000){
+    const x=Math.random()*2-1,y=Math.random()*2-1;
+    if(inBrain(x,y))NEUR.push({x:cx+x*sx,y:cy+y*sy,ox:x,oy:y,act:0,ph:Math.random()*7});
+  }
+  // k-nearest edges
+  NEUR.forEach((a,i)=>{
+    const near=NEUR.map((b,j)=>({j,d:(a.x-b.x)**2+(a.y-b.y)**2})).filter(o=>o.j!==i)
+      .sort((p,q)=>p.d-q.d).slice(0,3);
+    near.forEach(o=>{if(!EDGES.some(e=>(e.a===o.j&&e.b===i)))EDGES.push({a:i,b:o.j})});
+  });
+  // adjacency + 19 well-spread agent neurons
+  ADJ=NEUR.map(()=>[]);EDGES.forEach((e,k)=>{ADJ[e.a].push({n:e.b,e:k});ADJ[e.b].push({n:e.a,e:k})});
+  const step=Math.floor(NEUR.length/19);
+  for(let i=0;i<19;i++){const idx=(i*step+3)%NEUR.length;LEADS.push(idx);NEUR[idx].lead=AG[i]}
+}
+let ADJ=[],PULSES=[];
+function fire(){ // an impulse chain = "an agent acting"
+  const start=LEADS[Math.floor(Math.random()*LEADS.length)];
+  let cur=start;
+  for(let hop=0;hop<6;hop++){
+    const opts=ADJ[cur];if(!opts.length)break;
+    const nx=opts[Math.floor(Math.random()*opts.length)];
+    PULSES.push({e:nx.e,from:cur,t:-hop*.28});
+    cur=nx.n;
+  }
+  NEUR[start].act=1;
+}
+setInterval(fire,620);
 fit();addEventListener('resize',fit);
-const N=FLEET.map((a,i)=>({a,i,x:0,y:0}));
-let hov=null;
+let mx=-9e3,my=-9e3,hov=null;
+cv.parentElement.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();
+  mx=e.clientX-r.left;my=e.clientY-r.top});
+cv.parentElement.addEventListener('pointerleave',()=>{mx=-9e3;my=-9e3});
 function draw(t){
   ctx.clearRect(0,0,W,H);
-  const cx=W/2,cy=H/2,R=Math.min(W,H)*.36;
-  N.forEach((n,i)=>{
-    const ang=i/N.length*Math.PI*2-Math.PI/2+Math.sin(t*.00006)*0.3;
-    const r=R+Math.sin(t*.0004+i*2.1)*7+(i%2?12:-8);
-    n.x=cx+Math.cos(ang)*r*1.28;n.y=cy+Math.sin(ang)*r*.92;
+  // gentle breathing
+  NEUR.forEach(n=>{n.dx=Math.sin(t*.0006+n.ph)*2.2;n.dy=Math.cos(t*.0005+n.ph*1.3)*2.2;n.act*=.965});
+  // synapses
+  EDGES.forEach(e=>{const a=NEUR[e.a],b=NEUR[e.b];
+    const glow=Math.max(a.act,b.act);
+    ctx.strokeStyle=glow>.08?`rgba(226,87,31,${.1+glow*.5})`:'rgba(59,74,143,.13)';
+    ctx.lineWidth=glow>.08?1.2:.7;
+    ctx.beginPath();ctx.moveTo(a.x+a.dx,a.y+a.dy);ctx.lineTo(b.x+b.dx,b.y+b.dy);ctx.stroke()});
+  // traveling impulses
+  PULSES=PULSES.filter(p=>{p.t+=.045;if(p.t<0)return true;if(p.t>1){ // arrive: light the far node
+      const e=EDGES[p.e];const far=(e.a===p.from)?e.b:e.a;NEUR[far].act=1;return false}
+    const e=EDGES[p.e];const a=NEUR[e.a===p.from?e.a:e.b],b=NEUR[e.a===p.from?e.b:e.a];
+    const x=a.x+(b.x-a.x)*p.t,y=a.y+(b.y-a.y)*p.t;
+    ctx.fillStyle='rgba(226,87,31,.95)';
+    ctx.shadowColor='rgba(226,87,31,.8)';ctx.shadowBlur=8;
+    ctx.beginPath();ctx.arc(x,y,2.1,0,7);ctx.fill();ctx.shadowBlur=0;
+    return true});
+  // neurons
+  hov=null;let best=20;
+  NEUR.forEach(n=>{if(n.lead){const d=Math.hypot(mx-n.x,my-n.y);if(d<best){best=d;hov=n}}});
+  NEUR.forEach(n=>{
+    const isH=n===hov;
+    const r=n.lead?(isH?6:4):(2+n.act*1.6);
+    ctx.fillStyle=isH?'#e2571f':(n.act>.25?`rgba(226,87,31,${.45+n.act*.5})`:(n.lead?'#3b4a8f':'rgba(59,74,143,.62)'));
+    if(n.act>.4||isH){ctx.shadowColor='rgba(226,87,31,.7)';ctx.shadowBlur=isH?12:7}
+    ctx.beginPath();ctx.arc(n.x+n.dx,n.y+n.dy,r,0,7);ctx.fill();ctx.shadowBlur=0;
   });
-  ctx.strokeStyle='rgba(93,124,255,.22)';ctx.lineWidth=1;
-  N.forEach(n=>{ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(n.x,n.y);ctx.stroke()});
-  for(let k=0;k<3;k++){const n=N[(Math.floor(t*.0008)+k*7)%N.length];const f=(t*.0006+k*.33)%1;
-    ctx.fillStyle='rgba(255,180,107,.95)';ctx.beginPath();ctx.arc(cx+(n.x-cx)*f,cy+(n.y-cy)*f,1.8,0,7);ctx.fill()}
-  ctx.fillStyle='#171b26';ctx.strokeStyle='#ffb46b';ctx.lineWidth=1.3;
-  ctx.beginPath();ctx.arc(cx,cy,7,0,7);ctx.fill();ctx.stroke();
-  N.forEach(n=>{const h=n===hov;
-    ctx.fillStyle=h?'#ff7847':'#5d7cff';
-    ctx.beginPath();ctx.arc(n.x,n.y,h?5:3,0,7);ctx.fill();
-    ctx.fillStyle=h?'#ffb46b':'rgba(152,162,184,.7)';
-    ctx.font='8.5px IBM Plex Mono';ctx.textAlign='center';
-    ctx.fillText(n.a[0],n.x,n.y+(n.y>cy?15:-9));});
+  if(hov){ctx.fillStyle='#e2571f';ctx.font='9.5px IBM Plex Mono';ctx.textAlign='center';
+    ctx.fillText(hov.lead[0],hov.x,hov.y-12);
+    document.getElementById('fw').textContent=hov.lead[0];
+    document.getElementById('ft').textContent=hov.lead[1];
+    document.getElementById('fd').textContent=hov.lead[2]}
   requestAnimationFrame(draw);
 }
-cv.parentElement.addEventListener('pointermove',e=>{
-  const r=cv.getBoundingClientRect();const px=e.clientX-r.left,py=e.clientY-r.top;
-  hov=null;let best=26;
-  N.forEach(n=>{const d=Math.hypot(px-n.x,py-n.y);if(d<best){best=d;hov=n}});
-  if(hov){document.getElementById('fw').textContent=hov.a[0];
-    document.getElementById('ft').textContent=hov.a[1];
-    document.getElementById('fd').textContent=hov.a[2]}
-});
 requestAnimationFrame(draw);
 
-// one-line ticker
-const LOG=[["07:00","daily-brief","brief delivered · verified ✓"],["09:14","telegram","/tailor → application kit drafted"],
- ["12:00","watchdog","VRAM pressure → pinned small model"],["16:00","watchdog","all clear · heartbeat pinged"],
- ["02:00","overnight","3 drafts · critic loop: 2 revisions"],["06:58","currency","1 safe upgrade PR opened ✓"]];
-let li=0;setInterval(()=>{const[t,a,m]=LOG[++li%LOG.length];
-  document.getElementById('tick').innerHTML=`<em>${t}</em> ${a} — ${m}`},3000);
-
-// gentle reveal
+// reveals — CSS-delay stagger
 const io=new IntersectionObserver(es=>{let i=0;es.forEach(e=>{if(e.isIntersecting){
-  e.target.style.transitionDelay=(i++*50)+'ms';e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.06});
+  e.target.style.transitionDelay=(i++*70)+'ms';e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 </script>
 </body>
