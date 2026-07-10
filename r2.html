@@ -1,0 +1,104 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>R2 — Playful</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Karla:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f6f4ef;color:#191919;font-family:"Karla",sans-serif;line-height:1.6;overflow-x:hidden}
+.tag{position:fixed;bottom:14px;left:18px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#bbb;z-index:9}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 24px 40px}
+.top{display:flex;align-items:center;gap:14px;padding:8px 0 26px}
+.top b{font-family:"Sora";font-weight:800;font-size:1.3rem;letter-spacing:-.02em}
+.top b i{font-style:normal;color:#ff5e2b}
+.top span{font-size:.76rem;color:#8b8b86;margin-right:auto}
+.pill{font-family:"Sora";font-weight:700;font-size:.72rem;padding:11px 18px;border-radius:99px;border:2px solid #191919;text-decoration:none;color:#191919;transition:.15s;background:#fff}
+.pill:hover{transform:translateY(-2px) rotate(-1deg);box-shadow:3px 3px 0 #191919}
+.pill.hot{background:#ff5e2b;color:#fff;border-color:#191919}
+/* ticker — the playful ALIVE element */
+.ticker{background:#191919;color:#f6f4ef;border-radius:14px;padding:11px 0;overflow:hidden;white-space:nowrap;margin-bottom:22px}
+.ticker div{display:inline-block;animation:mv 26s linear infinite;font-size:.74rem;letter-spacing:.04em}
+.ticker em{font-style:normal;color:#ffc93c;margin:0 10px 0 34px}
+@keyframes mv{to{transform:translateX(-50%)}}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;margin-bottom:20px}
+@media(max-width:860px){.hero{grid-template-columns:1fr}}
+.hcard{background:#2b46ff;color:#fff;border-radius:24px;padding:38px;position:relative;overflow:hidden}
+.hcard::after{content:"✳";position:absolute;right:-24px;bottom:-42px;font-size:11rem;color:rgba(255,255,255,.14);transform:rotate(12deg)}
+h1{font-family:"Sora";font-weight:800;font-size:clamp(1.9rem,4.4vw,3.1rem);line-height:1.08;letter-spacing:-.03em}
+h1 mark{background:#ffc93c;color:#191919;padding:0 10px;border-radius:10px;display:inline-block;transform:rotate(-1.5deg)}
+.hcard p{margin-top:18px;font-size:.95rem;color:#dbe1ff;max-width:46ch}
+.hcard p b{color:#fff}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.scard{border-radius:20px;padding:20px;border:2px solid #191919;background:#fff;transition:.15s}
+.scard:hover{transform:rotate(-1.2deg) scale(1.02)}
+.scard b{font-family:"Sora";font-weight:800;font-size:2rem;display:block;line-height:1.1}
+.scard span{font-size:.7rem;color:#8b8b86;text-transform:uppercase;letter-spacing:.1em}
+.scard.y{background:#ffc93c}.scard.o{background:#ff5e2b;color:#fff}.scard.o span{color:#ffd9c8}
+.scard.g{background:#1fae67;color:#fff}.scard.g span{color:#c9f0dc}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media(max-width:860px){.row2{grid-template-columns:1fr}}
+.proj{border:2px solid #191919;border-radius:24px;background:#fff;padding:26px;text-decoration:none;color:inherit;display:block;transition:.18s;position:relative}
+.proj:hover{transform:translateY(-5px);box-shadow:6px 6px 0 #191919}
+.proj .go{position:absolute;top:18px;right:18px;width:42px;height:42px;border-radius:50%;border:2px solid #191919;display:flex;align-items:center;justify-content:center;font-weight:700;transition:.18s;background:#fff}
+.proj:hover .go{background:#ffc93c;transform:rotate(45deg)}
+.proj .k{font-family:"Sora";font-weight:700;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:#ff5e2b}
+.proj h3{font-family:"Sora";font-weight:800;font-size:1.6rem;margin:8px 0;letter-spacing:-.02em}
+.proj p{font-size:.88rem;color:#5a5a55}
+.proj p b{color:#191919}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.chips i{font-style:normal;font-size:.66rem;font-weight:600;border:1.5px solid #191919;border-radius:99px;padding:4px 11px;background:#f6f4ef}
+.strip{display:grid;grid-template-columns:1.3fr .7fr;gap:20px}
+@media(max-width:860px){.strip{grid-template-columns:1fr}}
+.ops{border:2px solid #191919;border-radius:24px;background:#fff;padding:24px}
+.ops h4{font-family:"Sora";font-weight:800;font-size:1.05rem;margin-bottom:12px}
+.ops div{padding:9px 0;border-bottom:1.5px dashed #e4e2da;font-size:.82rem;color:#5a5a55}
+.ops div:last-child{border:none}
+.ops b{color:#191919}
+.ops em{font-style:normal;font-family:"Sora";font-weight:700;font-size:.6rem;color:#ff5e2b;margin-right:8px}
+.cta{background:#191919;color:#f6f4ef;border-radius:24px;padding:26px;display:flex;flex-direction:column}
+.cta h3{font-family:"Sora";font-weight:800;font-size:1.4rem;line-height:1.2}
+.cta h3 i{font-style:normal;color:#ffc93c}
+.cta p{font-size:.8rem;color:#b9b9b3;margin:8px 0 16px}
+.cta a{margin-top:auto;text-align:center;background:#ffc93c;color:#191919;font-family:"Sora";font-weight:700;font-size:.8rem;border-radius:14px;padding:14px;text-decoration:none;transition:.15s}
+.cta a:hover{background:#ff5e2b;color:#fff}
+</style></head><body>
+<span class="tag">R2 — playful · personality with proof</span>
+<div class="wrap">
+<div class="top"><b>Brian<i>.</i></b><span>Self-taught builder · open to work</span>
+  <a class="pill" href="resume.pdf" target="_blank">Resume ↓</a><a class="pill" href="https://github.com/bmath8" target="_blank">GitHub</a><a class="pill hot" href="mailto:mathew.brian@gmail.com">Hire me</a></div>
+<div class="ticker"><div>
+  <em>07:00</em>daily-brief delivered ✓ <em>06:53</em>career-agent drafted 5 follow-ups <em>02:00</em>overnight-worker: 3 drafts, critic approved <em>06:58</em>currency-agent opened a safe PR ✓ <em>every 4h</em>watchdog: all clear <em>16:00</em>heartbeat pinged ✓
+  <em>07:00</em>daily-brief delivered ✓ <em>06:53</em>career-agent drafted 5 follow-ups <em>02:00</em>overnight-worker: 3 drafts, critic approved <em>06:58</em>currency-agent opened a safe PR ✓ <em>every 4h</em>watchdog: all clear <em>16:00</em>heartbeat pinged ✓
+</div></div>
+<div class="hero">
+  <div class="hcard">
+    <h1>My employment gap has <mark>19 employees.</mark></h1>
+    <p>I taught myself to build by building — and then built an AI staff that briefs me, drafts my work overnight, and patches my repos on local models for <b>$0 a month</b>. The ticker above is what they did today. <b>When it broke, I fixed it myself.</b></p>
+  </div>
+  <div class="statgrid">
+    <div class="scard y"><b>19</b><span>agents live</span></div>
+    <div class="scard"><b>78</b><span>tests passing</span></div>
+    <div class="scard o"><b>3</b><span>postmortems</span></div>
+    <div class="scard g"><b>$0</b><span>AI cost / month</span></div>
+  </div>
+</div>
+<div class="row2">
+  <a class="proj" href="mailto:mathew.brian@gmail.com?subject=Brian%20OS%20code%20access"><span class="go">→</span>
+    <span class="k">Flagship · runs 24/7</span><h3>Brian OS</h3>
+    <p>The 19-agent fleet: verified briefs, overnight drafts checked by <b>a second critic model</b>, build-verified dependency PRs, self-healing.</p>
+    <div class="chips"><i>Python</i><i>Local LLMs</i><i>RAG</i><i>Telegram</i><i>78 tests</i></div></a>
+  <a class="proj" href="https://pokemon-drop-intel.vercel.app/?code=brian2026" target="_blank"><span class="go">→</span>
+    <span class="k">Live product · no signup</span><h3>Pokémon Drop Intel</h3>
+    <p>Collector cockpit for the TCG — vault value, market movers, grading queue, live card art. <b>Click it, it just works.</b></p>
+    <div class="chips"><i>Next.js 16</i><i>React 19</i><i>TypeScript</i><i>Tailwind 4</i></div></a>
+</div>
+<div class="strip">
+  <div class="ops"><h4>It broke → I fixed it 🔧</h4>
+    <div><em>SEV-1</em><b>Fleet went silent.</b> Encoding bug + dead self-heal — fixed, tests guard the class now.</div>
+    <div><em>SEV-1</em><b>Host VM died nightly.</b> Migrated everything to native Windows in one day.</div>
+    <div><em>SEV-2</em><b>Updates broke delivery twice.</b> Update-proof now, with auto-rollback.</div>
+  </div>
+  <div class="cta"><h3>Want a builder who brings <i>his own team?</i></h3>
+    <p>Apprenticeships, junior roles, AI-builder work.</p>
+    <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a></div>
+</div>
+</div>
+</body></html>
