@@ -1,0 +1,82 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>R5 — The Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital@0;1&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#e8e6e1;font-family:"Public Sans",sans-serif;color:#232323;line-height:1.6;padding:34px 14px 50px;font-size:14px}
+.tag{position:fixed;bottom:12px;left:16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#b3b1aa;z-index:9}
+.sheet{max-width:880px;margin:0 auto;background:#fffefb;box-shadow:0 1px 3px rgba(30,28,20,.12),0 24px 60px -20px rgba(30,28,20,.3);padding:0}
+.bar{display:flex;justify-content:space-between;align-items:center;background:#eef3ee;padding:26px 44px;border-bottom:1px solid #dfe6df}
+h1{font-family:"Libre Caslon Text",serif;font-weight:400;font-size:2rem;letter-spacing:.01em}
+h1 i{color:#3a7d5c}
+.bar .r{display:flex;gap:10px}
+.bar a{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:#232323;border:1.5px solid #232323;padding:9px 15px;border-radius:3px;transition:.15s}
+.bar a:hover{background:#232323;color:#fffefb}
+.bar a.g{background:#3a7d5c;border-color:#3a7d5c;color:#fff}
+.bar a.g:hover{background:#232323;border-color:#232323}
+.cols{display:grid;grid-template-columns:1.55fr .85fr;gap:0}
+@media(max-width:760px){.cols{grid-template-columns:1fr}}
+.main{padding:34px 44px}
+.side{padding:34px 34px;border-left:1px solid #ecebe5;background:#fbfaf6}
+h2{font-size:.66rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#3a7d5c;margin:26px 0 12px;border-bottom:1px solid #ecebe5;padding-bottom:7px}
+h2:first-child{margin-top:0}
+.item{margin-bottom:20px}
+.item .h{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.item h3{font-family:"Libre Caslon Text",serif;font-weight:400;font-size:1.12rem}
+.item .yr{font-size:.66rem;color:#9a988f;white-space:nowrap}
+.item p{color:#555349;font-size:.82rem;margin-top:4px}
+.item p b{color:#232323;font-weight:600}
+.item a{font-size:.7rem;font-weight:600;color:#3a7d5c;text-decoration:none;border-bottom:1px solid #cfe0d6}
+.item a:hover{border-color:#3a7d5c}
+.inc{font-size:.8rem;color:#555349;padding:7px 0;border-bottom:1px dotted #ecebe5}
+.inc:last-child{border:none}
+.inc b{color:#232323}
+.inc em{font-style:normal;font-size:.6rem;font-weight:600;color:#b3572e;margin-right:8px;letter-spacing:.06em}
+.side p{font-size:.8rem;color:#555349}
+.side .stat{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px dotted #e2e0d7;font-size:.8rem}
+.side .stat b{font-family:"Libre Caslon Text",serif;font-size:1.25rem;color:#232323}
+.skill{display:inline-block;font-size:.68rem;font-weight:500;background:#eef3ee;color:#2e5c46;border-radius:3px;padding:4px 9px;margin:0 5px 6px 0}
+.live{display:flex;align-items:center;gap:8px;font-size:.72rem;color:#3a7d5c;font-weight:600;margin-top:4px}
+.live i{width:7px;height:7px;border-radius:50%;background:#3a7d5c;animation:p 2.4s infinite}
+@keyframes p{50%{opacity:.25}}
+.side .mail{display:block;text-align:center;background:#232323;color:#fffefb;font-size:.72rem;font-weight:600;letter-spacing:.06em;border-radius:3px;padding:12px;text-decoration:none;margin-top:18px;transition:.15s}
+.side .mail:hover{background:#3a7d5c}
+</style></head><body>
+<span class="tag">R5 — the sheet · your resume, beautifully typeset, as the site</span>
+<div class="sheet">
+  <div class="bar"><h1>Brian Mathew<i>.</i></h1>
+    <div class="r"><a href="resume.pdf" target="_blank">PDF ↓</a><a href="https://github.com/bmath8" target="_blank">GitHub</a><a class="g" href="mailto:mathew.brian@gmail.com">Hire me</a></div></div>
+  <div class="cols">
+    <div class="main">
+      <h2>Profile</h2>
+      <p style="font-size:.86rem;color:#555349">Self-taught builder who ships and <b style="color:#232323">operates</b> AI systems. My employment gap produced a working autonomous staff: <b style="color:#232323">19 agents on local models</b> that brief me, draft overnight, and patch my repos — for $0 a month. When it broke, I root-caused it myself.</p>
+      <h2>Selected work</h2>
+      <div class="item"><div class="h"><h3>Brian OS — autonomous agent fleet</h3><span class="yr">2026 · in production</span></div>
+        <p>19 scheduled agents: verified morning briefs, overnight drafts reviewed by <b>a second critic model</b>, build-verified dependency PRs, self-healing, 78 passing tests.</p>
+        <a href="mailto:mathew.brian@gmail.com?subject=Brian%20OS%20code%20access">Request code + postmortems →</a></div>
+      <div class="item"><div class="h"><h3>Pokémon Drop Intel — live product</h3><span class="yr">2026 · demo online</span></div>
+        <p>Collector's cockpit for the Pokémon TCG: vault value vs cost basis, market movers, grading queue. <b>Fully interactive, no signup.</b> Next.js 16 / React 19 / TypeScript.</p>
+        <a href="https://pokemon-drop-intel.vercel.app/?code=brian2026" target="_blank">Open the live demo →</a></div>
+      <h2>Incidents — found, fixed, documented</h2>
+      <div class="inc"><em>SEV-1</em><b>The fleet went silent.</b> Encoding failure + a self-heal that never fired; both fixed, tests now guard the class.</div>
+      <div class="inc"><em>SEV-1</em><b>Host VM died nightly.</b> Migrated the entire system to native Windows in one day.</div>
+      <div class="inc"><em>SEV-2</em><b>Updates broke delivery twice.</b> Delivery made update-proof; upgrades auto-roll back.</div>
+    </div>
+    <div class="side">
+      <h2>Status</h2>
+      <div class="live"><i></i>Open to work · replies fast</div>
+      <div class="live" style="color:#555349;font-weight:400"><i style="background:#9a988f"></i>19 agents running right now</div>
+      <h2>Numbers</h2>
+      <div class="stat"><span>Agents in production</span><b>19</b></div>
+      <div class="stat"><span>Tests passing</span><b>78</b></div>
+      <div class="stat"><span>Apps shipped</span><b>6</b></div>
+      <div class="stat"><span>AI cost / month</span><b>$0</b></div>
+      <h2>Stack</h2>
+      <div><span class="skill">Python</span><span class="skill">TypeScript</span><span class="skill">Next.js</span><span class="skill">Local LLMs</span><span class="skill">RAG</span><span class="skill">Docker</span><span class="skill">Postmortems</span></div>
+      <h2>Contact</h2>
+      <p>mathew.brian@gmail.com<br>github.com/bmath8</p>
+      <a class="mail" href="mailto:mathew.brian@gmail.com">Email Brian</a>
+    </div>
+  </div>
+</div>
+</body></html>
