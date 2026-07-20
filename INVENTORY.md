@@ -13,7 +13,8 @@ resume version and every project to it, with an honest status on each.
 
 | Version | Where it lives | Date | Status |
 |---|---|---|---|
-| **`resume.pdf`** (current) | This repo — linked from the live site | 2026 | ✅ **FINAL / SENDABLE.** Product-support focus, matches the portfolio site 1:1. This is the one to apply with. |
+| **`resume.pdf`** (current) | This repo — linked from the live site | 2026 | ✅ **FINAL / SENDABLE.** Rebuilt 2026-07-20 from an editable source (`resume/resume.html`) — one page, ATS-safe (real text, single column), now includes the portfolio URL and sharpened, verified project bullets. |
+| `resume/resume.html` | This repo | 2026-07-20 | ✏️ **Editable source** for the PDF. Edit this, re-render with headless Chromium `--print-to-pdf`. No more locked binary. |
 | BMAT Resume.docx | Google Drive | 2018 | 🗄️ Legacy — pre-AI, outdated. Keep for reference only. |
 | BMAT RESUME.doc / "BMAT RESUME" | Google Drive | 2012 | 🗄️ Legacy — very old. Archive. |
 
@@ -94,14 +95,24 @@ You are not starting from zero — you're basically done for a first application
 
 ## 5. To reach "final final" (recommended, in order)
 
-1. **LinkedIn** — add the URL to the resume + site hero; mirror the site's three projects.
-2. **Pick a 4th case study** — `pokemon-drop-intel` is the strongest candidate (demo-ready).
-   Decide: feature it on the site or leave the trio.
-3. **Cover-letter template** — one reusable base that matches the resume voice.
-4. **Repo hygiene on featured projects** — each Tier-1 repo should have a clean README with a
-   one-line pitch, screenshot/GIF, and run instructions, since recruiters will click through.
+1. **LinkedIn** — provide the handle; it goes back on the resume contact line + site hero.
+   (Removed from the shipped PDF for now so there's no broken placeholder.)
+2. ✅ **Cover-letter template** — done: `cover-letter-template.md` (reusable, matches resume voice).
+3. **Screenshots** — the three featured repos already have solid, honest READMEs (written by a
+   prior session) with screenshot *placeholders*. Drop a real screenshot/GIF into each repo's
+   `docs/screenshot.png` — the one thing only you can do (they're your running apps).
+4. **Pick a 4th case study** (optional) — `pokemon-drop-intel` is the strongest candidate. A
+   strong trio is fine; don't pad. Decide later.
 5. **Housekeeping** — `AGENTS.md` still says the site is password-gated; it isn't anymore.
-   Update it so the docs match the public launch.
+
+### Verified during consolidation (2026-07-20)
+The three featured projects are **substantial and real**, not throwaway:
+- `ai-job-hunter` — ~30k lines Python, 21 test modules, Docker + Render, GPT-4/Claude, ATS scorer. README status: ~85% (v0.9).
+- `brian-os-fleet` — **25 scheduled agents** on a local LLM, Telegram control, approval-gated actions, **81 tests** (green on Windows). Site corrected 24 → 25 agents.
+- `boombox-v.5` — ~48k lines TypeScript, Next.js/Supabase/Redis/WebSockets, 20 test files, production-grade infra.
+
+> "Unfinished" is fine and honest — the site already labels each project's true status. The goal
+> was never to finish 21 projects; it's 3 legible ones + apply. That bar is met.
 
 ---
 
