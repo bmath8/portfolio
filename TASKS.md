@@ -13,4 +13,4 @@ Consolidate every resume and portfolio project into one place and get them to se
 - [ ] Add LinkedIn handle to resume + site (waiting on Brian)
 - [ ] Add real screenshots to each featured repo's `docs/screenshot.png`
 - [ ] Decide on optional 4th case study (pokemon-drop-intel)
-- [ ] Update stale AGENTS.md (site no longer password-gated)
+- [x] Update stale AGENTS.md (site no longer password-gated; corrected to public status + resume workflow)
