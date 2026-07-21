@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Brian Mathew — Resume</title>
+<style>
+  /* ATS-friendly: single column, real text, standard headings, no layout tables. */
+  @page { size: letter; margin: 0.42in 0.5in; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Calibri", "Segoe UI", Arial, sans-serif;
+    font-size: 10pt; line-height: 1.26; color: #1a1a1a; max-width: 7.5in; margin: 0 auto;
+  }
+  h1 { font-size: 19pt; letter-spacing: .3px; font-weight: 700; }
+  .tagline { font-size: 9pt; letter-spacing: 1.1px; text-transform: uppercase; color: #444; margin-top: 2px; font-weight: 600; }
+  .contact { font-size: 9pt; color: #333; margin-top: 4px; }
+  .contact a { color: #333; text-decoration: none; }
+  h2 {
+    font-size: 10pt; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
+    border-bottom: 1.5px solid #333; padding-bottom: 2px; margin: 10px 0 4px;
+  }
+  p.summary { margin-top: 2px; }
+  .job { margin-top: 6px; }
+  .job-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .job-title { font-weight: 700; }
+  .job-title .sub { font-weight: 400; font-style: italic; color: #333; }
+  .when { font-size: 9pt; color: #555; white-space: nowrap; padding-left: 10px; }
+  ul { margin: 2px 0 0 15px; }
+  li { margin-top: 1.5px; }
+  .skills-row { margin-top: 3px; }
+  .skills-row b { display: inline-block; min-width: 0; }
+  a { color: inherit; }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1>Brian Mathew</h1>
+    <div class="tagline">Product Support · Application Troubleshooting · Technical Documentation</div>
+    <div class="contact">
+      New Jersey &nbsp;•&nbsp; (609) 815-1685 &nbsp;•&nbsp; mathew.brian@gmail.com &nbsp;•&nbsp;
+      github.com/bmath8 &nbsp;•&nbsp; bmath8.vercel.app
+    </div>
+  </header>
+
+  <section>
+    <h2>Summary</h2>
+    <p class="summary">
+      Customer-focused technical builder with a background leading retail sales, coordinating small
+      teams, and solving problems directly with customers. Designs, tests, documents, and operates
+      real software — with hands-on skill in application troubleshooting, validation, APIs, and clear
+      technical writing. Known for isolating the real problem and following through to a verified fix.
+    </p>
+  </section>
+
+  <section>
+    <h2>Selected Projects</h2>
+    <div style="font-size:9pt;color:#555;font-style:italic;">Independent builds · 2025–Present · live at bmath8.vercel.app</div>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-title">AI Job Hunter <span class="sub">— truth-constrained application workflow</span></span>
+      </div>
+      <ul>
+        <li>Built a Flask / SQLAlchemy web app that turns a job posting and a base resume into review-ready, ATS-optimized materials — <b>without inventing education, employment, or results</b>.</li>
+        <li>Wrote a keyword-match engine that scores a resume 0–100 against a posting and flags the exact missing keywords; integrated provider-agnostically over GPT-4 and Claude.</li>
+        <li>Separated generation, job-match analysis, validation, and application tracking into independent components so problems can be isolated and tested one stage at a time. Dockerized with a one-click Render deploy.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-title">Brian OS <span class="sub">— Windows automation &amp; operational recovery</span></span>
+      </div>
+      <ul>
+        <li>Built and operate an always-on fleet of <b>25 scheduled agents</b> on a local LLM (Ollama) that prepare briefs, watch system health, and accept two-way commands over Telegram — actions that send, spend, or delete are <b>draft-only until approved</b>.</li>
+        <li>Diagnosed a failed process guardian that left orphan processes and exhausted disk space; traced the root cause, recovered the machine, restored monitoring, and added liveness checks to prevent recurrence.</li>
+        <li>Backed by an automated test suite (81 tests) and CI; run daily on my own machine.</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="job-title">BoomBox <span class="sub">— real-time collaborative music app</span></span>
+      </div>
+      <ul>
+        <li>Built a full-stack social music prototype (Next.js, React, TypeScript, Supabase/PostgreSQL) for shared queues, collaborative playlists, and synced live listening.</li>
+        <li>Separated durable Postgres data from transient WebSocket + Redis Pub/Sub state so saved product data and live interactions have clear, independently testable responsibilities.</li>
+        <li>Treated observability and security as first-class: health checks, metrics, rate limiting, row-level security, and CI/CD.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Skills &amp; Capabilities</h2>
+    <div class="skills-row"><b>Support &amp; Service:</b> Application troubleshooting; issue reproduction &amp; problem isolation; customer communication; technical documentation</div>
+    <div class="skills-row"><b>Systems &amp; Tools:</b> Python; Flask; SQL; APIs / JSON; TypeScript; React; Git / GitHub; Windows; PowerShell; Docker</div>
+    <div class="skills-row"><b>Quality &amp; Operations:</b> Automated testing &amp; smoke checks; validation workflows; failure diagnosis &amp; recovery; process monitoring</div>
+  </section>
+
+  <section>
+    <h2>Customer &amp; Operations Experience</h2>
+    <div class="job">
+      <div class="job-head">
+        <span class="job-title">Best Buy <span class="sub">— Appliances Department Lead</span></span>
+        <span class="when">Earlier Experience</span>
+      </div>
+      <ul>
+        <li>Led the appliances department during a year it ranked <b>first in the territory</b> for sales.</li>
+        <li>Guided customers through high-consideration purchases by identifying needs, explaining products clearly, and coordinating across departments to keep work moving.</li>
+      </ul>
+    </div>
+    <div class="job">
+      <div class="job-head">
+        <span class="job-title">Uber <span class="sub">— Independent Driver</span></span>
+        <span class="when">2022</span>
+      </div>
+      <ul>
+        <li>~1 year of sustained, independent, customer-facing work — managing routes, schedules, and changing customer needs without direct supervision.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Additional Education</h2>
+    <div class="skills-row">Penn State Berks — additional undergraduate study &nbsp;·&nbsp; The City College of New York — additional undergraduate study</div>
+  </section>
+
+</body>
+</html>
