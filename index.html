@@ -120,6 +120,10 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;
 .rv.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
 </style>
+<!-- Reveal-on-scroll starts every section at opacity:0 and relies on JS to reveal it.
+     Without this fallback, a blocked/failed script renders the whole page blank -- and
+     link-preview crawlers that don't execute JS see nothing at all. -->
+<noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
 
