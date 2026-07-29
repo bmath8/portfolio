@@ -222,9 +222,12 @@ html.js .rv{opacity:0;transform:translateY(22px)}
 The hero is a live canvas driven by my real crontab. Numbers verified on this machine 2026-07-29.</footer>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<!-- Self-hosted, not CDN. Two reasons: no Subresource-Integrity exposure to a CDN
+     compromise, and two fewer external requests on a page judged for sub-2s load.
+     Pinned: lenis 1.1.20, gsap 3.13.0. ~131 KB total. -->
+<script src="../vendor/lenis.min.js"></script>
+<script src="../vendor/gsap.min.js"></script>
+<script src="../vendor/ScrollTrigger.min.js"></script>
 <script>
 document.documentElement.classList.add('js');
 var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
