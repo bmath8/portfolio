@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — builds software that runs without him</title>
+<meta name="description" content="Developer in New Jersey. I build AI and full-stack software, then operate it. Paste a job description and my resume scorer will run on it, live.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CANDIDATE E — "LIVE"
+   Brief: real details + small live demos, simple not cluttered,
+   memorable.
+
+   The centrepiece is Brian's OWN PRODUCT, aimed at the viewer:
+   a recruiter pastes their real job posting and watches his
+   resume get scored against it in the browser. Same algorithm
+   as runtime/resume_check.py (top-25 JD terms by frequency,
+   tech bigrams weighted x3, matched against the resume text).
+   It is his actual work, demonstrating itself, personalised to
+   whoever is looking. Nobody can copy that.
+
+   Three demos only. Everything else stays quiet.
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafaf9; --card:#fff; --edge:#e5e5e2; --rule:#d0d0cc;
+  --ink:#15171a; --ink2:#4c5250; --mute:#828a87;
+  --ok:#12704d; --ok-bg:#e9f4ef; --warn:#8a5a12; --warn-bg:#fbf2e3;
+  --d:'Geist',system-ui,-apple-system,sans-serif;
+  --m:'Geist Mono',ui-monospace,Consolas,monospace;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111312; --card:#181b1a; --edge:#252a28; --rule:#333937;
+  --ink:#eaeeeb; --ink2:#a4adaa; --mute:#79817e;
+  --ok:#4ec08c; --ok-bg:#13251d; --warn:#d9a441; --warn-bg:#241d10;}}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--d);font-size:16px;
+  line-height:1.62;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ok);outline-offset:3px;border-radius:3px}
+.wrap{max-width:760px;margin:0 auto;padding:0 26px}
+
+/* ---------- hero: one sentence, then get out of the way ---------- */
+header{padding:88px 0 8px}
+h1{font-size:clamp(30px,4.6vw,42px);font-weight:600;letter-spacing:-.032em;line-height:1.14;max-width:20ch}
+h1 .g{color:var(--mute)}
+.sub{margin-top:18px;color:var(--ink2);max-width:58ch;font-size:17px}
+.sub b{color:var(--ink);font-weight:600}
+.links{display:flex;flex-wrap:wrap;gap:7px;margin-top:24px;font-family:var(--m);font-size:13px}
+.links a{padding:8px 13px;border:1px solid var(--rule);border-radius:6px;text-decoration:none;
+  color:var(--ink2);background:var(--card);transition:.15s}
+.links a:hover{border-color:var(--ok);color:var(--ok)}
+.links a.p{background:var(--ok);border-color:var(--ok);color:#fff;font-weight:500}
+
+.sh{font-family:var(--m);font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--mute);margin:70px 0 16px;display:flex;align-items:center;gap:12px}
+.sh::after{content:"";flex:1;height:1px;background:var(--edge)}
+p.lede{color:var(--ink2);max-width:62ch;margin-bottom:18px}
+p.lede b{color:var(--ink);font-weight:600}
+
+/* ---------- demo shell ---------- */
+.demo{border:1px solid var(--edge);border-radius:12px;background:var(--card);overflow:hidden}
+.demo-hd{padding:12px 16px;border-bottom:1px solid var(--edge);font-family:var(--m);
+  font-size:11.5px;color:var(--mute);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.demo-hd b{color:var(--ink);font-weight:500}
+.demo-bd{padding:16px}
+.cap{font-family:var(--m);font-size:11.5px;color:var(--mute);margin-top:10px;line-height:1.65}
+
+/* ---------- demo 1: the scorer ---------- */
+textarea{width:100%;min-height:118px;resize:vertical;padding:12px;border-radius:8px;
+  border:1px solid var(--rule);background:var(--bg);color:var(--ink);
+  font-family:var(--m);font-size:12.5px;line-height:1.6}
+textarea:focus{outline:2px solid var(--ok);outline-offset:1px;border-color:transparent}
+.row{display:flex;gap:8px;align-items:center;margin-top:11px;flex-wrap:wrap}
+button{font-family:var(--m);font-size:12.5px;padding:9px 15px;border-radius:7px;cursor:pointer;
+  border:1px solid var(--ok);background:var(--ok);color:#fff;font-weight:500;transition:.15s}
+button:hover{filter:brightness(1.08)}
+button.ghost{background:transparent;color:var(--ink2);border-color:var(--rule)}
+button.ghost:hover{border-color:var(--ok);color:var(--ok)}
+.out{margin-top:16px;padding-top:16px;border-top:1px dashed var(--edge);display:none}
+.out.on{display:block}
+.score{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.score .n{font-family:var(--m);font-size:46px;font-weight:500;line-height:1;color:var(--ok);
+  font-variant-numeric:tabular-nums}
+.score .v{font-size:14px;color:var(--ink2)}
+.meter{height:7px;border-radius:5px;background:var(--edge);margin-top:13px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--ok);border-radius:5px;
+  transition:width .8s cubic-bezier(.2,.7,.3,1)}
+.terms{margin-top:15px;display:grid;grid-template-columns:1fr 1fr;gap:15px}
+@media(max-width:560px){.terms{grid-template-columns:1fr}}
+.terms h5{font-family:var(--m);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--mute);margin-bottom:8px}
+.tw{display:flex;flex-wrap:wrap;gap:5px}
+.t{font-family:var(--m);font-size:11.5px;padding:3px 8px;border-radius:5px}
+.t.hit{background:var(--ok-bg);color:var(--ok)}
+.t.miss{background:var(--warn-bg);color:var(--warn)}
+
+/* ---------- demo 2: squares ---------- */
+.sq{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;max-width:330px}
+.sq i{aspect-ratio:1;border-radius:3px;background:var(--edge);display:grid;place-items:center;
+  font-family:var(--m);font-size:8px;color:var(--mute);font-style:normal;transition:.3s}
+.sq i.f{background:var(--ok-bg);color:var(--ok)}
+.sq i.win{background:var(--ok);color:#fff;transform:scale(1.12)}
+
+/* ---------- demo 3: next run ---------- */
+.next{display:flex;align-items:baseline;gap:12px;font-family:var(--m);flex-wrap:wrap}
+.next .j{font-size:17px;color:var(--ink);font-weight:500}
+.next .c{font-size:26px;color:var(--ok);font-variant-numeric:tabular-nums}
+.next .l{font-size:11.5px;color:var(--mute)}
+
+/* ---------- work ---------- */
+.w{padding:15px 0;border-top:1px solid var(--edge);display:grid;
+  grid-template-columns:1fr auto;gap:8px;align-items:baseline}
+.w h3{font-size:16px;font-weight:600}
+.w p{color:var(--ink2);font-size:14.5px;margin-top:4px;max-width:60ch}
+.w .st{font-family:var(--m);font-size:10.5px;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.st.on{background:var(--ok-bg);color:var(--ok)}.st.wip{background:var(--warn-bg);color:var(--warn)}
+.xp{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:13px 0;border-top:1px solid var(--edge)}
+@media(max-width:560px){.xp{grid-template-columns:1fr;gap:4px}}
+.xp .y{font-family:var(--m);font-size:12px;color:var(--mute)}
+.xp h4{font-size:15.5px;font-weight:600}.xp h4 span{color:var(--mute);font-weight:400}
+.xp p{font-size:14.5px;color:var(--ink2);margin-top:4px}
+.edu{font-family:var(--m);font-size:12px;color:var(--mute);margin-top:16px;padding-top:14px;
+  border-top:1px solid var(--edge);line-height:1.8}
+footer{margin:64px 0 70px;padding-top:18px;border-top:1px solid var(--edge);
+  font-family:var(--m);font-size:11.5px;color:var(--mute);line-height:1.85}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>I build software, <span class="g">then I keep it running.</span></h1>
+  <p class="sub">Developer in New Jersey. Right now <b>25 agents I wrote</b> are running
+  unattended on my own machine — briefing me at 7am, restarting what dies, drafting overnight.
+  Below are three things I built. <b>They're live, so try them.</b></p>
+  <div class="links">
+    <a class="p" href="mailto:mathew.brian@gmail.com">Email me</a>
+    <a href="resume.pdf">Résumé</a>
+    <a href="https://github.com/bmath8">GitHub</a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+  </div>
+</header>
+
+<!-- ================= DEMO 1 ================= -->
+<div class="sh">Try it — score me against your own job posting</div>
+<p class="lede">I built a résumé scorer that reads a job description and reports honest keyword
+coverage. <b>This is that scorer, running here in your browser</b> — same algorithm as the
+Python version I use daily. Paste a real posting and see how I actually do against it.</p>
+
+<div class="demo">
+  <div class="demo-hd"><span><b>resume_check</b> — deterministic coverage</span>
+    <span>Brian_Mathew_AI_Builder.docx</span></div>
+  <div class="demo-bd">
+    <textarea id="jd" placeholder="Paste a job description here…"></textarea>
+    <div class="row">
+      <button id="run">Score it</button>
+      <button class="ghost" id="sample">Use a sample posting</button>
+    </div>
+    <div class="out" id="out">
+      <div class="score"><span class="n" id="pct">0%</span>
+        <span class="v" id="verdict"></span></div>
+      <div class="meter"><i id="bar"></i></div>
+      <div class="terms">
+        <div><h5 id="hh">Matched</h5><div class="tw" id="hits"></div></div>
+        <div><h5 id="mh">Missing</h5><div class="tw" id="miss"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<p class="cap">Top 25 terms by frequency, tech bigrams weighted ×3, matched against my résumé
+text. If something's missing I'd rather you see it — I don't add a keyword I can't defend
+in the interview.</p>
+
+<!-- ================= DEMO 2 ================= -->
+<div class="sh">Super Bowl squares — the real mechanic</div>
+<p class="lede">I built a live squares app that ran an actual game with real people on it.
+The core is a fair random draw. <b>Press the button and watch it run.</b></p>
+<div class="demo">
+  <div class="demo-hd"><span><b>randomised assignment</b> — 100 squares</span>
+    <span id="sqs">ready</span></div>
+  <div class="demo-bd">
+    <div class="sq" id="grid"></div>
+    <div class="row"><button id="draw">Run the draw</button>
+      <button class="ghost" id="score">Score a touchdown</button></div>
+  </div>
+</div>
+<p class="cap">React + Firebase Realtime DB, with a write-lock so nobody can claim a square
+after kickoff. Small project — but it shipped on the day and held up.</p>
+
+<!-- ================= DEMO 3 ================= -->
+<div class="sh">The fleet, right now</div>
+<div class="demo">
+  <div class="demo-hd"><span><b>hermes cron</b> — 25 jobs, all active</span>
+    <span>read off my machine 2026-07-29</span></div>
+  <div class="demo-bd">
+    <div class="next"><span class="l">next up</span><span class="j" id="nj">—</span>
+      <span class="c" id="nc">--:--:--</span><span class="l" id="nl"></span></div>
+  </div>
+</div>
+<p class="cap">A live countdown to the next scheduled agent, computed from the real crontab.
+24 of 25 last ran <b>ok</b> — I'd rather show you the one that didn't.</p>
+
+<!-- ================= WORK ================= -->
+<div class="sh">What's behind them</div>
+<div class="w"><div><h3>Brian OS</h3>
+  <p>25 scheduled agents on a local LLM. Structured state so a crashed run resumes, a watchdog
+  that restarts a dead gateway on its own, 81 passing tests, and draft-only guardrails —
+  nothing sends or deletes without me.</p></div><span class="st on">running</span></div>
+<div class="w"><div><h3>AI Job Hunter</h3>
+  <p>The scorer above, plus tailoring and tracking. Built around one constraint: every
+  generated claim is checked against a verified evidence base, because AI tailoring tools
+  drift into fabrication. 80 passed, 1 skipped. Not hosted yet.</p></div><span class="st wip">in development</span></div>
+<div class="w"><div><h3>BoomBox</h3>
+  <p>Real-time collaborative listening — synced playback over a Node WebSocket layer with
+  Redis Pub/Sub. Where I learned heartbeats, reconnection, and dropped sockets.</p></div><span class="st wip">prototype</span></div>
+
+<div class="sh">Before software</div>
+<div class="xp"><div class="y">2022</div><div><h4>Uber <span>— Independent Driver</span></h4>
+  <p>A year of independent, customer-facing work handled without supervision.</p></div></div>
+<div class="xp"><div class="y">earlier</div><div><h4>Best Buy <span>— Appliances Department Lead</span></h4>
+  <p>Led the appliances floor — advised customers through major purchases and handled the
+  complaints in person. Where I learned not to get defensive.</p></div></div>
+<p class="edu">Penn State Berks — undergraduate coursework<br>
+The City College of New York — undergraduate coursework</p>
+
+<div class="sh">Contact</div>
+<p class="lede">I've been running my own systems for a while. <b>I'd rather run yours.</b>
+Open to junior developer, AI application, or support-engineering roles — remote, hybrid,
+on-site or relocation. Happy to walk through any of this live, including the parts that broke.</p>
+<div class="links">
+  <a class="p" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+  <a href="tel:+16098151685">(609) 815-1685</a>
+  <a href="resume.pdf">Résumé (PDF)</a>
+  <a href="https://github.com/bmath8">GitHub</a>
+  <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+</div>
+
+<footer>One static file. No framework, no build step, no tracking.<br>
+Everything above runs in your browser — nothing you paste is sent anywhere.</footer>
+</div>
+
+<script>
+/* ---- the real resume text the scorer matches against ---- */
+var RESUME=("BRIAN MATHEW AI Application Developer Full-Stack Developer Junior Software Developer "+
+"New Jersey remote hybrid on-site relocation Full-stack developer who ships real working products. "+
+"I design build test and deploy AI-powered web applications end to end Python and TypeScript "+
+"React Next.js front ends Flask Node back ends LLM integrations and CI Docker deployment. "+
+"Fast test-driven and I own an idea from first commit to running software across the full stack. "+
+"Languages Python JavaScript TypeScript SQL HTML CSS PowerShell Frontend React Next.js Tailwind "+
+"Backend Data Node.js Flask SQLAlchemy Postgres Supabase Redis REST APIs rest api WebSockets "+
+"AI LLM app development OpenAI Anthropic Ollama prompt engineering RAG AI agents "+
+"Tooling Git version control Docker pytest Jest RTL CI/CD Firebase Windows problem solving "+
+"Independent Software Developer AI Application Developer 2025 Present Built AI Job Hunter "+
+"Python Flask app analyzes job descriptions tailors resumes ATS keyword scoring cover letters "+
+"application tracking provider-agnostic AI integrations SQLAlchemy full-stack architecture "+
+"Docker Render deploy 80 automated tests. Architected Brian OS native-Windows AI agent fleet "+
+"Python 25 scheduled agents local-LLM Ollama routing Telegram control structured state "+
+"self-healing health checks 81-test suite draft-only guardrails approval. Shipped Boombox "+
+"real-time social music app Next.js React TypeScript Supabase Spotify Node WebSocket Redis "+
+"Pub/Sub typed validation Jest RTL Docker Compose monitoring. Launched live real-time Super "+
+"Bowl Squares web app React Firebase Realtime DB live score sync chat host controls security. "+
+"Driver Independent Contractor Uber New Jersey 2022 customer service customer-facing service "+
+"high trip volume navigation scheduling safety time-sensitive problem-solving professional "+
+"communication. Appliances Department Lead Best Buy led appliances department high-volume "+
+"retail sales floor advised customers major purchase decisions resolved complaints post-sale "+
+"issues supported sales team consumer hardware troubleshooting technical support user support. "+
+"Penn State Berks undergraduate coursework The City College of New York undergraduate coursework").toLowerCase();
+
+var STOP=new Set(("a an and are as at be been but by for from has have if in into is it its of on or "+
+"such that the their there these this to was were will with you your we our they i he she not "+
+"work working job role team years experience required preferred plus strong ability skills "+
+"responsibilities qualifications including etc other more than least using use used").split(/\s+/));
+
+var BIG=/\b(?:machine learning|data analysis|prompt engineering|customer service|help desk|technical support|full stack|front end|back end|unit testing|rest api|version control|problem solving)\b/g;
+
+function score(jd){
+  var low=jd.toLowerCase(), freq={};
+  (low.match(/[a-z][a-z0-9+#.\-]{3,}/g)||[]).forEach(function(w){
+    w=w.replace(/^[.\-]+|[.\-]+$/g,'');
+    if(w && !STOP.has(w)) freq[w]=(freq[w]||0)+1;
+  });
+  (low.match(BIG)||[]).forEach(function(b){ freq[b]=(freq[b]||0)+3; });
+  var ranked=Object.keys(freq).sort(function(a,b){return freq[b]-freq[a]}).slice(0,25);
+  var hits=[],miss=[];
+  ranked.forEach(function(t){ (RESUME.indexOf(t)>-1?hits:miss).push(t); });
+  return {pct:Math.round(100*hits.length/Math.max(1,ranked.length)),hits:hits,miss:miss};
+}
+
+var SAMPLE="We are hiring a Junior Software Developer to build and ship full stack web "+
+"applications. You will work with Python and JavaScript, build REST API endpoints, write "+
+"React front end components, and help deploy with Docker. Experience with SQL, Git version "+
+"control, and unit testing is required. Familiarity with LLM or AI integrations and prompt "+
+"engineering is a plus. Strong problem solving and clear communication. Remote friendly.";
+
+function render(r){
+  document.getElementById('out').classList.add('on');
+  document.getElementById('pct').textContent=r.pct+'%';
+  document.getElementById('verdict').textContent =
+    r.pct>=70? 'Strong match — I’d apply to this as-is.'
+    : r.pct>=50? 'Decent match. I’d tune the résumé before sending.'
+    : 'Weak match — honestly, probably not my role.';
+  setTimeout(function(){document.getElementById('bar').style.width=r.pct+'%';},40);
+  document.getElementById('hh').textContent='Matched ('+r.hits.length+')';
+  document.getElementById('mh').textContent='Missing ('+r.miss.length+')';
+  document.getElementById('hits').innerHTML=r.hits.map(function(t){
+    return '<span class="t hit">'+t.replace(/[<>&]/g,'')+'</span>'}).join('')||'<span class="t miss">none</span>';
+  document.getElementById('miss').innerHTML=r.miss.map(function(t){
+    return '<span class="t miss">'+t.replace(/[<>&]/g,'')+'</span>'}).join('')||'<span class="t hit">nothing missing</span>';
+}
+document.getElementById('run').onclick=function(){
+  var v=document.getElementById('jd').value.trim();
+  if(v.length<40){ document.getElementById('jd').focus(); return; }
+  render(score(v));
+};
+document.getElementById('sample').onclick=function(){
+  document.getElementById('jd').value=SAMPLE; render(score(SAMPLE));
+};
+
+/* ---- squares ---- */
+var g=document.getElementById('grid');
+for(var i=0;i<100;i++){var e=document.createElement('i');g.appendChild(e);}
+var cells=g.querySelectorAll('i'), NAMES=['BM','JD','AK','RP','TS','MC','LW','DV'];
+document.getElementById('draw').onclick=function(){
+  cells.forEach(function(c){c.className='';c.textContent='';});
+  document.getElementById('sqs').textContent='drawing…';
+  var order=[];for(var i=0;i<100;i++)order.push(i);
+  for(var i=order.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=order[i];order[i]=order[j];order[j]=t;}
+  order.forEach(function(idx,n){
+    setTimeout(function(){
+      cells[idx].className='f';cells[idx].textContent=NAMES[n%NAMES.length];
+      if(n===99)document.getElementById('sqs').textContent='100 squares assigned';
+    },n*9);
+  });
+};
+document.getElementById('score').onclick=function(){
+  var w=Math.floor(Math.random()*100);
+  cells.forEach(function(c){c.classList.remove('win')});
+  if(!cells[w].classList.contains('f')){cells[w].className='f';cells[w].textContent=NAMES[w%8];}
+  cells[w].classList.add('win');
+  document.getElementById('sqs').textContent='winner: row '+(Math.floor(w/10))+' col '+(w%10);
+};
+
+/* ---- next cron run, from the real schedule ---- */
+var JOBS=[['memory-index',2,0],['overnight-worker',2,0],['model-review',3,0],['learning-agent',6,45],
+['fleet-health',6,0],['career',6,53],['currency',6,58],['calendar',6,55],['daily-brief',7,0],
+['scout',7,5],['gig-scanner',7,10],['inbox',8,0],['finance',9,0],['health',9,5],['research',11,0],
+['wiki',13,0],['weekly-review',16,0],['currency-weekly',16,30],['inbox ',17,0],['ceo-report',18,0],
+['fleet-health ',18,0],['outcome-learner',20,0],['feedback',21,0],['harmony-backup',22,0],
+['skill-miner',23,0]];
+function tick(){
+  var now=new Date(),best=null,bd=Infinity;
+  JOBS.forEach(function(j){
+    var t=new Date(now);t.setHours(j[1],j[2],0,0);
+    if(t<=now)t.setDate(t.getDate()+1);
+    var d=t-now; if(d<bd){bd=d;best=j;}
+  });
+  // the hourly dashboard job beats everything if it's sooner
+  var dash=new Date(now);dash.setMinutes(5,0,0);if(dash<=now)dash.setHours(dash.getHours()+1);
+  if(dash-now<bd){bd=dash-now;best=['dashboard',dash.getHours(),5];}
+  var s=Math.floor(bd/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),ss=s%60,p=function(n){return(n<10?'0':'')+n};
+  document.getElementById('nj').textContent=best[0].trim();
+  document.getElementById('nc').textContent=p(h)+':'+p(m)+':'+p(ss);
+  document.getElementById('nl').textContent='at '+p(best[1])+':'+p(best[2])+' your time';
+}
+tick();setInterval(tick,1000);
+</script>
+</body></html>
