@@ -9,24 +9,29 @@ resume version and every project to it, with an honest status on each.
 
 ---
 
-## 1. Resumes
+## 1. Resumes — ⚠️ THIS REPO IS NO LONGER THE RESUME SOURCE (changed 2026-07-29)
 
-| Version | Where it lives | Date | Status |
-|---|---|---|---|
-| **`resume.pdf`** (current) | This repo — linked from the live site | 2026 | ✅ **FINAL / SENDABLE.** Rebuilt 2026-07-20 from an editable source (`resume/resume.html`) — one page, ATS-safe (real text, single column), now includes the portfolio URL and sharpened, verified project bullets. |
-| `resume/resume.html` | This repo | 2026-07-20 | ✏️ **Editable source** for the PDF. Edit this, re-render with headless Chromium `--print-to-pdf`. No more locked binary. |
-| BMAT Resume.docx | Google Drive | 2018 | 🗄️ Legacy — pre-AI, outdated. Keep for reference only. |
-| BMAT RESUME.doc / "BMAT RESUME" | Google Drive | 2012 | 🗄️ Legacy — very old. Archive. |
+**Resumes are built in `C:\Brian\03_Career\`, not here.** This repo's `resume.pdf` is now a
+*copy* of canonical output. Do not hand-edit it.
 
-**The current resume is done.** It positions you as a *"Customer-focused technical builder"*
-targeting **Product Support / IT Support / Customer Support & Implementation**, with three
-projects, a skills block, Best Buy + Uber experience, and education. One page, clean, ATS-friendly.
+| Version | Where it lives | Status |
+|---|---|---|
+| **The 4-lane arsenal** | `C:\Brian\03_Career\resumes\` | ✅ **CANONICAL.** Built from `evidence-bank.md` via `build_strong_resumes.py` + `render_pdfs.py`. Every build date-stamped into `resumes/versions/<date>/`. |
+| `resume.pdf` (this repo) | copied from canonical `Brian_Mathew_Customer_Ops.pdf` | ✅ Served by the live site. Refresh by re-copying after a canonical rebuild. |
+| `resume/resume.html` | this repo | 🗄️ **SUPERSEDED** — see `resume/SUPERSEDED-2026-07-29.md`. Was a separately-maintained 5th resume. Kept as an original, not deleted. |
 
-> Note: Resumes you drafted inside ChatGPT/Codex/Claude *chat histories* aren't reachable by
-> file scan — but their finished output is what became `resume.pdf`. A Drive scan for any
-> post-2025 resume/cover-letter docs found none, so nothing recent is stranded outside this repo.
+**Why this changed.** A 2026-07-29 machine-wide sweep found **five** competing resume systems
+(three of them duplicate copies of each other). This repo's resume was one of them — it had
+Best Buy and the portfolio URL that the canonical set lacked, but was missing LinkedIn, wasn't
+generated from the evidence bank, and was never scored. Both gaps are now fixed upstream in the
+canonical builder, so the split is over. Full register:
+`C:\Brian\03_Career\_archive\ORIGINALS-FOUND-2026-07-29.md`.
 
-**Gap to close:** no LinkedIn URL and no cover-letter template yet. See §5.
+**Current lane scores** (vs. representative JDs, 2026-07-29):
+AI Builder **96%** · AI Trainer **92%** · Customer Ops **92%** · IT Support **88%**.
+
+**Gaps closed 2026-07-29:** LinkedIn added to the site and all resumes; cover-letter template
+existed already (4 full base letters live in `03_Career/cover-letters/`).
 
 ---
 
@@ -42,7 +47,14 @@ projects, a skills block, Best Buy + Uber experience, and education. One page, c
 
 ---
 
-## 3. All projects (21 GitHub repos under `bmath8`)
+## 3. All projects (27 GitHub repos under `bmath8` — ⚠️ only 4 are PUBLIC)
+
+> **Verified 2026-07-29 via the GitHub API.** 27 repos exist; **23 are private.** The only
+> public ones are `portfolio`, `jobfit`, `pokemon-drop-intel`, and
+> `fam-super-bowl-squares-2026`. **All three repos featured as case studies on the live site
+> — `ai-job-hunter`, `brian-os-fleet`, `BoomBox-V.5` — are PRIVATE.** An employer who clicks
+> `github.com/bmath8` cannot see any of the work the resume is built on. Fix in progress:
+> public-safe showcase mirrors (fresh history, secret-scanned).
 
 Classified by portfolio value. Tier 1 = already shipped on the site. Tier 2 = real apps worth
 featuring or linking once cleaned up. Tier 3 = infra / experiments / scratch — not front-line.
@@ -85,11 +97,14 @@ featuring or linking once cleaned up. Tier 3 = infra / experiments / scratch —
 
 You are not starting from zero — you're basically done for a first application wave:
 
-- ✅ One-page resume (`resume.pdf`)
+- ✅ Four one-page resumes, scored 88–96% against real postings
 - ✅ Live portfolio site with 3 real case studies
-- ✅ GitHub profile with 21 repos backing up the "I build things" claim
+- ✅ Four base cover letters + tailoring guide (`03_Career/cover-letters/`)
+- ✅ A command center that tracks the funnel (`03_Career/command-center/index.html`)
+- ⚠️ GitHub profile shows only **4 public repos**, none of them the featured three —
+  corrected from the earlier false claim of "21 repos backing up the 'I build things' claim."
 
-**You can start applying today** to product-support / IT-support / customer-support roles.
+**You can start applying today** — pick the lane, score against the posting, log it.
 
 ---
 
