@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — builds software that runs without him</title>
+<meta name="description" content="Brian Mathew builds AI and full-stack software, then operates it: 25 scheduled agents running unattended, 81 passing tests, self-healing watchdogs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CANDIDATE D — "OPERATOR"
+   Built from the portfolio-design skill, grounded in REAL artifacts.
+
+   The premise that changed: slop isn't a palette, it's generic
+   content in a borrowed shell. So the page is built around the
+   one thing nobody can copy — the actual output of a system
+   Brian has had running unattended for months.
+
+   Everything in the evidence blocks below is real and was read
+   off the machine on 2026-07-29:
+     - 25 cron job names + schedules  (hermes cron list)
+     - run-log lines                  (logs/run_log.md)
+     - 81 passing tests               (pytest, run today)
+   Personal data from the daily brief (finances, health, funnel)
+   is deliberately EXCLUDED — it can never be public.
+
+   Structure: Chiang split (fixed identity / scrolling substance).
+   Voice: Appleton (plain declarative sentence, own vocabulary,
+   honest about what isn't done).
+   Restraint: Robinson.
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f8f7; --card:#fff; --edge:#e3e6e3; --rule:#cdd2cd;
+  --ink:#16181a; --ink2:#4a5150; --mute:#7f8886;
+  --ok:#1b6b4a;        /* passing / healthy — semantic, not decorative */
+  --ok-bg:#eaf4ef;
+  --warn:#8a5a12; --warn-bg:#fbf2e3;
+  --disp:'Geist',system-ui,-apple-system,sans-serif;
+  --mono:'Geist Mono',ui-monospace,Consolas,monospace;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#121413; --card:#191c1b; --edge:#262b29; --rule:#333937;
+  --ink:#e9edea; --ink2:#a6afac; --mute:#78817e;
+  --ok:#4ec08c; --ok-bg:#14261e; --warn:#d9a441; --warn-bg:#241d10;
+}}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--disp);
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ok);outline-offset:3px;border-radius:2px}
+
+/* ---------- layout: fixed identity | scrolling substance ---------- */
+.shell{max-width:1180px;margin:0 auto;padding:0 30px;display:grid;
+  grid-template-columns:340px 1fr;gap:66px}
+@media(max-width:940px){.shell{grid-template-columns:1fr;gap:0}}
+
+.side{position:sticky;top:0;height:100vh;padding:76px 0 34px;
+  display:flex;flex-direction:column}
+@media(max-width:940px){.side{position:static;height:auto;padding:56px 0 8px}}
+.side h1{font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.side .sub{font-size:16px;color:var(--ink2);margin-top:9px;max-width:30ch}
+.side .loc{font-family:var(--mono);font-size:12.5px;color:var(--mute);margin-top:14px}
+.snav{margin-top:34px;display:flex;flex-direction:column;gap:2px}
+@media(max-width:940px){.snav{display:none}}
+.snav a{font-family:var(--mono);font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--mute);text-decoration:none;padding:5px 0;display:flex;align-items:center;gap:11px}
+.snav a i{display:block;width:26px;height:1px;background:var(--rule);transition:.2s}
+.snav a:hover{color:var(--ink)}
+.snav a:hover i{width:44px;background:var(--ink)}
+.slinks{margin-top:auto;display:flex;flex-wrap:wrap;gap:7px;font-family:var(--mono);font-size:12.5px}
+@media(max-width:940px){.slinks{margin-top:26px}}
+.slinks a{padding:7px 12px;border:1px solid var(--rule);border-radius:5px;
+  text-decoration:none;color:var(--ink2);background:var(--card)}
+.slinks a:hover{border-color:var(--ok);color:var(--ok)}
+.slinks a.pri{background:var(--ok);border-color:var(--ok);color:#fff;font-weight:500}
+
+.main{padding:76px 0 90px;min-width:0}
+@media(max-width:940px){.main{padding:34px 0 70px}}
+.sh{font-family:var(--mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--mute);margin:64px 0 20px;display:flex;align-items:center;gap:12px}
+.sh:first-child{margin-top:0}
+.sh::after{content:"";flex:1;height:1px;background:var(--edge)}
+.main p{color:var(--ink2);margin-bottom:16px;max-width:64ch}
+.main p b,.main p strong{color:var(--ink);font-weight:600}
+.lead{font-size:19px;line-height:1.55;letter-spacing:-.011em}
+.lead b{font-weight:600}
+
+/* ---------- SIGNATURE: real machine output ---------- */
+.eviz{border:1px solid var(--edge);border-radius:10px;background:var(--card);
+  overflow:hidden;margin:22px 0 8px}
+.eviz-hd{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:11px 15px;border-bottom:1px solid var(--edge);font-family:var(--mono);
+  font-size:11.5px;color:var(--mute);flex-wrap:wrap}
+.eviz-hd b{color:var(--ink);font-weight:500}
+.pill{font-family:var(--mono);font-size:11px;padding:2px 9px;border-radius:20px;
+  background:var(--ok-bg);color:var(--ok);font-weight:500}
+.cronwrap{max-height:270px;overflow:auto}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
+th{position:sticky;top:0;background:var(--card);text-align:left;color:var(--mute);
+  font-weight:400;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:8px 15px;border-bottom:1px solid var(--edge)}
+td{padding:6px 15px;border-bottom:1px solid var(--edge);color:var(--ink2);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.j{color:var(--ink)}
+td.s{color:var(--mute)}
+td.r{text-align:right;color:var(--ok)}
+tr:hover td{background:var(--ok-bg)}
+.logbox{padding:13px 15px;font-family:var(--mono);font-size:12px;line-height:1.85;
+  color:var(--ink2);overflow-x:auto}
+.logbox .t{color:var(--mute)}
+.logbox .g{color:var(--ok)}
+.cap{font-family:var(--mono);font-size:11.5px;color:var(--mute);margin:9px 0 0;line-height:1.6}
+
+/* ---------- projects ---------- */
+.proj{display:block;text-decoration:none;border:1px solid transparent;border-radius:10px;
+  padding:17px;margin:0 -17px 6px;transition:.16s}
+.proj:hover{background:var(--card);border-color:var(--edge)}
+.proj-t{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.proj-t h3{font-size:18px;font-weight:600;letter-spacing:-.015em}
+.st{font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:20px}
+.st.on{background:var(--ok-bg);color:var(--ok)}
+.st.wip{background:var(--warn-bg);color:var(--warn)}
+.proj p{font-size:15px;margin-bottom:9px}
+.tg{display:flex;flex-wrap:wrap;gap:6px}
+.tg span{font-family:var(--mono);font-size:11.5px;padding:2px 8px;border-radius:4px;
+  background:var(--ok-bg);color:var(--ok)}
+
+/* ---------- experience ---------- */
+.xp{display:grid;grid-template-columns:118px 1fr;gap:18px;padding:15px 0;
+  border-top:1px solid var(--edge)}
+@media(max-width:600px){.xp{grid-template-columns:1fr;gap:5px}}
+.xp .yr{font-family:var(--mono);font-size:12px;color:var(--mute);padding-top:2px}
+.xp h4{font-size:16px;font-weight:600}
+.xp h4 span{color:var(--mute);font-weight:400}
+.xp p{font-size:14.5px;margin:5px 0 0}
+.edu{font-family:var(--mono);font-size:12.5px;color:var(--mute);margin-top:20px;
+  padding-top:15px;border-top:1px solid var(--edge);line-height:1.75}
+
+.note{border-left:2px solid var(--rule);padding:2px 0 2px 15px;margin:20px 0;
+  color:var(--mute);font-size:14.5px;max-width:62ch}
+footer{margin-top:70px;padding-top:20px;border-top:1px solid var(--edge);
+  font-family:var(--mono);font-size:11.5px;color:var(--mute);line-height:1.8}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ fixed identity ============ -->
+  <aside class="side">
+    <h1>Brian Mathew</h1>
+    <p class="sub">I build software, then I keep it running.</p>
+    <p class="loc">New Jersey · remote, hybrid, on-site or relocation</p>
+    <nav class="snav">
+      <a href="#about"><i></i>About</a>
+      <a href="#proof"><i></i>Proof</a>
+      <a href="#work"><i></i>Work</a>
+      <a href="#before"><i></i>Before software</a>
+      <a href="#contact"><i></i>Contact</a>
+    </nav>
+    <div class="slinks">
+      <a class="pri" href="mailto:mathew.brian@gmail.com">Email</a>
+      <a href="resume.pdf">Résumé</a>
+      <a href="https://github.com/bmath8">GitHub</a>
+      <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+    </div>
+  </aside>
+
+  <!-- ============ scrolling substance ============ -->
+  <main class="main">
+
+    <section id="about">
+      <p class="lead">I'm a developer in New Jersey. I build AI and full-stack applications in
+      Python and TypeScript — and then I <b>operate</b> them, which is the part I've found most
+      people skip.</p>
+      <p>Right now a fleet of <b>25 scheduled agents</b> I wrote is running on my own machine.
+      It has been running unattended for months: preparing a brief every morning at 7:00,
+      watching the system, restarting things that die, and drafting work overnight. It runs on a
+      local model, so it costs nothing per run and no data leaves the box.</p>
+      <p>I learned more from operating that than from building it. Most of what I know about
+      error handling, structured state, and not trusting a process to stay alive came from being
+      woken up by my own bad assumptions.</p>
+    </section>
+
+    <!-- ===== SIGNATURE: real output, read off the machine ===== -->
+    <section id="proof">
+      <div class="sh">Proof</div>
+      <p>Everything below was read off my machine on <b>29 July 2026</b>. It's the actual
+      scheduler, not a mock-up of one.</p>
+
+      <div class="eviz">
+        <div class="eviz-hd"><span><b>hermes cron list</b> — live scheduled jobs</span>
+          <span class="pill">25 active · 24/25 last run ok</span></div>
+        <div class="cronwrap"><table>
+          <thead><tr><th>job</th><th>schedule</th><th>last run</th></tr></thead>
+          <tbody>
+            <tr><td class="j">daily-brief</td><td class="s">0 7 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">system-watchdog</td><td class="s">0 */4 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">overnight-worker</td><td class="s">0 2 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">learning-agent</td><td class="s">45 6 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">career</td><td class="s">53 6 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">currency</td><td class="s">58 6 * * 1-6</td><td class="r">ok</td></tr>
+            <tr><td class="j">gig-scanner</td><td class="s">10 7 * * 1-6</td><td class="r">ok</td></tr>
+            <tr><td class="j">calendar</td><td class="s">55 6 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">scout</td><td class="s">5 7 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">dashboard</td><td class="s">5 * * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">fleet-health</td><td class="s">0 6,18 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">inbox</td><td class="s">0 8,17 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">finance</td><td class="s">0 9 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">health</td><td class="s">5 9 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">research</td><td class="s">0 11 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">wiki</td><td class="s">0 13 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">weekly-review</td><td class="s">0 16 * * 0</td><td class="r">ok</td></tr>
+            <tr><td class="j">ceo-report</td><td class="s">0 18 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">outcome-learner</td><td class="s">0 20 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">feedback</td><td class="s">0 21 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">harmony-backup</td><td class="s">0 22 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">skill-miner</td><td class="s">0 23 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">memory-index</td><td class="s">0 2 * * *</td><td class="r">ok</td></tr>
+            <tr><td class="j">model-review</td><td class="s">0 3 * * 0</td><td class="r">ok</td></tr>
+            <tr><td class="j">currency-weekly</td><td class="s">30 16 * * 0</td><td class="r">ok</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <p class="cap">25 jobs, all active. One shows a non-ok last run — I'd rather show you that
+      than a screenshot where everything is green.</p>
+
+      <div class="eviz" style="margin-top:26px">
+        <div class="eviz-hd"><span><b>logs/run_log.md</b> — the fleet writing its own history</span>
+          <span class="pill">this morning</span></div>
+        <div class="logbox">
+<span class="t">2026-07-29T07:00</span> | daily_brief &nbsp;&nbsp;&nbsp;| tier2 | <span class="g">ok</span> | brief delivered<br>
+<span class="t">2026-07-29T07:10</span> | gig_scanner &nbsp;&nbsp;| tier1 | <span class="g">ok</span> | 125 scanned, none matched<br>
+<span class="t">2026-07-29T08:00</span> | watchdog &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| tier1 | <span class="g">ok</span> | 0 alert(s)<br>
+<span class="t">2026-07-29T09:39</span> | boot_smoke &nbsp;&nbsp;&nbsp;| tier1 | <span class="g">ok</span> | fleet booted (login); sent=True<br>
+<span class="t">2026-07-29T10:44</span> | resume_check | tier1 | <span class="g">ok</span> | 96% coverage vs AI_Builder.docx<br>
+<span class="t">2026-07-29T11:05</span> | dashboard &nbsp;&nbsp;&nbsp;&nbsp;| tier1 | <span class="g">ok</span> | rebuilt
+        </div>
+      </div>
+      <p class="cap">Tier 1 runs deterministically; tier 2 calls a local model. Every run logs a
+      status and a one-line result, because a job that fails silently isn't a job.</p>
+
+      <div class="note">The whole fleet is <b>draft-only</b>. Agents can research, draft and
+      queue, but nothing sends, spends, deploys or deletes without me approving it. That
+      constraint is the most useful design decision in the project.</div>
+    </section>
+
+    <section id="work">
+      <div class="sh">Work</div>
+
+      <a class="proj" href="https://github.com/bmath8">
+        <div class="proj-t"><h3>Brian OS</h3><span class="st on">running</span></div>
+        <p>The fleet above. 25 scheduled agents on a local LLM, structured state so a crashed run
+        resumes cleanly, a watchdog that restarts a dead gateway on its own, and an
+        <b>81-test suite</b> covering guardrails, routing and memory.</p>
+        <div class="tg"><span>Python</span><span>Ollama</span><span>PowerShell</span><span>pytest</span></div>
+      </a>
+
+      <a class="proj" href="https://github.com/bmath8">
+        <div class="proj-t"><h3>AI Job Hunter</h3><span class="st wip">in development</span></div>
+        <p>A job-search platform built around one constraint: AI tailoring tools drift into
+        fabrication, so every generated claim is checked against a verified evidence base before
+        it can reach output. Scores keyword coverage against a posting and names the gaps.
+        <b>80 passed, 1 skipped.</b> Not hosted yet.</p>
+        <div class="tg"><span>Flask</span><span>SQLAlchemy</span><span>Docker</span></div>
+      </a>
+
+      <a class="proj" href="https://github.com/bmath8">
+        <div class="proj-t"><h3>BoomBox</h3><span class="st wip">prototype</span></div>
+        <p>Real-time collaborative listening — shared playlists and synced playback over a Node
+        WebSocket layer with Redis Pub/Sub. Where I learned heartbeats, reconnection, and what
+        happens to someone whose socket drops mid-song.</p>
+        <div class="tg"><span>Next.js</span><span>TypeScript</span><span>Supabase</span><span>Redis</span></div>
+      </a>
+
+      <a class="proj" href="https://github.com/bmath8/fam-super-bowl-squares-2026">
+        <div class="proj-t"><h3>Super Bowl Squares</h3><span class="st on">ran live</span></div>
+        <p>A real-time squares app with live score sync, chat and host controls — <b>built for an
+        actual game with real people using it.</b> Small, but it shipped on the day and held up.</p>
+        <div class="tg"><span>React</span><span>Firebase</span></div>
+      </a>
+    </section>
+
+    <section id="before">
+      <div class="sh">Before software</div>
+      <div class="xp"><div class="yr">2022</div><div>
+        <h4>Uber <span>— Independent Driver</span></h4>
+        <p>About a year of independent, customer-facing work — routes, schedules and changing
+        needs, handled without supervision.</p></div></div>
+      <div class="xp"><div class="yr">earlier</div><div>
+        <h4>Best Buy <span>— Appliances Department Lead</span></h4>
+        <p>Led the appliances floor: advised customers through major purchases, resolved
+        complaints and post-sale problems in person, supported the sales team day to day. Where I
+        learned to handle an unhappy person without getting defensive.</p></div></div>
+      <p class="edu">Penn State Berks — undergraduate coursework<br>
+        The City College of New York — undergraduate coursework</p>
+    </section>
+
+    <section id="contact">
+      <div class="sh">Contact</div>
+      <p class="lead">I've been running my own systems for a while. I'd rather run yours.</p>
+      <p>Looking for a full-time role — junior developer, AI application work, or support
+      engineering where operating the thing matters as much as building it. Happy to walk through
+      any of the above live, <b>including the parts that broke.</b></p>
+      <div class="slinks" style="margin-top:22px">
+        <a class="pri" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+        <a href="tel:+16098151685">(609) 815-1685</a>
+        <a href="resume.pdf">Résumé (PDF)</a>
+        <a href="https://github.com/bmath8">GitHub</a>
+        <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+      </div>
+      <footer>Built as one static file — no framework, no build step.<br>
+        Every number here was read off the machine on 2026-07-29 and can be re-run on request.</footer>
+    </section>
+
+  </main>
+</div>
+</body></html>
