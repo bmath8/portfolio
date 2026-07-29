@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — Systems, drawn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CANDIDATE B — "SCHEMATIC"
+   Thesis: Brian architects systems, so show the architecture.
+   Every project is a drafting plate: a real component diagram
+   with numbered callouts, drawn in SVG.
+   Palette: cool drafting paper + indigo ink + a single red
+   annotation pen. Deliberately NOT cream/serif/terracotta.
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#e7ecf1; --paper2:#dde4eb; --plate:#f4f7fa;
+  --ink:#111d33; --ink2:#3c4d68; --mute:#7d8ca3;
+  --grid:#c8d4e0; --rule:#a9b8c9;
+  --pen:#c8102e;      /* annotation red — used ONLY for callouts */
+  --disp:'Archivo',system-ui,sans-serif;
+  --mono:'Azeret Mono',ui-monospace,Consolas,monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);color:var(--ink);font-family:var(--disp);font-size:16px;line-height:1.62;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1140px;margin:0 auto;padding:0 26px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--pen);outline-offset:3px}
+
+/* ---- title block: like a real drawing sheet ---- */
+.sheet{border:2px solid var(--ink);background:var(--plate);margin:26px 0 0}
+.sheet-top{display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--rule);padding:9px 16px;font-family:var(--mono);
+  font-size:11px;letter-spacing:.05em;color:var(--ink2);flex-wrap:wrap;gap:8px}
+.sheet-top b{color:var(--ink);font-weight:500}
+nav{display:flex;gap:16px}
+nav a{text-decoration:none;color:var(--ink2)}
+nav a:hover{color:var(--pen)}
+@media(max-width:720px){nav{display:none}}
+
+.hero{padding:44px 32px 34px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--pen);margin-bottom:18px}
+h1{font-size:clamp(34px,5.8vw,66px);line-height:1.02;letter-spacing:-.035em;font-weight:900;max-width:17ch}
+h1 em{font-style:normal;color:var(--mute)}
+.lede{margin-top:22px;max-width:58ch;color:var(--ink2);font-size:17px}
+.lede b{color:var(--ink);font-weight:600}
+/* the title block table, bottom of a drawing sheet */
+.tblock{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:11px}
+@media(max-width:760px){.tblock{grid-template-columns:repeat(2,1fr)}}
+.tb{padding:11px 16px;border-right:1px solid var(--rule)}
+.tb:last-child{border-right:0}
+.tb span{display:block;color:var(--mute);font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;margin-bottom:3px}
+.tb b{font-weight:500;color:var(--ink)}
+.cta{display:flex;gap:9px;flex-wrap:wrap;margin-top:28px;font-family:var(--mono);font-size:12px}
+.btn{padding:10px 15px;border:1.5px solid var(--ink);text-decoration:none;color:var(--ink);
+  background:transparent;transition:.15s}
+.btn:hover{background:var(--ink);color:var(--plate)}
+.btn.key{background:var(--pen);border-color:var(--pen);color:#fff;font-weight:500}
+.btn.key:hover{background:#a50d26;border-color:#a50d26}
+
+section{padding:70px 0 0}
+.shead{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--mute);display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.shead::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+/* ---- SIGNATURE: the drawing plate ---- */
+.plate{border:2px solid var(--ink);background:var(--plate);margin-bottom:26px}
+.plate-hd{display:flex;justify-content:space-between;align-items:baseline;
+  padding:14px 18px;border-bottom:1px solid var(--rule);flex-wrap:wrap;gap:8px}
+.plate-hd h3{font-size:23px;font-weight:800;letter-spacing:-.02em}
+.plate-hd .no{font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.1em}
+.plate-body{display:grid;grid-template-columns:1.05fr .95fr}
+@media(max-width:900px){.plate-body{grid-template-columns:1fr}}
+.fig{padding:18px;border-right:1px solid var(--rule);background:
+  linear-gradient(var(--grid) 1px,transparent 1px),
+  linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
+@media(max-width:900px){.fig{border-right:0;border-bottom:1px solid var(--rule)}}
+.fig svg{width:100%;height:auto;display:block}
+.fig-cap{font-family:var(--mono);font-size:10px;color:var(--mute);margin-top:16px;letter-spacing:.05em;line-height:1.5}
+.notes{padding:20px}
+.notes p{color:var(--ink2);margin-bottom:13px;font-size:15px}
+.notes p b{color:var(--ink);font-weight:600}
+/* numbered callouts that MATCH the diagram markers */
+.callouts{margin:16px 0 0;list-style:none}
+.callouts li{display:flex;gap:10px;padding:7px 0;border-top:1px dashed var(--rule);
+  font-size:14px;color:var(--ink2)}
+.callouts li:first-child{border-top:0}
+.cn{flex:none;width:19px;height:19px;border-radius:50%;background:var(--pen);color:#fff;
+  font-family:var(--mono);font-size:10.5px;display:grid;place-items:center;font-weight:500;margin-top:1px}
+.specs{margin-top:16px;font-family:var(--mono);font-size:11.5px;border-top:1px solid var(--rule);padding-top:12px}
+.specs div{display:flex;justify-content:space-between;padding:4px 0;color:var(--ink2)}
+.specs div b{color:var(--ink);font-weight:500}
+
+/* ---- capability + history ---- */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;
+  border:2px solid var(--ink);background:var(--plate)}
+.gc{padding:18px;border-right:1px solid var(--rule)}
+.gc:last-child{border-right:0}
+.gc h4{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--pen);margin-bottom:11px}
+.gc li{list-style:none;padding:5px 0;color:var(--ink2);font-size:14.5px;border-top:1px dotted var(--rule)}
+.gc li:first-of-type{border-top:0}
+.hist{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);background:var(--plate)}
+@media(max-width:760px){.hist{grid-template-columns:1fr}}
+.job{padding:20px;border-right:1px solid var(--rule)}
+.job:last-child{border-right:0}
+.job .when{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.job h4{font-size:18px;margin:5px 0 8px;font-weight:800}
+.job h4 span{font-weight:400;color:var(--mute)}
+.job p{color:var(--ink2);font-size:14.5px}
+.edu{font-family:var(--mono);font-size:11px;color:var(--ink2);margin-top:14px}
+
+.close{border:2px solid var(--ink);background:var(--ink);color:var(--plate);padding:36px 32px;margin-top:26px}
+.close h2{font-size:clamp(26px,4.2vw,42px);letter-spacing:-.03em;line-height:1.1;max-width:20ch;font-weight:900}
+.close p{color:#b7c4d6;max-width:56ch;margin-top:16px}
+.close .btn{border-color:var(--plate);color:var(--plate)}
+.close .btn:hover{background:var(--plate);color:var(--ink)}
+footer{font-family:var(--mono);font-size:10.5px;color:var(--mute);padding:20px 0 40px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<div class="sheet">
+  <div class="sheet-top">
+    <span><b>BRIAN MATHEW</b> &nbsp;/&nbsp; software developer &nbsp;/&nbsp; New Jersey</span>
+    <nav><a href="#dwg">drawings</a><a href="#cap">capability</a><a href="#hist">history</a><a href="#end">contact</a></nav>
+  </div>
+
+  <div class="hero">
+    <div class="tag">Sheet 1 of 4 — General arrangement</div>
+    <h1>I don't just write the code.<br><em>I draw the system first.</em></h1>
+    <p class="lede">Full-stack and AI developer in Python and TypeScript. I build applications the
+    way you'd build a machine — components with clear boundaries, failure isolated to one stage,
+    and tests that prove each part works. <b>Three systems are drawn in full below.</b></p>
+    <div class="cta">
+      <a class="btn key" href="mailto:mathew.brian@gmail.com">Email me</a>
+      <a class="btn" href="resume.pdf">Resume (PDF)</a>
+      <a class="btn" href="https://github.com/bmath8">GitHub</a>
+      <a class="btn" href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+    </div>
+  </div>
+
+  <div class="tblock">
+    <div class="tb"><span>Discipline</span><b>Software / systems</b></div>
+    <div class="tb"><span>Stack</span><b>Python · TypeScript</b></div>
+    <div class="tb"><span>Verified</span><b>81 tests passing</b></div>
+    <div class="tb"><span>Availability</span><b>Remote / hybrid / on-site</b></div>
+  </div>
+</div>
+
+<section id="dwg">
+  <div class="shead">Drawings — systems designed, built and operated</div>
+
+  <!-- ===== PLATE 01 ===== -->
+  <article class="plate">
+    <div class="plate-hd"><h3>Brian OS — agent fleet</h3><span class="no">DWG-01 · Python / Ollama / Windows</span></div>
+    <div class="plate-body">
+      <div class="fig">
+        <svg viewBox="0 0 420 250" role="img" aria-label="Architecture diagram of the Brian OS agent fleet">
+          <defs><marker id="a1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0 L7,3.5 L0,7 z" fill="#3c4d68"/></marker></defs>
+          <g fill="none" stroke="#3c4d68" stroke-width="1.4" marker-end="url(#a1)">
+            <path d="M96,52 H150"/><path d="M96,96 H150"/><path d="M96,140 H150"/>
+            <path d="M232,96 H286"/><path d="M191,131 V178 H286"/>
+            <path d="M328,131 V178" stroke-dasharray="4 3"/>
+          </g>
+          <!-- scheduler -->
+          <rect x="18" y="34" width="78" height="36" fill="#fff" stroke="#111d33" stroke-width="1.6"/>
+          <text x="57" y="56" font-size="10" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#111d33">cron ×25</text>
+          <rect x="18" y="78" width="78" height="36" fill="#fff" stroke="#111d33" stroke-width="1.6"/>
+          <text x="57" y="100" font-size="10" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#111d33">watchdog</text>
+          <rect x="18" y="122" width="78" height="36" fill="#fff" stroke="#111d33" stroke-width="1.6"/>
+          <text x="57" y="144" font-size="10" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#111d33">Telegram</text>
+          <!-- core -->
+          <rect x="150" y="34" width="82" height="124" fill="#e7ecf1" stroke="#111d33" stroke-width="2"/>
+          <text x="191" y="88" font-size="11" font-family="Archivo,sans-serif" font-weight="700" text-anchor="middle" fill="#111d33">agent</text>
+          <text x="191" y="102" font-size="11" font-family="Archivo,sans-serif" font-weight="700" text-anchor="middle" fill="#111d33">runtime</text>
+          <!-- local llm -->
+          <rect x="286" y="78" width="86" height="36" fill="#fff" stroke="#111d33" stroke-width="1.6"/>
+          <text x="329" y="100" font-size="8.5" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#111d33">Ollama (local)</text>
+          <!-- review queue -->
+          <rect x="286" y="160" width="86" height="36" fill="#fff" stroke="#c8102e" stroke-width="1.8"/>
+          <text x="329" y="182" font-size="10" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#c8102e">approval gate</text>
+          <text x="329" y="222" font-size="9" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#7d8ca3">nothing sends without me</text>
+          <!-- callouts -->
+          <g font-family="Azeret Mono,monospace" font-size="9.5" font-weight="500">
+            <circle cx="57" cy="24" r="9" fill="#c8102e"/><text x="57" y="27.5" fill="#fff" text-anchor="middle">1</text>
+            <circle cx="191" cy="24" r="9" fill="#c8102e"/><text x="191" y="27.5" fill="#fff" text-anchor="middle">2</text>
+            <circle cx="329" cy="68" r="9" fill="#c8102e"/><text x="329" y="71.5" fill="#fff" text-anchor="middle">3</text>
+            <circle cx="270" cy="178" r="9" fill="#c8102e"/><text x="270" y="181.5" fill="#fff" text-anchor="middle">4</text>
+          </g>
+        </svg>
+        <div class="fig-cap">FIG. 1 — Fleet arrangement. Scheduler, runtime, local inference, approval gate.</div>
+      </div>
+      <div class="notes">
+        <p><b>25 scheduled agents that run on my own hardware.</b> They prepare a morning brief,
+        watch the machine, draft work overnight, and track the job hunt — on a local model, so
+        each run costs nothing and no data leaves the box.</p>
+        <ul class="callouts">
+          <li><span class="cn">1</span><span>25 cron jobs plus a watchdog that restarts a dead gateway on its own.</span></li>
+          <li><span class="cn">2</span><span>Shared runtime: structured state, so a crashed run resumes instead of corrupting.</span></li>
+          <li><span class="cn">3</span><span>Local LLM inference — private, and $0 per run.</span></li>
+          <li><span class="cn">4</span><span>Draft-only guardrail. Nothing sends, spends, or deletes without my approval.</span></li>
+        </ul>
+        <div class="specs">
+          <div><span>Test suite</span><b>81 / 81 passing</b></div>
+          <div><span>Scheduled jobs</span><b>25</b></div>
+          <div><span>Runtime</span><b>Native Windows · Python</b></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ===== PLATE 02 ===== -->
+  <article class="plate">
+    <div class="plate-hd"><h3>AI Job Hunter</h3><span class="no">DWG-02 · Python / Flask</span></div>
+    <div class="plate-body">
+      <div class="fig">
+        <svg viewBox="0 0 420 250" role="img" aria-label="Pipeline diagram of the AI Job Hunter application">
+          <defs><marker id="a2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0 L7,3.5 L0,7 z" fill="#3c4d68"/></marker></defs>
+          <g fill="none" stroke="#3c4d68" stroke-width="1.4" marker-end="url(#a2)">
+            <path d="M92,74 H128"/><path d="M212,74 H248"/><path d="M290,96 V138 H180"/>
+            <path d="M170,96 V138" stroke="#c8102e" stroke-dasharray="4 3"/>
+          </g>
+          <rect x="16" y="56" width="76" height="36" fill="#fff" stroke="#111d33" stroke-width="1.6"/>
+          <text x="54" y="78" font-size="9.5" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#111d33">job posting</text>
+          <rect x="128" y="56" width="84" height="36" fill="#e7ecf1" stroke="#111d33" stroke-width="2"/>
+          <text x="170" y="78" font-size="9.5" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#111d33">analyse + score</text>
+          <rect x="248" y="56" width="84" height="36" fill="#e7ecf1" stroke="#111d33" stroke-width="2"/>
+          <text x="290" y="78" font-size="9.5" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#111d33">draft output</text>
+          <rect x="120" y="138" width="120" height="38" fill="#fff" stroke="#c8102e" stroke-width="2"/>
+          <text x="180" y="156" font-size="9.5" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#c8102e">evidence base</text>
+          <text x="180" y="168" font-size="8.5" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#c8102e">every claim checked</text>
+          <text x="180" y="205" font-size="9" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#7d8ca3">a claim that isn't verifiable never reaches output</text>
+          <g font-family="Azeret Mono,monospace" font-size="9.5" font-weight="500">
+            <circle cx="170" cy="42" r="9" fill="#c8102e"/><text x="170" y="45.5" fill="#fff" text-anchor="middle">1</text>
+            <circle cx="290" cy="42" r="9" fill="#c8102e"/><text x="290" y="45.5" fill="#fff" text-anchor="middle">2</text>
+            <circle cx="104" cy="157" r="9" fill="#c8102e"/><text x="104" y="160.5" fill="#fff" text-anchor="middle">3</text>
+          </g>
+        </svg>
+        <div class="fig-cap">FIG. 2 — Generation pipeline with the fabrication guard on the return path.</div>
+      </div>
+      <div class="notes">
+        <p><b>A job-search platform that tailors resumes without inventing a fact.</b> It reads a
+        posting, scores keyword coverage, shows the gaps, drafts a letter, and tracks the result.</p>
+        <p>The constraint is the design: AI tailoring tools drift into fabrication, so generation
+        is separated from validation and nothing reaches output unchecked.</p>
+        <ul class="callouts">
+          <li><span class="cn">1</span><span>Keyword coverage scored against the posting, with the gaps named.</span></li>
+          <li><span class="cn">2</span><span>Generation, matching and tracking are independent — one can fail alone.</span></li>
+          <li><span class="cn">3</span><span>Every generated claim validated against a verified base before output.</span></li>
+        </ul>
+        <div class="specs">
+          <div><span>Test suite</span><b>80 passed · 1 skipped</b></div>
+          <div><span>Deployment</span><b>Docker + Render config</b></div>
+          <div><span>Status</span><b>In development · not hosted</b></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ===== PLATE 03 ===== -->
+  <article class="plate">
+    <div class="plate-hd"><h3>BoomBox — real-time listening</h3><span class="no">DWG-03 · Next.js / TypeScript</span></div>
+    <div class="plate-body">
+      <div class="fig">
+        <svg viewBox="0 0 420 250" role="img" aria-label="Real-time architecture diagram for BoomBox">
+          <defs><marker id="a3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0 L7,3.5 L0,7 z" fill="#3c4d68"/></marker></defs>
+          <g fill="none" stroke="#3c4d68" stroke-width="1.4" marker-end="url(#a3)">
+            <path d="M78,58 H166"/><path d="M78,104 H166"/><path d="M78,150 H166"/>
+            <path d="M256,104 H310"/>
+          </g>
+          <g fill="none" stroke="#c8102e" stroke-width="1.3" stroke-dasharray="3 3">
+            <path d="M166,66 H82"/><path d="M166,112 H82"/><path d="M166,158 H82"/>
+          </g>
+          <g fill="#fff" stroke="#111d33" stroke-width="1.5">
+            <rect x="14" y="42" width="64" height="30"/><rect x="14" y="88" width="64" height="30"/>
+            <rect x="14" y="134" width="64" height="30"/></g>
+          <g font-size="9" font-family="Azeret Mono,monospace" fill="#111d33" text-anchor="middle">
+            <text x="46" y="61">listener</text><text x="46" y="107">listener</text><text x="46" y="153">host</text></g>
+          <rect x="166" y="60" width="90" height="88" fill="#e7ecf1" stroke="#111d33" stroke-width="2"/>
+          <text x="211" y="98" font-size="10" font-family="Archivo,sans-serif" font-weight="700" text-anchor="middle" fill="#111d33">WebSocket</text>
+          <text x="211" y="112" font-size="10" font-family="Archivo,sans-serif" font-weight="700" text-anchor="middle" fill="#111d33">layer</text>
+          <rect x="310" y="86" width="82" height="36" fill="#fff" stroke="#111d33" stroke-width="1.6"/>
+          <text x="351" y="108" font-size="9.5" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#111d33">Redis Pub/Sub</text>
+          <text x="211" y="196" font-size="9" font-family="Azeret Mono,monospace" text-anchor="middle" fill="#c8102e">— — — presence + playback state pushed back</text>
+          <g font-family="Azeret Mono,monospace" font-size="9.5" font-weight="500">
+            <circle cx="211" cy="46" r="9" fill="#c8102e"/><text x="211" y="49.5" fill="#fff" text-anchor="middle">1</text>
+            <circle cx="351" cy="72" r="9" fill="#c8102e"/><text x="351" y="75.5" fill="#fff" text-anchor="middle">2</text>
+            <circle cx="46" cy="182" r="9" fill="#c8102e"/><text x="46" y="185.5" fill="#fff" text-anchor="middle">3</text>
+          </g>
+        </svg>
+        <div class="fig-cap">FIG. 3 — Fan-out topology. Solid = client to server, dashed = pushed state.</div>
+      </div>
+      <div class="notes">
+        <p><b>Collaborative listening in real time.</b> Shared playlists that update live, synced
+        playback across listeners, and presence — the project where I learned real-time properly.</p>
+        <ul class="callouts">
+          <li><span class="cn">1</span><span>Node WebSocket layer handling connections, heartbeats and reconnection.</span></li>
+          <li><span class="cn">2</span><span>Redis Pub/Sub keeps state consistent across every connection.</span></li>
+          <li><span class="cn">3</span><span>Presence and playback pushed back to clients — including recovery for a dropped socket.</span></li>
+        </ul>
+        <div class="specs">
+          <div><span>Stack</span><b>Next.js · Supabase · Redis</b></div>
+          <div><span>Testing</span><b>Jest / RTL · Docker Compose</b></div>
+          <div><span>Status</span><b>Prototype</b></div>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section id="cap">
+  <div class="shead">Capability schedule</div>
+  <div class="grid2">
+    <div class="gc"><h4>Build</h4><ul><li>Python · Flask · SQLAlchemy</li><li>TypeScript · React · Next.js</li>
+      <li>Postgres / Supabase · SQL</li><li>REST APIs · WebSockets</li></ul></div>
+    <div class="gc"><h4>Operate</h4><ul><li>Health checks · watchdogs</li><li>Log analysis · root cause</li>
+      <li>Scheduled jobs · automation</li><li>Windows · PowerShell</li></ul></div>
+    <div class="gc"><h4>Verify</h4><ul><li>pytest · Jest / RTL</li><li>Docker · CI basics</li>
+      <li>Git / GitHub</li><li>Runbooks &amp; documentation</li></ul></div>
+    <div class="gc"><h4>AI</h4><ul><li>LLM application development</li><li>Prompt engineering · RAG</li>
+      <li>Local models (Ollama)</li><li>Output validation</li></ul></div>
+  </div>
+</section>
+
+<section id="hist">
+  <div class="shead">Prior revisions</div>
+  <div class="hist">
+    <div class="job"><div class="when">2022</div><h4>Uber <span>— Independent Driver</span></h4>
+      <p>About a year of sustained, independent customer-facing work — routes, schedules and
+      changing needs handled without supervision.</p></div>
+    <div class="job"><div class="when">Earlier</div><h4>Best Buy <span>— Appliances Department Lead</span></h4>
+      <p>Led the appliances floor: advised customers through major purchases, resolved complaints
+      and post-sale problems in person, supported the sales team day to day.</p></div>
+  </div>
+  <p class="edu">EDUCATION &nbsp;·&nbsp; Penn State Berks — undergraduate coursework &nbsp;·&nbsp;
+  The City College of New York — undergraduate coursework</p>
+</section>
+
+<section id="end">
+  <div class="close">
+    <h2>Hand me a system. I'll draw it, build it, and keep it running.</h2>
+    <p>Looking for a full-time role — junior developer, AI application work, or support
+    engineering where operating the system matters as much as writing it. New Jersey; open to
+    remote, hybrid, on-site or relocation.</p>
+    <div class="cta">
+      <a class="btn key" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+      <a class="btn" href="tel:+16098151685">(609) 815-1685</a>
+      <a class="btn" href="resume.pdf">Resume (PDF)</a>
+      <a class="btn" href="https://github.com/bmath8">GitHub</a>
+      <a class="btn" href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+    </div>
+  </div>
+  <footer><span>© 2026 Brian Mathew</span><span>New Jersey, USA</span>
+    <span>Set in Archivo &amp; Azeret Mono</span></footer>
+</section>
+</div>
+</body></html>

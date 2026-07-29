@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — I build systems that run without me</title>
+<meta name="description" content="Developer in New Jersey. 25 agents running unattended on my own machine. Python, TypeScript, real-time systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;800;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CANDIDATE F — "FLEET"
+   The site IS the work sample. Craft is evidence, not decoration.
+
+   Hero = a live canvas of his REAL 25 agents as a bioluminescent
+   network: each node sits at its true cron hour, pulses when its
+   scheduled time comes round, and reacts to the cursor. Real data,
+   rendered as something worth looking at.
+
+   Palette (2026 research): deep teal/indigo base + electric cyan
+   and magenta accents. High contrast as the design tool. Each
+   project owns a distinct hue so the page isn't monochrome.
+   No AI Job Hunter -- you don't show employers the tool you use
+   to apply to them.
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --void:#050a12; --deep:#0a1420; --panel:#0e1c2b; --edge:#1b2f44;
+  --ink:#eaf2f8; --ink2:#9db2c6; --mute:#5f7races;
+  --mute:#63798f;
+  --cyan:#22e6c8; --mag:#ff4d8d; --amber:#ffc247; --violet:#8b7bff;
+  --d:'Geist',system-ui,sans-serif; --m:'Geist Mono',ui-monospace,Consolas,monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--ink);font-family:var(--d);font-size:16px;
+  line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 26px}
+
+/* ---------------- hero ---------------- */
+.hero{position:relative;min-height:96vh;display:flex;align-items:center;overflow:hidden}
+#fleet{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero .wrap{position:relative;z-index:2;width:100%}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 70% 55% at 22% 50%,rgba(5,10,18,.94),rgba(5,10,18,.55) 55%,transparent 78%)}
+.tagline{font-family:var(--m);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.tagline .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 12px var(--cyan);animation:bl 2s infinite}
+@keyframes bl{50%{opacity:.25}}
+h1{font-size:clamp(44px,8.4vw,104px);font-weight:900;letter-spacing:-.045em;line-height:.93;max-width:13ch}
+h1 .o{color:transparent;-webkit-text-stroke:1.4px var(--cyan)}
+.hsub{margin-top:26px;max-width:46ch;color:var(--ink2);font-size:18px}
+.hsub b{color:var(--ink);font-weight:600}
+.hcta{display:flex;gap:9px;flex-wrap:wrap;margin-top:32px;font-family:var(--m);font-size:13px}
+.hcta a{padding:11px 17px;border-radius:8px;text-decoration:none;border:1px solid var(--edge);
+  color:var(--ink2);background:rgba(14,28,43,.7);backdrop-filter:blur(6px);transition:.18s}
+.hcta a:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px)}
+.hcta a.p{background:var(--cyan);border-color:var(--cyan);color:#04120f;font-weight:600}
+.hcta a.p:hover{box-shadow:0 8px 26px rgba(34,230,200,.32);color:#04120f}
+.legend{position:absolute;right:26px;bottom:26px;z-index:2;font-family:var(--m);font-size:10.5px;
+  color:var(--mute);text-align:right;line-height:1.9}
+@media(max-width:820px){.legend{display:none}}
+
+/* ---------------- stat band: dense, coloured, no dead space ---------------- */
+.band{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--edge);
+  border-bottom:1px solid var(--edge);background:var(--deep)}
+@media(max-width:760px){.band{grid-template-columns:repeat(2,1fr)}}
+.bs{padding:22px 20px;border-right:1px solid var(--edge);position:relative;overflow:hidden}
+.bs:last-child{border-right:0}
+.bs .n{font-family:var(--m);font-size:38px;font-weight:500;line-height:1;letter-spacing:-.03em}
+.bs .l{font-size:13px;color:var(--ink2);margin-top:7px}
+.bs .s{font-family:var(--m);font-size:10.5px;color:var(--mute);margin-top:2px}
+.bs:nth-child(1) .n{color:var(--cyan)}.bs:nth-child(2) .n{color:var(--mag)}
+.bs:nth-child(3) .n{color:var(--amber)}.bs:nth-child(4) .n{color:var(--violet)}
+
+/* ---------------- sections ---------------- */
+.sh{font-family:var(--m);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--mute);margin:76px 0 26px;display:flex;align-items:center;gap:14px}
+.sh::after{content:"";flex:1;height:1px;background:var(--edge)}
+
+/* project cards — each owns a hue */
+.pj{position:relative;border:1px solid var(--edge);border-radius:16px;background:var(--panel);
+  padding:26px;margin-bottom:16px;overflow:hidden;transition:.25s}
+.pj::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c)}
+.pj::after{content:"";position:absolute;right:-90px;top:-90px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,var(--c),transparent 68%);opacity:.13;transition:.35s;pointer-events:none}
+.pj:hover{transform:translateY(-3px);border-color:var(--c)}
+.pj:hover::after{opacity:.24;transform:scale(1.15)}
+.pj-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.pj-h h3{font-size:25px;font-weight:800;letter-spacing:-.025em}
+.pj-h .st{font-family:var(--m);font-size:10.5px;padding:3px 10px;border-radius:20px;
+  color:var(--c);border:1px solid var(--c);opacity:.85}
+.pj p{color:var(--ink2);max-width:66ch;margin-bottom:12px}
+.pj p b{color:var(--ink);font-weight:600}
+.pj-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:16px 0}
+.pj-g div{background:var(--deep);border:1px solid var(--edge);border-radius:9px;padding:11px 13px}
+.pj-g b{display:block;font-family:var(--m);font-size:19px;color:var(--c);font-weight:500}
+.pj-g span{font-size:11.5px;color:var(--mute);font-family:var(--m)}
+.tg{display:flex;flex-wrap:wrap;gap:6px}
+.tg span{font-family:var(--m);font-size:11.5px;padding:3px 9px;border-radius:5px;
+  background:var(--deep);border:1px solid var(--edge);color:var(--ink2)}
+
+/* squares demo */
+.sqwrap{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}
+@media(max-width:620px){.sqwrap{grid-template-columns:1fr}}
+.sq{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;width:250px}
+.sq i{aspect-ratio:1;border-radius:2px;background:var(--deep);border:1px solid var(--edge);
+  transition:.25s;font-style:normal}
+.sq i.f{background:var(--amber);border-color:var(--amber);box-shadow:0 0 9px rgba(255,194,71,.5)}
+.sq i.w{background:var(--mag);border-color:var(--mag);box-shadow:0 0 16px var(--mag);transform:scale(1.35)}
+button{font-family:var(--m);font-size:12.5px;padding:10px 16px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--amber);background:transparent;color:var(--amber);transition:.18s}
+button:hover{background:var(--amber);color:#150e02}
+
+/* experience */
+.xp{display:grid;grid-template-columns:110px 1fr;gap:20px;padding:17px 0;border-top:1px solid var(--edge)}
+@media(max-width:560px){.xp{grid-template-columns:1fr;gap:5px}}
+.xp .y{font-family:var(--m);font-size:12px;color:var(--mute)}
+.xp h4{font-size:17px;font-weight:700}.xp h4 span{color:var(--mute);font-weight:400}
+.xp p{color:var(--ink2);font-size:14.5px;margin-top:5px;max-width:64ch}
+.edu{font-family:var(--m);font-size:12px;color:var(--mute);margin-top:18px;padding-top:16px;
+  border-top:1px solid var(--edge);line-height:1.9}
+
+.end{padding:80px 0 30px}
+.end h2{font-size:clamp(30px,5.4vw,58px);font-weight:900;letter-spacing:-.04em;line-height:1.03;max-width:17ch}
+.end h2 em{font-style:normal;color:var(--cyan)}
+.end p{color:var(--ink2);max-width:56ch;margin-top:20px;font-size:17px}
+footer{padding:26px 0 50px;font-family:var(--m);font-size:11.5px;color:var(--mute);line-height:1.9;
+  border-top:1px solid var(--edge);margin-top:44px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style></head>
+<body>
+
+<section class="hero">
+  <canvas id="fleet" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="tagline"><span class="dot"></span>25 agents live · New Jersey</div>
+    <h1>I build systems<br>that run <span class="o">without me.</span></h1>
+    <p class="hsub">Developer working in Python and TypeScript. Right now <b>25 agents I wrote</b>
+    are running unattended on my own machine — briefing me at 7am, restarting what dies, and
+    drafting work overnight. <b>That's them, to the right.</b></p>
+    <div class="hcta">
+      <a class="p" href="mailto:mathew.brian@gmail.com">Email me</a>
+      <a href="resume.pdf">Résumé</a>
+      <a href="https://github.com/bmath8">GitHub</a>
+      <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+    </div>
+  </div>
+  <div class="legend">each node is a real scheduled agent<br>
+    positioned at the hour it runs · brightest = firing next<br>move your cursor through them</div>
+</section>
+
+<div class="band">
+  <div class="bs"><span class="n">25</span><div class="l">agents running</div><div class="s">all active, unattended</div></div>
+  <div class="bs"><span class="n">81</span><div class="l">tests passing</div><div class="s">run today, not quoted</div></div>
+  <div class="bs"><span class="n">0</span><div class="l">cost per run</div><div class="s">local model, private</div></div>
+  <div class="bs"><span class="n">4</span><div class="l">systems shipped</div><div class="s">one ran a live event</div></div>
+</div>
+
+<div class="wrap">
+
+<div class="sh">Selected work</div>
+
+<article class="pj" style="--c:var(--cyan)">
+  <div class="pj-h"><h3>Brian OS</h3><span class="st">running now</span></div>
+  <p><b>An agent fleet that operates itself.</b> 25 scheduled agents on a local LLM. The
+  interesting part isn't the agents — it's everything around them: structured state so a crashed
+  run resumes instead of corrupting, a watchdog that notices a dead gateway and restarts it, and
+  draft-only guardrails so nothing sends, spends or deletes without my approval.</p>
+  <div class="pj-g">
+    <div><b>25</b><span>cron jobs</span></div><div><b>81</b><span>tests green</span></div>
+    <div><b>24/25</b><span>last run ok</span></div><div><b>$0</b><span>per run</span></div>
+  </div>
+  <div class="tg"><span>Python</span><span>Ollama</span><span>PowerShell</span><span>Telegram API</span><span>pytest</span></div>
+</article>
+
+<article class="pj" style="--c:var(--mag)">
+  <div class="pj-h"><h3>BoomBox</h3><span class="st">prototype</span></div>
+  <p><b>Real-time collaborative listening.</b> Shared playlists that update live and playback
+  synced across listeners, over a Node WebSocket layer with Redis Pub/Sub keeping state
+  consistent. This is where I learned real-time properly — heartbeats, reconnection, presence,
+  and what happens to someone whose socket drops mid-song.</p>
+  <div class="pj-g">
+    <div><b>~48k</b><span>lines TypeScript</span></div><div><b>20</b><span>test files</span></div>
+    <div><b>Redis</b><span>pub/sub fan-out</span></div><div><b>Docker</b><span>compose infra</span></div>
+  </div>
+  <div class="tg"><span>Next.js</span><span>TypeScript</span><span>Supabase</span><span>Redis</span><span>WebSockets</span></div>
+</article>
+
+<article class="pj" style="--c:var(--amber)">
+  <div class="pj-h"><h3>Super Bowl Squares</h3><span class="st">ran live</span></div>
+  <p><b>Built for an actual game, with real people on it.</b> Live score sync, chat, host
+  controls, and a security write-lock so nobody can claim a square after kickoff. The core is a
+  fair random draw — <b>press the button.</b></p>
+  <div class="sqwrap">
+    <div class="sq" id="grid"></div>
+    <div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px">
+        <button id="draw">Run the draw</button><button id="td">Score a touchdown</button></div>
+      <p style="font-family:var(--m);font-size:12px;color:var(--mute);margin:0" id="sqs">
+        100 squares, shuffled fairly. No square can be claimed once the lock is on.</p>
+    </div>
+  </div>
+  <div class="tg" style="margin-top:18px"><span>React</span><span>Firebase RTDB</span><span>realtime sync</span></div>
+</article>
+
+<div class="sh">Before software</div>
+<div class="xp"><div class="y">2022</div><div><h4>Uber <span>— Independent Driver</span></h4>
+  <p>A year of independent, customer-facing work — routes, schedules and changing needs handled
+  without supervision.</p></div></div>
+<div class="xp"><div class="y">earlier</div><div><h4>Best Buy <span>— Appliances Department Lead</span></h4>
+  <p>Led the appliances floor: advised customers through major purchases and handled the
+  complaints in person. Where I learned not to get defensive.</p></div></div>
+<p class="edu">Penn State Berks — undergraduate coursework &nbsp;·&nbsp;
+  The City College of New York — undergraduate coursework</p>
+
+<section class="end">
+  <h2>I've been running my own systems. <em>I'd rather run yours.</em></h2>
+  <p>Open to junior developer, AI application, or support-engineering roles — remote, hybrid,
+  on-site or relocation. Happy to walk through any of this live, including the parts that broke.</p>
+  <div class="hcta" style="margin-top:28px">
+    <a class="p" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+    <a href="tel:+16098151685">(609) 815-1685</a>
+    <a href="resume.pdf">Résumé (PDF)</a>
+    <a href="https://github.com/bmath8">GitHub</a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+  </div>
+</section>
+<footer>One static file — no framework, no build step, no tracking.<br>
+The hero is a live canvas driven by my real crontab. Numbers verified on this machine 2026-07-29.</footer>
+</div>
+
+<script>
+/* ============ HERO: the real fleet, as a living network ============
+   Each node is an actual scheduled agent placed by its real cron hour.
+   The next-to-fire node glows brightest and pulses. Cursor pushes them. */
+(function(){
+  var c=document.getElementById('fleet'),x=c.getContext('2d'),W,H,DPR;
+  var JOBS=[['memory-index',2],['overnight-worker',2],['model-review',3],['learning-agent',6.75],
+  ['fleet-health',6],['career',6.9],['currency',6.97],['calendar',6.92],['daily-brief',7],
+  ['scout',7.08],['gig-scanner',7.17],['inbox',8],['finance',9],['health',9.08],['research',11],
+  ['dashboard',12],['wiki',13],['weekly-review',16],['currency-weekly',16.5],['inbox-pm',17],
+  ['ceo-report',18],['fleet-health-pm',18],['outcome-learner',20],['feedback',21],
+  ['harmony-backup',22],['skill-miner',23]];
+  var COL=[[34,230,200],[255,77,141],[255,194,71],[139,123,255]];
+  var N=[],mx=-9999,my=-9999,t=0,reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  function size(){
+    DPR=Math.min(devicePixelRatio||1,2);
+    W=c.clientWidth;H=c.clientHeight;c.width=W*DPR;c.height=H*DPR;x.setTransform(DPR,0,0,DPR,0,0);
+    build();
+  }
+  function build(){
+    N=[];
+    // place on a ring-ish clock: hour -> angle. Right-weighted so text stays readable left.
+    var cx=W*0.70, cy=H*0.5, R=Math.min(W*0.19,H*0.30);
+    JOBS.forEach(function(j,i){
+      var a=(j[1]/24)*Math.PI*2 - Math.PI/2;
+      var rr=R*(0.42+0.58*((i*37)%100)/100);
+      N.push({name:j[0],hr:j[1],
+        hx:cx+Math.cos(a)*rr, hy:cy+Math.sin(a)*rr,
+        px:cx+Math.cos(a)*rr, py:cy+Math.sin(a)*rr,
+        vx:0,vy:0, r:2.6+((i*53)%100)/100*2.6, col:COL[i%4], ph:(i*0.7)%6.283});
+    });
+  }
+  function nextIdx(){
+    var d=new Date(), now=d.getHours()+d.getMinutes()/60, best=0, bd=99;
+    JOBS.forEach(function(j,i){var g=j[1]-now; if(g<0)g+=24; if(g<bd){bd=g;best=i;}});
+    return best;
+  }
+  var NI=nextIdx(); setInterval(function(){NI=nextIdx();},30000);
+
+  function frame(){
+    t+=0.006;
+    x.clearRect(0,0,W,H);
+    // links
+    for(var i=0;i<N.length;i++){
+      for(var j=i+1;j<N.length;j++){
+        var a=N[i],b=N[j],dx=a.px-b.px,dy=a.py-b.py,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<150){
+          x.strokeStyle='rgba(34,230,200,'+(0.30*(1-d/150))+')';
+          x.lineWidth=.9;x.beginPath();x.moveTo(a.px,a.py);x.lineTo(b.px,b.py);x.stroke();
+        }
+      }
+    }
+    // nodes
+    N.forEach(function(n,i){
+      // drift + cursor repel
+      var dx=n.px-mx,dy=n.py-my,d2=dx*dx+dy*dy;
+      if(d2<15000&&d2>0.01){var f=(15000-d2)/15000*0.9,d=Math.sqrt(d2);n.vx+=dx/d*f;n.vy+=dy/d*f;}
+      n.vx+=(n.hx-n.px)*0.012; n.vy+=(n.hy-n.py)*0.012;
+      n.vx*=0.90; n.vy*=0.90;
+      if(!reduce){n.px+=n.vx;n.py+=n.vy;}
+      var pulse=reduce?0.55:0.55+0.45*Math.sin(t*2.2+n.ph);
+      var hot=(i===NI);
+      var rad=n.r*(hot?1.9:1)*(0.85+pulse*0.4);
+      var C=n.col, al=hot?1:0.48+pulse*0.45;
+      var g=x.createRadialGradient(n.px,n.py,0,n.px,n.py,rad*(hot?7:5));
+      g.addColorStop(0,'rgba('+C[0]+','+C[1]+','+C[2]+','+al+')');
+      g.addColorStop(1,'rgba('+C[0]+','+C[1]+','+C[2]+',0)');
+      x.fillStyle=g;x.beginPath();x.arc(n.px,n.py,rad*(hot?7:5),0,6.283);x.fill();
+      x.fillStyle='rgba('+C[0]+','+C[1]+','+C[2]+','+Math.min(1,al+0.35)+')';
+      x.beginPath();x.arc(n.px,n.py,rad,0,6.283);x.fill();
+      if(hot){
+        x.strokeStyle='rgba('+C[0]+','+C[1]+','+C[2]+',0.5)';x.lineWidth=1;
+        x.beginPath();x.arc(n.px,n.py,rad+7+pulse*9,0,6.283);x.stroke();
+        x.font='500 10px ui-monospace,monospace';x.fillStyle='rgba(234,242,248,.82)';
+        x.fillText(n.name,n.px+rad+11,n.py+3.5);
+      }
+    });
+    requestAnimationFrame(frame);
+  }
+  addEventListener('resize',size);
+  addEventListener('mousemove',function(e){var r=c.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;});
+  addEventListener('mouseout',function(){mx=my=-9999;});
+  size();frame();
+})();
+
+/* ============ squares ============ */
+(function(){
+  var g=document.getElementById('grid');
+  for(var i=0;i<100;i++)g.appendChild(document.createElement('i'));
+  var cells=g.querySelectorAll('i');
+  document.getElementById('draw').onclick=function(){
+    cells.forEach(function(c){c.className='';});
+    document.getElementById('sqs').textContent='shuffling 100 squares…';
+    var o=[];for(var i=0;i<100;i++)o.push(i);
+    for(var i=99;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=o[i];o[i]=o[j];o[j]=t;}
+    o.forEach(function(idx,n){setTimeout(function(){
+      cells[idx].className='f';
+      if(n===99)document.getElementById('sqs').textContent='100 squares assigned · board locked';
+    },n*11);});
+  };
+  document.getElementById('td').onclick=function(){
+    var w=Math.floor(Math.random()*100);
+    cells.forEach(function(c){c.classList.remove('w')});
+    cells[w].classList.add('f');cells[w].classList.add('w');
+    document.getElementById('sqs').textContent='winner — row '+Math.floor(w/10)+', column '+(w%10);
+  };
+})();
+</script>
+</body></html>

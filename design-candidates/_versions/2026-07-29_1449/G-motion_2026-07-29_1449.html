@@ -57,13 +57,6 @@ h1 .o{color:transparent;-webkit-text-stroke:1.4px var(--cyan)}
 .cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:2;
   font-family:var(--m);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
 .cue i{display:block;width:1px;height:26px;background:linear-gradient(var(--mute),transparent);margin:8px auto 0}
-/* live crontab readout — fills the hero's lower-left with something true */
-.hnow{position:absolute;left:26px;bottom:30px;z-index:2;display:flex;align-items:baseline;gap:11px;
-  font-family:var(--m);flex-wrap:wrap;padding-left:14px;border-left:1px solid var(--edge)}
-.hnow .k{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-.hnow .v{font-size:14px;color:var(--ink)}
-.hnow .c{font-size:20px;color:var(--cyan);font-variant-numeric:tabular-nums}
-@media(max-width:900px){.hnow{position:static;margin-top:34px;left:auto;bottom:auto}}
 
 /* stat band */
 .band{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--edge);
@@ -131,12 +124,6 @@ footer{padding:26px 0 60px;font-family:var(--m);font-size:11.5px;color:var(--mut
 .rv{opacity:1}
 html.js .rv{opacity:0;transform:translateY(22px)}
 @media(prefers-reduced-motion:reduce){html.js .rv{opacity:1!important;transform:none!important}}
-
-/* masked word reveal on the headline — each word rises out of its own clip */
-h1 .ln{display:block;overflow:hidden;padding-bottom:.06em}
-h1 .wd{display:inline-block;will-change:transform}
-/* magnetic buttons: JS moves them, CSS eases the return */
-.cta a{will-change:transform}
 </style></head>
 <body>
 <div id="rail"></div>
@@ -155,12 +142,6 @@ h1 .wd{display:inline-block;will-change:transform}
       <a href="https://github.com/bmath8">GitHub</a>
       <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
     </div>
-  </div>
-  <div class="hnow rv">
-    <span class="k">next agent</span>
-    <span class="v" id="nj">—</span>
-    <span class="c" id="nc">--:--:--</span>
-    <span class="k" id="nl"></span>
   </div>
   <div class="cue">scroll<i></i></div>
 </section>
@@ -270,40 +251,8 @@ if (window.Lenis && window.gsap && !reduce) {
       scrollTrigger: { trigger: el, start: 'top 88%' } });
   });
 
-  // ---- headline: split into words, each rising out of its own clip mask ----
-  // Hand-rolled rather than pulling GSAP SplitText: one less file, and the text
-  // stays plain in the DOM for screen readers until JS upgrades it.
-  (function splitHeadline(){
-    var h = document.querySelector('h1');
-    if (!h) return;
-    var lines = h.innerHTML.split(/<br\s*\/?>/i);
-    h.innerHTML = lines.map(function(line){
-      var words = line.trim().split(/\s+/).map(function(w){
-        return '<span class="wd">' + w + '</span>';
-      }).join(' ');
-      return '<span class="ln">' + words + '</span>';
-    }).join('');
-    gsap.set(h, { opacity: 1, y: 0 });
-    gsap.from(h.querySelectorAll('.wd'), {
-      yPercent: 118, duration: 1.05, ease: 'power4.out', stagger: 0.055, delay: 0.1
-    });
-  })();
-
-  // remaining hero copy (headline handled above)
-  gsap.to('.hero .hsub, .hero .cta', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: .12, delay: .45 });
-
-  // ---- magnetic buttons: the cursor tugs them, they spring back ----
-  document.querySelectorAll('.cta a').forEach(function (btn) {
-    btn.addEventListener('mousemove', function (e) {
-      var r = btn.getBoundingClientRect();
-      gsap.to(btn, { duration: .4, ease: 'power3.out',
-        x: (e.clientX - (r.left + r.width / 2)) * .35,
-        y: (e.clientY - (r.top + r.height / 2)) * .35 });
-    });
-    btn.addEventListener('mouseleave', function () {
-      gsap.to(btn, { x: 0, y: 0, duration: .6, ease: 'elastic.out(1,0.4)' });
-    });
-  });
+  // hero copy in on load
+  gsap.to('.hero .rv', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: .12, delay: .15 });
 
   // stat count-up
   gsap.utils.toArray('.bs .n').forEach(function (el) {
@@ -372,36 +321,6 @@ if (window.Lenis && window.gsap && !reduce) {
   addEventListener('mousemove',function(e){var r=c.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;});
   addEventListener('mouseout',function(){mx=my=-9999;});
   size();frame();
-})();
-
-/* ---------- live countdown to the next scheduled agent ---------- */
-(function(){
-  var J=[['memory-index',2,0],['overnight-worker',2,0],['model-review',3,0],['learning-agent',6,45],
-  ['fleet-health',6,0],['career',6,53],['currency',6,58],['calendar',6,55],['daily-brief',7,0],
-  ['scout',7,5],['gig-scanner',7,10],['inbox',8,0],['finance',9,0],['health',9,5],['research',11,0],
-  ['wiki',13,0],['weekly-review',16,0],['currency-weekly',16,30],['inbox',17,0],['ceo-report',18,0],
-  ['fleet-health',18,0],['outcome-learner',20,0],['feedback',21,0],['harmony-backup',22,0],
-  ['skill-miner',23,0]];
-  var nj=document.getElementById('nj'),nc=document.getElementById('nc'),nl=document.getElementById('nl');
-  if(!nj) return;
-  function p(n){return (n<10?'0':'')+n;}
-  function tick(){
-    var now=new Date(),best=null,bd=Infinity;
-    J.forEach(function(j){
-      var t=new Date(now); t.setHours(j[1],j[2],0,0);
-      if(t<=now) t.setDate(t.getDate()+1);
-      if(t-now<bd){bd=t-now;best=j;}
-    });
-    // the hourly dashboard job wins if it lands sooner
-    var d=new Date(now); d.setMinutes(5,0,0);
-    if(d<=now) d.setHours(d.getHours()+1);
-    if(d-now<bd){bd=d-now;best=['dashboard',d.getHours(),5];}
-    var s=Math.floor(bd/1000);
-    nj.textContent=best[0];
-    nc.textContent=p(Math.floor(s/3600))+':'+p(Math.floor(s%3600/60))+':'+p(s%60);
-    nl.textContent='at '+p(best[1])+':'+p(best[2]);
-  }
-  tick(); setInterval(tick,1000);
 })();
 
 /* ---------- squares ---------- */
