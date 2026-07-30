@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Brian Mathew — developer & operator</title>
+<link rel="stylesheet" href="../vendor/fonts.css"/>
+<script type="importmap">
+{"imports":{"three":"/vendor/three.module.min.js","three/addons/":"/vendor/"}}
+</script>
+<style>
+/* ==========================================================================
+   C — CONTOUR
+   Three notes answered:
+   · light page stays
+   · no one-liner statement at the top — name and facts only
+   · brain is NOT boxed and NOT cropped. Transparent canvas, no container,
+     no crop marks; it sits on the page like an illustration.
+   · brain treatment is nothing like the previous ones. Every earlier version
+     was a solid shaded object with glowing dots. This is CONTOUR LINE WORK —
+     the cortex described by horizontal isolines, the way a topographic map or
+     an engraving describes form. Line, not surface.
+   ========================================================================== */
+:root{
+  --paper:#f0f0f4; --ink:#0d0d14; --body:#4c4c5e; --mute:#8b8b9c; --line:#dcdce6;
+  --accent:#1b34d8; --green:#0d8a56;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --disp:"Bricolage Grotesque","IBM Plex Sans",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--body);font-family:var(--sans);font-size:16px;
+  line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1440px;margin:0 auto;padding:0 clamp(20px,3vw,48px)}
+
+/* ---------- header: name, then facts. No statement line. ---------- */
+.top{display:flex;align-items:baseline;gap:clamp(18px,3vw,48px);flex-wrap:wrap;
+  padding:clamp(22px,3vw,38px) 0 0}
+.top .lg{font-family:var(--disp);font-weight:800;font-size:clamp(22px,2.3vw,30px);
+  letter-spacing:-.034em;color:var(--ink);white-space:nowrap}
+.top .role{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--mute)}
+.top .act{margin-left:auto;display:flex;gap:9px}
+.pill{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  padding:11px 17px;border-radius:999px;border:1px solid var(--line);background:#fff;
+  color:var(--ink);transition:.2s;white-space:nowrap;display:inline-block}
+.pill:hover{border-color:var(--ink)}
+.pill.dark{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill.dark i{font-style:normal;display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#3ee08f;margin-left:8px;vertical-align:1px}
+
+/* ---------- the plate: brain floats, no box ---------- */
+.plate{position:relative;height:clamp(480px,76vh,880px);margin-top:clamp(-20px,-2vw,-8px)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#gl:active{cursor:grabbing}
+/* facts sit on the page beside the drawing, like a plate caption */
+.facts{position:absolute;left:0;bottom:8%;z-index:2;pointer-events:none}
+.facts .n{font-family:var(--disp);font-weight:800;font-size:clamp(44px,6.5vw,96px);
+  line-height:.92;letter-spacing:-.05em;color:var(--ink);display:block}
+.facts .n small{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--mute);display:block;margin-top:8px;letter-spacing:.2em}
+.facts .row{display:flex;gap:clamp(22px,3vw,46px);margin-top:26px;flex-wrap:wrap}
+.facts .row div{font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--mute)}
+.facts .row b{display:block;font-family:var(--disp);font-weight:700;font-size:clamp(20px,2.2vw,30px);
+  color:var(--ink);letter-spacing:-.03em;margin-top:5px;text-transform:none}
+.legend{position:absolute;right:0;bottom:8%;z-index:2;text-align:right;pointer-events:none;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.legend div{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:7px}
+.legend i{width:7px;height:7px;border-radius:50%;display:block}
+.hint{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:2;
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+@media(max-width:900px){.facts,.legend{position:static;text-align:left;margin-top:20px}
+  .legend div{justify-content:flex-start}.plate{height:52vh;margin-top:10px}}
+
+/* ---------- work ---------- */
+.idx{border-top:1px solid var(--line);margin-top:clamp(30px,5vw,70px)}
+.row{display:grid;grid-template-columns:48px minmax(0,1.2fr) minmax(0,2fr) auto;
+  gap:clamp(14px,2.4vw,40px);align-items:start;padding:clamp(20px,2.6vw,34px) 0;
+  border-bottom:1px solid var(--line);transition:padding-left .35s cubic-bezier(.2,.8,.2,1)}
+.row:hover{padding-left:12px}
+.row .no{font-family:var(--mono);font-size:11px;color:var(--mute);padding-top:8px}
+.row h3{font-family:var(--disp);font-weight:700;font-size:clamp(22px,2.7vw,38px);
+  letter-spacing:-.03em;color:var(--ink);line-height:1.04}
+.row p{font-size:clamp(13.5px,1.05vw,15.5px);max-width:50ch}
+.row .go{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.tagl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--mute);white-space:nowrap}
+.tagl.on{border-color:#b6e2ca;background:#e7f6ee;color:var(--green)}
+.tagl.live{border-color:#c3cbfb;background:#e9ecfe;color:var(--accent)}
+@media(max-width:900px){.row{grid-template-columns:32px 1fr;row-gap:10px}
+  .row p,.row .go,.row .live{grid-column:2}.row .go{justify-content:flex-start}}
+.live{margin-top:16px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.live .hd{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#e7e7ef;
+  border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10px;
+  letter-spacing:.11em;text-transform:uppercase;color:var(--mute)}
+.live .hd i{width:7px;height:7px;border-radius:50%;background:var(--green);display:block}
+.live .hd span{margin-left:auto;color:var(--green)}
+.live iframe{width:100%;height:320px;border:0;display:block}
+
+.prose{padding:clamp(48px,7vw,110px) 0 clamp(26px,4vw,54px);display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(24px,5vw,80px)}
+@media(max-width:900px){.prose{grid-template-columns:1fr}}
+.prose h2{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.prose p{font-size:clamp(15px,1.2vw,18px);margin-top:14px;max-width:56ch}
+.prose p b{color:var(--ink);font-weight:600}
+.prose .meta{margin-top:26px;display:flex;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:11px}
+.prose .meta a{color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:2px}
+.prose .meta a:hover{border-bottom-color:var(--ink)}
+footer{border-top:1px solid var(--line);padding:20px 0 44px;font-family:var(--mono);font-size:10.5px;
+  color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="lg">BRIAN&nbsp;MATHEW</div>
+    <div class="role">Developer &amp; operator · New Jersey</div>
+    <div class="act">
+      <a class="pill" href="../resume.pdf">Résumé</a>
+      <a class="pill dark" href="mailto:mathew.brian@gmail.com">Available — email me<i></i></a>
+    </div>
+  </div>
+
+  <div class="plate">
+    <canvas id="gl"></canvas>
+    <div class="facts">
+      <span class="n">25<small>agents running unattended</small></span>
+      <div class="row">
+        <div>Tests<b>81 / 81</b></div>
+        <div>Systems<b>3 shipped</b></div>
+        <div>Next to fire<b id="hN">—</b></div>
+      </div>
+    </div>
+    <div class="legend">
+      <div><i style="background:#3ee08f"></i>operations</div>
+      <div><i style="background:#5cc8ff"></i>learning</div>
+      <div><i style="background:#ff7a63"></i>comms</div>
+      <div><i style="background:#a98bff"></i>safety</div>
+      <div><i style="background:#e0a020"></i>money</div>
+    </div>
+    <div class="hint">Drag to turn</div>
+  </div>
+
+  <div class="idx">
+    <article class="row">
+      <span class="no">01</span>
+      <div><h3>Brian OS</h3></div>
+      <div><p>The fleet drawn above. 25 scheduled Python agents running unattended on Windows —
+        briefs, health checks, self-recovery, two-way Telegram control, and draft-only guardrails
+        on anything that sends, spends, deploys or deletes.</p></div>
+      <div class="go"><span class="tagl on">Running daily</span><span class="tagl">81 tests</span>
+        <a class="pill" href="https://github.com/bmath8/brian-os">Source</a></div>
+    </article>
+
+    <article class="row">
+      <span class="no">02</span>
+      <div><h3>Super Bowl LX Squares</h3></div>
+      <div>
+        <p>A real-time squares pool real people used during a real game. The draw had to be
+          verifiably fair and identical for every viewer, so state resolves centrally and pushes
+          out. One moment to be correct, in front of an audience. <b>It's running right here:</b></p>
+        <div class="live">
+          <div class="hd"><i></i> fam-super-bowl-squares-2026.vercel.app <span>live</span></div>
+          <iframe src="https://fam-super-bowl-squares-2026.vercel.app" loading="lazy"
+            title="Live Super Bowl LX squares app" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+      <div class="go"><span class="tagl live">Live</span>
+        <a class="pill dark" href="https://fam-super-bowl-squares-2026.vercel.app">Open ↗</a>
+        <a class="pill" href="https://github.com/bmath8/fam-super-bowl-squares-2026">Source</a></div>
+    </article>
+
+    <article class="row">
+      <span class="no">03</span>
+      <div><h3>BoomBox</h3></div>
+      <div><p>Collaborative music — shared queues, live rooms, synchronised listening. Durable
+        Postgres state kept deliberately apart from transient WebSocket and Redis Pub/Sub, because
+        they fail in completely different ways and shouldn't share a failure mode.</p></div>
+      <div class="go"><span class="tagl">Prototype</span>
+        <a class="pill" href="https://github.com/bmath8/boombox">Source</a></div>
+    </article>
+  </div>
+
+  <div class="prose">
+    <div>
+      <h2>The failure worth showing</h2>
+      <p>A failed process guardian left orphan processes behind until they filled the disk.
+        <b>Nothing alerted me — the alerting was one of the casualties.</b> I found it, traced the
+        cause, recovered the machine, restored monitoring, and gave the watchdog a watchdog. The
+        hardest bug I've had was operational, not logical.</p>
+    </div>
+    <div>
+      <h2>Before the code</h2>
+      <p><b>Best Buy — Appliances Department Lead.</b> High-volume retail floor: high-consideration
+        purchases, complaints and post-sale problems resolved in person, a small team to coordinate.</p>
+      <p><b>Uber — independent driver, 2022.</b> A year of sustained, independent customer-facing
+        work with no supervision.</p>
+      <p>Undergraduate coursework at Penn State Berks and CCNY. Looking for a full-time role —
+        developer, technical support, or operations. Available immediately; remote, hybrid,
+        on-site or relocation.</p>
+      <div class="meta">
+        <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+        <a href="tel:+16098151685">(609) 815-1685</a>
+        <a href="https://github.com/bmath8">github.com/bmath8</a>
+        <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+        <a href="../resume.pdf">Résumé</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>© 2026 Brian Mathew — New Jersey</span>
+    <span>Every number here came from a real run</span>
+  </footer>
+</div>
+
+<script type="module">
+const JOBS=[['memory-index',80,0],['harmony-backup',90,3],['overnight-worker',120,0],
+ ['model-review',180,1],['scout',400,1],['learning-agent',405,1],['inbox',408,2],
+ ['finance',410,4],['health',412,3],['career',413,1],['calendar',415,2],['currency',418,1],
+ ['fleet-health',419,3],['daily-brief',420,2],['gig-scanner',430,4],['ceo-report',450,4],
+ ['currency-weekly',990,1],['wiki',1005,1],['outcome-learner',1010,1],['weekly-review',1020,2],
+ ['feedback',1020,2],['research',1080,1],['skill-miner',1110,1],['dashboard',-1,0],
+ ['system-watchdog',-2,3]];
+const COL=[0x3ee08f,0x5cc8ff,0xff7a63,0xa98bff,0xe0a020];
+const LANE=[[0.05,0.62,0.20],[0.18,0.10,0.88],[0.66,-0.05,-0.10],[0.02,-0.40,-0.78],[-0.15,0.42,-0.62]];
+const hhmm=m=>('0'+Math.floor(m/60)).slice(-2)+':'+('0'+(m%60)).slice(-2);
+(function next(){
+  const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',
+    minute:'numeric',hour12:false}).formatToParts(new Date());
+  let h=0,mm=0;p.forEach(o=>{if(o.type==='hour')h=+o.value;if(o.type==='minute')mm=+o.value});
+  const now=(h%24)*60+mm; let b=null,bd=1e9;
+  JOBS.forEach(j=>{if(j[1]<0)return;let g=j[1]-now;if(g<0)g+=1440;if(g<bd){bd=g;b=j;}});
+  if(b)document.getElementById('hN').textContent=b[0]+' '+hhmm(b[1]);
+  setTimeout(next,30000);
+})();
+
+const host=document.getElementById('gl');
+try{
+  const THREE=await import('/vendor/three.module.min.js');
+
+  const abuf=await (await fetch('/vendor/mesh/brain-mni.bin')).arrayBuffer();
+  const dv=new DataView(abuf), nV=dv.getUint32(0,true), nT=dv.getUint32(4,true);
+  let off=8;
+  const qp=new Int16Array(abuf,off,nV*3); off+=nV*6;
+  const qn=new Int8Array(abuf,off,nV*3);  off+=nV*3;
+  const idx=new Uint32Array(abuf.slice(off,off+nT*12));
+  const pos=new Float32Array(nV*3), nrm=new Float32Array(nV*3);
+  for(let i=0;i<nV*3;i++){pos[i]=qp[i]/32767;nrm[i]=qn[i]/127;}
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('normal',new THREE.BufferAttribute(nrm,3));
+  geo.setIndex(new THREE.BufferAttribute(idx,1));
+
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(30,1,0.01,60);
+  cam.position.set(0.35,0.16,3.05); cam.lookAt(0,0,0);
+
+  /* alpha:true and no clear colour -> the page shows through. No box, no
+     backdrop, no crop. The drawing sits on the paper. */
+  const renderer=new THREE.WebGLRenderer({canvas:host,antialias:true,alpha:true});
+  renderer.setClearAlpha(0);
+
+  /* ---- CONTOUR SHADER ----
+     The cortex is described by horizontal isolines at a fixed spacing, like a
+     topographic map. Everything between the lines is discarded, so what is left
+     is line work on paper rather than a shaded solid. Front-facing lines are
+     dark and crisp; back-facing ones stay faint, which reads as depth without
+     any lighting at all. */
+  const mat=new THREE.ShaderMaterial({
+    transparent:true, side:THREE.DoubleSide, depthWrite:false,
+    uniforms:{ uSpacing:{value:21.0}, uWidth:{value:0.13},
+               uInk:{value:new THREE.Color(0x0d0d14)}, uFade:{value:0.0} },
+    vertexShader:`
+      varying vec3 vN; varying vec3 vP; varying float vDepth;
+      void main(){
+        vN = normalize(normalMatrix * normal);
+        vP = position;
+        vec4 mv = modelViewMatrix * vec4(position,1.0);
+        vDepth = -mv.z;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader:`
+      uniform float uSpacing; uniform float uWidth; uniform vec3 uInk; uniform float uFade;
+      varying vec3 vN; varying vec3 vP; varying float vDepth;
+      void main(){
+        /* isoline: distance to the nearest contour band, in screen-stable units */
+        float h = vP.y * uSpacing;
+        float d = abs(fract(h) - 0.5);
+        float w = fwidth(h) * 1.6;
+        float line = 1.0 - smoothstep(uWidth*0.5 - w, uWidth*0.5 + w, d);
+        if(line < 0.02) discard;
+
+        /* facing the camera = crisp ink; facing away = faint, so depth reads
+           purely from line weight, the way an engraving works */
+        float face = clamp(vN.z, -1.0, 1.0);
+        float front = smoothstep(-0.25, 0.55, face);
+        float a = line * mix(0.035, 0.95, front);
+
+        /* fade the far side out so the drawing never turns into a mesh blob */
+        a *= smoothstep(4.1, 2.55, vDepth);
+        gl_FragColor = vec4(uInk, a);
+      }`
+  });
+
+  const pivot=new THREE.Group(); scene.add(pivot);
+  pivot.add(new THREE.Mesh(geo,mat));
+  pivot.rotation.y=-0.55;
+
+  /* agent marks: small filled dots, the only colour in the drawing */
+  const _v=new THREE.Vector3();
+  const snap=d=>{let b=0,bd=-1e9;
+    for(let i=0;i<nV;i+=5){const s=pos[i*3]*d.x+pos[i*3+1]*d.y+pos[i*3+2]*d.z;if(s>bd){bd=s;b=i;}}
+    return new THREE.Vector3(pos[b*3],pos[b*3+1],pos[b*3+2]);};
+  const dotGeo=new THREE.SphereGeometry(0.011,12,9), N=[];
+  JOBS.forEach((j,i)=>{
+    const l=LANE[j[2]];
+    _v.set(l[0]+(Math.random()-.5)*.4,l[1]+(Math.random()-.5)*.32,l[2]+(Math.random()-.5)*.4).normalize();
+    const m=new THREE.MeshBasicMaterial({color:COL[j[2]],transparent:true,opacity:1});
+    const d=new THREE.Mesh(dotGeo,m); d.position.copy(snap(_v).multiplyScalar(1.018));
+    pivot.add(d); N.push({m,d,ph:(i*.83)%6.283});
+  });
+
+  let drag=false,lx=0,spin=0.0011;
+  host.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;host.setPointerCapture(e.pointerId)});
+  host.addEventListener('pointerup',e=>{drag=false;try{host.releasePointerCapture(e.pointerId)}catch(_){}});
+  host.addEventListener('pointermove',e=>{if(drag){spin+=(e.clientX-lx)*0.0004;lx=e.clientX;}});
+
+  function size(){
+    const w=host.clientWidth,h=host.clientHeight;
+    renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+    renderer.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); cam.lookAt(0,0,0);
+  }
+  addEventListener('resize',size); size();
+
+  let last=performance.now();
+  (function frame(now){
+    requestAnimationFrame(frame);
+    const dt=Math.min((now-last)/16.7,3); last=now;
+    if(!drag) spin+=(0.0011-spin)*0.02;
+    pivot.rotation.y+=spin*dt;
+    const t=now*0.001;
+    N.forEach(n=>{
+      const p=0.55+0.45*Math.pow(Math.abs(Math.sin(t*0.5+n.ph)),4);
+      n.m.opacity=0.35+p*0.65;
+      n.d.scale.setScalar(0.8+p*0.9);
+    });
+    renderer.render(scene,cam);
+  })(performance.now());
+}catch(err){ console.error('[plate] init failed:',err); }
+</script>
+</body>
+</html>
