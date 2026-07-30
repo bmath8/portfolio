@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Brain prototypes — real MNI anatomy</title>
+<link rel="stylesheet" href="../vendor/fonts.css"/>
+<script type="importmap">
+{"imports":{"three":"/vendor/three.module.min.js","three/addons/":"/vendor/"}}
+</script>
+<style>
+/* ==========================================================================
+   PROTOTYPES — three animation ideas on REAL anatomy.
+   The geometry is an actual MNI/CIVET cortical surface (81,924 verts), not a
+   noise-displaced sphere. Every previous brain here was an approximation,
+   which is why they read as blobs. This is the real thing.
+   Switch modes with the buttons or keys 1 / 2 / 3.
+   ========================================================================== */
+:root{
+  --bg:#07070c; --ink:#f4f4fa; --mute:#7e7e93; --line:#24243a;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --disp:"Bricolage Grotesque","IBM Plex Sans",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans)}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#gl:active{cursor:grabbing}
+.ui{position:fixed;z-index:10;pointer-events:none}
+.top{top:0;left:0;right:0;display:flex;align-items:flex-start;gap:20px;
+  padding:22px 26px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--mute)}
+.top b{color:var(--ink);font-weight:500}
+.switch{position:fixed;left:26px;bottom:26px;z-index:11;display:flex;gap:8px;flex-wrap:wrap}
+.switch button{pointer-events:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;padding:11px 16px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--mute);
+  backdrop-filter:blur(10px);transition:.2s}
+.switch button:hover{color:var(--ink);border-color:#4a4a70}
+.switch button.on{background:var(--ink);border-color:var(--ink);color:#07070c;font-weight:600}
+.caption{position:fixed;right:26px;bottom:26px;z-index:11;max-width:330px;text-align:right;
+  font-size:13px;color:var(--mute);line-height:1.55}
+.caption b{color:var(--ink);display:block;font-family:var(--disp);font-size:19px;
+  letter-spacing:-.02em;margin-bottom:6px;font-weight:700}
+#stat{position:fixed;right:26px;top:22px;z-index:11;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+#load{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;
+  align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--mute);transition:opacity .6s}
+#load.out{opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="load">Loading real cortical surface…</div>
+<canvas id="gl"></canvas>
+
+<div class="ui top">
+  <span><b>Brian Mathew</b> — brain prototypes</span>
+  <span>· real MNI cortical surface · 81,924 verts</span>
+</div>
+<div id="stat"></div>
+
+<div class="switch">
+  <button data-m="0" class="on">1 · Neural storm</button>
+  <button data-m="1">2 · Point cloud scan</button>
+  <button data-m="2">3 · Glass anatomy</button>
+</div>
+<div class="caption" id="cap"></div>
+
+<script type="module">
+const CAPS=[
+ ['Neural storm','Solid cortex, with 25 agents burning on the surface where their work lives and signal trails firing between them. Bloom does the rest.'],
+ ['Point cloud scan','The brain dissolved into its own 82k vertices. A scan plane sweeps through and the surface reassembles behind it — medical imaging, not decoration.'],
+ ['Glass anatomy','Transmissive cortex you can see into, with the agent network glowing inside the skull. The structure is the subject.']
+];
+const cap=document.getElementById('cap'), stat=document.getElementById('stat');
+function setCap(i){cap.innerHTML='<b>'+CAPS[i][0]+'</b>'+CAPS[i][1];}
+
+const JOBS=[['memory-index',80],['harmony-backup',90],['overnight-worker',120],['model-review',180],
+ ['scout',400],['learning-agent',405],['inbox',408],['finance',410],['health',412],['career',413],
+ ['calendar',415],['currency',418],['fleet-health',419],['daily-brief',420],['gig-scanner',430],
+ ['ceo-report',450],['currency-weekly',990],['wiki',1005],['outcome-learner',1010],
+ ['weekly-review',1020],['feedback',1020],['research',1080],['skill-miner',1110],
+ ['dashboard',-1],['system-watchdog',-2]];
+
+const THREE=await import('/vendor/three.module.min.js');
+const {RoomEnvironment}=await import('/vendor/RoomEnvironment.js');
+const PP=await import('/vendor/postprocessing.module.js');
+const {EffectComposer,RenderPass,EffectPass,BloomEffect,VignetteEffect,NoiseEffect,
+       ToneMappingEffect,SMAAEffect,BlendFunction,KernelSize}=PP;
+
+/* ---------- load the real cortical surface ---------- */
+const buf=await (await fetch('/vendor/mesh/brain-mni.bin')).arrayBuffer();
+const dv=new DataView(buf);
+const nV=dv.getUint32(0,true), nT=dv.getUint32(4,true);
+let o=8;
+const qp=new Int16Array(buf,o,nV*3); o+=nV*3*2;
+const qn=new Int8Array(buf,o,nV*3);  o+=nV*3;
+const idx=new Uint32Array(buf.slice(o,o+nT*3*4));
+const pos=new Float32Array(nV*3), nrm=new Float32Array(nV*3);
+for(let i=0;i<nV*3;i++){ pos[i]=qp[i]/32767; nrm[i]=qn[i]/127; }
+
+const geo=new THREE.BufferGeometry();
+geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+geo.setAttribute('normal',new THREE.BufferAttribute(nrm,3));
+geo.setIndex(new THREE.BufferAttribute(idx,1));
+geo.computeBoundingSphere();
+
+/* ---------- scene ---------- */
+const host=document.getElementById('gl');
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,0.01,60);
+cam.position.set(0,0.15,3.5);
+const renderer=new THREE.WebGLRenderer({canvas:host,antialias:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));
+renderer.setSize(innerWidth,innerHeight,false);
+renderer.toneMapping=THREE.NoToneMapping;
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(),0.03).texture;
+
+scene.add(new THREE.AmbientLight(0xffffff,0.35));
+const key=new THREE.DirectionalLight(0xdfe6ff,3.0); key.position.set(-3,4,4); scene.add(key);
+const rim=new THREE.DirectionalLight(0x5f7bff,2.2); rim.position.set(4,-2,-4); scene.add(rim);
+
+const pivot=new THREE.Group(); scene.add(pivot);
+pivot.rotation.set(0.06,-1.0,0);
+
+/* --- 1: solid cortex --- */
+const matSolid=new THREE.MeshPhysicalMaterial({
+  color:0x2b2f3d, roughness:0.42, metalness:0.1,
+  clearcoat:0.8, clearcoatRoughness:0.35,
+  sheen:0.6, sheenColor:new THREE.Color(0x6f8cff), envMapIntensity:0.9});
+const solid=new THREE.Mesh(geo,matSolid); pivot.add(solid);
+
+/* --- 2: the same vertices as a point cloud, with a scan plane --- */
+const ptGeo=new THREE.BufferGeometry();
+ptGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+const ptMat=new THREE.ShaderMaterial({
+  transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+  uniforms:{uScan:{value:0},uPix:{value:Math.min(devicePixelRatio||1,1.7)}},
+  vertexShader:`uniform float uScan; uniform float uPix; varying float vA;
+    void main(){
+      vec4 mv=modelViewMatrix*vec4(position,1.);
+      float d=abs(position.y-uScan);
+      float band=exp(-d*d*260.0);
+      vA=0.16+band*0.95;
+      gl_Position=projectionMatrix*mv;
+      gl_PointSize=(1.1+band*4.5)*uPix*(2.2/-mv.z);
+    }`,
+  fragmentShader:`varying float vA;
+    void main(){
+      vec2 d=gl_PointCoord-vec2(.5); if(dot(d,d)>.25) discard;
+      gl_FragColor=vec4(mix(vec3(.35,.55,1.),vec3(1.),vA),vA);
+    }`
+});
+const cloud=new THREE.Points(ptGeo,ptMat); cloud.visible=false; pivot.add(cloud);
+
+/* --- 3: glass cortex --- */
+const matGlass=new THREE.MeshPhysicalMaterial({
+  color:0xdfe8ff, roughness:0.08, metalness:0,
+  transmission:1, thickness:0.55, ior:1.4,
+  clearcoat:1, clearcoatRoughness:0.05, envMapIntensity:1.3,
+  transparent:true, opacity:1, side:THREE.DoubleSide});
+const glass=new THREE.Mesh(geo,matGlass); glass.visible=false; pivot.add(glass);
+
+/* ---------- 25 agents, snapped onto the real surface ---------- */
+const LANE=[[0.05,0.72,0.10],[0.20,0.18,0.86],[0.62,0.02,-0.22],[0.02,-0.44,-0.74],[-0.12,0.40,-0.68]];
+const nodes=[], nodeGeo=new THREE.SphereGeometry(0.012,14,10);
+const COL=[0x38f0b0,0x5cc8ff,0xff7a63,0xa98bff,0xffc65c];
+const _v=new THREE.Vector3();
+function nearestOnSurface(dir){           // walk the real vertices, not a formula
+  let best=0,bd=-1e9;
+  for(let i=0;i<nV;i+=7){
+    const d=pos[i*3]*dir.x+pos[i*3+1]*dir.y+pos[i*3+2]*dir.z;
+    if(d>bd){bd=d;best=i;}
+  }
+  return new THREE.Vector3(pos[best*3],pos[best*3+1],pos[best*3+2]);
+}
+JOBS.forEach((j,i)=>{
+  const l=LANE[i%5];
+  _v.set(l[0]+(Math.random()-.5)*.5,l[1]+(Math.random()-.5)*.4,l[2]+(Math.random()-.5)*.5).normalize();
+  const p=nearestOnSurface(_v).multiplyScalar(1.015);
+  const c=COL[i%5];
+  const m=new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:3,
+    toneMapped:false});
+  const n=new THREE.Mesh(nodeGeo,m); n.position.copy(p); pivot.add(n);
+  nodes.push({m,n,job:j,ph:(i*.83)%6.283,base:new THREE.Color(c)});
+});
+
+/* trails between agents, riding just above the cortex */
+const trails=[];
+{
+  const g=new THREE.BufferGeometry();
+  for(let k=0;k<40;k++){
+    const a=nodes[(k*7)%nodes.length], b=nodes[(k*13+3)%nodes.length];
+    const pts=[];
+    for(let t=0;t<=1.001;t+=1/24){
+      const v=a.n.position.clone().lerp(b.n.position,t);
+      const r=THREE.MathUtils.lerp(a.n.position.length(),b.n.position.length(),t);
+      pts.push(v.normalize().multiplyScalar(r*(1+Math.sin(t*Math.PI)*0.05)));
+    }
+    const cg=new THREE.BufferGeometry().setFromPoints(pts);
+    const cm=new THREE.LineBasicMaterial({color:0x7fc2ff,transparent:true,opacity:0.10,
+      blending:THREE.AdditiveBlending,depthWrite:false,toneMapped:false});
+    const line=new THREE.Line(cg,cm); pivot.add(line);
+    const spark=new THREE.Mesh(new THREE.SphereGeometry(0.007,8,6),
+      new THREE.MeshBasicMaterial({color:0xcfe8ff,toneMapped:false}));
+    pivot.add(spark);
+    trails.push({pts,spark,t:Math.random(),spd:0.12+Math.random()*0.3,line});
+  }
+}
+
+/* ---------- post ---------- */
+const composer=new EffectComposer(renderer,{frameBufferType:THREE.HalfFloatType});
+composer.addPass(new RenderPass(scene,cam));
+const bloom=new BloomEffect({intensity:1.5,luminanceThreshold:0.42,luminanceSmoothing:0.3,
+  kernelSize:KernelSize.HUGE,mipmapBlur:true});
+composer.addPass(new EffectPass(cam,bloom,
+  new VignetteEffect({offset:0.24,darkness:0.8}),
+  (()=>{const n=new NoiseEffect({blendFunction:BlendFunction.OVERLAY});
+        n.blendMode.opacity.value=0.1;return n;})(),
+  new ToneMappingEffect(PP.ToneMappingMode?{mode:PP.ToneMappingMode.AGX}:undefined)));
+composer.addPass(new EffectPass(cam,new SMAAEffect()));
+
+/* ---------- modes ---------- */
+let MODE=0;
+function setMode(m){
+  MODE=m; setCap(m);
+  solid.visible = (m===0);
+  cloud.visible = (m===1);
+  glass.visible = (m===2);
+  nodes.forEach(n=>n.n.visible = (m!==1));
+  trails.forEach(t=>{t.line.visible=(m!==1); t.spark.visible=(m!==1);});
+  bloom.intensity = m===1?2.1:(m===2?1.1:1.5);
+  document.querySelectorAll('.switch button').forEach((b,i)=>b.classList.toggle('on',i===m));
+}
+document.querySelectorAll('.switch button').forEach(b=>
+  b.onclick=()=>setMode(+b.dataset.m));
+addEventListener('keydown',e=>{ if('123'.includes(e.key)) setMode(+e.key-1); });
+setMode(0);
+
+/* ---------- interaction ---------- */
+let drag=false,lx=0,spin=0.0016;
+addEventListener('pointerdown',e=>{drag=true;lx=e.clientX});
+addEventListener('pointerup',()=>drag=false);
+addEventListener('pointermove',e=>{ if(drag){spin+=(e.clientX-lx)*0.0004;lx=e.clientX;} });
+addEventListener('resize',()=>{
+  cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight,false);composer.setSize(innerWidth,innerHeight);
+});
+document.getElementById('load').classList.add('out');
+
+let last=performance.now(),fr=0,fps=0,acc=0;
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt=Math.min((now-last)/16.7,3); last=now;
+  fr++; acc+=dt*16.7; if(acc>500){fps=Math.round(fr/(acc/1000));fr=0;acc=0;
+    stat.innerHTML=fps+' fps<br>'+nV.toLocaleString()+' verts<br>'+nT.toLocaleString()+' tris';}
+
+  if(!drag) spin+=(0.0016-spin)*0.02;
+  pivot.rotation.y+=spin*dt;
+
+  const t=now*0.001;
+  if(MODE===1){ ptMat.uniforms.uScan.value=Math.sin(t*0.55)*0.95; }
+
+  nodes.forEach(n=>{
+    const heat=0.4+0.6*Math.abs(Math.sin(t*0.9+n.ph));
+    n.m.emissiveIntensity=0.6+heat*5.5;
+    n.n.scale.setScalar(0.7+heat*1.5);
+  });
+  trails.forEach(tr=>{
+    tr.t+=tr.spd*0.004*dt; if(tr.t>1)tr.t=0;
+    const f=tr.t*(tr.pts.length-1), i0=Math.floor(f), i1=Math.min(tr.pts.length-1,i0+1);
+    tr.spark.position.copy(tr.pts[i0]).lerp(tr.pts[i1],f-i0);
+    tr.spark.scale.setScalar(0.6+Math.sin(tr.t*Math.PI)*1.4);
+  });
+  composer.render();
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
