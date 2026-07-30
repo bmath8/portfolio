@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Brian Mathew — 25 systems, running</title>
+<link rel="stylesheet" href="../vendor/fonts.css"/>
+<script type="importmap">
+{"imports":{"three":"/vendor/three.module.min.js","three/addons/":"/vendor/"}}
+</script>
+<style>
+/* ==========================================================================
+   L7 — STUDIO
+   Target: lusion.co, and past it.
+
+   What studying Lusion directly actually revealed (I had all of this wrong):
+   - The PAGE is light lavender. The 3D lives in a CONTAINED dark viewport
+     with crop marks, not full-bleed. That containment is most of why it reads
+     expensive -- it looks like a framed render, not a screensaver.
+   - The premium feel is physics + glossy PBR + hard lighting + contact
+     shadows. Not glow, not particles, not bloom. The shapes are simple jacks.
+   - The type is a plain multi-line statement in near-black. No gradient,
+     no slogan, no one-liner.
+
+   Where this goes further: Lusion's jacks are decorative. These 25 objects
+   ARE the 25 agents -- one per real cron job, coloured by what it does, and
+   they physically respond to you.
+   ========================================================================== */
+:root{
+  --paper:#eeeef7; --paper2:#e4e4f0;
+  --ink:#0b0b12; --body:#4b4b5c; --mute:#8a8a9c;
+  --line:#d9d9e6;
+  --blue:#1b34d8; --blue2:#4f63ff;
+  --green:#0f9c62; --amber:#c98a10;
+  --stage:#0a0a10;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --disp:"Bricolage Grotesque","IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--body);font-family:var(--sans);font-size:16px;
+     line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1500px;margin:0 auto;padding:0 clamp(16px,2.4vw,34px)}
+
+/* ---------- top chrome ---------- */
+.top{display:flex;align-items:center;gap:18px;padding:clamp(18px,2.4vw,30px) 0 clamp(14px,2vw,22px)}
+.top .lg{font-family:var(--disp);font-weight:800;font-size:clamp(19px,2vw,25px);letter-spacing:-.03em;
+  color:var(--ink);white-space:nowrap}
+.top .stm{max-width:34ch;font-family:var(--sans);font-weight:500;
+  font-size:clamp(19px,2.35vw,33px);line-height:1.16;letter-spacing:-.026em;color:var(--ink);
+  margin-left:clamp(20px,5vw,90px)}
+.top .stm em{font-style:normal;color:var(--blue)}
+.top .act{margin-left:auto;display:flex;gap:9px;align-items:center;flex:none}
+.pill{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  padding:11px 17px;border-radius:999px;border:1px solid var(--line);background:#fff;
+  color:var(--ink);transition:.2s;white-space:nowrap;cursor:pointer}
+.pill:hover{border-color:var(--ink)}
+.pill.dark{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill.dark i{font-style:normal;display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#3ee08f;margin-left:8px;vertical-align:1px}
+@media(max-width:1080px){.top{flex-wrap:wrap}.top .stm{margin-left:0;order:3;width:100%;max-width:none}}
+
+/* ---------- the framed stage ---------- */
+.stagewrap{position:relative;padding-bottom:clamp(26px,3vw,40px)}
+.stage{position:relative;background:var(--stage);border-radius:clamp(8px,1vw,14px);overflow:hidden;
+  height:clamp(400px,64vh,760px)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#gl:active{cursor:grabbing}
+.crop{position:absolute;font-family:var(--mono);font-size:15px;color:var(--mute);line-height:1;
+  pointer-events:none}
+.crop.tl{left:-3px;top:-9px}.crop.tr{right:-3px;top:-9px}
+.crop.bl{left:-3px;bottom:-9px}.crop.br{right:-3px;bottom:-9px}
+.scrollcue{position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--mute);background:var(--paper);padding:0 12px}
+/* live readout inside the stage */
+.hud{position:absolute;left:0;right:0;bottom:0;padding:14px 18px;display:flex;gap:22px;
+  flex-wrap:wrap;align-items:baseline;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.42);z-index:3;
+  background:linear-gradient(transparent,rgba(10,10,16,.72))}
+.hud b{color:#fff;font-weight:500}
+.hud .r{margin-left:auto;color:rgba(255,255,255,.34);text-transform:none;letter-spacing:.04em}
+.tip{position:absolute;left:18px;top:16px;z-index:3;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.38)}
+.badge{position:absolute;z-index:4;pointer-events:none;transform:translate(-50%,-140%);
+  background:rgba(255,255,255,.94);color:var(--ink);font-family:var(--mono);font-size:10.5px;
+  padding:5px 9px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .18s}
+.badge.on{opacity:1}
+.nogl{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.5);font-family:var(--mono);font-size:12px;text-align:center;padding:30px}
+
+/* ---------- index rows ---------- */
+.idx{border-top:1px solid var(--line);margin-top:clamp(30px,5vw,64px)}
+.row{display:grid;grid-template-columns:52px minmax(0,1.5fr) minmax(0,2fr) auto;gap:clamp(14px,2.4vw,40px);
+  align-items:center;padding:clamp(18px,2.4vw,30px) 0;border-bottom:1px solid var(--line);
+  transition:padding-left .3s cubic-bezier(.2,.8,.2,1)}
+.row:hover{padding-left:14px}
+.row .no{font-family:var(--mono);font-size:11px;color:var(--mute)}
+.row h3{font-family:var(--disp);font-weight:700;font-size:clamp(21px,2.7vw,38px);letter-spacing:-.03em;
+  color:var(--ink);line-height:1.05}
+.row p{font-size:clamp(13.5px,1.05vw,15.5px);color:var(--body);max-width:52ch}
+.row .go{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.row .tagl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--mute);white-space:nowrap}
+.row .tagl.on{border-color:#b8e3cd;background:#e6f6ee;color:var(--green)}
+.row .tagl.live{border-color:#c3cbfb;background:#e9ecfe;color:var(--blue)}
+@media(max-width:900px){
+  .row{grid-template-columns:34px 1fr;row-gap:8px}
+  .row p{grid-column:2}.row .go{grid-column:2;justify-content:flex-start}
+}
+
+/* ---------- prose block ---------- */
+.prose{padding:clamp(48px,7vw,110px) 0 clamp(30px,4vw,60px);display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(24px,5vw,80px)}
+@media(max-width:900px){.prose{grid-template-columns:1fr}}
+.prose h2{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.prose p{font-size:clamp(15px,1.25vw,18px);color:var(--body);margin-top:14px;max-width:56ch}
+.prose p b{color:var(--ink);font-weight:600}
+.prose a{color:var(--blue);border-bottom:1px solid #c3cbfb}
+.prose .meta{margin-top:26px;display:flex;flex-wrap:wrap;gap:14px;font-family:var(--mono);
+  font-size:11px;letter-spacing:.06em}
+.prose .meta a{color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:2px}
+.prose .meta a:hover{border-bottom-color:var(--ink)}
+footer{border-top:1px solid var(--line);padding:20px 0 44px;font-family:var(--mono);font-size:10.5px;
+  color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="top">
+    <div class="lg">BRIAN&nbsp;MATHEW</div>
+    <p class="stm">25 agents are running on my machine right now. Every one of them is
+      <em>in the box below</em> — push them around.</p>
+    <div class="act">
+      <a class="pill" href="../resume.pdf">Résumé</a>
+      <a class="pill dark" href="mailto:mathew.brian@gmail.com">Available — email me<i></i></a>
+    </div>
+  </div>
+
+  <div class="stagewrap">
+    <span class="crop tl">+</span><span class="crop tr">+</span>
+    <span class="crop bl">+</span><span class="crop br">+</span>
+    <div class="stage">
+      <canvas id="gl"></canvas>
+      <div class="nogl" id="nogl">3D unavailable here — everything below still works.</div>
+      <div class="tip">Drag to spin · hover an agent</div>
+      <div class="badge" id="badge"></div>
+      <div class="hud">
+        <span><b id="hAgents">25</b> agents</span>
+        <span><b id="hTests">81</b>/81 tests</span>
+        <span><b id="hNext">—</b> next to fire</span>
+        <span class="r" id="hNote">one object per real cron job</span>
+      </div>
+    </div>
+    <span class="scrollcue">Scroll to explore</span>
+  </div>
+
+  <div class="idx">
+    <article class="row">
+      <span class="no">01</span>
+      <h3>Brian OS</h3>
+      <p>The fleet in the box above. 25 scheduled Python agents running unattended on Windows —
+        briefs, health checks, self-recovery, two-way Telegram control, and draft-only guardrails
+        on anything that sends, spends, deploys or deletes.</p>
+      <div class="go"><span class="tagl on">Running daily</span><span class="tagl">81 tests</span>
+        <a class="pill" href="https://github.com/bmath8/brian-os">Source</a></div>
+    </article>
+    <article class="row">
+      <span class="no">02</span>
+      <h3>Super Bowl LX Squares</h3>
+      <p>A real-time squares pool real people used during a real game. The draw had to be verifiably
+        fair and identical for every viewer, so state resolves centrally and pushes out. One moment
+        to be correct, in front of an audience.</p>
+      <div class="go"><span class="tagl live">Live</span>
+        <a class="pill" href="https://fam-super-bowl-squares-2026.vercel.app">Open it ↗</a>
+        <a class="pill" href="https://github.com/bmath8/fam-super-bowl-squares-2026">Source</a></div>
+    </article>
+    <article class="row">
+      <span class="no">03</span>
+      <h3>BoomBox</h3>
+      <p>Collaborative music — shared queues, live rooms, synchronised listening. Durable Postgres
+        state kept deliberately apart from transient WebSocket and Redis Pub/Sub, because they fail
+        in completely different ways.</p>
+      <div class="go"><span class="tagl">Prototype</span>
+        <a class="pill" href="https://github.com/bmath8/boombox">Source</a></div>
+    </article>
+  </div>
+
+  <div class="prose">
+    <div>
+      <h2>The failure worth showing</h2>
+      <p>A failed process guardian left orphan processes behind until they filled the disk. Nothing
+        alerted me, because the alerting was one of the casualties. <b>I found it, not the system.</b>
+        I traced the cause, recovered the machine, restored monitoring, and gave the watchdog a
+        watchdog. The hardest bug I've had was operational, not logical — which is most of what I'd
+        bring to a team.</p>
+    </div>
+    <div>
+      <h2>Before the code</h2>
+      <p><b>Best Buy — Appliances Department Lead.</b> High-volume retail floor: high-consideration
+        purchases, complaints and post-sale problems resolved in person, a small team to coordinate.</p>
+      <p><b>Uber — independent driver, 2022.</b> About a year of sustained, independent
+        customer-facing work with no supervision.</p>
+      <p>Undergraduate coursework at Penn State Berks and The City College of New York. Looking for
+        a full-time role — developer, technical support, or operations. Available immediately, open
+        to remote, hybrid, on-site or relocation.</p>
+      <div class="meta">
+        <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+        <a href="tel:+16098151685">(609) 815-1685</a>
+        <a href="https://github.com/bmath8">github.com/bmath8</a>
+        <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+        <a href="../resume.pdf">Résumé</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>© 2026 Brian Mathew — New Jersey</span>
+    <span>Every number here came from a real run on 30 Jul 2026</span>
+  </footer>
+</div>
+
+<script type="module">
+/* ============================================================
+   25 objects, one per real cron job. Simple sphere-collision
+   physics with cursor repulsion, glossy PBR, IBL, contact shadow.
+   ============================================================ */
+const REDUCE = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* verbatim from `hermes cron list`, 2026-07-30 */
+const JOBS=[['memory-index',80,'ops'],['harmony-backup',90,'safe'],['overnight-worker',120,'ops'],
+ ['model-review',180,'learn'],['scout',400,'learn'],['learning-agent',405,'learn'],
+ ['inbox',408,'comms'],['finance',410,'money'],['health',412,'safe'],['career',413,'learn'],
+ ['calendar',415,'comms'],['currency',418,'learn'],['fleet-health',419,'safe'],
+ ['daily-brief',420,'comms'],['gig-scanner',430,'money'],['ceo-report',450,'money'],
+ ['currency-weekly',990,'learn'],['wiki',1005,'learn'],['outcome-learner',1010,'learn'],
+ ['weekly-review',1020,'comms'],['feedback',1020,'comms'],['research',1080,'learn'],
+ ['skill-miner',1110,'learn'],['dashboard',-1,'ops'],['system-watchdog',-2,'safe']];
+
+const TINT={ ops:0x1b34d8, safe:0x11a86a, learn:0xf4f4f8, comms:0x101018, money:0x101018 };
+
+function etMin(){
+  const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',
+    minute:'numeric',hour12:false}).formatToParts(new Date());
+  let h=0,m=0; p.forEach(o=>{if(o.type==='hour')h=+o.value;if(o.type==='minute')m=+o.value});
+  return (h%24)*60+m;
+}
+function hhmm(m){return ('0'+Math.floor(m/60)).slice(-2)+':'+('0'+(m%60)).slice(-2)}
+(function nextFire(){
+  const now=etMin(); let best=null,bd=1e9;
+  JOBS.forEach(j=>{ if(j[1]<0)return; let g=j[1]-now; if(g<0)g+=1440; if(g<bd){bd=g;best=j;} });
+  if(best) document.getElementById('hNext').textContent=best[0]+' '+hhmm(best[1]);
+  setTimeout(nextFire,30000);
+})();
+
+const host=document.getElementById('gl');
+let probe=null; try{ const c=document.createElement('canvas');
+  probe=c.getContext('webgl2')||c.getContext('webgl'); }catch(e){}
+if(!probe){ document.getElementById('nogl').style.display='flex'; }
+else {
+try{
+  const THREE = await import('/vendor/three.module.min.js');
+  const { RoomEnvironment } = await import('/vendor/RoomEnvironment.js');
+
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(38,1,0.1,200);
+  cam.position.set(0,0,12.2);
+
+  const renderer=new THREE.WebGLRenderer({canvas:host,antialias:true});
+  renderer.setClearColor(0x0a0a10,1);
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.0;
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+  /* IBL — what makes the plastic read as plastic */
+  const pmrem=new THREE.PMREMGenerator(renderer);
+  scene.environment=pmrem.fromScene(new RoomEnvironment(),0.02).texture;
+
+  /* Hard key + cool rim. Lusion's look is CONTRASTY, not glowy. */
+  const key=new THREE.DirectionalLight(0xffffff,4.2);
+  key.position.set(-6,9,7); key.castShadow=true;
+  key.shadow.mapSize.set(1024,1024);
+  key.shadow.camera.near=1; key.shadow.camera.far=40;
+  key.shadow.camera.left=-11; key.shadow.camera.right=11;
+  key.shadow.camera.top=11; key.shadow.camera.bottom=-11;
+  key.shadow.bias=-0.0012; key.shadow.radius=3;
+  scene.add(key);
+  const rim=new THREE.DirectionalLight(0x9fb4ff,1.5); rim.position.set(7,-3,-6); scene.add(rim);
+  scene.add(new THREE.AmbientLight(0xffffff,0.22));
+
+  /* catcher plane, shadow only — grounds the objects */
+  const catcher=new THREE.Mesh(
+    new THREE.PlaneGeometry(80,80),
+    new THREE.ShadowMaterial({opacity:0.55}));
+  catcher.rotation.x=-Math.PI/2; catcher.position.y=-4.6; catcher.receiveShadow=true;
+  scene.add(catcher);
+
+  /* ---- one jack per agent ---- */
+  const R=0.52, LEN=1.45;
+  const armGeo=new THREE.CapsuleGeometry(R*0.46,LEN*0.62,6,18);
+  const hubGeo=new THREE.SphereGeometry(R*0.60,20,14);
+  const mats={};
+  for(const k in TINT){
+    mats[k]=new THREE.MeshPhysicalMaterial({
+      color:TINT[k],
+      roughness: k==='learn'?0.28:0.22,
+      metalness:0.0,
+      clearcoat:1.0, clearcoatRoughness:0.06,
+      envMapIntensity:1.0
+    });
+  }
+
+  const group=new THREE.Group(); scene.add(group);
+  const bodies=[];
+  JOBS.forEach((j,i)=>{
+    const g=new THREE.Group();
+    const m=mats[j[2]];
+    const a1=new THREE.Mesh(armGeo,m);
+    const a2=new THREE.Mesh(armGeo,m); a2.rotation.z=Math.PI/2;
+    const a3=new THREE.Mesh(armGeo,m); a3.rotation.x=Math.PI/2;
+    const hb=new THREE.Mesh(hubGeo,m);
+    [a1,a2,a3,hb].forEach(o=>{o.castShadow=true;o.receiveShadow=true;g.add(o)});
+    const s=0.95+((i*37)%100)/100*0.55; g.scale.setScalar(s);
+    const ang=(i/JOBS.length)*Math.PI*2, rad=2.9+((i*53)%100)/100*2.1;
+    g.position.set(Math.cos(ang)*rad, (((i*29)%100)/100-0.5)*4.6, Math.sin(ang)*rad*0.7);
+    group.add(g);
+    bodies.push({o:g, r:R*1.45*s, v:new THREE.Vector3(
+        (Math.random()-.5)*0.05,(Math.random()-.5)*0.05,(Math.random()-.5)*0.05),
+      w:new THREE.Vector3((Math.random()-.5)*0.02,(Math.random()-.5)*0.02,(Math.random()-.5)*0.02),
+      job:j});
+  });
+
+  /* ---- interaction ---- */
+  const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(-9,-9);
+  let drag=false,lx=0,ly=0,spin=0.0012,hover=-1;
+  const badge=document.getElementById('badge');
+  host.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;host.setPointerCapture(e.pointerId)});
+  host.addEventListener('pointerup',e=>{drag=false;try{host.releasePointerCapture(e.pointerId)}catch(_){}} );
+  host.addEventListener('pointermove',e=>{
+    const r=host.getBoundingClientRect();
+    ptr.x=((e.clientX-r.left)/r.width)*2-1; ptr.y=-((e.clientY-r.top)/r.height)*2+1;
+    if(drag){ spin+=(e.clientX-lx)*0.00035; lx=e.clientX; ly=e.clientY; }
+    badge.style.left=(e.clientX-r.left)+'px'; badge.style.top=(e.clientY-r.top)+'px';
+  });
+  host.addEventListener('pointerleave',()=>{ptr.set(-9,-9);badge.classList.remove('on')});
+
+  const pworld=new THREE.Vector3(), tmp=new THREE.Vector3();
+  function resize(){
+    const w=host.clientWidth,h=host.clientHeight;
+    renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.9));
+    renderer.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix();
+  }
+  addEventListener('resize',resize); resize();
+
+  let last=performance.now();
+  function frame(now){
+    requestAnimationFrame(frame);
+    const dt=Math.min((now-last)/16.7,2.4); last=now;
+
+    if(!drag) spin+=(0.0012-spin)*0.02;
+    group.rotation.y+=spin*dt;
+
+    /* cursor -> a repelling point on the z=0 plane */
+    ray.setFromCamera(ptr,cam);
+    const t=-ray.ray.origin.z/ray.ray.direction.z;
+    pworld.copy(ray.ray.origin).addScaledVector(ray.ray.direction,t);
+    const cursorOn = ptr.x>-8;
+
+    for(let i=0;i<bodies.length;i++){
+      const b=bodies[i], p=b.o.position;
+      /* gentle pull to centre keeps the cluster framed */
+      tmp.copy(p).multiplyScalar(-0.0022*dt); b.v.add(tmp);
+      /* cursor repulsion, in local space */
+      if(cursorOn && !REDUCE){
+        tmp.copy(p).applyMatrix4(group.matrixWorld).sub(pworld);
+        const d2=tmp.lengthSq();
+        if(d2<26 && d2>0.001){
+          tmp.normalize().multiplyScalar((26-d2)/26*0.13*dt);
+          tmp.applyAxisAngle(new THREE.Vector3(0,1,0),-group.rotation.y);
+          b.v.add(tmp);
+        }
+      }
+      p.addScaledVector(b.v,dt);
+      b.v.multiplyScalar(0.975);
+      b.o.rotation.x+=b.w.x*dt; b.o.rotation.y+=b.w.y*dt; b.o.rotation.z+=b.w.z*dt;
+    }
+    /* pairwise separation — cheap at 25 bodies, and it's what makes them
+       feel like solid objects rather than sprites passing through each other */
+    for(let i=0;i<bodies.length;i++)for(let j=i+1;j<bodies.length;j++){
+      const a=bodies[i],c=bodies[j];
+      tmp.copy(a.o.position).sub(c.o.position);
+      const d=tmp.length(), min=a.r+c.r;
+      if(d<min && d>0.0001){
+        tmp.multiplyScalar((min-d)/d*0.5);
+        a.o.position.add(tmp); c.o.position.sub(tmp);
+        a.v.addScaledVector(tmp,0.09); c.v.addScaledVector(tmp,-0.09);
+      }
+    }
+
+    /* hover -> name badge */
+    if(cursorOn){
+      ray.setFromCamera(ptr,cam);
+      const hit=ray.intersectObject(group,true);
+      if(hit.length){
+        let o=hit[0].object; while(o.parent && o.parent!==group) o=o.parent;
+        const idx=group.children.indexOf(o);
+        if(idx!==hover){ hover=idx;
+          const j=bodies[idx].job;
+          badge.textContent=j[0]+(j[1]<0?' · continuous':' · '+hhmm(j[1])+' ET');
+          badge.classList.add('on');
+        }
+      } else if(hover!==-1){ hover=-1; badge.classList.remove('on'); }
+    }
+    renderer.render(scene,cam);
+  }
+  requestAnimationFrame(frame);
+}catch(err){
+  console.error('[stage] init failed:',err);
+  document.getElementById('nogl').style.display='flex';
+}
+}
+</script>
+</body>
+</html>
