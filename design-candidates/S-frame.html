@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Brian Mathew — developer & operator</title>
+<link rel="stylesheet" href="../vendor/fonts.css"/>
+<script type="importmap">
+{"imports":{"three":"/vendor/three.module.min.js","three/addons/":"/vendor/"}}
+</script>
+<style>
+/* ==========================================================================
+   S — FRAME
+   Back to the structure that worked (L7) and that lusion.co actually uses:
+   a LIGHT page with the 3D CONTAINED in a dark framed stage, and the page
+   composed around that frame. Full-bleed 3D reads as wallpaper; a framed
+   render reads as art direction. That containment is the whole difference.
+
+   Brain treatment is new: large and CROPPED by the frame, the way Lusion's
+   objects are cropped by theirs. Not a small object floating in a void.
+   ========================================================================== */
+:root{
+  --paper:#eeeef6; --paper2:#e3e3ee;
+  --ink:#0a0a11; --body:#4b4b5c; --mute:#8a8a9c; --line:#d8d8e4;
+  --stage:#08080e;
+  --blue:#1b34d8; --green:#0f9c62;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --disp:"Bricolage Grotesque","IBM Plex Sans",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--body);font-family:var(--sans);font-size:16px;
+  line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1500px;margin:0 auto;padding:0 clamp(16px,2.4vw,34px)}
+
+/* ---------- header: name simple, bold, readable ---------- */
+.top{display:flex;align-items:center;gap:18px;padding:clamp(18px,2.4vw,30px) 0 clamp(14px,2vw,22px)}
+.top .lg{font-family:var(--disp);font-weight:800;font-size:clamp(20px,2.1vw,27px);
+  letter-spacing:-.032em;color:var(--ink);white-space:nowrap}
+.top .stm{max-width:33ch;font-weight:500;font-size:clamp(18px,2.2vw,31px);line-height:1.15;
+  letter-spacing:-.026em;color:var(--ink);margin-left:clamp(20px,5vw,90px)}
+.top .stm em{font-style:normal;color:var(--blue)}
+.top .act{margin-left:auto;display:flex;gap:9px;flex:none}
+.pill{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  padding:11px 17px;border-radius:999px;border:1px solid var(--line);background:#fff;
+  color:var(--ink);transition:.2s;white-space:nowrap;display:inline-block}
+.pill:hover{border-color:var(--ink)}
+.pill.dark{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill.dark i{font-style:normal;display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#3ee08f;margin-left:8px;vertical-align:1px}
+@media(max-width:1080px){.top{flex-wrap:wrap}.top .stm{margin-left:0;order:3;width:100%;max-width:none}}
+
+/* ---------- the framed stage ---------- */
+.stagewrap{position:relative;padding-bottom:clamp(26px,3vw,42px)}
+.stage{position:relative;background:var(--stage);border-radius:clamp(8px,1vw,14px);overflow:hidden;
+  height:clamp(420px,68vh,820px)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#gl:active{cursor:grabbing}
+.crop{position:absolute;font-family:var(--mono);font-size:15px;color:var(--mute);line-height:1;pointer-events:none}
+.crop.tl{left:-3px;top:-9px}.crop.tr{right:-3px;top:-9px}
+.crop.bl{left:-3px;bottom:-9px}.crop.br{right:-3px;bottom:-9px}
+.cue{position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);background:var(--paper);
+  padding:0 12px;font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--mute)}
+.hud{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;gap:22px;flex-wrap:wrap;
+  align-items:baseline;padding:16px 20px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.42);
+  background:linear-gradient(transparent,rgba(8,8,14,.8));pointer-events:none}
+.hud b{color:#fff;font-weight:500}
+.hud .r{margin-left:auto;text-transform:none;letter-spacing:.03em;color:rgba(255,255,255,.34)}
+.tip{position:absolute;left:20px;top:18px;z-index:3;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.34);pointer-events:none}
+.nogl{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.5);font-family:var(--mono);font-size:12px;padding:30px;text-align:center}
+
+/* ---------- work rows ---------- */
+.idx{border-top:1px solid var(--line);margin-top:clamp(28px,4vw,56px)}
+.row{display:grid;grid-template-columns:52px minmax(0,1.35fr) minmax(0,2fr) auto;
+  gap:clamp(14px,2.4vw,40px);align-items:start;padding:clamp(20px,2.6vw,34px) 0;
+  border-bottom:1px solid var(--line);transition:padding-left .35s cubic-bezier(.2,.8,.2,1)}
+.row:hover{padding-left:14px}
+.row .no{font-family:var(--mono);font-size:11px;color:var(--mute);padding-top:8px}
+.row h3{font-family:var(--disp);font-weight:700;font-size:clamp(22px,2.7vw,38px);
+  letter-spacing:-.03em;color:var(--ink);line-height:1.04}
+.row p{font-size:clamp(13.5px,1.05vw,15.5px);max-width:50ch}
+.row .go{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.tagl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--mute);white-space:nowrap}
+.tagl.on{border-color:#b8e3cd;background:#e6f6ee;color:var(--green)}
+.tagl.live{border-color:#c3cbfb;background:#e9ecfe;color:var(--blue)}
+@media(max-width:900px){.row{grid-template-columns:34px 1fr;row-gap:10px}
+  .row p,.row .go,.row .live{grid-column:2}.row .go{justify-content:flex-start}}
+
+/* the live app, embedded — not a thumbnail */
+.live{margin-top:16px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.live .hd{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--paper2);
+  border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10px;
+  letter-spacing:.11em;text-transform:uppercase;color:var(--mute)}
+.live .hd i{width:7px;height:7px;border-radius:50%;background:var(--green);display:block}
+.live .hd span{margin-left:auto;color:var(--green)}
+.live iframe{width:100%;height:320px;border:0;display:block}
+
+/* ---------- prose ---------- */
+.prose{padding:clamp(48px,7vw,110px) 0 clamp(26px,4vw,54px);display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(24px,5vw,80px)}
+@media(max-width:900px){.prose{grid-template-columns:1fr}}
+.prose h2{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.prose p{font-size:clamp(15px,1.2vw,18px);margin-top:14px;max-width:56ch}
+.prose p b{color:var(--ink);font-weight:600}
+.prose .meta{margin-top:26px;display:flex;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:11px}
+.prose .meta a{color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:2px}
+.prose .meta a:hover{border-bottom-color:var(--ink)}
+footer{border-top:1px solid var(--line);padding:20px 0 44px;font-family:var(--mono);font-size:10.5px;
+  color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="lg">BRIAN&nbsp;MATHEW</div>
+    <p class="stm">I build software and then <em>run it</em> — 25 agents are executing
+      unattended on my machine right now.</p>
+    <div class="act">
+      <a class="pill" href="../resume.pdf">Résumé</a>
+      <a class="pill dark" href="mailto:mathew.brian@gmail.com">Available — email me<i></i></a>
+    </div>
+  </div>
+
+  <div class="stagewrap">
+    <span class="crop tl">+</span><span class="crop tr">+</span>
+    <span class="crop bl">+</span><span class="crop br">+</span>
+    <div class="stage">
+      <canvas id="gl"></canvas>
+      <div class="nogl" id="nogl">3D unavailable here — everything below still works.</div>
+      <div class="tip">Drag to turn</div>
+      <div class="hud">
+        <span><b>25</b> agents live</span>
+        <span><b>81</b>/81 tests green</span>
+        <span><b id="hN">—</b> next to fire</span>
+        <span class="r">each light is one real scheduled job</span>
+      </div>
+    </div>
+    <span class="cue">Scroll to explore</span>
+  </div>
+
+  <div class="idx">
+    <article class="row">
+      <span class="no">01</span>
+      <div><h3>Brian OS</h3></div>
+      <div>
+        <p>The fleet in the frame above. 25 scheduled Python agents running unattended on Windows —
+          briefs, health checks, self-recovery, two-way Telegram control, and draft-only guardrails
+          on anything that sends, spends, deploys or deletes.</p>
+      </div>
+      <div class="go"><span class="tagl on">Running daily</span><span class="tagl">81 tests</span>
+        <a class="pill" href="https://github.com/bmath8/brian-os">Source</a></div>
+    </article>
+
+    <article class="row">
+      <span class="no">02</span>
+      <div><h3>Super Bowl LX Squares</h3></div>
+      <div>
+        <p>A real-time squares pool real people used during a real game. The draw had to be
+          verifiably fair and identical for every viewer, so state resolves centrally and pushes
+          out. One moment to be correct, in front of an audience. <b>It's running right here:</b></p>
+        <div class="live">
+          <div class="hd"><i></i> fam-super-bowl-squares-2026.vercel.app <span>live</span></div>
+          <iframe src="https://fam-super-bowl-squares-2026.vercel.app" loading="lazy"
+            title="Live Super Bowl LX squares app" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
+      <div class="go"><span class="tagl live">Live</span>
+        <a class="pill dark" href="https://fam-super-bowl-squares-2026.vercel.app">Open ↗</a>
+        <a class="pill" href="https://github.com/bmath8/fam-super-bowl-squares-2026">Source</a></div>
+    </article>
+
+    <article class="row">
+      <span class="no">03</span>
+      <div><h3>BoomBox</h3></div>
+      <div>
+        <p>Collaborative music — shared queues, live rooms, synchronised listening. Durable
+          Postgres state kept deliberately apart from transient WebSocket and Redis Pub/Sub,
+          because they fail in completely different ways and shouldn't share a failure mode.</p>
+      </div>
+      <div class="go"><span class="tagl">Prototype</span>
+        <a class="pill" href="https://github.com/bmath8/boombox">Source</a></div>
+    </article>
+  </div>
+
+  <div class="prose">
+    <div>
+      <h2>The failure worth showing</h2>
+      <p>A failed process guardian left orphan processes behind until they filled the disk.
+        <b>Nothing alerted me — the alerting was one of the casualties.</b> I found it, traced the
+        cause, recovered the machine, restored monitoring, and gave the watchdog a watchdog. The
+        hardest bug I've had was operational, not logical, and that's most of what I'd bring.</p>
+    </div>
+    <div>
+      <h2>Before the code</h2>
+      <p><b>Best Buy — Appliances Department Lead.</b> High-volume retail floor: high-consideration
+        purchases, complaints and post-sale problems resolved in person, a small team to coordinate.</p>
+      <p><b>Uber — independent driver, 2022.</b> About a year of sustained, independent
+        customer-facing work with no supervision.</p>
+      <p>Undergraduate coursework at Penn State Berks and CCNY. Looking for a full-time role —
+        developer, technical support, or operations. Available immediately; remote, hybrid,
+        on-site or relocation.</p>
+      <div class="meta">
+        <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+        <a href="tel:+16098151685">(609) 815-1685</a>
+        <a href="https://github.com/bmath8">github.com/bmath8</a>
+        <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+        <a href="../resume.pdf">Résumé</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>© 2026 Brian Mathew — New Jersey</span>
+    <span>Every number here came from a real run</span>
+  </footer>
+</div>
+
+<script type="module">
+const JOBS=[['memory-index',80,0],['harmony-backup',90,3],['overnight-worker',120,0],
+ ['model-review',180,1],['scout',400,1],['learning-agent',405,1],['inbox',408,2],
+ ['finance',410,4],['health',412,3],['career',413,1],['calendar',415,2],['currency',418,1],
+ ['fleet-health',419,3],['daily-brief',420,2],['gig-scanner',430,4],['ceo-report',450,4],
+ ['currency-weekly',990,1],['wiki',1005,1],['outcome-learner',1010,1],['weekly-review',1020,2],
+ ['feedback',1020,2],['research',1080,1],['skill-miner',1110,1],['dashboard',-1,0],
+ ['system-watchdog',-2,3]];
+const COL=[0x3ee08f,0x5cc8ff,0xff7a63,0xa98bff,0xffc65c];
+const LANE=[[0.05,0.62,0.20],[0.18,0.10,0.88],[0.66,-0.05,-0.10],[0.02,-0.40,-0.78],[-0.15,0.42,-0.62]];
+const hhmm=m=>('0'+Math.floor(m/60)).slice(-2)+':'+('0'+(m%60)).slice(-2);
+(function next(){
+  const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',
+    minute:'numeric',hour12:false}).formatToParts(new Date());
+  let h=0,mm=0;p.forEach(o=>{if(o.type==='hour')h=+o.value;if(o.type==='minute')mm=+o.value});
+  const now=(h%24)*60+mm; let b=null,bd=1e9;
+  JOBS.forEach(j=>{if(j[1]<0)return;let g=j[1]-now;if(g<0)g+=1440;if(g<bd){bd=g;b=j;}});
+  if(b)document.getElementById('hN').textContent=b[0]+' '+hhmm(b[1]);
+  setTimeout(next,30000);
+})();
+
+const host=document.getElementById('gl');
+let ok=null; try{const c=document.createElement('canvas');ok=c.getContext('webgl2')||c.getContext('webgl');}catch(e){}
+if(!ok){document.getElementById('nogl').style.display='flex';}
+else try{
+  const THREE=await import('/vendor/three.module.min.js');
+  const {HDRLoader}=await import('/vendor/loaders/HDRLoader.js');
+  const {RoomEnvironment}=await import('/vendor/RoomEnvironment.js');
+  const PP=await import('/vendor/postprocessing.module.js');
+  const {EffectComposer,RenderPass,EffectPass,BloomEffect,VignetteEffect,NoiseEffect,
+         ToneMappingEffect,SMAAEffect,DepthOfFieldEffect,BlendFunction,KernelSize}=PP;
+
+  const buf=await (await fetch('/vendor/mesh/brain-mni.bin')).arrayBuffer();
+  const dv=new DataView(buf), nV=dv.getUint32(0,true), nT=dv.getUint32(4,true);
+  let o=8;
+  const qp=new Int16Array(buf,o,nV*3); o+=nV*6;
+  const qn=new Int8Array(buf,o,nV*3);  o+=nV*3;
+  const idx=new Uint32Array(buf.slice(o,o+nT*12));
+  const pos=new Float32Array(nV*3), nrm=new Float32Array(nV*3);
+  for(let i=0;i<nV*3;i++){pos[i]=qp[i]/32767;nrm[i]=qn[i]/127;}
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('normal',new THREE.BufferAttribute(nrm,3));
+  geo.setIndex(new THREE.BufferAttribute(idx,1));
+
+  const scene=new THREE.Scene();
+  /* Cropped framing: a long lens, close in, so the brain runs past the edges of
+     the frame the way Lusion's objects do. A small object centred in a void is
+     what made every previous version read as a floating trinket. */
+  const cam=new THREE.PerspectiveCamera(30,1,0.01,60);
+  cam.position.set(0.55,0.22,2.30);
+  cam.lookAt(0,0.02,0);          // was missing: camera pointed straight ahead,
+                                 // which shoved the subject to the frame edge
+
+  const renderer=new THREE.WebGLRenderer({canvas:host,antialias:false});
+  renderer.setClearColor(0x08080e,1);
+  renderer.toneMapping=THREE.NoToneMapping;
+  renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  const pmrem=new THREE.PMREMGenerator(renderer);
+  scene.environment=pmrem.fromScene(new RoomEnvironment(),0.03).texture;
+  new HDRLoader().load('/vendor/hdr/studio_small_09_1k.hdr',t=>{
+    t.mapping=THREE.EquirectangularReflectionMapping;
+    scene.environment=pmrem.fromEquirectangular(t).texture; t.dispose();
+  });
+
+  scene.add(new THREE.AmbientLight(0xffffff,0.16));
+  const key=new THREE.DirectionalLight(0xfff4e8,3.4); key.position.set(-2.4,2.6,2.0);
+  key.castShadow=true; key.shadow.mapSize.set(1024,1024); scene.add(key);
+  const rim=new THREE.DirectionalLight(0x6f8cff,3.0); rim.position.set(2.6,-0.6,-2.2); scene.add(rim);
+
+  /* Fresh treatment: soft biological matte with a wide specular roll-off, so the
+     folds are described by light instead of by reflections. Not chrome, not
+     pastel plastic, not the dark iridescent from the last attempt. */
+  const mat=new THREE.MeshPhysicalMaterial({
+    color:0xb9bcc9, roughness:0.62, metalness:0.0,
+    clearcoat:0.35, clearcoatRoughness:0.55,
+    sheen:1.0, sheenRoughness:0.45, sheenColor:new THREE.Color(0xff8f7a),
+    envMapIntensity:0.75
+  });
+  const pivot=new THREE.Group(); scene.add(pivot);
+  const brain=new THREE.Mesh(geo,mat); brain.castShadow=brain.receiveShadow=true;
+  pivot.add(brain);
+  pivot.rotation.y=-0.55;
+
+  const _v=new THREE.Vector3();
+  const snap=d=>{let b=0,bd=-1e9;
+    for(let i=0;i<nV;i+=5){const s=pos[i*3]*d.x+pos[i*3+1]*d.y+pos[i*3+2]*d.z;if(s>bd){bd=s;b=i;}}
+    return new THREE.Vector3(pos[b*3],pos[b*3+1],pos[b*3+2]);};
+  const ng=new THREE.SphereGeometry(0.012,14,10), N=[];
+  JOBS.forEach((j,i)=>{
+    const l=LANE[j[2]];
+    _v.set(l[0]+(Math.random()-.5)*.4,l[1]+(Math.random()-.5)*.32,l[2]+(Math.random()-.5)*.4).normalize();
+    const c=COL[j[2]];
+    const m=new THREE.MeshBasicMaterial({color:new THREE.Color(c),toneMapped:false});
+    const mesh=new THREE.Mesh(ng,m); mesh.position.copy(snap(_v).multiplyScalar(1.012));
+    pivot.add(mesh); N.push({m,mesh,base:new THREE.Color(c),ph:(i*.83)%6.283});
+  });
+
+  const composer=new EffectComposer(renderer,{frameBufferType:THREE.HalfFloatType});
+  composer.addPass(new RenderPass(scene,cam));
+  const dof=new DepthOfFieldEffect(cam,{worldFocusDistance:2.3,worldFocusRange:1.1,bokehScale:2.6,height:640});
+  const bloom=new BloomEffect({intensity:1.35,luminanceThreshold:0.5,luminanceSmoothing:0.3,
+    kernelSize:KernelSize.LARGE,mipmapBlur:true});
+  composer.addPass(new EffectPass(cam,dof,bloom,
+    new VignetteEffect({offset:0.26,darkness:0.72}),
+    (()=>{const n=new NoiseEffect({blendFunction:BlendFunction.OVERLAY});n.blendMode.opacity.value=0.09;return n;})(),
+    new ToneMappingEffect(PP.ToneMappingMode?{mode:PP.ToneMappingMode.AGX}:undefined)));
+  composer.addPass(new EffectPass(cam,new SMAAEffect()));
+
+  let drag=false,lx=0,spin=0.0009;
+  host.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;host.setPointerCapture(e.pointerId)});
+  host.addEventListener('pointerup',e=>{drag=false;try{host.releasePointerCapture(e.pointerId)}catch(_){}});
+  host.addEventListener('pointermove',e=>{if(drag){spin+=(e.clientX-lx)*0.0004;lx=e.clientX;}});
+
+  function size(){
+    const w=host.clientWidth,h=host.clientHeight;
+    renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));
+    renderer.setSize(w,h,false); composer.setSize(w,h);
+    cam.aspect=w/h; cam.updateProjectionMatrix(); cam.lookAt(0,0.02,0);
+  }
+  addEventListener('resize',size); size();
+
+  let last=performance.now();
+  (function frame(now){
+    requestAnimationFrame(frame);
+    const dt=Math.min((now-last)/16.7,3); last=now;
+    if(!drag) spin+=(0.0009-spin)*0.02;
+    pivot.rotation.y+=spin*dt;
+    const t=now*0.001;
+    N.forEach((n,i)=>{
+      const h=0.35+0.65*Math.pow(Math.abs(Math.sin(t*0.55+n.ph)),3);
+      n.m.color.copy(n.base).multiplyScalar(0.4+h*4.2);
+      n.mesh.scale.setScalar(0.7+h*1.3);
+    });
+    composer.render();
+  })(performance.now());
+}catch(err){
+  console.error('[stage] init failed:',err);
+  document.getElementById('nogl').style.display='flex';
+}
+</script>
+</body>
+</html>
