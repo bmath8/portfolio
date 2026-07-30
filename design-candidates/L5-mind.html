@@ -501,9 +501,40 @@ var REGIONS=[
     renderer.setClearColor(0x000000,0);
 
     /* ---- build a brain-shaped point cloud ----
-       Procedural: a deformed ellipsoid with gyral folding, a longitudinal
-       fissure, a flattened underside, plus a cerebellum and a brain stem. */
-    var COUNT=14000, pos=[], col=[], siz=[], reg=[], seed=[];
+       Earlier version read as "scattered lights" rather than an organ. Three
+       reasons, all fixed here: (1) folds were smooth sines, so there were no
+       real sulci; (2) additive blending with no depth test made it an x-ray
+       glow with no solid surface; (3) no shading, so there were no depth cues.
+       Now: ridged domain-warped noise for genuine convolutions, surface-only
+       points, and per-point lighting + crevice darkening in the shader. */
+
+    /* cheap 3D value noise (no dependency) */
+    function hash3(i,j,k){
+      var n=i*374761393+j*668265263+k*1274126177;
+      n=(n^(n>>13))*1274126177; n=(n^(n>>16))>>>0;
+      return n/4294967295;
+    }
+    function sm(t){ return t*t*(3-2*t); }
+    function noise3(x,y,z){
+      var i=Math.floor(x),j=Math.floor(y),k=Math.floor(z);
+      var fx=sm(x-i),fy=sm(y-j),fz=sm(z-k);
+      function L(a,b,t){return a+(b-a)*t;}
+      return L(
+        L(L(hash3(i,j,k),hash3(i+1,j,k),fx), L(hash3(i,j+1,k),hash3(i+1,j+1,k),fx), fy),
+        L(L(hash3(i,j,k+1),hash3(i+1,j,k+1),fx), L(hash3(i,j+1,k+1),hash3(i+1,j+1,k+1),fx), fy),
+        fz);
+    }
+    /* Gyral field. 1 = crown of a gyrus, 0 = floor of a sulcus.
+       Domain warping is what makes the grooves meander and branch like a real
+       cortex instead of forming a regular grid. */
+    function gyri(x,y,z,f){
+      f=f||1;
+      var w=noise3(x*2.05*f+11, y*2.05*f+23, z*2.05*f+37);
+      var s=noise3(x*4.1*f + w*2.7, y*4.1*f + 5, z*4.1*f + w*2.7);
+      return Math.abs(Math.sin((s*2.8 + w*2.1)*Math.PI));
+    }
+
+    var COUNT=46000, pos=[], col=[], siz=[], reg=[], seed=[], shade=[];
     var C=REGIONS.map(function(r){ return new THREE.Color(r.hex); });
 
     /* Balanced so no single region swamps the silhouette. Anatomy is real:
@@ -515,41 +546,47 @@ var REGIONS=[
       if(Math.abs(x)>0.48 && y<0.12) return 2; // temporal     -> Sound
       return 1;                             // parietal/occip. -> Shipping
     }
-    function push(x,y,z,s){
+    function push(x,y,z,s,sh){
       var i=classify(x,y,z), c=C[i];
       pos.push(x,y,z); col.push(c.r,c.g,c.b); siz.push(s);
-      reg.push(i); seed.push(Math.random()*6.283);
+      reg.push(i); seed.push(Math.random()*6.283); shade.push(sh);
     }
 
+    /* cerebrum: surface only, so the silhouette stays crisp */
     for(var n=0;n<COUNT;n++){
       var u=Math.random()*2-1, th=Math.random()*6.283, s=Math.sqrt(1-u*u);
       var x=s*Math.cos(th), y=u, z=s*Math.sin(th);
-      x*=0.80; y*=0.74; z*=1.02;                        // brain proportions
-      // gyri / sulci: layered sines give the folded surface
-      var fold = 0.058*Math.sin(x*13.0)*Math.sin(z*10.0)
-               + 0.048*Math.sin(y*12.0+z*6.0)
-               + 0.030*Math.sin(z*17.0+x*4.0);
-      var r=1+fold; x*=r; y*=r; z*=r;
-      if(y<0) y*=0.84;                                   // flatter underside
-      x*=(1-0.17*Math.max(0,z));                         // taper the front
-      var gap=0.055;                                     // longitudinal fissure
+      x*=0.80; y*=0.75; z*=1.04;                         // brain proportions
+      if(y<0) y*=0.82;                                   // flatter underside
+      x*=(1-0.18*Math.max(0,z));                         // taper the frontal pole
+      z*=(1-0.10*Math.max(0,y));                         // round the crown
+
+      var g=gyri(x,y,z);                                 // 0 sulcus .. 1 gyrus
+      var r=1+0.088*g - 0.030;                           // crowns out, sulci in
+      x*=r; y*=r; z*=r;
+
+      var gap=0.048;                                     // longitudinal fissure
       x += (x>=0? gap : -gap);
-      if(Math.abs(x)<gap*0.9) continue;
-      // slight inward scatter so it reads as volume, not a shell
-      var k=1-Math.random()*Math.random()*0.16;
-      push(x*k,y*k,z*k, 1.0+Math.random()*1.5);
+      if(Math.abs(x)<gap*1.05) continue;
+      /* deepen the fissure visually: points near the midline sit in shadow */
+      var mid=Math.min(1,(Math.abs(x)-gap)/0.10);
+      push(x,y,z, 1.5+Math.random()*0.9, (0.26+0.74*g)*(0.35+0.65*mid));
     }
-    // cerebellum
-    for(var n=0;n<2200;n++){
+    /* cerebellum: much finer, near-parallel folia -- this is what makes it
+       read as a cerebellum and not a second small brain */
+    for(var n=0;n<9000;n++){
       var u=Math.random()*2-1, th=Math.random()*6.283, s=Math.sqrt(1-u*u);
-      var x=s*Math.cos(th)*0.46, y=u*0.28, z=s*Math.sin(th)*0.34;
-      var f=1+0.06*Math.sin(z*40)+0.04*Math.sin(x*34);   // tight horizontal folds
-      push(x*f, y*f-0.50, z*f-0.80, 0.8+Math.random()*1.1);
+      var x=s*Math.cos(th)*0.50, y=u*0.30, z=s*Math.sin(th)*0.36;
+      var fo=Math.abs(Math.sin(y*46+z*7));               // tight horizontal folia
+      var r=1+0.055*fo;
+      push(x*r, y*r-0.50, z*r-0.80, 1.3+Math.random()*0.7, 0.24+0.76*fo);
     }
-    // brain stem
-    for(var n=0;n<900;n++){
-      var t=Math.random(), a=Math.random()*6.283, rr=(0.15-0.05*t)*Math.sqrt(Math.random());
-      push(Math.cos(a)*rr, -0.52-t*0.62, -0.34+Math.sin(a)*rr+t*0.10, 0.7+Math.random()*0.8);
+    /* brain stem */
+    for(var n=0;n<3200;n++){
+      var t=Math.random(), a=Math.random()*6.283, rr=(0.155-0.055*t);
+      var fo=0.55+0.45*Math.abs(Math.sin(a*3+t*6));
+      push(Math.cos(a)*rr, -0.52-t*0.60, -0.34+Math.sin(a)*rr*0.8+t*0.12,
+           1.2+Math.random()*0.6, 0.30+0.70*fo);
     }
 
     var g=new THREE.BufferGeometry();
@@ -558,28 +595,38 @@ var REGIONS=[
     g.setAttribute('aSize',   new THREE.Float32BufferAttribute(siz,1));
     g.setAttribute('aRegion', new THREE.Float32BufferAttribute(reg,1));
     g.setAttribute('aSeed',   new THREE.Float32BufferAttribute(seed,1));
+    g.setAttribute('aShade',  new THREE.Float32BufferAttribute(shade,1));
 
     var mat=new THREE.ShaderMaterial({
-      transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+      /* Depth-tested and depth-writing, NOT additive. Additive with no depth
+         test is exactly what made this read as a cloud of fairy lights: every
+         point on the far side shone straight through the near side, so there
+         was no surface and no silhouette. */
+      transparent:true, depthWrite:true, depthTest:true, blending:THREE.NormalBlending,
       uniforms:{ uTime:{value:0}, uActive:{value:-1}, uPix:{value:1} },
       vertexShader:[
-        'attribute vec3 aColor; attribute float aSize; attribute float aRegion; attribute float aSeed;',
+        'attribute vec3 aColor; attribute float aSize; attribute float aRegion;',
+        'attribute float aSeed; attribute float aShade;',
         'uniform float uTime; uniform float uActive; uniform float uPix;',
         'varying vec3 vCol; varying float vAlpha;',
         'void main(){',
-        '  vec3 p = position;',
-        '  float fire = sin(uTime*2.2 + aSeed*3.0);',        // synaptic twinkle
-        '  float on = step(0.92, fire);',
-        '  float sel = (uActive < -0.5) ? 1.0 : (abs(aRegion-uActive) < 0.5 ? 1.0 : 0.13);',
-        '  p += normalize(p) * on * 0.012;',                 // tiny outward pop when firing
-        '  vec4 mv = modelViewMatrix * vec4(p,1.0);',
+        '  vec3 nrm = normalize(normalMatrix * normalize(position));',
+        // key light upper-left-front, dim fill from below, rim for the outline
+        '  float lam  = max(dot(nrm, normalize(vec3(-0.42,0.70,0.64))), 0.0);',
+        '  float fill = max(dot(nrm, normalize(vec3(0.5,-0.62,0.18))), 0.0) * 0.20;',
+        '  float rim  = pow(1.0 - max(dot(nrm, vec3(0.0,0.0,1.0)), 0.0), 3.0);',
+        '  float lit  = 0.13 + 0.87*lam + fill;',
+        // aShade carries the sulcus/gyrus depth, so grooves stay dark and read as folds
+        '  float sel  = (uActive < -0.5) ? 1.0 : (abs(aRegion-uActive) < 0.5 ? 1.0 : 0.22);',
+        '  float on   = step(0.985, sin(uTime*1.9 + aSeed*3.0));',
+        '  vec4 mv = modelViewMatrix * vec4(position,1.0);',
         '  gl_Position = projectionMatrix * mv;',
-        '  float sz = aSize * (1.0 + on*1.6) * sel;',
-        /* 7.0, not 95.0 — at cam z=4.15 the old factor produced ~60px points,
-           and 14k additive sprites that size saturate the whole brain to white. */
-        '  gl_PointSize = sz * uPix * (7.0 / -mv.z);',
-        '  vCol = aColor * (1.0 + on*1.1);',
-        '  vAlpha = (0.30 + on*0.55) * sel;',
+        '  gl_PointSize = aSize * uPix * (7.6 / -mv.z);',
+        '  vec3 base = aColor * (lit * aShade);',
+        '  base += aColor * rim * 0.5;',
+        '  base += aColor * on * 0.85;',
+        '  vCol = mix(base*0.5, base, sel);',
+        '  vAlpha = 1.0;',
         '}'
       ].join('\n'),
       fragmentShader:[
@@ -588,7 +635,9 @@ var REGIONS=[
         '  vec2 d = gl_PointCoord - vec2(0.5);',
         '  float r = dot(d,d);',
         '  if(r > 0.25) discard;',
-        '  float a = smoothstep(0.25, 0.0, r);',
+        // hard-ish edge so overlapping points fuse into a continuous surface
+        '  float a = smoothstep(0.25, 0.13, r);',
+        '  if(a < 0.05) discard;',
         '  gl_FragColor = vec4(vCol, a*vAlpha);',
         '}'
       ].join('\n')
