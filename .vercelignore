@@ -2,3 +2,18 @@
 .clineignore
 .git
 resume/
+
+# Internal only -- never ship these to the public site.
+# design-candidates/ holds 11 rejected drafts. Until this line was added they
+# deployed with the site and were publicly reachable at
+# /design-candidates/<name>.html, and crawlable (robots.txt allows everything).
+design-candidates/
+docs/
+scripts/
+.superpowers/
+
+# The motion libraries were only ever used by the design candidates.
+# index.html loads no third-party JS and no third-party fonts at all.
+vendor/gsap.min.js
+vendor/lenis.min.js
+vendor/ScrollTrigger.min.js
