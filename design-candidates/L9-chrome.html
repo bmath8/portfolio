@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Brian Mathew — 25 systems, running</title>
+<link rel="stylesheet" href="../vendor/fonts.css"/>
+<script type="importmap">
+{"imports":{"three":"/vendor/three.module.min.js","three/addons/":"/vendor/"}}
+</script>
+<style>
+/* ==========================================================================
+   L9 — CHROME
+   The full pipeline, not a static stage:
+     · loading sequence with a real counter, then a mask reveal
+     · Lenis smooth scroll + GSAP ScrollTrigger choreography
+     · one persistent WebGL scene the whole page scrolls through
+     · 25 agents as LIQUID CHROME METABALLS (marching cubes), not borrowed
+       jacks. They physically FUSE when they get close -- so the real
+       06:40-07:00 morning cluster melts into one mass on its own. The visual
+       is produced by the data, not decorating it.
+     · lit by a real CC0 studio HDRI, which is the only way chrome reads
+       photographic rather than plastic
+     · post: DOF (bokeh) + bloom + chromatic aberration + grain + vignette
+     · custom cursor, magnetic pills, masked line reveals
+   ========================================================================== */
+:root{
+  --paper:#edecf5; --ink:#08080e; --body:#4a4a5c; --mute:#8b8b9e;
+  --line:#d7d6e4; --blue:#1b34d8; --green:#11a86a;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --disp:"Bricolage Grotesque","IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--paper);color:var(--body);font-family:var(--sans);font-size:16px;
+  line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1460px;margin:0 auto;padding:0 clamp(18px,2.6vw,40px)}
+
+/* ---------- loader ---------- */
+#load{position:fixed;inset:0;z-index:200;background:var(--paper);display:flex;
+  align-items:flex-end;justify-content:space-between;padding:clamp(20px,3vw,44px);
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+#load .n{font-family:var(--disp);font-weight:800;font-size:clamp(64px,17vw,230px);
+  line-height:.78;letter-spacing:-.05em;color:var(--ink);font-variant-numeric:tabular-nums}
+#load .r{text-align:right;line-height:2}
+#load.out{transform:translateY(-100%);transition:transform 1.05s cubic-bezier(.76,0,.24,1)}
+
+/* ---------- persistent stage ---------- */
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E")}
+.content{position:relative;z-index:2}
+
+/* ---------- cursor ---------- */
+#cur{position:fixed;z-index:150;width:26px;height:26px;border:1px solid rgba(8,8,14,.45);
+  border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);
+  transition:width .28s cubic-bezier(.2,.8,.2,1),height .28s cubic-bezier(.2,.8,.2,1),
+             background-color .28s,border-color .28s;mix-blend-mode:difference;filter:invert(1)}
+#cur.big{width:62px;height:62px;background:rgba(255,255,255,.14);border-color:transparent}
+@media(hover:none){#cur{display:none}}
+
+/* ---------- top chrome ---------- */
+.top{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;
+  padding:clamp(16px,2.2vw,28px) clamp(18px,2.6vw,40px);pointer-events:none}
+.top > *{pointer-events:auto}
+.top .lg{font-family:var(--disp);font-weight:800;font-size:clamp(16px,1.5vw,20px);
+  letter-spacing:-.03em;color:var(--ink)}
+.top .act{margin-left:auto;display:flex;gap:9px}
+.pill{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.72);
+  backdrop-filter:blur(10px);color:var(--ink);white-space:nowrap;cursor:pointer;
+  transition:background .25s,border-color .25s,color .25s;display:inline-block}
+.pill:hover{border-color:var(--ink)}
+.pill.dark{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill.dark i{font-style:normal;display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#3ee08f;margin-left:8px;vertical-align:1px}
+
+/* ---------- masked line reveal ---------- */
+.ln{display:block;overflow:hidden}
+.ln > span{display:block;transform:translateY(105%);will-change:transform}
+
+/* ---------- panels ---------- */
+.sect{min-height:100svh;display:flex;align-items:center;padding:16vh 0}
+.sect.tall{min-height:120svh}
+.lead{font-family:var(--sans);font-weight:500;font-size:clamp(26px,3.5vw,52px);line-height:1.1;
+  letter-spacing:-.032em;color:var(--ink);max-width:17ch}
+.lead em{font-style:normal;color:var(--blue)}
+.sub{margin-top:22px;max-width:44ch;font-size:clamp(14.5px,1.1vw,17px)}
+.sub b{color:var(--ink);font-weight:600}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--mute);margin-bottom:18px}
+.card{background:rgba(255,255,255,.62);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.8);
+  border-radius:16px;padding:clamp(22px,2.6vw,36px);max-width:560px;
+  box-shadow:0 20px 60px rgba(20,18,50,.09)}
+.card.r{margin-left:auto}
+.kv{display:flex;flex-wrap:wrap;gap:26px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.kv div{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.kv b{display:block;font-family:var(--disp);font-weight:700;font-size:clamp(21px,2.2vw,30px);
+  color:var(--ink);letter-spacing:-.025em;margin-top:5px;text-transform:none}
+.go{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}
+
+/* hero readout */
+.hud{position:fixed;left:0;right:0;bottom:0;z-index:55;display:flex;gap:22px;flex-wrap:wrap;
+  padding:0 clamp(18px,2.6vw,40px) clamp(16px,2.2vw,26px);
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--mute);pointer-events:none;transition:opacity .5s}
+.hud b{color:var(--ink);font-weight:500}
+.hud .r{margin-left:auto}
+
+/* ---------- final ---------- */
+.fin{padding:14vh 0 8vh}
+.fin h2{font-family:var(--disp);font-weight:800;font-size:clamp(34px,7vw,110px);line-height:.92;
+  letter-spacing:-.045em;color:var(--ink);max-width:13ch}
+.fin .meta{margin-top:38px;display:flex;flex-wrap:wrap;gap:16px;font-family:var(--mono);font-size:11px}
+.fin .meta a{color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:3px}
+.fin .meta a:hover{border-bottom-color:var(--ink)}
+footer{padding:26px 0 44px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between}
+@media(prefers-reduced-motion:reduce){.ln > span{transform:none!important}}
+</style>
+</head>
+<body>
+
+<div id="load">
+  <div class="n" id="loadn">000</div>
+  <div class="r">
+    <div>Brian Mathew</div>
+    <div>25 agents · 81 tests</div>
+    <div id="loadmsg">Compiling shaders</div>
+  </div>
+</div>
+
+<div id="cur"></div>
+<canvas id="gl"></canvas>
+<div class="grain"></div>
+
+<div class="top">
+  <div class="lg">BRIAN&nbsp;MATHEW</div>
+  <div class="act">
+    <a class="pill mag" href="../resume.pdf">Résumé</a>
+    <a class="pill dark mag" href="mailto:mathew.brian@gmail.com">Available — email me<i></i></a>
+  </div>
+</div>
+
+<div class="hud" id="hud">
+  <span><b id="hA">25</b> agents live</span>
+  <span><b>81</b>/81 tests green</span>
+  <span><b id="hN">—</b> next to fire</span>
+  <span class="r" id="hF">drag · hover an agent</span>
+</div>
+
+<div class="content">
+
+  <!-- 00 — hero -->
+  <section class="sect" data-form="0">
+    <div class="wrap">
+      <p class="lead">
+        <span class="ln"><span>25 agents are running</span></span>
+        <span class="ln"><span>on my machine right now.</span></span>
+        <span class="ln"><span><em>Each one is an object here.</em></span></span>
+      </p>
+      <p class="sub ln"><span>Not a render of a system — the system. Every shape you can push around
+        is a real scheduled job, and it knows when it fires next.</span></p>
+    </div>
+  </section>
+
+  <!-- 01 — Brian OS / ring by real cron hour -->
+  <section class="sect tall" data-form="1">
+    <div class="wrap">
+      <div class="card">
+        <div class="eyebrow">01 — running daily</div>
+        <p class="lead" style="font-size:clamp(24px,2.8vw,40px)">
+          <span class="ln"><span>Brian OS</span></span></p>
+        <p class="sub"><b>They just arranged themselves by the hour they actually run.</b>
+          Nine of them fire between 06:40 and 07:00 every weekday — that cluster is real, read
+          straight out of my crontab. Briefs, health checks, self-recovery, two-way Telegram
+          control, and draft-only guardrails on anything that sends, spends, deploys or deletes.</p>
+        <div class="kv">
+          <div>Agents<b>25</b></div><div>Tests<b>81</b></div><div>Uptime<b>Daily</b></div>
+        </div>
+        <div class="go"><a class="pill mag" href="https://github.com/bmath8/brian-os">Read the source</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — Squares / 5x5 grid -->
+  <section class="sect tall" data-form="2">
+    <div class="wrap">
+      <div class="card r">
+        <div class="eyebrow">02 — live &amp; publicly usable</div>
+        <p class="lead" style="font-size:clamp(24px,2.8vw,40px)">
+          <span class="ln"><span>Super Bowl LX Squares</span></span></p>
+        <p class="sub"><b>Twenty-five agents make a perfect five-by-five.</b> Fitting, because the
+          other thing I shipped was a grid: a squares pool real people used during a real game.
+          The draw had to be verifiably fair and identical for every viewer, so state resolves
+          centrally and pushes out. One moment to be correct, in front of an audience.</p>
+        <div class="kv">
+          <div>Squares<b>100</b></div><div>Draw<b>Live</b></div><div>Build step<b>None</b></div>
+        </div>
+        <div class="go">
+          <a class="pill dark mag" href="https://fam-super-bowl-squares-2026.vercel.app">Open it ↗</a>
+          <a class="pill mag" href="https://github.com/bmath8/fam-super-bowl-squares-2026">Source</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — BoomBox / helix -->
+  <section class="sect tall" data-form="3">
+    <div class="wrap">
+      <div class="card">
+        <div class="eyebrow">03 — prototype</div>
+        <p class="lead" style="font-size:clamp(24px,2.8vw,40px)">
+          <span class="ln"><span>BoomBox</span></span></p>
+        <p class="sub">Collaborative music — shared queues, live rooms, listening in sync. Durable
+          Postgres state kept deliberately apart from transient WebSocket and Redis Pub/Sub,
+          because they fail in completely different ways and shouldn't share a failure mode.</p>
+        <div class="kv">
+          <div>Stack<b>TS · Next</b></div><div>Realtime<b>WS + Redis</b></div><div>Source<b>Public</b></div>
+        </div>
+        <div class="go"><a class="pill mag" href="https://github.com/bmath8/boombox">Read the source</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 — incident / converge -->
+  <section class="sect tall" data-form="4">
+    <div class="wrap">
+      <div class="card">
+        <div class="eyebrow">Post-mortem</div>
+        <p class="lead" style="font-size:clamp(22px,2.5vw,36px)">
+          <span class="ln"><span>The failure worth showing</span></span></p>
+        <p class="sub">A failed process guardian left orphan processes until they filled the disk.
+          <b>Nothing alerted me — the alerting was one of the casualties.</b> I found it, traced the
+          cause, recovered the machine, restored monitoring, and gave the watchdog a watchdog.
+          The hardest bug I've had was operational, not logical.</p>
+        <div class="kv">
+          <div>Before<b>Best Buy — Appliances Lead</b></div>
+          <div>2022<b>Uber — Independent</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="fin wrap">
+    <h2><span class="ln"><span>Let me run your</span></span>
+        <span class="ln"><span>systems the way</span></span>
+        <span class="ln"><span>I run mine.</span></span></h2>
+    <p class="sub">Full-time — developer, technical support, or operations. Available immediately,
+      open to remote, hybrid, on-site or relocation. Undergraduate coursework at Penn State Berks
+      and CCNY.</p>
+    <div class="meta">
+      <a class="mag" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+      <a class="mag" href="tel:+16098151685">(609) 815-1685</a>
+      <a class="mag" href="https://github.com/bmath8">github.com/bmath8</a>
+      <a class="mag" href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+      <a class="mag" href="../resume.pdf">Résumé (PDF)</a>
+    </div>
+    <footer>
+      <span>© 2026 Brian Mathew — New Jersey</span>
+      <span>Every number here came from a real run, 30 Jul 2026</span>
+    </footer>
+  </div>
+</div>
+
+<script src="../vendor/gsap.min.js"></script>
+<script src="../vendor/ScrollTrigger.min.js"></script>
+<script src="../vendor/lenis.min.js"></script>
+<script type="module">
+const REDUCE=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const loadEl=document.getElementById('load'), loadN=document.getElementById('loadn'),
+      loadMsg=document.getElementById('loadmsg');
+
+/* real crontab, 2026-07-30 — name, minute-of-day (<0 = continuous), lane */
+const JOBS=[['memory-index',80,'ops'],['harmony-backup',90,'safe'],['overnight-worker',120,'ops'],
+ ['model-review',180,'learn'],['scout',400,'learn'],['learning-agent',405,'learn'],
+ ['inbox',408,'comms'],['finance',410,'money'],['health',412,'safe'],['career',413,'learn'],
+ ['calendar',415,'comms'],['currency',418,'learn'],['fleet-health',419,'safe'],
+ ['daily-brief',420,'comms'],['gig-scanner',430,'money'],['ceo-report',450,'money'],
+ ['currency-weekly',990,'learn'],['wiki',1005,'learn'],['outcome-learner',1010,'learn'],
+ ['weekly-review',1020,'comms'],['feedback',1020,'comms'],['research',1080,'learn'],
+ ['skill-miner',1110,'learn'],['dashboard',-1,'ops'],['system-watchdog',-2,'safe']];
+const TINT={ops:0x1b34d8,safe:0x11a86a,learn:0xf4f4f8,comms:0x0d0d14,money:0x0d0d14};
+
+const etMin=()=>{const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',
+  hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date());
+  let h=0,m=0;p.forEach(o=>{if(o.type==='hour')h=+o.value;if(o.type==='minute')m=+o.value});
+  return (h%24)*60+m;};
+const hhmm=m=>('0'+Math.floor(m/60)).slice(-2)+':'+('0'+(m%60)).slice(-2);
+(function nextFire(){const now=etMin();let b=null,bd=1e9;
+  JOBS.forEach(j=>{if(j[1]<0)return;let g=j[1]-now;if(g<0)g+=1440;if(g<bd){bd=g;b=j;}});
+  if(b)document.getElementById('hN').textContent=b[0]+' '+hhmm(b[1]);
+  setTimeout(nextFire,30000);})();
+
+/* ---------- custom cursor + magnetic pills ---------- */
+const cur=document.getElementById('cur');
+if(matchMedia('(hover:hover)').matches){
+  let cx=innerWidth/2,cy=innerHeight/2,tx=cx,ty=cy;
+  addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY});
+  (function tick(){cx+=(tx-cx)*.22;cy+=(ty-cy)*.22;
+    cur.style.transform=`translate(${cx}px,${cy}px) translate(-50%,-50%)`;
+    requestAnimationFrame(tick);})();
+  document.querySelectorAll('a,button,.mag').forEach(el=>{
+    el.addEventListener('pointerenter',()=>cur.classList.add('big'));
+    el.addEventListener('pointerleave',()=>cur.classList.remove('big'));
+  });
+  document.querySelectorAll('.mag').forEach(el=>{
+    el.addEventListener('pointermove',e=>{
+      const r=el.getBoundingClientRect();
+      el.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.28}px,${(e.clientY-r.top-r.height/2)*.4}px)`;
+    });
+    el.addEventListener('pointerleave',()=>{el.style.transform='';el.style.transition='transform .4s cubic-bezier(.2,.8,.2,1)';
+      setTimeout(()=>el.style.transition='',400);});
+  });
+}
+
+/* ---------- boot ---------- */
+let pct=0, ready=false;
+const bumpTo=v=>{ pct=Math.max(pct,v); loadN.textContent=String(Math.round(pct)).padStart(3,'0'); };
+const fakeTick=setInterval(()=>{ if(pct<88) bumpTo(pct+Math.random()*7); },90);
+
+/* Hard dismissal fallback. requestAnimationFrame does not fire in a
+   backgrounded tab, so gating the reveal on "first frame rendered" leaves
+   anyone who opens this in a background tab staring at a stuck counter
+   forever. The content must never be gated behind the loader. */
+function dismissLoader(){
+  if(loadEl.classList.contains('out')) return;
+  clearInterval(fakeTick); bumpTo(100);
+  loadEl.classList.add('out');
+  try{ window.ScrollTrigger && ScrollTrigger.refresh(); }catch(_){}
+}
+setTimeout(dismissLoader,4200);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) setTimeout(dismissLoader,900); });
+
+try{
+  loadMsg.textContent='Loading three.js';
+  const THREE=await import('/vendor/three.module.min.js');
+  bumpTo(40);
+  const {RoomEnvironment}=await import('/vendor/RoomEnvironment.js');
+  const {HDRLoader}=await import('/vendor/loaders/HDRLoader.js');
+  const {MarchingCubes}=await import('/vendor/objects/MarchingCubes.js');
+  loadMsg.textContent='Building post pipeline';
+  /* pmndrs/postprocessing, not three.js EffectComposer. It merges every effect
+     into ONE fullscreen pass instead of ping-ponging a buffer per effect, has
+     real depth-aware bokeh rather than a fake blur, and ships SMAA. */
+  const PP=await import('/vendor/postprocessing.module.js');
+  const {EffectComposer,RenderPass,EffectPass,DepthOfFieldEffect,BloomEffect,
+         NoiseEffect,VignetteEffect,ChromaticAberrationEffect,SMAAEffect,
+         ToneMappingEffect,BlendFunction,KernelSize}=PP;
+  bumpTo(66);
+
+  const host=document.getElementById('gl');
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(36,innerWidth/innerHeight,0.1,300);
+  cam.position.set(0,0,15);
+
+  const renderer=new THREE.WebGLRenderer({canvas:host,antialias:false});
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.75));
+  renderer.setSize(innerWidth,innerHeight,false);
+  renderer.setClearColor(0xe6e5f0,1);
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.0;
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+  const pmrem=new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  /* Procedural RoomEnvironment first so nothing is ever unlit, then upgrade to
+     a real CC0 studio HDRI. Chrome is almost entirely reflection -- a real
+     captured environment is the difference between metal and grey plastic. */
+  scene.environment=pmrem.fromScene(new RoomEnvironment(),0.02).texture;
+  new HDRLoader().load('/vendor/hdr/studio_small_09_1k.hdr',t=>{
+    t.mapping=THREE.EquirectangularReflectionMapping;
+    scene.environment=pmrem.fromEquirectangular(t).texture;
+    t.dispose();
+  });
+
+  const key=new THREE.DirectionalLight(0xffffff,3.6);
+  key.position.set(-7,10,8); key.castShadow=true;
+  key.shadow.mapSize.set(2048,2048);
+  Object.assign(key.shadow.camera,{near:1,far:48,left:-15,right:15,top:15,bottom:-15});
+  key.shadow.bias=-0.0011; key.shadow.radius=4; scene.add(key);
+  scene.add(new THREE.DirectionalLight(0x9db2ff,1.35).translateX(9).translateY(-4).translateZ(-7));
+  scene.add(new THREE.AmbientLight(0xffffff,0.28));
+
+  const catcher=new THREE.Mesh(new THREE.PlaneGeometry(120,120),
+    new THREE.ShadowMaterial({opacity:0.16}));
+  catcher.rotation.x=-Math.PI/2; catcher.position.y=-7.5; catcher.receiveShadow=true; scene.add(catcher);
+
+  /* ---- 25 agents as liquid-chrome metaballs ----
+     MarchingCubes builds one continuous surface from 25 field sources. When
+     two agents come within roughly a ball-radius the isosurface merges them,
+     so the morning stack (nine jobs inside twenty minutes) fuses into a single
+     mass without any special-casing. The data makes the picture. */
+  const RES = (innerWidth<900) ? 40 : 60;
+  const chrome = new THREE.MeshPhysicalMaterial({
+    color:0xffffff, metalness:1.0, roughness:0.055,
+    envMapIntensity:1.5, clearcoat:1.0, clearcoatRoughness:0.03
+  });
+  const blob = new MarchingCubes(RES, chrome, true, true, 90000);
+  blob.isolation = 200;
+  blob.scale.setScalar(8.2);
+  blob.castShadow = true; blob.receiveShadow = true;
+  scene.add(blob);
+
+  /* a few agents render as solid bodies too, so the fleet reads as countable
+     objects and not only as one liquid — these are the continuous ones */
+  const group=new THREE.Group(); scene.add(group);
+
+  const B=[];
+  JOBS.forEach((j,i)=>{
+    B.push({ job:j,
+      p:new THREE.Vector3(), v:new THREE.Vector3(), t:new THREE.Vector3(),
+      str: j[1]<0 ? 0.62 : 0.46 + ((i*37)%100)/100*0.20,
+      sub: 8 + ((i*29)%100)/100*4 });
+  });
+  bumpTo(78);
+  /* ---- five formations, each meaning something ---- */
+  const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+  const FORM=[
+    /* 0 cloud */ B.map((b,i)=>{const a=(i/25)*Math.PI*2*3.1, rr=2.6+((i*53)%100)/100*3.4;
+      return V(Math.cos(a)*rr,(((i*29)%100)/100-.5)*7.2,Math.sin(a)*rr*.62);}),
+    /* 1 ring by REAL cron hour */ B.map(b=>{
+      const mins=b.job[1]<0?720:b.job[1], a=(mins/1440)*Math.PI*2-Math.PI/2;
+      const rr=b.job[1]<0?1.5:6.0;
+      return V(Math.cos(a)*rr,Math.sin(a)*rr*0.92,(Math.random()-.5)*0.7);}),
+    /* 2 perfect 5x5 grid — 25 agents is exactly five by five */ B.map((b,i)=>
+      V(((i%5)-2)*2.5,(Math.floor(i/5)-2)*2.5,0)),
+    /* 3 double helix */ B.map((b,i)=>{const t=i/25*Math.PI*4, s=i%2?1:-1;
+      return V(Math.cos(t)*2.6*s,(i/25-.5)*11,Math.sin(t)*2.6*s);}),
+    /* 4 converge */ B.map((b,i)=>{const a=(i/25)*Math.PI*2,rr=1.5+((i*17)%100)/100*.9;
+      return V(Math.cos(a)*rr,Math.sin(a)*rr,(Math.random()-.5)*1.4);})
+  ];
+  B.forEach((b,i)=>{ b.o.position.copy(FORM[0][i]); b.t.copy(FORM[0][i]); });
+
+  /* ---- post pipeline: one merged pass ---- */
+  renderer.toneMapping=THREE.NoToneMapping;      // tone mapping now lives in the chain
+  const composer=new EffectComposer(renderer,{frameBufferType:THREE.HalfFloatType});
+  composer.addPass(new RenderPass(scene,cam));
+
+  const dof=new DepthOfFieldEffect(cam,{
+    worldFocusDistance:15, worldFocusRange:16,
+    bokehScale:1.7, height:720
+  });
+  const bloomE=new BloomEffect({
+    intensity:0.62, luminanceThreshold:0.72, luminanceSmoothing:0.28,
+    kernelSize:KernelSize.LARGE, mipmapBlur:true
+  });
+  const ca=new ChromaticAberrationEffect({offset:new THREE.Vector2(0.0007,0.0007),radialModulation:true,modulationOffset:0.32});
+  const vig=new VignetteEffect({offset:0.22,darkness:0.78});
+  const grain=new NoiseEffect({blendFunction:BlendFunction.OVERLAY});
+  grain.blendMode.opacity.value=0.13;
+  const tone=new ToneMappingEffect(
+    PP.ToneMappingMode ? {mode:PP.ToneMappingMode.AGX} : undefined);
+
+  composer.addPass(new EffectPass(cam,dof,bloomE,ca,vig,grain,tone));
+  composer.addPass(new EffectPass(cam,new SMAAEffect()));
+  composer.setSize(innerWidth,innerHeight);
+  bumpTo(92);
+
+  /* ---- interaction ---- */
+  const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(-9,-9), pw=new THREE.Vector3(), tmp=new THREE.Vector3();
+  let drag=false,lx=0,spin=0.0011,hover=-1;
+  const hF=document.getElementById('hF');
+  host.style.pointerEvents='auto';
+  addEventListener('pointerdown',e=>{drag=true;lx=e.clientX});
+  addEventListener('pointerup',()=>drag=false);
+  addEventListener('pointermove',e=>{
+    ptr.x=(e.clientX/innerWidth)*2-1; ptr.y=-(e.clientY/innerHeight)*2+1;
+    if(drag){spin+=(e.clientX-lx)*0.00028;lx=e.clientX;}
+  });
+
+  /* ---- scroll choreography ---- */
+  let formF=0;
+  if(window.gsap && window.ScrollTrigger && !REDUCE){
+    gsap.registerPlugin(ScrollTrigger);
+    if(window.Lenis){
+      const lenis=new Lenis({duration:1.15,smoothWheel:true});
+      lenis.on('scroll',ScrollTrigger.update);
+      gsap.ticker.add(t=>lenis.raf(t*1000)); gsap.ticker.lagSmoothing(0);
+    }
+    const proxy={f:0,camZ:15,foc:15};
+    ScrollTrigger.create({
+      trigger:'.content',start:'top top',end:'bottom bottom',scrub:1.1,
+      onUpdate:s=>{
+        proxy.f=s.progress*(FORM.length-1);
+        formF=proxy.f;
+        cam.position.z=15-Math.sin(s.progress*Math.PI)*3.4;
+        cam.position.y=s.progress*1.6;
+        dof.cocMaterial.worldFocusDistance=cam.position.z-Math.sin(s.progress*Math.PI)*1.6;
+        bloomE.intensity=0.62+Math.sin(s.progress*Math.PI)*0.38;
+        ca.offset.set(0.0007+s.progress*0.0011,0.0007);
+      }
+    });
+    /* masked line reveals */
+    document.querySelectorAll('.ln').forEach(l=>{
+      gsap.to(l.querySelector('span'),{yPercent:-105,duration:1.05,ease:'expo.out',
+        scrollTrigger:{trigger:l,start:'top 88%'}});
+    });
+    /* hide the hero readout once you leave the top */
+    ScrollTrigger.create({trigger:'.content',start:'top -12%',
+      onEnter:()=>gsap.to('#hud',{opacity:0,duration:.4}),
+      onLeaveBack:()=>gsap.to('#hud',{opacity:1,duration:.4})});
+  } else {
+    document.querySelectorAll('.ln > span').forEach(s=>s.style.transform='none');
+  }
+
+  function resize(){
+    cam.aspect=innerWidth/innerHeight; cam.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight,false);
+    composer.setSize(innerWidth,innerHeight);
+  }
+  addEventListener('resize',resize);
+
+  let last=performance.now(), first=true;
+  function frame(now){
+    requestAnimationFrame(frame);
+    const dt=Math.min((now-last)/16.7,2.5); last=now;
+    if(!drag) spin+=(0.0011-spin)*0.02;
+    group.rotation.y+=spin*dt;
+
+    /* metaball field. Each agent is one source; MarchingCubes fuses any two
+       that come within ~a radius, so the 06:40-07:00 stack melts into a single
+       mass entirely on its own. */
+    const i0=Math.min(FORM.length-1,Math.floor(formF)), i1=Math.min(FORM.length-1,i0+1);
+    let mt=formF-i0; mt=mt*mt*(3-2*mt);
+    ray.setFromCamera(ptr,cam);
+    const tt=-ray.ray.origin.z/ray.ray.direction.z;
+    pw.copy(ray.ray.origin).addScaledVector(ray.ray.direction,tt);
+
+    blob.reset();
+    for(let i=0;i<B.length;i++){
+      const b=B[i];
+      b.t.copy(FORM[i0][i]).lerp(FORM[i1][i],mt);
+      tmp.copy(b.t).sub(b.p).multiplyScalar(0.06*dt);
+      b.v.add(tmp);
+      if(ptr.x>-8){
+        tmp.copy(b.p).applyMatrix4(group.matrixWorld).sub(pw);
+        const d2=tmp.lengthSq();
+        if(d2<22&&d2>0.001){
+          tmp.normalize().multiplyScalar((22-d2)/22*0.10*dt)
+             .applyAxisAngle(new THREE.Vector3(0,1,0),-group.rotation.y);
+          b.v.add(tmp);
+        }
+      }
+      b.p.addScaledVector(b.v,dt); b.v.multiplyScalar(0.9);
+      /* MarchingCubes works in a 0..1 unit cube */
+      blob.addBall(
+        0.5+b.p.x/16.4, 0.5+b.p.y/16.4, 0.5+b.p.z/16.4,
+        b.str, b.sub);
+    }
+    blob.update();
+
+    if(ptr.x>-8){
+      let best=-1,bd=1e9;
+      for(let i=0;i<B.length;i++){
+        tmp.copy(B[i].p).applyMatrix4(group.matrixWorld).sub(pw);
+        const d=tmp.lengthSq(); if(d<bd){bd=d;best=i;}
+      }
+      if(best>=0&&bd<26){ if(best!==hover){hover=best;const j=B[best].job;
+        hF.textContent=j[0]+(j[1]<0?' · continuous':' · '+hhmm(j[1])+' ET');} }
+      else if(hover!==-1){hover=-1;hF.textContent='drag · hover an agent';}
+    }
+
+    composer.render();
+    if(first){ first=false; ready=true; loadMsg.textContent='Ready';
+      setTimeout(dismissLoader,320);
+    }
+  }
+  requestAnimationFrame(frame);
+
+}catch(err){
+  console.error('[atelier] init failed:',err);
+  clearInterval(fakeTick);
+  loadMsg.textContent='3D unavailable — showing the page';
+  document.querySelectorAll('.ln > span').forEach(s=>s.style.transform='none');
+  setTimeout(()=>loadEl.classList.add('out'),500);
+}
+</script>
+</body>
+</html>
