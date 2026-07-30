@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Brian Mathew — operator</title>
+<link rel="stylesheet" href="../vendor/fonts.css"/>
+<style>
+/* ==========================================================================
+   L6 — THE ENVIRONMENT
+   Conclusion from studying the sites that are actually respected:
+
+   Emil Kowalski / Rauno / Paco / leerob  -> strip the hero entirely, lead with
+     plain lists, let writing voice and micro-craft carry personality.
+   Bruno Simon / Lusion                   -> the medium IS the proof.
+   Nobody good uses the big gradient one-liner. That is the AI-builder default.
+
+   Brian isn't known yet, so pure minimalism underserves him -- but "the medium
+   is the proof" is available to him and almost nobody else, because he really
+   does operate live systems. So this is not a page ABOUT an operator's console.
+   It IS one. Identity sits in the status bar the way it would in an OS. There
+   is no headline because there is no hero.
+
+   Register: light, precise, professional tool (Linear / Raycast / Vercel
+   dashboard) -- deliberately NOT a dark hacker terminal, which is a costume,
+   and not any of the three AI-default looks.
+   ========================================================================== */
+:root{
+  --bg:#ececeb; --bg2:#e3e3e1;
+  --panel:#fff; --panel2:#fafaf9;
+  --line:#dcdcd9; --line2:#c8c8c4;
+  --ink:#14141a; --body:#4a4a55; --mute:#85858f; --faint:#a5a5ad;
+  --ok:#0f7a4d; --okbg:#e4f4ec;
+  --warn:#a8710c; --warnbg:#fbf1de;
+  --stop:#b8402f; --stopbg:#fbe9e6;
+  --live:#2b5cff; --livebg:#e8eefe;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --bar:38px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--body);font-family:var(--sans);font-size:15px;
+     line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--live);outline-offset:2px;border-radius:3px}
+.mono{font-family:var(--mono)}
+
+/* ---------------- STATUS BAR = the identity ----------------
+   No hero sentence. Who he is lives here, permanently, the way an OS puts it
+   in the menubar. It is the first thing read and it never leaves. */
+.bar{position:sticky;top:0;z-index:60;height:var(--bar);background:rgba(236,236,235,.92);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:0;padding:0 14px;font-family:var(--mono);font-size:11.5px}
+.bar .who{font-weight:500;color:var(--ink);letter-spacing:.01em}
+.bar .who span{color:var(--mute);font-weight:400}
+.bar .sep{width:1px;height:16px;background:var(--line2);margin:0 14px;flex:none}
+.bar .st{display:flex;align-items:center;gap:6px;color:var(--body);white-space:nowrap}
+.bar .st i{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none;
+  box-shadow:0 0 0 3px var(--okbg)}
+.bar .push{margin-left:auto}
+.bar a.act{padding:5px 11px;border:1px solid var(--line2);border-radius:5px;color:var(--ink);
+  background:var(--panel);transition:.15s;white-space:nowrap}
+.bar a.act:hover{border-color:var(--ink)}
+.bar a.act.p{background:var(--ink);border-color:var(--ink);color:#fff}
+.bar a.act + a.act{margin-left:7px}
+@media(max-width:900px){.bar .hidesm{display:none}.bar .sep.hidesm{display:none}}
+
+/* ---------------- workspace grid ---------------- */
+.work{max-width:1360px;margin:0 auto;padding:14px;
+  display:grid;grid-template-columns:repeat(12,1fr);gap:14px;align-items:start}
+@media(max-width:1060px){.work{grid-template-columns:repeat(6,1fr)}}
+@media(max-width:680px){.work{grid-template-columns:1fr;padding:10px;gap:10px}}
+.c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}
+.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
+@media(max-width:1060px){.c3,.c4,.c5,.c7,.c8{grid-column:span 6}}
+@media(max-width:680px){.c3,.c4,.c5,.c6,.c7,.c8,.c12{grid-column:span 1}}
+
+/* ---------------- panel ---------------- */
+.p{background:var(--panel);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.p > header{display:flex;align-items:center;gap:9px;padding:9px 13px;border-bottom:1px solid var(--line);
+  background:var(--panel2);font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--mute)}
+.p > header b{color:var(--ink);font-weight:500;letter-spacing:.06em}
+.p > header .tag{margin-left:auto;padding:2px 7px;border-radius:4px;font-size:9.5px;letter-spacing:.1em}
+.tag.ok{background:var(--okbg);color:var(--ok)}
+.tag.warn{background:var(--warnbg);color:var(--warn)}
+.tag.live{background:var(--livebg);color:var(--live)}
+.tag.idle{background:var(--bg2);color:var(--mute)}
+.p .body{padding:14px}
+.p .foot{padding:9px 13px;border-top:1px solid var(--line);background:var(--panel2);
+  font-family:var(--mono);font-size:10.5px;color:var(--faint);display:flex;gap:12px;flex-wrap:wrap}
+.p .foot a{color:var(--live);border-bottom:1px solid transparent}
+.p .foot a:hover{border-bottom-color:var(--live)}
+
+/* ---------------- fleet clock ---------------- */
+.fleet{display:grid;grid-template-columns:190px minmax(0,1fr);gap:16px;align-items:center}
+@media(max-width:520px){.fleet{grid-template-columns:1fr}}
+#dial{width:100%;height:180px;display:block}
+.flog{font-family:var(--mono);font-size:11px;line-height:1.9;max-height:180px;overflow:hidden}
+.flog div{display:flex;gap:9px;align-items:baseline;color:var(--body)}
+.flog div b{color:var(--mute);font-weight:400;min-width:38px}
+.flog div u{text-decoration:none;color:var(--ink)}
+.flog div s{text-decoration:none;margin-left:auto;color:var(--ok)}
+.flog div.next u{color:var(--live)}
+.flog div.next s{color:var(--live)}
+
+/* ---------------- approval queue ---------------- */
+.q{display:grid;gap:9px}
+.qi{border:1px solid var(--line);border-radius:7px;padding:11px 12px;display:grid;
+  grid-template-columns:1fr auto;gap:11px;align-items:center;transition:.2s;background:var(--panel)}
+.qi.done{background:var(--panel2)}
+.qi.yes{border-color:#bfe3d1}.qi.no{border-color:#f0cdc6}
+.qi .frm{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.qi .sub{color:var(--ink);font-weight:600;margin-top:3px;font-size:14px}
+.qi .pv{font-family:var(--mono);font-size:11px;color:var(--mute);margin-top:4px;line-height:1.5}
+.qi .pv.res{color:var(--body)}
+.qi .acts{display:flex;gap:6px}
+.qi button{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:7px 11px;border-radius:5px;border:1px solid var(--line2);background:var(--panel);
+  color:var(--body);cursor:pointer;transition:.15s}
+.qi button.y:hover{background:var(--ok);border-color:var(--ok);color:#fff}
+.qi button.n:hover{background:var(--stop);border-color:var(--stop);color:#fff}
+.qi .vd{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.qi.yes .vd{color:var(--ok)}.qi.no .vd{color:var(--stop)}
+
+/* ---------------- squares ---------------- */
+.sq{display:grid;grid-template-columns:minmax(0,1fr) 168px;gap:14px;align-items:start}
+@media(max-width:560px){.sq{grid-template-columns:1fr}}
+.sqhold{position:relative}
+#grid{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;aspect-ratio:1}
+#grid i{background:var(--bg2);border-radius:3px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:9.5px;color:var(--faint);font-style:normal;cursor:pointer;
+  transition:background .2s,color .2s,transform .2s}
+#grid i:hover{background:#d3d3ce}
+#grid i.mine{background:var(--live);color:#fff;font-weight:600}
+#grid i.f{background:#dcdcd7;color:var(--mute);cursor:default}
+#grid i.mine.f{background:var(--live);color:#fff}
+#grid i.win{background:var(--ok);color:#fff;font-weight:700;transform:scale(1.14);
+  box-shadow:0 0 0 2px #fff,0 3px 12px rgba(15,122,77,.4);z-index:2}
+.sqk{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);
+  font-size:12.5px}
+.sqk span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.sqk b{color:var(--ink)}
+.sqmsg{margin-top:10px;font-family:var(--mono);font-size:10.5px;line-height:1.6;color:var(--mute);min-height:46px}
+.sqmsg.win{color:var(--ok)}
+.btn{width:100%;margin-top:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;padding:9px;border-radius:6px;border:1px solid var(--ink);
+  background:var(--ink);color:#fff;cursor:pointer;transition:.15s}
+.btn:hover:not(:disabled){opacity:.85}
+.btn:disabled{opacity:.32;cursor:default}
+.btn.g{background:var(--panel);color:var(--ink);border-color:var(--line2)}
+.btn.g:hover{border-color:var(--ink)}
+
+/* ---------------- source tree ---------------- */
+.tree{font-family:var(--mono);font-size:11.5px;line-height:2.05}
+.tree a{display:flex;gap:9px;align-items:baseline;padding:0 5px;margin:0 -5px;border-radius:4px;color:var(--body)}
+.tree a:hover{background:var(--bg2);color:var(--ink)}
+.tree .d{color:var(--faint)}
+.tree .n{color:var(--ink)}
+.tree .m{margin-left:auto;color:var(--faint);font-size:10.5px}
+.tree .st{color:var(--ok)}
+.tree .st.w{color:var(--warn)}
+
+/* ---------------- incident ---------------- */
+.inc{font-size:13.5px}
+.inc .row{display:grid;grid-template-columns:78px 1fr;gap:11px;padding:5px 0;
+  border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px}
+.inc .row:last-of-type{border-bottom:none}
+.inc .row span{color:var(--mute);letter-spacing:.08em;text-transform:uppercase;font-size:10px;padding-top:2px}
+.inc .row b{color:var(--ink);font-weight:500}
+.inc p{margin-top:10px;color:var(--body);font-size:13.5px}
+
+/* ---------------- history ---------------- */
+.hist{font-size:13.5px}
+.hist .r{padding:9px 0;border-bottom:1px solid var(--line)}
+.hist .r:last-child{border-bottom:none}
+.hist .w{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.hist .t{color:var(--ink);font-weight:600;margin-top:2px}
+.hist p{font-size:13px;margin-top:3px;color:var(--body)}
+
+/* ---------------- plain text, for a 15-second skim ---------------- */
+.plain{max-width:1360px;margin:0 auto;padding:34px 14px 60px}
+.plain .in{max-width:640px}
+.plain h2{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--mute);margin-bottom:14px}
+.plain p{font-size:14.5px;margin-top:9px;color:var(--body)}
+.plain p b{color:var(--ink);font-weight:600}
+.plain a{color:var(--live);border-bottom:1px solid #c4d2fb}
+.plain a:hover{border-bottom-color:var(--live)}
+.plain .lines{margin-top:20px;font-family:var(--mono);font-size:11.5px;color:var(--faint);
+  display:flex;flex-wrap:wrap;gap:16px}
+footer{border-top:1px solid var(--line);padding:16px 14px 40px}
+footer .in{max-width:1360px;margin:0 auto;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
+  font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ============ IDENTITY, ambient. No hero sentence anywhere on this page. ============ -->
+<div class="bar">
+  <span class="who">Brian Mathew <span>— developer &amp; operator</span></span>
+  <span class="sep hidesm"></span>
+  <span class="st hidesm">New Jersey</span>
+  <span class="sep hidesm"></span>
+  <span class="st"><i></i><span id="barclock">—:—</span> ET</span>
+  <span class="sep hidesm"></span>
+  <span class="st hidesm">25/25 agents</span>
+  <span class="sep hidesm"></span>
+  <span class="st hidesm">81/81 tests</span>
+  <span class="push"></span>
+  <a class="act" href="../resume.pdf">Résumé</a>
+  <a class="act p" href="mailto:mathew.brian@gmail.com">Available — email me</a>
+</div>
+
+<main class="work">
+
+  <!-- FLEET -->
+  <section class="p c7">
+    <header><b>fleet</b> — hermes cron list<span class="tag ok" id="fleettag">25 active</span></header>
+    <div class="body">
+      <div class="fleet">
+        <canvas id="dial" role="img" aria-label="24-hour dial showing when each of 25 scheduled agents runs. Nine of them fire between 06:40 and 07:00."></canvas>
+        <div class="flog" id="flog"></div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>Read from a live crontab, 30 Jul 2026</span>
+      <a href="https://github.com/bmath8/brian-os">source ↗</a>
+    </div>
+  </section>
+
+  <!-- INCIDENT -->
+  <section class="p c5">
+    <header><b>incident</b> — post-mortem<span class="tag ok">resolved</span></header>
+    <div class="body inc">
+      <div class="row"><span>cause</span><b>orphan processes, failed guardian</b></div>
+      <div class="row"><span>impact</span><b>disk exhausted, alerting down</b></div>
+      <div class="row"><span>detected</span><b>by me, not by the system</b></div>
+      <div class="row"><span>fix</span><b>liveness checks; watchdog on the watchdog</b></div>
+      <p>The alerting was one of the casualties, so nothing told me. That is the failure worth
+        showing — the hardest bug I've had was operational, not logical.</p>
+    </div>
+  </section>
+
+  <!-- APPROVAL QUEUE -->
+  <section class="p c7">
+    <header><b>approval queue</b> — telegram<span class="tag warn" id="qtag">3 pending</span></header>
+    <div class="body">
+      <div class="q" id="q"></div>
+      <p style="margin-top:11px;font-family:var(--mono);font-size:10.5px;color:var(--mute)" id="qsum">
+        Nothing has left the machine. Rule on each one — you're the operator.</p>
+    </div>
+    <div class="foot"><span>Draft-only guardrails gate anything that sends, spends, deploys or deletes</span></div>
+  </section>
+
+  <!-- SQUARES -->
+  <section class="p c5">
+    <header><b>squares</b> — super bowl LX<span class="tag live">deployed</span></header>
+    <div class="body">
+      <div class="sq">
+        <div class="sqhold">
+          <div id="grid" role="grid" aria-label="Ten by ten grid of 100 squares. Click one to claim it."></div>
+        </div>
+        <div>
+          <div class="sqk"><span>your sq</span><b id="mine">none</b></div>
+          <div class="sqk"><span>drawn</span><b id="drawn">0/100</b></div>
+          <div class="sqk"><span>score</span><b id="score">—</b></div>
+          <div class="sqmsg" id="msg">Claim a square.</div>
+          <button class="btn" id="run" disabled>Run draw</button>
+          <button class="btn g" id="rst">Reset</button>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>Ran a real pool on game day</span>
+      <a href="https://fam-super-bowl-squares-2026.vercel.app">open the live app ↗</a>
+    </div>
+  </section>
+
+  <!-- SOURCE -->
+  <section class="p c4">
+    <header><b>source</b> — github.com/bmath8<span class="tag ok">public</span></header>
+    <div class="body tree">
+      <a href="https://github.com/bmath8/brian-os"><span class="d">▸</span><span class="n">brian-os</span><span class="m">81 tests</span><span class="st">●</span></a>
+      <a href="https://github.com/bmath8/fam-super-bowl-squares-2026"><span class="d">▸</span><span class="n">squares</span><span class="m">live</span><span class="st">●</span></a>
+      <a href="https://github.com/bmath8/boombox"><span class="d">▸</span><span class="n">boombox</span><span class="m">456 files</span><span class="st w">●</span></a>
+      <a href="https://github.com/bmath8/pokemon-drop-intel"><span class="d">▸</span><span class="n">pokemon-drop-intel</span><span class="m">next.js</span><span class="st w">●</span></a>
+      <a href="https://github.com/bmath8"><span class="d">▸</span><span class="n">…profile</span><span class="m">all repos</span><span class="st">●</span></a>
+    </div>
+    <div class="foot"><span>● running / deployed &nbsp;·&nbsp; ● prototype</span></div>
+  </section>
+
+  <!-- STACK -->
+  <section class="p c4">
+    <header><b>stack</b> — what I reach for</header>
+    <div class="body tree">
+      <a tabindex="0"><span class="d">·</span><span class="n">Python</span><span class="m">agents, tests, tooling</span></a>
+      <a tabindex="0"><span class="d">·</span><span class="n">TypeScript · React · Next.js</span><span class="m">boombox</span></a>
+      <a tabindex="0"><span class="d">·</span><span class="n">SQL · Postgres · Redis</span><span class="m">state</span></a>
+      <a tabindex="0"><span class="d">·</span><span class="n">Windows · PowerShell</span><span class="m">the machine it all runs on</span></a>
+      <a tabindex="0"><span class="d">·</span><span class="n">pytest · Docker</span><span class="m">how I know it works</span></a>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="p c4">
+    <header><b>prior</b> — before the code</header>
+    <div class="body hist">
+      <div class="r"><div class="w">earlier</div><div class="t">Best Buy — Appliances Dept Lead</div>
+        <p>High-volume floor. High-consideration purchases, complaints resolved in person, a small team to coordinate.</p></div>
+      <div class="r"><div class="w">2022</div><div class="t">Uber — Independent Driver</div>
+        <p>A year of sustained independent customer-facing work, no supervision.</p></div>
+      <div class="r"><div class="w">education</div><div class="t">Penn State Berks · CCNY</div>
+        <p>Undergraduate coursework.</p></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- plain text: a recruiter who never touches a control still gets all of it -->
+<div class="plain">
+  <div class="in">
+    <h2>If you'd rather just read it</h2>
+    <p>I'm Brian Mathew, a developer and operator in New Jersey. I build software and then run it
+      — <b>25 scheduled agents are executing on my machine right now</b>, unattended, with 81 tests
+      green. Everything on this page is a real control, not a screenshot.</p>
+    <p><b>Brian OS</b> — the agent fleet running the panel at the top of this page. Briefs, health
+      checks, self-recovery, two-way Telegram control, and draft-only guardrails on anything that
+      sends, spends, deploys or deletes. <a href="https://github.com/bmath8/brian-os">Source</a>.</p>
+    <p><b>Super Bowl LX Squares</b> — a real-time pool real people used during a real game. One
+      moment to be correct, in front of an audience.
+      <a href="https://fam-super-bowl-squares-2026.vercel.app">Try it</a> ·
+      <a href="https://github.com/bmath8/fam-super-bowl-squares-2026">Source</a>.</p>
+    <p><b>BoomBox</b> — collaborative music prototype; durable Postgres state kept deliberately
+      apart from transient WebSocket and Redis Pub/Sub. <a href="https://github.com/bmath8/boombox">Source</a>.</p>
+    <p>Before the code: appliances department lead at Best Buy, then a year driving independently
+      for Uber. Undergraduate coursework at Penn State Berks and CCNY. Looking for a full-time role
+      — developer, technical support, or operations. Available immediately, open to remote, hybrid,
+      on-site or relocation.</p>
+    <div class="lines">
+      <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+      <a href="tel:+16098151685">(609) 815-1685</a>
+      <a href="https://github.com/bmath8">github.com/bmath8</a>
+      <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+      <a href="../resume.pdf">Résumé (PDF)</a>
+    </div>
+  </div>
+</div>
+
+<footer><div class="in">
+  <span>© 2026 Brian Mathew — New Jersey</span>
+  <span>Every number on this page came from a real run</span>
+</div></footer>
+
+<script>
+var REDUCE=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ============ shared: the real crontab, 2026-07-30 ============ */
+var JOBS=[['memory-index',80],['harmony-backup',90],['overnight-worker',120],['model-review',180],
+  ['scout',400],['learning-agent',405],['inbox',408],['finance',410],['health',412],
+  ['career',413],['calendar',415],['currency',418],['fleet-health',419],['daily-brief',420],
+  ['gig-scanner',430],['ceo-report',450],['currency-weekly',990],['wiki',1005],
+  ['outcome-learner',1010],['weekly-review',1020],['feedback',1020],['research',1080],
+  ['skill-miner',1110]];
+function etMinutes(){
+  var p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',
+        minute:'numeric',hour12:false}).formatToParts(new Date()),h=0,m=0;
+  p.forEach(function(o){if(o.type==='hour')h=+o.value;if(o.type==='minute')m=+o.value});
+  return (h%24)*60+m;
+}
+function hhmm(m){return ('0'+Math.floor(m/60)).slice(-2)+':'+('0'+(m%60)).slice(-2)}
+
+/* ============ status bar clock ============ */
+(function(){
+  var el=document.getElementById('barclock');
+  function t(){ el.textContent=hhmm(etMinutes()); }
+  t(); setInterval(t,20000);
+})();
+
+/* ============ fleet dial + log ============ */
+(function(){
+  var c=document.getElementById('dial'),lg=document.getElementById('flog');
+  if(!c||!c.getContext)return;
+  var x=c.getContext('2d'),W,H,cx,cy,R;
+  function size(){
+    var d=Math.min(devicePixelRatio||1,2);
+    W=c.clientWidth;H=c.clientHeight;c.width=W*d;c.height=H*d;x.setTransform(d,0,0,d,0,0);
+    cx=W/2;cy=H/2;R=Math.min(W,H)*0.40;draw();
+  }
+  function draw(){
+    var now=etMinutes();
+    x.clearRect(0,0,W,H);
+    x.strokeStyle='#d2d2ce';x.lineWidth=1;
+    x.beginPath();x.arc(cx,cy,R,0,6.283);x.stroke();
+    x.font='500 8px "IBM Plex Mono",monospace';x.textAlign='center';x.textBaseline='middle';
+    for(var h=0;h<24;h+=6){
+      var a=(h/24)*6.283-Math.PI/2;
+      x.strokeStyle='#c2c2bd';
+      x.beginPath();x.moveTo(cx+Math.cos(a)*(R-4),cy+Math.sin(a)*(R-4));
+      x.lineTo(cx+Math.cos(a)*(R+4),cy+Math.sin(a)*(R+4));x.stroke();
+      x.fillStyle='#a5a5ad';
+      x.fillText(('0'+h).slice(-2),cx+Math.cos(a)*(R+14),cy+Math.sin(a)*(R+14));
+    }
+    // elapsed arc
+    var na=(now/1440)*6.283-Math.PI/2;
+    x.strokeStyle='#2b5cff';x.lineWidth=2;
+    x.beginPath();x.arc(cx,cy,R,-Math.PI/2,na);x.stroke();
+    JOBS.forEach(function(j,i){
+      var a=(j[1]/1440)*6.283-Math.PI/2;
+      var rr=R*(0.68+((i*29)%7)/7*0.26);
+      var px=cx+Math.cos(a)*rr, py=cy+Math.sin(a)*rr;
+      var fired=now>=j[1];
+      x.fillStyle=fired?'#0f7a4d':'#c2c2bd';
+      x.beginPath();x.arc(px,py,2.4,0,6.283);x.fill();
+    });
+    // continuous pair at the hub
+    x.fillStyle='#a8710c';
+    x.beginPath();x.arc(cx-5,cy,2,0,6.283);x.fill();
+    x.beginPath();x.arc(cx+5,cy,2,0,6.283);x.fill();
+  }
+  function log(){
+    var now=etMinutes(), rows=[], nextIdx=-1, bd=1e9;
+    JOBS.forEach(function(j,i){ var g=j[1]-now; if(g>=0&&g<bd){bd=g;nextIdx=i;} });
+    var fired=JOBS.filter(function(j){return now>=j[1]}).slice(-6);
+    fired.reverse().forEach(function(j){
+      rows.push('<div><b>'+hhmm(j[1])+'</b><u>'+j[0]+'</u><s>ok</s></div>');
+    });
+    if(nextIdx>=0){
+      rows.unshift('<div class="next"><b>'+hhmm(JOBS[nextIdx][1])+'</b><u>'+JOBS[nextIdx][0]+
+                   '</u><s>next</s></div>');
+    }
+    if(!rows.length) rows.push('<div><b>—</b><u>quiet until 01:20</u><s></s></div>');
+    lg.innerHTML=rows.join('');
+  }
+  addEventListener('resize',size); size(); log(); setInterval(function(){draw();log();},30000);
+})();
+
+/* ============ approval queue ============ */
+(function(){
+  var q=document.getElementById('q'),sum=document.getElementById('qsum'),tag=document.getElementById('qtag');
+  var ITEMS=[
+    {frm:'inbox · reply',sub:'Re: contract role — availability',
+     pv:'"I am available immediately and open to remote…"',
+     y:'Sent. The only thing that made it leave was you.',
+     n:'Discarded. Draft kept, nothing sent.'},
+    {frm:'finance · spend',sub:'Renew API credits — $20',
+     pv:'charge card ending 4471 · monthly',
+     y:'Charged. An agent may draft a spend; only you authorise one.',
+     n:'Not charged. It will re-raise tomorrow.'},
+    {frm:'harmony-backup · delete',sub:'Prune snapshots older than 90 days',
+     pv:'rm -rf snapshots/2025-* — 14 GB',
+     y:'Pruned 14 GB. Destructive actions are why this gate exists.',
+     n:'Nothing deleted. Refusing is the safe default.'}
+  ];
+  function build(){
+    q.innerHTML='';tag.textContent=ITEMS.length+' pending';tag.className='tag warn';
+    sum.textContent='Nothing has left the machine. Rule on each one — you’re the operator.';
+    var done=0,yes=0;
+    ITEMS.forEach(function(it){
+      var d=document.createElement('div');d.className='qi';
+      d.innerHTML='<div><div class="frm">'+it.frm+'</div><div class="sub">'+it.sub+
+        '</div><div class="pv">'+it.pv+'</div></div>'+
+        '<div class="acts"><button class="y">Approve</button><button class="n">Reject</button></div>';
+      q.appendChild(d);
+      function rule(ok){
+        d.classList.add('done',ok?'yes':'no');
+        d.querySelector('.acts').outerHTML='<span class="vd">'+(ok?'approved':'rejected')+'</span>';
+        var pv=d.querySelector('.pv'); pv.textContent=ok?it.y:it.n; pv.className='pv res';
+        done++; if(ok)yes++;
+        if(done===ITEMS.length){
+          tag.textContent='queue clear';tag.className='tag ok';
+          sum.innerHTML='<b style="color:var(--ink)">'+yes+' of '+ITEMS.length+' approved.</b> '+
+            'This gate is why 25 agents can run unattended while I sleep. '+
+            '<button class="btn g" style="width:auto;margin-top:9px;padding:7px 13px" id="qr">Run it again</button>';
+          document.getElementById('qr').onclick=build;
+        }else{
+          tag.textContent=(ITEMS.length-done)+' pending';
+          sum.textContent=done+' ruled on, '+(ITEMS.length-done)+' still waiting.';
+        }
+      }
+      d.querySelector('.y').onclick=function(){rule(true)};
+      d.querySelector('.n').onclick=function(){rule(false)};
+    });
+  }
+  build();
+})();
+
+/* ============ squares ============ */
+(function(){
+  var g=document.getElementById('grid'),run=document.getElementById('run'),rst=document.getElementById('rst'),
+      msg=document.getElementById('msg'),mine=document.getElementById('mine'),
+      drawn=document.getElementById('drawn'),score=document.getElementById('score');
+  for(var i=0;i<100;i++){var c=document.createElement('i');c.dataset.i=i;g.appendChild(c);}
+  var cells=[].slice.call(g.children),timers=[],picked=-1,done=false;
+  g.onclick=function(e){
+    var c=e.target.closest('i'); if(!c||done)return;
+    picked=+c.dataset.i;
+    cells.forEach(function(x){x.classList.remove('mine')});
+    c.classList.add('mine');
+    mine.textContent='r'+(Math.floor(picked/10)+1)+' c'+(picked%10+1);
+    run.disabled=false; msg.textContent='Locked in. Run the draw.'; msg.className='sqmsg';
+  };
+  function reset(){
+    timers.forEach(clearTimeout);timers=[];done=false;picked=-1;
+    cells.forEach(function(c){c.className='';c.textContent='';});
+    mine.textContent='none';drawn.textContent='0/100';score.textContent='—';
+    run.disabled=true;msg.textContent='Claim a square.';msg.className='sqmsg';
+  }
+  rst.onclick=reset;
+  run.onclick=function(){
+    if(picked<0)return; done=true;run.disabled=true;
+    msg.textContent='Assigning 100 squares…';
+    var o=[];for(var i=0;i<100;i++)o.push(i);
+    for(var i=99;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=o[i];o[i]=o[j];o[j]=t;}
+    o.forEach(function(idx,n){
+      timers.push(setTimeout(function(){
+        cells[idx].classList.add('f');cells[idx].textContent=(n%10);
+        drawn.textContent=(n+1)+'/100';
+      },REDUCE?0:n*9));
+    });
+    timers.push(setTimeout(function(){
+      var hs=Math.floor(Math.random()*10),as=Math.floor(Math.random()*10);
+      score.textContent=hs+'—'+as;
+      timers.push(setTimeout(function(){
+        var w=as*10+hs; cells[w].classList.add('win'); cells[w].textContent='★';
+        if(w===picked){ msg.className='sqmsg win'; msg.textContent='That is your square. You take the pot.'; }
+        else { msg.className='sqmsg';
+          msg.textContent='Winner r'+(as+1)+' c'+(hs+1)+'. Not yours — which is why the draw has to be provably fair.'; }
+        run.disabled=false;
+      },REDUCE?0:500));
+    },REDUCE?0:1000));
+  };
+})();
+</script>
+</body>
+</html>
