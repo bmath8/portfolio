@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#0f1719"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#5c6f74" stroke-width="1.6"/>
+  <!-- the morning cluster: where most of the fleet actually fires -->
+  <circle cx="48.2" cy="29.5" r="3.9" fill="#17a97c"/>
+  <circle cx="45.8" cy="37.5" r="2.3" fill="#7d9a95"/>
+  <circle cx="41.5" cy="43.6" r="2.3" fill="#7d9a95"/>
+  <circle cx="32" cy="13" r="2.3" fill="#7d9a95"/>
+  <circle cx="17.5" cy="26" r="2.3" fill="#7d9a95"/>
+  <circle cx="19.6" cy="41" r="2.3" fill="#7d9a95"/>
+</svg>

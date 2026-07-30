@@ -3,127 +3,165 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Brian Mathew — Customer-Focused Technical Builder</title>
-<meta name="description" content="Brian Mathew builds and operates working software systems — an AI job-search platform, a Windows automation fleet, and a real-time music prototype. New Jersey. Open to remote, hybrid, on-site, and relocation." />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<title>Brian Mathew — I build and operate working systems</title>
+<meta name="description" content="Brian Mathew builds and operates working software: a 25-agent Windows automation fleet with 81 passing tests, a real-time collaborative music prototype, and a live squares app that ran a real event. New Jersey — open to remote, hybrid, on-site, relocation." />
+<link rel="canonical" href="https://bmath8.vercel.app/" />
+
+<!-- Open Graph / link preview. Without these the link unfurls as a bare URL in
+     LinkedIn, email and DMs -- which is where most of these links get pasted. -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://bmath8.vercel.app/" />
+<meta property="og:title" content="Brian Mathew — I build and operate working systems" />
+<meta property="og:description" content="25 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
+<meta property="og:image" content="https://bmath8.vercel.app/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Brian Mathew — I build and operate working systems. 25 agents live, 81 tests green, 3 systems shipped." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Brian Mathew — I build and operate working systems" />
+<meta name="twitter:description" content="25 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
+<meta name="twitter:image" content="https://bmath8.vercel.app/og.png" />
+<meta name="theme-color" content="#eef1f0" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+<!-- Fonts are self-hosted (latin subset only, ~160KB total). No third-party request,
+     nothing blocking on fonts.googleapis.com, no dependency on Google being up. -->
+<link rel="stylesheet" href="vendor/fonts.css" />
 <style>
 :root{
-  --paper:#f4f2ed; --paper2:#eceae3; --ink:#1a1a1e; --body:#2e2e33; --mute:#6b6b72;
-  --line:#d8d4cc; --line2:#c2beb4; --accent:#a54b2a; --accent-deep:#7e3419;
-  --sans:"IBM Plex Sans",sans-serif; --mono:"IBM Plex Mono",monospace; --serif:"IBM Plex Serif",serif;
-  --max:1060px;
+  /* Instrument palette. Deliberately NOT the warm-cream + serif + terracotta
+     combination this site used to wear -- that is the single most common
+     AI-generated portfolio look. Cool paper, graphite ink, one operational
+     green that the content actually earns. */
+  --paper:#eceff0; --paper2:#e2e7e7; --surface:#fafcfc;
+  --ink:#0f1719; --body:#38464b; --mute:#75858a;
+  --line:#d4dcdc; --line2:#b9c5c5;
+  --ok:#0c6b51; --ok-deep:#08503c; --ok-soft:#e2efea;
+  --warn:#8a5a12;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --max:1100px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--paper);color:var(--body);font-family:var(--sans);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased;position:relative}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;z-index:1;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E")}
-::selection{background:var(--accent);color:#fff}
+body{background:var(--paper);color:var(--body);font-family:var(--sans);line-height:1.62;font-size:16px;-webkit-font-smoothing:antialiased}
+::selection{background:var(--ok);color:#fff}
 a{color:inherit}
-a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.wrap{max-width:var(--max);margin:0 auto;padding:0 24px;position:relative;z-index:2}
-.k{font-family:var(--mono);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
-.k b{color:var(--accent);font-weight:500}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ok);outline-offset:3px;border-radius:1px}
+img,canvas{max-width:100%}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.k{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.k b{color:var(--ok);font-weight:500}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* ---------- nav ---------- */
-nav{position:sticky;top:0;z-index:50;background:rgba(244,242,237,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:baseline;gap:28px;padding-top:16px;padding-bottom:16px}
-nav .nm{font-family:var(--mono);font-size:.74rem;letter-spacing:.18em;color:var(--ink);font-weight:500;text-decoration:none;margin-right:auto}
-nav .nm i{font-style:normal;color:var(--accent)}
-nav a.lnk{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);text-decoration:none;transition:color .15s}
-nav a.lnk:hover{color:var(--accent-deep)}
-nav a.cta{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:var(--ink);padding:8px 14px;text-decoration:none;transition:background .15s}
-nav a.cta:hover{background:var(--accent-deep)}
-@media(max-width:720px){nav a.lnk{display:none}}
+nav{position:sticky;top:0;z-index:50;background:rgba(236,239,240,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:26px;padding-top:14px;padding-bottom:14px}
+nav .nm{font-family:var(--mono);font-size:.74rem;letter-spacing:.16em;color:var(--ink);font-weight:500;text-decoration:none;margin-right:auto}
+nav .nm i{font-style:normal;color:var(--ok)}
+nav a.lnk{font-family:var(--mono);font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:var(--mute);text-decoration:none;transition:color .15s}
+nav a.lnk:hover{color:var(--ok-deep)}
+nav a.cta{font-family:var(--mono);font-size:.63rem;letter-spacing:.15em;text-transform:uppercase;color:#fff;background:var(--ink);padding:8px 14px;text-decoration:none;transition:background .15s;border-radius:2px}
+nav a.cta:hover{background:var(--ok-deep)}
+@media(max-width:760px){nav a.lnk{display:none}}
 
 /* ---------- hero ---------- */
-header{padding:clamp(64px,11vh,120px) 0 clamp(44px,7vh,72px);border-bottom:1px solid var(--line)}
-header .k{display:block;margin-bottom:26px}
-h1{font-family:var(--sans);font-weight:600;font-size:clamp(2.6rem,7vw,4.8rem);line-height:1.04;letter-spacing:-.022em;color:var(--ink);max-width:20ch}
-h1 em{font-family:var(--serif);font-weight:400;font-style:italic;color:var(--accent);letter-spacing:0}
-header .sub{margin-top:28px;max-width:58ch;font-size:1.06rem;color:var(--body)}
+header{padding:clamp(46px,8vh,84px) 0 clamp(38px,6vh,64px);border-bottom:1px solid var(--line)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:clamp(28px,4vw,56px);align-items:start}
+@media(max-width:900px){.hero{grid-template-columns:1fr}}
+header .k{display:block;margin-bottom:20px}
+h1{font-family:var(--sans);font-weight:600;font-size:clamp(2.3rem,5.4vw,3.7rem);line-height:1.06;letter-spacing:-.025em;color:var(--ink);max-width:17ch}
+h1 u{text-decoration:none;color:var(--ok);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px;text-decoration-color:rgba(12,107,81,.32)}
+header .sub{margin-top:22px;max-width:54ch;font-size:1.04rem;color:var(--body)}
 header .sub b{color:var(--ink);font-weight:600}
-.hero-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
-.hero-links a{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:11px 18px;border:1px solid var(--line2);color:var(--ink);transition:.18s;background:transparent}
-.hero-links a:hover{border-color:var(--accent);color:var(--accent-deep);transform:translateY(-2px)}
-.hero-links a.solid{background:var(--accent);border-color:var(--accent);color:#fff}
-.hero-links a.solid:hover{background:var(--accent-deep);border-color:var(--accent-deep);color:#fff}
-.hero-meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:44px;padding-top:20px;border-top:1px dashed var(--line2)}
-.hero-meta div{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;color:var(--mute)}
-.hero-meta div b{display:block;color:var(--ink);font-family:var(--sans);font-size:.92rem;font-weight:600;letter-spacing:0;margin-top:3px}
+.hero-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero-links a{font-family:var(--mono);font-size:.67rem;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;padding:10px 16px;border:1px solid var(--line2);color:var(--ink);transition:.16s;background:var(--surface);border-radius:2px}
+.hero-links a:hover{border-color:var(--ok);color:var(--ok-deep)}
+.hero-links a.solid{background:var(--ok);border-color:var(--ok);color:#fff}
+.hero-links a.solid:hover{background:var(--ok-deep);border-color:var(--ok-deep);color:#fff}
+.hero-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:18px 24px;margin-top:32px;padding-top:18px;border-top:1px solid var(--line)}
+.hero-meta div{font-family:var(--mono);font-size:.62rem;letter-spacing:.11em;color:var(--mute);text-transform:uppercase}
+.hero-meta div b{display:block;color:var(--ink);font-family:var(--sans);font-size:.9rem;font-weight:600;letter-spacing:0;margin-top:3px;text-transform:none}
 
-/* ---------- section scaffolding ---------- */
-section{padding:clamp(56px,9vh,96px) 0;border-bottom:1px solid var(--line)}
-.shead{display:flex;align-items:baseline;gap:18px;margin-bottom:42px}
-.shead .no{font-family:var(--mono);font-size:.8rem;color:var(--accent);letter-spacing:.1em}
-.shead h2{font-family:var(--sans);font-weight:600;font-size:clamp(1.35rem,3vw,1.9rem);letter-spacing:-.01em;color:var(--ink);text-transform:uppercase}
-.shead::after{content:"";flex:1;height:1px;background:var(--line);transform:translateY(-6px)}
+/* ---------- the fleet dial ---------- */
+.fleet{border:1px solid var(--line2);background:var(--surface);border-radius:3px;overflow:hidden}
+.fleet .fh{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none;box-shadow:0 0 0 3px var(--ok-soft)}
+.fleet .fh b{margin-left:auto;color:var(--ok);font-weight:500;letter-spacing:.12em}
+#dial{display:block;width:100%;height:296px}
+.fleet .fr{display:flex;justify-content:space-between;gap:12px;padding:8px 14px;border-top:1px solid var(--line);font-size:.8rem}
+.fleet .fr span{font-family:var(--mono);font-size:.63rem;letter-spacing:.11em;text-transform:uppercase;color:var(--mute);padding-top:2px}
+.fleet .fr b{color:var(--ink);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.fleet .cap{padding:10px 14px 13px;border-top:1px solid var(--line);font-size:.72rem;color:var(--mute);line-height:1.5}
+
+/* ---------- sections ---------- */
+section{padding:clamp(48px,7vh,84px) 0;border-bottom:1px solid var(--line)}
+.shead{display:flex;align-items:baseline;gap:16px;margin-bottom:34px}
+.shead .no{font-family:var(--mono);font-size:.78rem;color:var(--ok);letter-spacing:.1em}
+.shead h2{font-family:var(--sans);font-weight:600;font-size:clamp(1.25rem,2.7vw,1.7rem);letter-spacing:.01em;color:var(--ink);text-transform:uppercase}
+.shead::after{content:"";flex:1;height:1px;background:var(--line);transform:translateY(-5px)}
 
 /* ---------- case studies ---------- */
-.case{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,56px);padding:38px 0}
-.case + .case{border-top:1px dashed var(--line2)}
-@media(max-width:820px){.case{grid-template-columns:1fr}}
-.case .cno{font-family:var(--mono);font-size:.66rem;color:var(--accent);letter-spacing:.2em}
-.case h3{font-family:var(--sans);font-weight:600;font-size:1.5rem;color:var(--ink);letter-spacing:-.012em;margin-top:8px}
-.case h3 span{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--mute);font-size:1.12rem;margin-left:6px}
-.case .outcome{margin-top:14px;font-size:1rem}
+.case{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(22px,3.6vw,50px);padding:34px 0}
+.case + .case{border-top:1px solid var(--line)}
+@media(max-width:860px){.case{grid-template-columns:1fr}}
+.case .cno{font-family:var(--mono);font-size:.64rem;color:var(--ok);letter-spacing:.19em}
+.case h3{font-family:var(--sans);font-weight:600;font-size:1.42rem;color:var(--ink);letter-spacing:-.014em;margin-top:7px}
+.case h3 span{display:block;font-weight:400;color:var(--mute);font-size:.94rem;letter-spacing:0;margin-top:3px}
+.case .outcome{margin-top:13px;font-size:1rem}
 .case .outcome b{color:var(--ink)}
-.case dl{margin-top:20px}
-.case dt{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-top:16px}
-.case dd{margin-top:5px;font-size:.93rem;color:var(--body)}
+.case dl{margin-top:18px}
+.case dt{font-family:var(--mono);font-size:.59rem;letter-spacing:.19em;text-transform:uppercase;color:var(--ok);margin-top:15px}
+.case dd{margin-top:5px;font-size:.92rem;color:var(--body)}
 .case ul{list-style:none;margin-top:5px}
-.case ul li{position:relative;padding-left:20px;margin-top:7px;font-size:.93rem}
-.case ul li::before{content:"–";position:absolute;left:0;color:var(--accent)}
-.panel{align-self:start;border:1px solid var(--line2);background:#fbfaf6;padding:22px 22px 18px;position:relative}
-.panel::before{content:"";position:absolute;top:8px;left:8px;right:-8px;bottom:-8px;border:1px solid var(--line);z-index:-1}
-.panel .pk{font-family:var(--mono);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
-.panel .row{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px dotted var(--line);font-size:.82rem}
-.panel .row:last-of-type{border-bottom:none}
-.panel .row span{font-family:var(--mono);font-size:.68rem;color:var(--mute);white-space:nowrap;padding-top:2px}
+.case ul li{position:relative;padding-left:18px;margin-top:7px;font-size:.92rem}
+.case ul li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:1px;background:var(--ok)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:15px}
+.tags i{font-style:normal;font-family:var(--mono);font-size:.59rem;letter-spacing:.07em;color:var(--body);border:1px solid var(--line2);padding:4px 8px;background:var(--paper2);border-radius:2px}
+.golinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.golinks a{font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;padding:8px 13px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);border-radius:2px;transition:.16s}
+.golinks a:hover{border-color:var(--ok);color:var(--ok-deep)}
+.golinks a.live{background:var(--ok);border-color:var(--ok);color:#fff}
+.golinks a.live:hover{background:var(--ok-deep);border-color:var(--ok-deep);color:#fff}
+.panel{align-self:start;border:1px solid var(--line2);background:var(--surface);border-radius:3px;overflow:hidden}
+.panel .pk{display:block;padding:10px 15px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.57rem;letter-spacing:.21em;text-transform:uppercase;color:var(--mute)}
+.panel .row{display:flex;justify-content:space-between;gap:13px;padding:9px 15px;border-bottom:1px solid var(--line);font-size:.81rem}
+.panel .row span{font-family:var(--mono);font-size:.62rem;letter-spacing:.11em;text-transform:uppercase;color:var(--mute);white-space:nowrap;padding-top:2px}
 .panel .row b{color:var(--ink);font-weight:600;text-align:right}
-.panel .status{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:.8rem;color:var(--mute);font-style:italic;font-family:var(--serif)}
-.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
-.tags i{font-style:normal;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;color:var(--body);border:1px solid var(--line2);padding:4px 9px;background:var(--paper)}
+.panel .status{padding:11px 15px 13px;font-size:.79rem;color:var(--mute);line-height:1.5}
+.panel .status i{font-style:normal;color:var(--warn);font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase}
+.panel .status i.on{color:var(--ok)}
 
 /* ---------- capabilities ---------- */
-.caps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-@media(max-width:820px){.caps{grid-template-columns:1fr}}
-.cap{border:1px solid var(--line2);background:#fbfaf6;padding:24px}
-.cap .k{display:block;margin-bottom:14px}
+.caps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:860px){.caps{grid-template-columns:1fr}}
+.cap{border:1px solid var(--line2);background:var(--surface);padding:22px;border-radius:3px}
+.cap .k{display:block;margin-bottom:12px}
 .cap ul{list-style:none}
-.cap li{padding:8px 0;border-bottom:1px dotted var(--line);font-size:.9rem;color:var(--body)}
+.cap li{padding:7px 0;border-bottom:1px solid var(--line);font-size:.89rem;color:var(--body)}
 .cap li:last-child{border-bottom:none}
 
 /* ---------- experience ---------- */
-.xp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
-@media(max-width:820px){.xp{grid-template-columns:1fr}}
-.xrow{border:1px solid var(--line2);background:#fbfaf6;padding:24px}
-.xrow .when{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
-.xrow h3{font-family:var(--sans);font-weight:600;font-size:1.08rem;color:var(--ink);margin-top:6px}
+.xp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(max-width:860px){.xp{grid-template-columns:1fr}}
+.xrow{border:1px solid var(--line2);background:var(--surface);padding:22px;border-radius:3px}
+.xrow .when{font-family:var(--mono);font-size:.61rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ok)}
+.xrow h3{font-family:var(--sans);font-weight:600;font-size:1.05rem;color:var(--ink);margin-top:6px}
 .xrow h3 span{font-weight:400;color:var(--mute)}
-.xrow p{font-size:.9rem;margin-top:8px}
-.edu{margin-top:16px;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--mute);line-height:2}
-.edu b{color:var(--body);font-family:var(--sans);font-size:.88rem;letter-spacing:0;font-weight:600}
+.xrow p{font-size:.89rem;margin-top:8px}
+.edu{margin-top:14px;font-family:var(--mono);font-size:.66rem;letter-spacing:.07em;color:var(--mute);line-height:2}
+.edu b{color:var(--body);font-family:var(--sans);font-size:.87rem;letter-spacing:0;font-weight:600}
 
 /* ---------- contact ---------- */
-#contact{border-bottom:none;text-align:left}
-#contact h2.big{font-family:var(--sans);font-weight:600;font-size:clamp(1.9rem,5vw,3.2rem);letter-spacing:-.02em;color:var(--ink);max-width:24ch;line-height:1.15;text-transform:none}
-#contact h2.big em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
-#contact .sub{margin-top:18px;max-width:52ch}
-footer{border-top:1px solid var(--line);padding:22px 0 34px}
-footer .wrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+#contact{border-bottom:none}
+#contact h2.big{font-family:var(--sans);font-weight:600;font-size:clamp(1.7rem,4.2vw,2.8rem);letter-spacing:-.022em;color:var(--ink);max-width:22ch;line-height:1.14;text-transform:none}
+#contact h2.big u{text-decoration:none;color:var(--ok);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px;text-decoration-color:rgba(12,107,81,.32)}
+#contact .sub{margin-top:16px;max-width:52ch}
+footer{border-top:1px solid var(--line);padding:20px 0 32px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-family:var(--mono);font-size:.59rem;letter-spacing:.13em;text-transform:uppercase;color:var(--mute)}
 
-/* ---------- reveal ---------- */
-.rv{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
-.rv.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
-<!-- Reveal-on-scroll starts every section at opacity:0 and relies on JS to reveal it.
-     Without this fallback, a blocked/failed script renders the whole page blank -- and
-     link-preview crawlers that don't execute JS see nothing at all. -->
-<noscript><style>.rv{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
 
@@ -139,113 +177,138 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;
 </nav>
 
 <header id="top">
-  <div class="wrap">
-    <span class="k rv">NEW JERSEY <b>•</b> OPEN TO REMOTE / HYBRID / ON-SITE / RELOCATION</span>
-    <h1 class="rv">I build working systems —<br>then I <em>keep them running.</em></h1>
-    <p class="sub rv">Customer-focused technical builder. Years of retail sales leadership and independent customer-facing work, plus recent hands-on software built from scratch: <b>an AI job-search platform, a Windows automation fleet, and a real-time music prototype</b> — designed, tested, documented, and operated by me.</p>
-    <div class="hero-links rv">
-      <a class="solid" href="mailto:mathew.brian@gmail.com">Email me</a>
-      <a href="https://github.com/bmath8" rel="me">github.com/bmath8</a>
-      <a href="https://linkedin.com/in/brian-mathew-66235556" rel="me">LinkedIn</a>
-      <a href="resume.pdf">Download resume</a>
+  <div class="wrap hero">
+    <div>
+      <span class="k">NEW JERSEY <b>•</b> OPEN TO REMOTE / HYBRID / ON-SITE / RELOCATION</span>
+      <h1>I build working systems — then I <u>keep them running.</u></h1>
+      <p class="sub">Developer and operator. I write software, test it, document it, and then run it in production for the most demanding user I have — myself. <b>25 scheduled agents are executing on my machine right now</b>, and everything below is code you can read.</p>
+      <div class="hero-links">
+        <a class="solid" href="mailto:mathew.brian@gmail.com">Email me</a>
+        <a href="https://github.com/bmath8" rel="me">github.com/bmath8</a>
+        <a href="https://linkedin.com/in/brian-mathew-66235556" rel="me">LinkedIn</a>
+        <a href="resume.pdf">Download resume</a>
+      </div>
+      <div class="hero-meta">
+        <div>Approach<b>Build → test → document → operate</b></div>
+        <div>Stack<b>Python · SQL · TypeScript · React · Windows</b></div>
+        <div>Phone<b>(609) 815-1685</b></div>
+      </div>
     </div>
-    <div class="hero-meta rv">
-      <div>PROJECTS<b>3 working systems</b></div>
-      <div>APPROACH<b>Build → test → document → operate</b></div>
-      <div>STACK<b>Python · Flask · SQL · TypeScript · Windows</b></div>
-      <div>PHONE<b>(609) 815-1685</b></div>
-    </div>
+
+    <!-- The fleet dial. Every node is a real scheduled job read out of my actual
+         crontab; the ring is a 24-hour clock, so the cluster at 06:40-07:10 is the
+         morning stack genuinely firing back to back. Numbers below are static text,
+         so this panel still says something useful with JavaScript disabled. -->
+    <aside class="fleet">
+      <div class="fh"><span class="dot" aria-hidden="true"></span> My fleet <b id="clock">live</b></div>
+      <canvas id="dial" role="img" aria-label="A 24-hour dial plotting all 25 scheduled agents by the hour they run. Most cluster between 6:40 and 7:10 in the morning."></canvas>
+      <div class="fr"><span>Scheduled agents</span><b>25</b></div>
+      <div class="fr"><span>Tests passing</span><b>81 / 81</b></div>
+      <div class="fr"><span>Next to fire</span><b id="next">—</b></div>
+      <p class="cap">Read from my live crontab on 30 Jul 2026. Test count verified by a full
+        <span style="font-family:var(--mono);font-size:.68rem">pytest</span> run the same day. Source is public — see Case 01.</p>
+    </aside>
   </div>
 </header>
 
 <section id="work">
   <div class="wrap">
-    <div class="shead rv"><span class="no">01</span><h2>Selected Work</h2></div>
-
-    <!-- AI Job Hunter -->
-    <article class="case rv">
-      <div>
-        <span class="cno">CASE 01 — 2026–PRESENT</span>
-        <h3>AI Job Hunter <span>truth-constrained application workflow</span></h3>
-        <p class="outcome"><b>A job-search platform that tailors resumes and cover letters without ever inventing a fact.</b> It turns a job posting and a base resume into review-ready application materials, scores keyword gaps, and tracks every application.</p>
-        <dl>
-          <dt>My role</dt>
-          <dd>Sole builder — architecture, code, testing, and documentation.</dd>
-          <dt>Problem &amp; decisions</dt>
-          <dd>
-            <ul>
-              <li>AI tailoring tools drift into fabrication, so every generated claim is validated against the verified base resume before it can appear in output.</li>
-              <li>Generation, job-match analysis, validation, and application tracking are separated into independent components, so failures can be isolated and tested one stage at a time.</li>
-              <li>Built with Flask and SQLAlchemy with provider-agnostic AI integrations, plus Docker and Render deployment configuration.</li>
-            </ul>
-          </dd>
-        </dl>
-        <div class="tags"><i>Python</i><i>Flask</i><i>SQLAlchemy</i><i>APIs</i><i>Docker</i></div>
-      </div>
-      <aside class="panel">
-        <span class="pk">Verification</span>
-        <div class="row"><span>TESTS</span><b>80 passed, 1 skipped (local run)</b></div>
-        <div class="row"><span>SMOKE</span><b>Landing, login &amp; application routes</b></div>
-        <div class="row"><span>REPO</span><b>Active since Feb 2026</b></div>
-        <p class="status">Status: in active development. Tailoring and tracking work locally; automated submission remains experimental. Not yet publicly hosted.</p>
-      </aside>
-    </article>
+    <div class="shead"><span class="no">01</span><h2>Selected Work</h2></div>
 
     <!-- Brian OS -->
-    <article class="case rv">
+    <article class="case">
       <div>
-        <span class="cno">CASE 02 — 2026–PRESENT</span>
-        <h3>Brian OS <span>Windows automation &amp; operational recovery</span></h3>
-        <p class="outcome"><b>An always-on Windows assistant fleet that runs my day.</b> Scheduled agents prepare briefs, watch system health, accept two-way commands over Telegram, and require my approval before any external action.</p>
+        <span class="cno">CASE 01 — 2026–PRESENT</span>
+        <h3>Brian OS <span>Windows agent fleet &amp; operational recovery</span></h3>
+        <p class="outcome"><b>An always-on fleet of 25 scheduled agents that runs my day.</b> They prepare briefs, watch system health, take two-way commands over Telegram, and require my approval before anything leaves the machine.</p>
         <dl>
           <dt>My role</dt>
           <dd>Sole builder and operator — I run this system on my own machine every day.</dd>
           <dt>Problem &amp; decisions</dt>
           <dd>
             <ul>
-              <li>The hardest bug was operational: a failed process guardian silently left orphan processes that exhausted disk space. I traced the cause, recovered the machine, restored monitoring, and added liveness checks designed to prevent recurrence.</li>
-              <li>Actions that send, spend, deploy, or delete are draft-only until approved — guardrails are part of the architecture, not an afterthought.</li>
-              <li>Runs local AI models via Ollama with structured shared state and automated health checks.</li>
+              <li>The hardest bug was operational, not logical: a failed process guardian silently left orphan processes that exhausted the disk. I traced the cause, recovered the machine, restored monitoring, and added liveness checks to prevent recurrence.</li>
+              <li>Anything that sends, spends, deploys, or deletes is draft-only until I approve it — the guardrails are architecture, not an afterthought.</li>
+              <li>Runs local models through Ollama against structured shared state, with automated health checks and a self-restarting watchdog.</li>
             </ul>
           </dd>
         </dl>
-        <div class="tags"><i>Python</i><i>Windows</i><i>PowerShell</i><i>Ollama</i><i>Telegram API</i></div>
+        <div class="tags"><i>Python</i><i>Windows</i><i>PowerShell</i><i>Ollama</i><i>Telegram API</i><i>pytest</i></div>
+        <div class="golinks">
+          <a href="https://github.com/bmath8/brian-os">Read the code</a>
+        </div>
       </div>
       <aside class="panel">
         <span class="pk">Verification</span>
-        <div class="row"><span>JOBS</span><b>25 scheduled agents</b></div>
-        <div class="row"><span>TESTS</span><b>81 / 81 passing (local run)</b></div>
-        <div class="row"><span>REPO</span><b>Active since Jun 2026</b></div>
-        <p class="status">Status: running daily. A personal system built for one demanding user — me.</p>
+        <div class="row"><span>Agents</span><b>25 scheduled</b></div>
+        <div class="row"><span>Tests</span><b>81 passed, 0 failed</b></div>
+        <div class="row"><span>Verified</span><b>30 Jul 2026</b></div>
+        <p class="status"><i class="on">● Running daily</i><br>A personal system built for one demanding user. The dial at the top of this page is drawn from its real schedule.</p>
+      </aside>
+    </article>
+
+    <!-- Super Bowl Squares -->
+    <article class="case">
+      <div>
+        <span class="cno">CASE 02 — 2026</span>
+        <h3>Super Bowl LX Squares <span>real-time web app that ran a live event</span></h3>
+        <p class="outcome"><b>A squares pool that real people used during a real game.</b> 100 squares, live random draw, and score-driven winner resolution updating for everyone at once while the game was actually on.</p>
+        <dl>
+          <dt>My role</dt>
+          <dd>Sole builder — and the person on the hook when it had to work in front of an audience, live, with no second chance.</dd>
+          <dt>Problem &amp; decisions</dt>
+          <dd>
+            <ul>
+              <li>An event app has exactly one moment to be correct. The draw had to be verifiably fair and identical for every viewer, so state is resolved centrally and pushed out rather than computed per client.</li>
+              <li>Deployed as a static front end with no build step — the fewer moving parts on game day, the fewer ways it fails.</li>
+              <li>The whole thing is one readable page. It shipped, it ran, and it is still up.</li>
+            </ul>
+          </dd>
+        </dl>
+        <div class="tags"><i>JavaScript</i><i>Firebase</i><i>Realtime state</i><i>Vercel</i></div>
+        <div class="golinks">
+          <a class="live" href="https://fam-super-bowl-squares-2026.vercel.app">Open the live app ↗</a>
+          <a href="https://github.com/bmath8/fam-super-bowl-squares-2026">Read the code</a>
+        </div>
+      </div>
+      <aside class="panel">
+        <span class="pk">Verification</span>
+        <div class="row"><span>Status</span><b>Live &amp; publicly usable</b></div>
+        <div class="row"><span>Ran</span><b>A real Super Bowl LX pool</b></div>
+        <div class="row"><span>Squares</span><b>100, live draw</b></div>
+        <p class="status"><i class="on">● Deployed</i><br>Click it. It is the same app that ran on game day, not a screenshot.</p>
       </aside>
     </article>
 
     <!-- BoomBox -->
-    <article class="case rv">
+    <article class="case">
       <div>
         <span class="cno">CASE 03 — 2025–PRESENT</span>
         <h3>BoomBox <span>real-time collaborative music prototype</span></h3>
-        <p class="outcome"><b>A social music app prototype where friends share queues and listen together.</b> Collaborative playlists, live room activity, and synchronized listening features built across a full modern stack.</p>
+        <p class="outcome"><b>A social music app where friends share a queue and listen together.</b> Collaborative playlists, live room activity, and synchronized playback across a full modern stack.</p>
         <dl>
           <dt>My role</dt>
           <dd>Sole builder — frontend, real-time backend, and data architecture.</dd>
           <dt>Problem &amp; decisions</dt>
           <dd>
             <ul>
-              <li>Live rooms and saved data have different failure modes, so durable PostgreSQL data is kept separate from transient WebSocket and Redis Pub/Sub state — saved product data and live interactions have clear responsibilities.</li>
-              <li>TypeScript frontend with Next.js, React, Tailwind, Supabase, and Spotify integration.</li>
-              <li>Repository includes testing tooling, Docker Compose, monitoring, health-check, and security architecture.</li>
+              <li>Live rooms and saved data fail in completely different ways, so durable PostgreSQL data is kept separate from transient WebSocket and Redis Pub/Sub state. Each layer has one clear responsibility.</li>
+              <li>TypeScript throughout — Next.js, React, and Tailwind on the front, a Node WebSocket service behind it.</li>
+              <li>Ships with Jest and React Testing Library, Docker Compose, health checks, and documented security architecture.</li>
             </ul>
           </dd>
         </dl>
         <div class="tags"><i>TypeScript</i><i>Next.js</i><i>React</i><i>PostgreSQL</i><i>WebSockets</i><i>Redis</i></div>
+        <div class="golinks">
+          <a href="https://github.com/bmath8/boombox">Read the code</a>
+        </div>
       </div>
       <aside class="panel">
         <span class="pk">Verification</span>
-        <div class="row"><span>REPO</span><b>Active since Dec 2025</b></div>
-        <div class="row"><span>TOOLING</span><b>Jest · RTL · Docker Compose</b></div>
-        <div class="row"><span>REALTIME</span><b>Node WebSockets + Redis Pub/Sub</b></div>
-        <p class="status">Status: prototype. Not publicly deployed — an honest work-in-progress.</p>
+        <div class="row"><span>Source</span><b>Public, 456 files</b></div>
+        <div class="row"><span>Tooling</span><b>Jest · RTL · Docker Compose</b></div>
+        <div class="row"><span>Realtime</span><b>Node WebSockets + Redis</b></div>
+        <p class="status"><i>● Prototype</i><br>Not publicly deployed. I would rather say that plainly than dress a work-in-progress up as a product.</p>
       </aside>
     </article>
 
@@ -254,33 +317,33 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;
 
 <section id="capabilities">
   <div class="wrap">
-    <div class="shead rv"><span class="no">02</span><h2>Capabilities</h2></div>
+    <div class="shead"><span class="no">02</span><h2>Capabilities</h2></div>
     <div class="caps">
-      <div class="cap rv">
-        <span class="k"><b>—</b> SUPPORT &amp; SERVICE</span>
+      <div class="cap">
+        <span class="k"><b>—</b> Building</span>
+        <ul>
+          <li>Python · SQL · APIs / JSON</li>
+          <li>TypeScript · React · Next.js</li>
+          <li>Windows · PowerShell · command line</li>
+          <li>Git / GitHub · local AI tooling</li>
+        </ul>
+      </div>
+      <div class="cap">
+        <span class="k"><b>—</b> Operating</span>
+        <ul>
+          <li>Automated testing &amp; smoke checks</li>
+          <li>Failure diagnosis &amp; recovery safeguards</li>
+          <li>Process monitoring &amp; liveness checks</li>
+          <li>Scheduled jobs &amp; unattended execution</li>
+        </ul>
+      </div>
+      <div class="cap">
+        <span class="k"><b>—</b> Support &amp; service</span>
         <ul>
           <li>Application troubleshooting</li>
           <li>Issue reproduction &amp; problem isolation</li>
           <li>Customer communication</li>
           <li>Technical documentation</li>
-        </ul>
-      </div>
-      <div class="cap rv">
-        <span class="k"><b>—</b> SYSTEMS &amp; TOOLS</span>
-        <ul>
-          <li>Python · Flask · SQL · APIs / JSON</li>
-          <li>TypeScript · React · Next.js</li>
-          <li>Windows · PowerShell · command line</li>
-          <li>Git / GitHub · local AI tools</li>
-        </ul>
-      </div>
-      <div class="cap rv">
-        <span class="k"><b>—</b> QUALITY &amp; OPERATIONS</span>
-        <ul>
-          <li>Automated testing &amp; smoke checks</li>
-          <li>Failure diagnosis &amp; recovery safeguards</li>
-          <li>Process monitoring &amp; liveness checks</li>
-          <li>Validation workflows &amp; operational checks</li>
         </ul>
       </div>
     </div>
@@ -289,29 +352,29 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;
 
 <section id="experience">
   <div class="wrap">
-    <div class="shead rv"><span class="no">03</span><h2>Customer &amp; Operations Experience</h2></div>
+    <div class="shead"><span class="no">03</span><h2>Customer &amp; Operations Experience</h2></div>
     <div class="xp">
-      <div class="xrow rv">
+      <div class="xrow">
         <span class="when">Earlier experience</span>
         <h3>Best Buy <span>— Appliances Department Lead</span></h3>
-        <p>Led the appliances department on a high-volume retail floor. Helped customers make high-consideration purchases, resolved complaints and post-sale issues in person, coordinated a small team, and worked across departments to keep work moving.</p>
+        <p>Led the appliances department on a high-volume retail floor. Helped customers through high-consideration purchases, resolved complaints and post-sale issues in person, coordinated a small team, and worked across departments to keep work moving.</p>
       </div>
-      <div class="xrow rv">
+      <div class="xrow">
         <span class="when">2022</span>
         <h3>Uber <span>— Independent Driver</span></h3>
         <p>About one year of sustained, independent, customer-facing work — managing routes, schedules, communication, and changing customer needs without direct supervision.</p>
       </div>
     </div>
-    <p class="edu rv">EDUCATION &nbsp;·&nbsp; <b>Penn State Berks</b> — undergraduate coursework &nbsp;·&nbsp; <b>The City College of New York</b> — undergraduate coursework</p>
+    <p class="edu">EDUCATION &nbsp;·&nbsp; <b>Penn State Berks</b> — undergraduate coursework &nbsp;·&nbsp; <b>The City College of New York</b> — undergraduate coursework</p>
   </div>
 </section>
 
 <section id="contact">
   <div class="wrap">
-    <div class="shead rv"><span class="no">04</span><h2>Contact</h2></div>
-    <h2 class="big rv">Looking for someone who builds, tests, and <em>follows through?</em></h2>
-    <p class="sub rv">I'm looking for a full-time role in product support, IT support, or customer support &amp; implementation — anywhere I can combine customer skills with hands-on technical work.</p>
-    <div class="hero-links rv">
+    <div class="shead"><span class="no">04</span><h2>Contact</h2></div>
+    <h2 class="big">Looking for someone who builds, tests, and <u>follows through?</u></h2>
+    <p class="sub">I'm looking for a full-time role building or supporting software — developer, technical support, or operations. Anywhere hands-on work and following through actually count.</p>
+    <div class="hero-links">
       <a class="solid" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
       <a href="https://github.com/bmath8" rel="me">github.com/bmath8</a>
       <a href="https://linkedin.com/in/brian-mathew-66235556" rel="me">LinkedIn</a>
@@ -322,21 +385,162 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;
 
 <footer>
   <div class="wrap">
-    <span>© 2026 BRIAN MATHEW</span>
-    <span>NEW JERSEY, USA</span>
-    <span>SET IN IBM PLEX</span>
+    <span>© 2026 Brian Mathew</span>
+    <span>New Jersey, USA</span>
+    <span>Every number on this page is checkable</span>
   </div>
 </footer>
 
 <script>
+/* ============================================================================
+   The fleet dial.
+   JOBS is a verbatim transcription of `hermes cron list` on 2026-07-30 --
+   25 jobs, the real names, the real cron expressions. Nothing invented.
+   Angle = time of day, so the 06:40-07:10 cluster you can see is the morning
+   stack genuinely running back to back.
+   All times computed in America/New_York because that is where the fleet runs;
+   showing a visitor's local time would make the readout quietly wrong.
+   ========================================================================= */
 (function(){
-  var io = new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-  },{threshold:.12});
-  document.querySelectorAll('.rv').forEach(function(el,i){
-    el.style.transitionDelay = Math.min(i%6*70,350)+'ms';
-    io.observe(el);
-  });
+  var c = document.getElementById('dial');
+  if(!c || !c.getContext) return;
+  var x = c.getContext('2d');
+
+  // name, hour(decimal, ET), kind: d=daily, w=weekly(Sun), m=monthly(1st), h=hourly, q=every 4h
+  var JOBS = [
+    ['memory-index',      1.33, 'd'], ['harmony-backup',  1.50, 'd'],
+    ['overnight-worker',  2.00, 'd'], ['model-review',    3.00, 'm'],
+    ['scout',             6.67, 'd'], ['learning-agent',  6.75, 'd'],
+    ['inbox',             6.80, 'd'], ['finance',         6.83, 'd'],
+    ['health',            6.87, 'd'], ['career',          6.88, 'd'],
+    ['calendar',          6.92, 'd'], ['currency',        6.97, 'd'],
+    ['fleet-health',      6.98, 'd'], ['daily-brief',     7.00, 'd'],
+    ['gig-scanner',       7.17, 'd'], ['ceo-report',      7.50, 'm'],
+    ['currency-weekly',  16.50, 'w'], ['wiki',           16.75, 'w'],
+    ['outcome-learner',  16.83, 'w'], ['weekly-review',  17.00, 'w'],
+    ['feedback',         17.00, 'w'], ['research',       18.00, 'w'],
+    ['skill-miner',      18.50, 'w'],
+    ['dashboard',         0.08, 'h'], ['system-watchdog', 0.00, 'q']
+  ];
+
+  var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var W, H, DPR, cx, cy, R, t = 0, hot = 0;
+
+  // Current wall-clock hour where the fleet actually runs.
+  function etNow(){
+    var p = new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',
+            minute:'numeric',hour12:false}).formatToParts(new Date()), h=0, m=0;
+    p.forEach(function(o){ if(o.type==='hour') h=+o.value; if(o.type==='minute') m=+o.value; });
+    return (h%24) + m/60;
+  }
+  function gapTo(j, now){
+    if(j[2]==='h') return (5/60) - (now%1) + ((now%1) > 5/60 ? 1 : 0); // :05 each hour
+    if(j[2]==='q'){ var g = 4 - (now%4); return g===4?0:g; }
+    var g = j[1] - now; return g < 0 ? g + 24 : g;                      // d/w/m -> next clock hit
+  }
+  function pickHot(){
+    var now = etNow(), best = 0, bd = 1e9;
+    JOBS.forEach(function(j,i){ var g = gapTo(j, now); if(g < bd){ bd = g; best = i; } });
+    return best;
+  }
+  function label(){
+    var j = JOBS[hot], n = document.getElementById('next');
+    if(!n) return;
+    var txt = j[2]==='h' ? j[0] + ' · hourly'
+            : j[2]==='q' ? j[0] + ' · every 4h'
+            : j[0] + ' · ' + String(Math.floor(j[1])).padStart(2,'0') + ':' +
+              String(Math.round((j[1]%1)*60)).padStart(2,'0') + ' ET';
+    n.textContent = txt;
+  }
+
+  function size(){
+    DPR = Math.min(devicePixelRatio || 1, 2);
+    W = c.clientWidth; H = c.clientHeight;
+    c.width = W*DPR; c.height = H*DPR; x.setTransform(DPR,0,0,DPR,0,0);
+    cx = W/2; cy = H/2; R = Math.min(W,H)*0.37;
+    draw();
+  }
+
+  function draw(){
+    x.clearRect(0,0,W,H);
+
+    // 24-hour ring + quarter ticks
+    x.strokeStyle = 'rgba(15,23,25,.13)'; x.lineWidth = 1;
+    x.beginPath(); x.arc(cx,cy,R,0,6.2832); x.stroke();
+    x.font = '500 8.5px "IBM Plex Mono",ui-monospace,monospace';
+    x.fillStyle = 'rgba(15,23,25,.34)'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    [[0,'00'],[6,'06'],[12,'12'],[18,'18']].forEach(function(p){
+      var a = (p[0]/24)*6.2832 - Math.PI/2;
+      x.strokeStyle = 'rgba(15,23,25,.20)';
+      x.beginPath();
+      x.moveTo(cx+Math.cos(a)*(R-4), cy+Math.sin(a)*(R-4));
+      x.lineTo(cx+Math.cos(a)*(R+4), cy+Math.sin(a)*(R+4));
+      x.stroke();
+      x.fillText(p[1], cx+Math.cos(a)*(R+15), cy+Math.sin(a)*(R+15));
+    });
+
+    // a sweep hand at the fleet's current local time
+    var now = etNow(), na = (now/24)*6.2832 - Math.PI/2;
+    x.strokeStyle = 'rgba(12,107,81,.30)'; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(cx,cy); x.lineTo(cx+Math.cos(na)*R, cy+Math.sin(na)*R); x.stroke();
+
+    // Jobs that run continuously (hourly / every 4h) aren't a point on a clock,
+    // so they get an inner ring instead of a misleading dot at one hour mark.
+    var contHot = (JOBS[hot][2]==='h' || JOBS[hot][2]==='q');
+    var cPulse = (reduce || !contHot) ? 0 : 0.5 + 0.5*Math.sin(t*2.4);
+    x.setLineDash([3,4]);
+    x.strokeStyle = contHot ? 'rgba(12,107,81,' + (0.75 - cPulse*0.35) + ')' : 'rgba(15,23,25,.16)';
+    x.lineWidth = 1;
+    x.beginPath(); x.arc(cx,cy,R*0.30,0,6.2832); x.stroke();
+    x.setLineDash([]);
+    x.font = '500 8px "IBM Plex Mono",ui-monospace,monospace';
+    x.fillStyle = contHot ? '#0c6b51' : 'rgba(15,23,25,.38)';
+    x.fillText('2 CONTINUOUS', cx, cy);
+
+    // scheduled jobs, placed by the hour they actually fire
+    JOBS.forEach(function(j,i){
+      if(j[2]==='h' || j[2]==='q') return;
+      var a = (j[1]/24)*6.2832 - Math.PI/2;
+      // stagger radius slightly so the dense 06:40-07:10 cluster stays countable
+      var rr = R*(0.72 + ((i*29)%7)/7*0.26);
+      var px = cx + Math.cos(a)*rr, py = cy + Math.sin(a)*rr;
+      var on = (i === hot);
+      var pulse = (reduce || !on) ? 0 : 0.5 + 0.5*Math.sin(t*2.4);
+
+      if(on){
+        x.strokeStyle = 'rgba(12,107,81,' + (0.5 - pulse*0.32) + ')';
+        x.lineWidth = 1;
+        x.beginPath(); x.arc(px,py, 6 + pulse*8, 0, 6.2832); x.stroke();
+      }
+      x.fillStyle = on ? '#0c6b51' : 'rgba(45,60,64,.78)';
+      x.beginPath(); x.arc(px,py, on ? 4.2 : 3.1, 0, 6.2832); x.fill();
+
+      if(on){
+        x.font = '500 10px "IBM Plex Mono",ui-monospace,monospace';
+        x.fillStyle = '#0f1719';
+        var right = px < cx;
+        x.textAlign = right ? 'left' : 'right';
+        x.fillText(j[0], px + (right ? 11 : -11), py);
+        x.textAlign = 'center';
+      }
+    });
+  }
+
+  function frame(){ t += 0.016; draw(); requestAnimationFrame(frame); }
+
+  hot = pickHot(); label();
+  setInterval(function(){ var h = pickHot(); if(h !== hot){ hot = h; label(); } }, 20000);
+  addEventListener('resize', size);
+  size();
+  if(!reduce) frame();
+
+  // clock readout in the panel header
+  function tick(){
+    var el = document.getElementById('clock');
+    if(el) el.textContent = new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',
+      hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date()) + ' ET';
+  }
+  tick(); setInterval(tick, 30000);
 })();
 </script>
 </body>
