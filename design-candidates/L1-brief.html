@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Brian Mathew — morning brief</title>
+<link rel="stylesheet" href="../vendor/fonts.css"/>
+<style>
+/* ============================================================
+   DIRECTION 1 — THE BRIEF
+   The page IS the 07:00 report the fleet sends every morning.
+   No hero. No cards. No nav. A document his system wrote.
+   Palette: amber phosphor on warm black — an operator's console,
+   deliberately not the near-black + acid-green AI default.
+   ============================================================ */
+:root{
+  --bg:#12100c; --bg2:#1a1711; --rule:#2f2921;
+  --amber:#f0a92e; --amber-dim:#9c7326; --paper:#e8ddc8;
+  --body:#c9bda6; --muted:#7d7263;
+  --green:#7fc08a; --red:#d9705f;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:#c9bda6;font-family:var(--mono);
+  font-size:14px;line-height:1.75;
+  padding:0 20px 90px;
+  -webkit-font-smoothing:antialiased;
+}
+/* faint scanline + vignette: console, not costume */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);
+  opacity:.5;
+}
+.sheet{max-width:760px;margin:0 auto}
+a{color:var(--amber);text-decoration:none;border-bottom:1px solid rgba(240,169,46,.32)}
+a:hover{border-bottom-color:var(--amber)}
+a:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+
+/* ---- masthead ---- */
+.mast{padding:56px 0 0}
+.mast .tag{color:var(--muted);font-size:11px;letter-spacing:.24em;text-transform:uppercase}
+.mast h1{
+  font-family:var(--sans);font-weight:600;font-size:clamp(28px,5.4vw,44px);
+  color:var(--paper);letter-spacing:-.02em;line-height:1.1;margin:14px 0 6px;
+}
+.mast .sub{color:var(--amber);font-size:13px;letter-spacing:.04em}
+.rule{height:1px;background:var(--rule);margin:24px 0}
+.rule.thick{height:2px;background:var(--amber-dim);opacity:.5}
+
+/* ---- key/value block ---- */
+.kv{display:grid;grid-template-columns:132px 1fr;gap:2px 18px;font-size:13px}
+.kv dt{color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-size:11px;padding-top:3px}
+.kv dd{color:var(--paper)}
+
+/* ---- section heads ---- */
+h2{
+  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--amber);
+  display:flex;align-items:center;gap:14px;margin:38px 0 16px;
+}
+h2::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+/* ---- log lines ---- */
+.log{font-size:13px;line-height:1.95}
+.log div{display:grid;grid-template-columns:64px 132px 1fr;gap:14px;white-space:nowrap;overflow:hidden}
+.log .t{color:var(--muted)}
+.log .n{color:var(--paper)}
+.log .ok{color:var(--green)}
+.log .note{color:var(--muted);text-overflow:ellipsis;overflow:hidden}
+@media(max-width:620px){.log div{grid-template-columns:56px 1fr;}.log .note{display:none}}
+
+/* ---- systems ---- */
+.sys{border-top:1px solid var(--rule);padding:20px 0}
+.sys:last-of-type{border-bottom:1px solid var(--rule)}
+.sys .hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sys .nm{font-family:var(--sans);font-weight:600;font-size:19px;color:var(--paper);letter-spacing:-.01em}
+.sys .st{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;padding:2px 8px;border:1px solid currentColor}
+.st.run{color:var(--green)} .st.live{color:var(--amber)} .st.proto{color:var(--muted)}
+.sys .hd .sp{margin-left:auto;color:var(--muted);font-size:12px}
+.sys p{margin-top:9px;font-size:13.5px;color:#c9bda6;max-width:64ch}
+.sys .meta{margin-top:11px;font-size:12px;color:var(--muted)}
+.sys .meta b{color:var(--paper);font-weight:400}
+.sys .go{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+
+/* ---- incident ---- */
+.inc{background:var(--bg2);border-left:2px solid var(--red);padding:16px 18px;font-size:13px}
+.inc .h{color:var(--red);font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:7px}
+.inc p{max-width:64ch}
+
+/* ---- history ---- */
+.hist div{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:9px 0;border-top:1px solid var(--rule);font-size:13px}
+.hist div:first-child{border-top:none}
+.hist .w{color:var(--muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding-top:3px}
+.hist b{font-family:var(--sans);color:var(--paper);font-weight:600;font-size:15px}
+.hist p{color:#b3a894;font-size:13px;margin-top:3px;max-width:56ch}
+@media(max-width:620px){.hist div{grid-template-columns:1fr;gap:4px}}
+
+/* ---- sign off ---- */
+.eof{margin-top:44px;padding-top:22px;border-top:2px solid var(--amber-dim);font-size:13px}
+.eof .big{font-family:var(--sans);font-size:clamp(19px,3.4vw,26px);color:var(--paper);font-weight:600;letter-spacing:-.015em;max-width:22ch;line-height:1.28}
+.eof .links{margin-top:18px;display:flex;flex-wrap:wrap;gap:18px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+.eof .fin{margin-top:26px;color:var(--muted);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.cur{display:inline-block;width:8px;height:15px;background:var(--amber);vertical-align:-2px;margin-left:5px;animation:bl 1.1s steps(2,end) infinite}
+@keyframes bl{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.cur{animation:none}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="mast">
+    <div class="tag">Brian OS · daily-brief.py · run 0447</div>
+    <h1>Morning brief</h1>
+    <div class="sub">30 July 2026 · 07:00 ET · generated on the machine it describes</div>
+  </div>
+
+  <div class="rule thick"></div>
+
+  <dl class="kv">
+    <dt>Operator</dt><dd>Brian Mathew — New Jersey</dd>
+    <dt>Status</dt><dd>Seeking a full-time role. Available immediately.</dd>
+    <dt>Fleet</dt><dd>25 / 25 agents active · 81 / 81 tests green</dd>
+    <dt>Reachable</dt><dd><a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a> · (609) 815-1685</dd>
+  </dl>
+
+  <h2>Overnight &amp; morning run</h2>
+  <div class="log">
+    <div><span class="t">01:20</span><span class="n">memory-index</span><span class="note"><span class="ok">ok</span> — indexed 2,140 notes</span></div>
+    <div><span class="t">01:30</span><span class="n">harmony-backup</span><span class="note"><span class="ok">ok</span> — snapshot written</span></div>
+    <div><span class="t">02:00</span><span class="n">overnight-worker</span><span class="note"><span class="ok">ok</span> — queue drained</span></div>
+    <div><span class="t">06:40</span><span class="n">scout</span><span class="note"><span class="ok">ok</span></span></div>
+    <div><span class="t">06:45</span><span class="n">learning-agent</span><span class="note"><span class="ok">ok</span></span></div>
+    <div><span class="t">06:48</span><span class="n">inbox</span><span class="note"><span class="ok">ok</span> — 3 drafts held for approval</span></div>
+    <div><span class="t">06:50</span><span class="n">finance</span><span class="note"><span class="ok">ok</span></span></div>
+    <div><span class="t">06:59</span><span class="n">fleet-health</span><span class="note"><span class="ok">ok</span> — 81/81 green</span></div>
+    <div><span class="t">07:00</span><span class="n">daily-brief</span><span class="note"><span class="ok">ok</span> — you are reading it</span></div>
+  </div>
+
+  <h2>Systems under management</h2>
+
+  <article class="sys">
+    <div class="hd">
+      <span class="nm">Brian OS</span><span class="st run">Running</span>
+      <span class="sp">2026 — present</span>
+    </div>
+    <p>The fleet that wrote this page. 25 scheduled Python agents running unattended on Windows —
+       briefs, health checks, two-way Telegram control. Anything that sends, spends, deploys or
+       deletes is held as a draft until I approve it.</p>
+    <div class="meta">Python · PowerShell · Ollama · Telegram API — <b>81 tests passing</b>, sole builder and operator</div>
+    <div class="go"><a href="https://github.com/bmath8/brian-os">Read the source →</a></div>
+  </article>
+
+  <article class="sys">
+    <div class="hd">
+      <span class="nm">Super Bowl LX Squares</span><span class="st live">Live</span>
+      <span class="sp">2026</span>
+    </div>
+    <p>A squares pool real people used during a real game. 100 squares, live random draw, and
+       score-driven winner resolution updating for everyone at once — one shot to be correct,
+       in front of an audience, with no second chance.</p>
+    <div class="meta">JavaScript · Firebase · Vercel — <b>still deployed and usable</b></div>
+    <div class="go">
+      <a href="https://fam-super-bowl-squares-2026.vercel.app">Open the live app →</a>
+      <a href="https://github.com/bmath8/fam-super-bowl-squares-2026">Source →</a>
+    </div>
+  </article>
+
+  <article class="sys">
+    <div class="hd">
+      <span class="nm">BoomBox</span><span class="st proto">Prototype</span>
+      <span class="sp">2025 — present</span>
+    </div>
+    <p>Collaborative music — shared queues, live rooms, synchronized listening. Durable Postgres
+       state kept deliberately separate from transient WebSocket and Redis Pub/Sub, because they
+       fail in completely different ways.</p>
+    <div class="meta">TypeScript · Next.js · PostgreSQL · Redis — not publicly deployed, and I'd rather say so</div>
+    <div class="go"><a href="https://github.com/bmath8/boombox">Read the source →</a></div>
+  </article>
+
+  <h2>Incident log — the one worth reading</h2>
+  <div class="inc">
+    <div class="h">Resolved · disk exhaustion</div>
+    <p>A failed process guardian silently left orphan processes behind until they filled the disk.
+       Nothing alerted, because the thing that alerts was one of the casualties. I traced the
+       cause, recovered the machine, restored monitoring, and added liveness checks so the
+       watchdog now has a watchdog. The hardest bug I've had was operational, not logical.</p>
+  </div>
+
+  <h2>Before the code</h2>
+  <div class="hist">
+    <div>
+      <span class="w">Earlier</span>
+      <div><b>Best Buy — Appliances Department Lead</b>
+        <p>Led the department on a high-volume floor. High-consideration purchases, complaints and
+           post-sale problems handled face to face, a small team to coordinate.</p></div>
+    </div>
+    <div>
+      <span class="w">2022</span>
+      <div><b>Uber — Independent Driver</b>
+        <p>About a year of sustained independent customer-facing work — routes, schedules and
+           changing needs, all without supervision.</p></div>
+    </div>
+    <div>
+      <span class="w">Education</span>
+      <div><b>Penn State Berks · The City College of New York</b>
+        <p>Undergraduate coursework.</p></div>
+    </div>
+  </div>
+
+  <div class="eof">
+    <p class="big">If you need someone who ships it and then keeps it alive, that's the whole job posting for me.</p>
+    <div class="links">
+      <a href="mailto:mathew.brian@gmail.com">Email</a>
+      <a href="https://github.com/bmath8">GitHub</a>
+      <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+      <a href="../resume.pdf">Résumé (PDF)</a>
+    </div>
+    <div class="fin">End of brief · next run in 23h 47m<span class="cur"></span></div>
+  </div>
+
+</div>
+</body>
+</html>
