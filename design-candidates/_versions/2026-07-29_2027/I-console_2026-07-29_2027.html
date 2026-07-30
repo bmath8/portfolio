@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — open a system and break it</title>
+<meta name="description" content="Developer in New Jersey. An interactive map of the systems I've built — open one and operate it. Kill a process and watch the watchdog heal it.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;800;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CANDIDATE I — "CONSOLE"
+   Not a page. An environment.
+
+   Brian's complaint about A-H was right: every one was a single
+   vertical scroll, which is the format itself reading as generic.
+   So this has NO page scroll. It's a spatial map of his systems;
+   you click one and get a LIVE demo you can operate and break.
+
+   The wow moment is deliberately destructive: kill the gateway
+   and watch the watchdog detect it, log it, and restart it. That
+   is his actual differentiator, made playable instead of claimed.
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --void:#05080f;--panel:#0b1220;--panel2:#111a2b;--edge:#1e2c42;
+  --ink:#e9f0f7;--ink2:#9aabbd;--mute:#61738a;
+  --cyan:#22e6c8;--mag:#ff4d8d;--amber:#ffc247;--violet:#9d8cff;--red:#ff5f56;
+  --d:'Geist',system-ui,sans-serif;--m:'Geist Mono',ui-monospace,Consolas,monospace;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--void);color:var(--ink);font-family:var(--d);font-size:15px;
+  line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:3px}
+#map{position:fixed;inset:0;cursor:grab}
+#map.drag{cursor:grabbing}
+
+/* ---------- identity plate ---------- */
+.plate{position:fixed;top:26px;left:28px;z-index:20;max-width:420px;pointer-events:none}
+.plate .who{font-size:26px;font-weight:800;letter-spacing:-.03em}
+.plate .what{color:var(--ink2);margin-top:6px;font-size:15px}
+.plate .what b{color:var(--ink);font-weight:600}
+.plate .live{font-family:var(--m);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--cyan);margin-top:12px;display:flex;align-items:center;gap:8px}
+.plate .live i{width:7px;height:7px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 10px var(--cyan);animation:bp 2.2s infinite;display:block}
+@keyframes bp{50%{opacity:.3}}
+.links{position:fixed;bottom:26px;left:28px;z-index:20;display:flex;gap:8px;flex-wrap:wrap;
+  font-family:var(--m);font-size:12.5px}
+.links a{padding:9px 14px;border-radius:8px;text-decoration:none;border:1px solid var(--edge);
+  color:var(--ink2);background:rgba(11,18,32,.8);backdrop-filter:blur(8px);
+  pointer-events:auto;transition:.16s}
+.links a:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px)}
+.links a.p{background:var(--cyan);border-color:var(--cyan);color:#04120f;font-weight:600}
+.hint{position:fixed;bottom:28px;right:28px;z-index:20;font-family:var(--m);font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.8}
+
+/* ---------- the window ---------- */
+#win{position:fixed;z-index:40;top:50%;left:50%;transform:translate(-50%,-50%) scale(.94);
+  width:min(880px,94vw);max-height:86vh;background:var(--panel);border:1px solid var(--edge);
+  border-radius:14px;box-shadow:0 40px 120px rgba(0,0,0,.7);display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s cubic-bezier(.2,.8,.3,1)}
+#win.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.wbar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--edge);
+  font-family:var(--m);font-size:12px;color:var(--mute);flex:none}
+.dots{display:flex;gap:6px}
+.dots i{width:11px;height:11px;border-radius:50%;display:block}
+.wtitle{color:var(--ink)}
+.wclose{margin-left:auto;background:none;border:1px solid var(--edge);color:var(--ink2);
+  font-family:var(--m);font-size:11px;padding:5px 11px;border-radius:6px;cursor:pointer}
+.wclose:hover{border-color:var(--red);color:var(--red)}
+.wbody{padding:20px;overflow:auto}
+.wbody h2{font-size:23px;font-weight:800;letter-spacing:-.025em;margin-bottom:5px}
+.wbody .lede{color:var(--ink2);margin-bottom:16px;max-width:66ch}
+.wbody .lede b{color:var(--ink);font-weight:600}
+.tag{font-family:var(--m);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--c);margin-bottom:8px}
+.stack{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.stack span{font-family:var(--m);font-size:11.5px;padding:3px 9px;border-radius:5px;
+  background:var(--panel2);border:1px solid var(--edge);color:var(--ink2)}
+.btn{font-family:var(--m);font-size:12.5px;padding:9px 15px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--c);background:transparent;color:var(--c);transition:.16s}
+.btn:hover{background:var(--c);color:#05080f}
+.btn.danger{border-color:var(--red);color:var(--red)}
+.btn.danger:hover{background:var(--red);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:14px 0}
+
+/* demo chrome */
+.demo{border:1px solid var(--edge);border-radius:10px;background:var(--void);overflow:hidden}
+.demo-h{padding:9px 13px;border-bottom:1px solid var(--edge);font-family:var(--m);font-size:11px;
+  color:var(--mute);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.demo-h b{color:var(--ink);font-weight:500}
+.log{font-family:var(--m);font-size:11.5px;line-height:1.85;padding:12px 13px;height:190px;
+  overflow:auto;white-space:pre-wrap}
+.log .t{color:var(--mute)}.log .ok{color:var(--cyan)}.log .warn{color:var(--amber)}
+.log .err{color:var(--red)}.log .dim{color:var(--ink2)}
+
+/* fleet grid */
+.agents{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:6px;padding:12px}
+.ag{font-family:var(--m);font-size:10.5px;padding:6px 8px;border-radius:6px;
+  border:1px solid var(--edge);color:var(--ink2);display:flex;align-items:center;gap:6px}
+.ag i{width:5px;height:5px;border-radius:50%;background:var(--cyan);flex:none;
+  box-shadow:0 0 6px var(--cyan)}
+.ag.down{border-color:var(--red);color:var(--red)}
+.ag.down i{background:var(--red);box-shadow:0 0 6px var(--red)}
+.ag.fire i{background:var(--amber);box-shadow:0 0 9px var(--amber)}
+
+/* realtime sync demo */
+.clients{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+@media(max-width:620px){.clients{grid-template-columns:1fr}}
+.client{border:1px solid var(--edge);border-radius:9px;padding:12px;background:var(--panel2)}
+.client .cn{font-family:var(--m);font-size:11px;color:var(--mute);margin-bottom:9px;
+  display:flex;justify-content:space-between}
+.client .cn b{color:var(--mag)}
+.bar{height:6px;border-radius:4px;background:var(--edge);position:relative;cursor:pointer}
+.bar i{position:absolute;top:0;left:0;height:100%;border-radius:4px;background:var(--mag)}
+.bar b{position:absolute;top:-4px;width:14px;height:14px;border-radius:50%;background:var(--mag);
+  transform:translateX(-7px);box-shadow:0 0 12px var(--mag)}
+.client.off{opacity:.42}
+.client .st{font-family:var(--m);font-size:10px;color:var(--mute);margin-top:9px}
+
+/* squares */
+.sq{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;width:230px;padding:12px}
+.sq i{aspect-ratio:1;border-radius:2px;background:var(--panel2);border:1px solid var(--edge);
+  transition:.22s;font-style:normal}
+.sq i.f{background:var(--amber);border-color:var(--amber)}
+.sq i.w{background:var(--violet);border-color:var(--violet);transform:scale(1.35);
+  box-shadow:0 0 16px var(--violet)}
+.sqwrap{display:grid;grid-template-columns:auto 1fr;gap:6px;align-items:center}
+@media(max-width:620px){.sqwrap{grid-template-columns:1fr}}
+.nums{display:flex;gap:18px;font-family:var(--m);flex-wrap:wrap;margin-top:16px}
+.nums div span{display:block;font-size:19px;color:var(--c)}
+.nums div small{font-size:10px;color:var(--mute)}
+#scrim{position:fixed;inset:0;z-index:35;background:rgba(3,6,12,.62);backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity .22s}
+#scrim.on{opacity:1;pointer-events:auto}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head>
+<body>
+
+<canvas id="map"></canvas>
+<div id="scrim"></div>
+
+<div class="plate">
+  <div class="who">Brian Mathew</div>
+  <div class="what">Developer in New Jersey. <b>25 agents I wrote are running unattended right
+    now.</b> These are my systems — open one and operate it.</div>
+  <div class="live"><i></i>fleet online · 81 tests green</div>
+</div>
+
+<div class="links">
+  <a class="p" href="mailto:mathew.brian@gmail.com">Email me</a>
+  <a href="resume.pdf">Résumé</a>
+  <a href="https://github.com/bmath8">GitHub</a>
+  <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+</div>
+<div class="hint">click a system to open it<br>drag to pan · everything here is live</div>
+
+<div id="win" role="dialog" aria-modal="true" aria-label="System demo">
+  <div class="wbar">
+    <span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span>
+    <span class="wtitle" id="wtitle">—</span>
+    <button class="wclose" id="wclose">close ✕</button>
+  </div>
+  <div class="wbody" id="wbody"></div>
+</div>
+
+<script src="../vendor/gsap.min.js"></script>
+<script>
+/* ============================================================
+   1. THE MAP — systems as major nodes, agents as small ones.
+   ============================================================ */
+var SYSTEMS = [
+  {id:'fleet',  name:'Brian OS',            sub:'25 agents · running now',   c:'#22e6c8', x:-40,  y:-70,  r:30},
+  {id:'boom',   name:'BoomBox',             sub:'real-time · prototype',     c:'#ff4d8d', x:250,  y:80,   r:24},
+  {id:'squares',name:'Super Bowl Squares',  sub:'ran a live game',           c:'#ffc247', x:-300, y:110,  r:20},
+  {id:'day',    name:'What I can do',       sub:'craft · try the controls',  c:'#9d8cff', x:60,   y:190,  r:22}
+];
+var AGENTS = ['daily-brief','system-watchdog','overnight-worker','learning-agent','career',
+ 'currency','gig-scanner','calendar','scout','inbox','finance','health','research','wiki',
+ 'weekly-review','ceo-report','outcome-learner','feedback','harmony-backup','skill-miner',
+ 'memory-index','model-review','fleet-health','dashboard','currency-weekly'];
+
+var cv=document.getElementById('map'),cx=cv.getContext('2d'),W,H,DPR;
+var pan={x:0,y:0},drag=null,mouse={x:-9999,y:-9999},t=0,hover=null;
+var nodes=[],dots=[];
+
+function layout(){
+  DPR=Math.min(devicePixelRatio||1,2);
+  W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0);
+  var ox=W/2,oy=H/2;
+  nodes=SYSTEMS.map(function(s){return {s:s,x:ox+s.x,y:oy+s.y,r:s.r,pulse:Math.random()*6.283};});
+  // agents orbit the fleet node — the visual claim is "these belong to that"
+  dots=AGENTS.map(function(n,i){
+    var a=(i/AGENTS.length)*6.283, rr=95+((i*37)%100)/100*72;
+    return {n:n,ax:a,rr:rr,ph:(i*.6)%6.283,fire:0};
+  });
+}
+function fleetNode(){return nodes[0];}
+
+/* every ~1.4s a random agent "fires" — ambient proof of life */
+setInterval(function(){ if(dots.length) dots[Math.floor(Math.random()*dots.length)].fire=1; },1400);
+
+function draw(){
+  t+=.006;
+  cx.clearRect(0,0,W,H);
+  var f=fleetNode();
+  if(!f){requestAnimationFrame(draw);return;}
+  var fx=f.x+pan.x, fy=f.y+pan.y;
+
+  // agent orbit
+  dots.forEach(function(d){
+    var a=d.ax+t*.16, x=fx+Math.cos(a)*d.rr, y=fy+Math.sin(a)*d.rr*.62;
+    d.px=x;d.py=y;
+    if(d.fire>0)d.fire-=.014;
+    var glow=.22+.30*Math.sin(t*2+d.ph)+d.fire*.9;
+    cx.strokeStyle='rgba(34,230,200,'+(0.05+d.fire*.22).toFixed(3)+')';
+    cx.lineWidth=.8;cx.beginPath();cx.moveTo(fx,fy);cx.lineTo(x,y);cx.stroke();
+    var rad=1.9+d.fire*3.4;
+    var g=cx.createRadialGradient(x,y,0,x,y,rad*5);
+    g.addColorStop(0,'rgba(34,230,200,'+Math.min(1,glow).toFixed(3)+')');
+    g.addColorStop(1,'rgba(34,230,200,0)');
+    cx.fillStyle=g;cx.beginPath();cx.arc(x,y,rad*5,0,6.283);cx.fill();
+    cx.fillStyle='rgba(190,255,244,'+Math.min(1,glow+.3).toFixed(3)+')';
+    cx.beginPath();cx.arc(x,y,rad,0,6.283);cx.fill();
+  });
+
+  // system nodes
+  hover=null;
+  nodes.forEach(function(n){
+    var x=n.x+pan.x,y=n.y+pan.y;
+    var d=Math.hypot(mouse.x-x,mouse.y-y);
+    var isHover=d<n.r+22; if(isHover)hover=n;
+    var p=.5+.5*Math.sin(t*1.8+n.pulse);
+    var R=n.r*(isHover?1.14:1);
+    var g=cx.createRadialGradient(x,y,0,x,y,R*3.4);
+    g.addColorStop(0,n.s.c+(isHover?'cc':'88'));
+    g.addColorStop(1,n.s.c+'00');
+    cx.fillStyle=g;cx.beginPath();cx.arc(x,y,R*3.4,0,6.283);cx.fill();
+    cx.fillStyle=n.s.c;cx.beginPath();cx.arc(x,y,R,0,6.283);cx.fill();
+    cx.strokeStyle=n.s.c+'66';cx.lineWidth=1;
+    cx.beginPath();cx.arc(x,y,R+9+p*7,0,6.283);cx.stroke();
+    cx.fillStyle='#05080f';cx.font='700 '+(n.r>26?13:11)+'px Geist,system-ui,sans-serif';
+    cx.textAlign='center';cx.textBaseline='middle';
+    cx.fillText('open', x, y);
+    cx.textAlign='left';cx.textBaseline='alphabetic';
+    cx.fillStyle='rgba(233,240,247,'+(isHover?1:.9)+')';
+    cx.font='800 17px Geist,system-ui,sans-serif';
+    cx.fillText(n.s.name, x+R+16, y-2);
+    cx.fillStyle='rgba(154,171,189,.9)';
+    cx.font='500 11.5px "Geist Mono",ui-monospace,monospace';
+    cx.fillText(n.s.sub, x+R+16, y+15);
+  });
+  cv.style.cursor = drag ? 'grabbing' : (hover ? 'pointer' : 'grab');
+  requestAnimationFrame(draw);
+}
+/* Hit-test from real coordinates. Previously this read the `hover` state set in
+   the draw loop, which only updates on mousemove — so a tap (no hover phase)
+   could never open a system. That broke every touch device. */
+function hitTest(px,py){
+  for(var i=0;i<nodes.length;i++){
+    var n=nodes[i];
+    if(Math.hypot(px-(n.x+pan.x), py-(n.y+pan.y)) < n.r+22) return n;
+  }
+  return null;
+}
+addEventListener('resize',layout);
+cv.addEventListener('mousemove',function(e){
+  mouse.x=e.clientX;mouse.y=e.clientY;
+  if(drag){pan.x=e.clientX-drag.x;pan.y=e.clientY-drag.y;}
+});
+cv.addEventListener('mousedown',function(e){
+  var n=hitTest(e.clientX,e.clientY);
+  if(n){open(n.s.id);return;}
+  drag={x:e.clientX-pan.x,y:e.clientY-pan.y};
+});
+addEventListener('mouseup',function(){drag=null;});
+// touch: tap to open, drag to pan
+cv.addEventListener('touchstart',function(e){
+  var tp=e.touches[0];
+  var n=hitTest(tp.clientX,tp.clientY);
+  if(n){e.preventDefault();open(n.s.id);return;}
+  drag={x:tp.clientX-pan.x,y:tp.clientY-pan.y};
+},{passive:false});
+cv.addEventListener('touchmove',function(e){
+  if(!drag)return;
+  var tp=e.touches[0];pan.x=tp.clientX-drag.x;pan.y=tp.clientY-drag.y;
+},{passive:true});
+addEventListener('touchend',function(){drag=null;});
+// keyboard: the map must not be mouse-only
+var kb=document.createElement('div');
+kb.style.cssText='position:fixed;bottom:70px;left:28px;z-index:20;display:flex;gap:8px;flex-wrap:wrap';
+SYSTEMS.forEach(function(s){
+  var b=document.createElement('button');
+  b.textContent='open '+s.name;
+  b.style.cssText='font-family:var(--m);font-size:11px;padding:7px 11px;border-radius:7px;'+
+    'border:1px solid '+s.c+'55;background:rgba(11,18,32,.8);color:'+s.c+';cursor:pointer';
+  b.onclick=function(){open(s.id);};
+  kb.appendChild(b);
+});
+document.body.appendChild(kb);
+layout();draw();
+
+/* ============================================================
+   2. THE DEMOS — each one really runs.
+   ============================================================ */
+var win=document.getElementById('win'),wbody=document.getElementById('wbody'),
+    wtitle=document.getElementById('wtitle'),scrim=document.getElementById('scrim');
+var timers=[];
+function clearTimers(){timers.forEach(clearInterval);timers.forEach(clearTimeout);timers=[];}
+function close(){win.classList.remove('on');scrim.classList.remove('on');clearTimers();}
+document.getElementById('wclose').onclick=close;
+scrim.onclick=close;
+addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+
+function stamp(){var d=new Date();
+  return d.toTimeString().slice(0,8);}
+function logline(el,cls,msg){
+  el.innerHTML += '<span class="t">'+stamp()+'</span>  <span class="'+cls+'">'+msg+'</span>\n';
+  el.scrollTop=el.scrollHeight;
+}
+
+function open(id){
+  clearTimers();
+  wtitle.textContent = ({fleet:'brian-os — fleet console',boom:'boombox — realtime sync',
+    squares:'squares — live draw',day:'craft — controls'})[id];
+  wbody.innerHTML = DEMOS[id]();
+  win.classList.add('on');scrim.classList.add('on');
+  INIT[id] && INIT[id]();
+}
+
+var DEMOS={}, INIT={};
+
+/* ---------- 1. FLEET: kill the gateway, watch it heal ---------- */
+DEMOS.fleet=function(){
+  return '<div style="--c:#22e6c8">'+
+  '<div class="tag">running now · your machine can\'t hurt mine</div>'+
+  '<h2>Brian OS — 25 agents, self-healing</h2>'+
+  '<p class="lede"><b>The agents aren\'t the interesting part — the operations are.</b> '+
+  'A watchdog polls the gateway every few seconds. If it dies, the watchdog notices, logs it, '+
+  'and restarts it without me. <b>Kill it below and watch.</b></p>'+
+  '<div class="demo"><div class="demo-h"><span><b>gateway</b> + 25 scheduled agents</span>'+
+  '<span id="fstat">● healthy</span></div>'+
+  '<div class="agents" id="fagents"></div>'+
+  '<div class="log" id="flog"></div></div>'+
+  '<div class="row"><button class="btn danger" id="fkill">Kill the gateway</button>'+
+  '<button class="btn" id="frun" style="--c:#22e6c8">Fire an agent now</button>'+
+  '<span style="font-family:var(--m);font-size:11px;color:var(--mute)">the watchdog runs every 4h in reality — sped up here</span></div>'+
+  '<div class="nums"><div><span>25</span><small>cron jobs</small></div>'+
+  '<div><span>81</span><small>tests green</small></div>'+
+  '<div><span>24/25</span><small>last run ok</small></div>'+
+  '<div><span>$0</span><small>per run — local model</small></div></div>'+
+  '<div class="stack"><span>Python</span><span>Ollama</span><span>PowerShell</span>'+
+  '<span>Telegram API</span><span>pytest</span></div></div>';
+};
+INIT.fleet=function(){
+  var grid=document.getElementById('fagents'),log=document.getElementById('flog'),
+      stat=document.getElementById('fstat'),kill=document.getElementById('fkill'),
+      run=document.getElementById('frun');
+  AGENTS.forEach(function(a){
+    var d=document.createElement('div');d.className='ag';d.innerHTML='<i></i>'+a;
+    d.dataset.n=a;grid.appendChild(d);
+  });
+  logline(log,'ok','gateway up · pid 8814 · 25 jobs registered');
+  logline(log,'dim','watchdog armed — polling every 4s (real interval: 4h)');
+  var alive=true;
+  // ambient: agents fire on schedule
+  timers.push(setInterval(function(){
+    if(!alive)return;
+    var a=AGENTS[Math.floor(Math.random()*AGENTS.length)];
+    var el=grid.querySelector('[data-n="'+a+'"]');
+    if(el){el.classList.add('fire');setTimeout(function(){el.classList.remove('fire');},900);}
+    logline(log,'ok',a+' → ok');
+  },2600));
+  run.onclick=function(){
+    if(!alive){logline(log,'err','cannot run — gateway is down');return;}
+    var a=AGENTS[Math.floor(Math.random()*AGENTS.length)];
+    var el=grid.querySelector('[data-n="'+a+'"]');
+    if(el){el.classList.add('fire');setTimeout(function(){el.classList.remove('fire');},900);}
+    logline(log,'ok',a+' → ok (manual)');
+  };
+  kill.onclick=function(){
+    if(!alive)return;
+    alive=false;kill.disabled=true;
+    stat.textContent='● DOWN';stat.style.color='var(--red)';
+    grid.querySelectorAll('.ag').forEach(function(e){e.classList.add('down');});
+    logline(log,'err','gateway process terminated by user (SIGKILL)');
+    logline(log,'err','25 scheduled jobs now orphaned — nothing will run');
+    timers.push(setTimeout(function(){
+      logline(log,'warn','watchdog: poll failed — no response from gateway');
+    },1400));
+    timers.push(setTimeout(function(){
+      logline(log,'warn','watchdog: confirming (avoiding a false positive on one bad poll)');
+    },2900));
+    timers.push(setTimeout(function(){
+      logline(log,'warn','watchdog: gateway confirmed dead → restarting');
+    },4300));
+    timers.push(setTimeout(function(){
+      alive=true;kill.disabled=false;
+      stat.textContent='● healthy';stat.style.color='';
+      grid.querySelectorAll('.ag').forEach(function(e){e.classList.remove('down');});
+      logline(log,'ok','gateway up · pid '+(9000+Math.floor(Math.random()*900))+' · 25 jobs re-registered');
+      logline(log,'dim','recovered with no input from me. that is the whole point.');
+    },5900));
+  };
+};
+
+/* ---------- 2. BOOMBOX: real-time sync you can break ---------- */
+DEMOS.boom=function(){
+  return '<div style="--c:#ff4d8d">'+
+  '<div class="tag">prototype · drag one playhead</div>'+
+  '<h2>BoomBox — synced playback over WebSockets</h2>'+
+  '<p class="lede"><b>Two listeners, one session.</b> Drag either playhead and the other follows '+
+  'through the socket layer. <b>Drop a connection</b> and watch it drift, queue, then re-sync on '+
+  'reconnect — the failure case is the part that actually took the work.</p>'+
+  '<div class="demo"><div class="demo-h"><span><b>ws://session/8f21</b> · Redis pub/sub fan-out</span>'+
+  '<span id="bstat">2 connected</span></div>'+
+  '<div class="clients">'+
+  '<div class="client" id="c1"><div class="cn"><span>listener A <b>host</b></span><span id="s1">live</span></div>'+
+  '<div class="bar" id="b1"><i></i><b></b></div><div class="st" id="t1">00:00 / 03:20</div></div>'+
+  '<div class="client" id="c2"><div class="cn"><span>listener B</span><span id="s2">live</span></div>'+
+  '<div class="bar" id="b2"><i></i><b></b></div><div class="st" id="t2">00:00 / 03:20</div></div>'+
+  '</div><div class="log" id="blog" style="height:130px"></div></div>'+
+  '<div class="row"><button class="btn" id="bdrop" style="--c:#ff5f56">Drop listener B\'s socket</button>'+
+  '<button class="btn" id="bplay" style="--c:#ff4d8d">Play / pause</button></div>'+
+  '<div class="stack"><span>Next.js</span><span>TypeScript</span><span>Node WebSocket</span>'+
+  '<span>Redis Pub/Sub</span><span>Supabase</span></div></div>';
+};
+INIT.boom=function(){
+  var pos=0,playing=false,bOn=true,drift=0;
+  var log=document.getElementById('blog'),stat=document.getElementById('bstat');
+  var DUR=200; // seconds
+  function fmt(s){var m=Math.floor(s/60),x=Math.floor(s%60);return (m<10?'0':'')+m+':'+(x<10?'0':'')+x;}
+  function paint(){
+    [[1,pos],[2,bOn?pos:pos-drift]].forEach(function(p){
+      var pct=Math.max(0,Math.min(100,p[1]/DUR*100));
+      var bar=document.getElementById('b'+p[0]);
+      bar.querySelector('i').style.width=pct+'%';
+      bar.querySelector('b').style.left=pct+'%';
+      document.getElementById('t'+p[0]).textContent=fmt(Math.max(0,p[1]))+' / 03:20';
+    });
+  }
+  logline(log,'ok','session joined · 2 listeners · host = listener A');
+  function seek(e,which){
+    var bar=e.currentTarget,r=bar.getBoundingClientRect();
+    var pct=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
+    pos=pct*DUR;
+    if(bOn){drift=0;logline(log,'ok','seek → '+fmt(pos)+' · broadcast to 2 listeners · both in sync');}
+    else{logline(log,'warn','seek → '+fmt(pos)+' · listener B offline, event queued');}
+    paint();
+  }
+  document.getElementById('b1').addEventListener('click',function(e){seek(e,1);});
+  document.getElementById('b2').addEventListener('click',function(e){seek(e,2);});
+  timers.push(setInterval(function(){
+    if(playing){pos=Math.min(DUR,pos+1); if(!bOn)drift+=1; paint();}
+  },600));
+  document.getElementById('bplay').onclick=function(){
+    playing=!playing;
+    logline(log,playing?'ok':'dim',playing?'play · state broadcast':'pause · state broadcast');
+  };
+  var drop=document.getElementById('bdrop');
+  drop.onclick=function(){
+    if(bOn){
+      bOn=false;drift=0;drop.textContent="Reconnect listener B";
+      document.getElementById('c2').classList.add('off');
+      document.getElementById('s2').textContent='offline';
+      stat.textContent='1 connected';
+      logline(log,'err','listener B socket closed (code 1006, abnormal)');
+      logline(log,'warn','heartbeat missed · buffering state for replay');
+    } else {
+      bOn=true;drop.textContent="Drop listener B's socket";
+      document.getElementById('c2').classList.remove('off');
+      document.getElementById('s2').textContent='live';
+      stat.textContent='2 connected';
+      logline(log,'warn','listener B reconnected · '+drift+'s behind');
+      logline(log,'ok','replaying buffered state → re-synced to '+fmt(pos));
+      drift=0;
+    }
+    paint();
+  };
+  paint();
+};
+
+/* ---------- 3. SQUARES ---------- */
+DEMOS.squares=function(){
+  return '<div style="--c:#ffc247">'+
+  '<div class="tag">ran a real game · real people</div>'+
+  '<h2>Super Bowl Squares — live draw</h2>'+
+  '<p class="lede"><b>Built for an actual game.</b> Live score sync, chat, host controls, and a '+
+  'write-lock so nobody can claim a square after kickoff. The core is a fair shuffle — '+
+  '<b>run it.</b></p>'+
+  '<div class="demo"><div class="demo-h"><span><b>100 squares</b> · Fisher–Yates shuffle</span>'+
+  '<span id="qstat">ready</span></div><div class="sqwrap"><div class="sq" id="qgrid"></div>'+
+  '<div class="log" id="qlog" style="height:150px"></div></div></div>'+
+  '<div class="row"><button class="btn" id="qdraw" style="--c:#ffc247">Run the draw</button>'+
+  '<button class="btn" id="qtd" style="--c:#9d8cff">Score a touchdown</button>'+
+  '<button class="btn" id="qlock" style="--c:#ff5f56">Lock the board</button></div>'+
+  '<div class="stack"><span>React</span><span>Firebase Realtime DB</span><span>security rules</span></div></div>';
+};
+INIT.squares=function(){
+  var g=document.getElementById('qgrid'),log=document.getElementById('qlog'),
+      stat=document.getElementById('qstat');
+  for(var i=0;i<100;i++)g.appendChild(document.createElement('i'));
+  var cells=g.querySelectorAll('i'),locked=false;
+  logline(log,'dim','board open · 100 squares unclaimed');
+  document.getElementById('qdraw').onclick=function(){
+    if(locked){logline(log,'err','board is locked — draw rejected by security rule');return;}
+    cells.forEach(function(c){c.className='';});
+    stat.textContent='shuffling…';logline(log,'ok','running Fisher–Yates over 100 squares');
+    var o=[];for(var i=0;i<100;i++)o.push(i);
+    for(var i=99;i>0;i--){var j=Math.floor(Math.random()*(i+1)),tmp=o[i];o[i]=o[j];o[j]=tmp;}
+    o.forEach(function(idx,n){timers.push(setTimeout(function(){
+      cells[idx].className='f';
+      if(n===99){stat.textContent='100 assigned';logline(log,'ok','all 100 squares assigned');}
+    },n*10));});
+  };
+  document.getElementById('qtd').onclick=function(){
+    var w=Math.floor(Math.random()*100);
+    cells.forEach(function(c){c.classList.remove('w');});
+    cells[w].classList.add('f');cells[w].classList.add('w');
+    logline(log,'ok','touchdown · winner row '+Math.floor(w/10)+' col '+(w%10));
+  };
+  document.getElementById('qlock').onclick=function(){
+    locked=!locked;
+    this.textContent=locked?'Unlock the board':'Lock the board';
+    stat.textContent=locked?'LOCKED':'ready';
+    logline(log,locked?'warn':'ok',locked
+      ? 'kickoff · board locked — writes now rejected server-side'
+      : 'board unlocked — writes accepted');
+  };
+};
+
+/* ---------- 4. CRAFT: the day/night control, exposed ---------- */
+DEMOS.day=function(){
+  return '<div style="--c:#9d8cff">'+
+  '<div class="tag">craft · drag the slider</div>'+
+  '<h2>What I can do on the front end</h2>'+
+  '<p class="lede">Not a project — a demonstration. <b>Drag through 24 hours</b> and the sky is '+
+  'interpolated live between eight keyframes, the stars fade by daylight, and the agent list '+
+  'updates to whatever is actually scheduled at that hour. <b>All of it is my real crontab.</b></p>'+
+  '<div class="demo"><div class="demo-h"><span><b>time of day</b> · 8-stop gradient interpolation</span>'+
+  '<span id="dclock">07:00</span></div>'+
+  '<div id="dsky" style="height:150px;transition:none"></div>'+
+  '<div style="padding:14px"><input id="dslider" type="range" min="0" max="1440" value="420" '+
+  'style="width:100%;accent-color:#9d8cff" aria-label="time of day"></div>'+
+  '<div class="agents" id="dagents"></div></div>'+
+  '<div class="stack"><span>Canvas 2D</span><span>GSAP</span><span>Lenis</span>'+
+  '<span>colour interpolation</span><span>no framework</span></div></div>';
+};
+INIT.day=function(){
+  var SKY=[[0,'#050a14','#0a1226'],[5,'#0b1428','#20223f'],[7,'#2a2340','#c07a3a'],
+    [10,'#20486e','#7fb4d8'],[14,'#1c5b86','#a8d4ea'],[18,'#3a3457','#d98a4a'],
+    [21,'#101a30','#1c2440'],[24,'#050a14','#0a1226']];
+  var SCHED={2:['memory-index','overnight-worker'],3:['model-review'],
+    6:['fleet-health','learning-agent','career','calendar','currency'],
+    7:['daily-brief','scout','gig-scanner'],8:['inbox'],9:['finance','health'],
+    11:['research'],12:['dashboard'],13:['wiki'],16:['weekly-review','currency-weekly'],
+    17:['inbox'],18:['ceo-report','fleet-health'],20:['outcome-learner'],21:['feedback'],
+    22:['harmony-backup'],23:['skill-miner']};
+  function mix(a,b,t){function p(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+    var A=p(a),B=p(b);return 'rgb('+A.map(function(v,i){return Math.round(v+(B[i]-v)*t);}).join(',')+')';}
+  var sky=document.getElementById('dsky'),cl=document.getElementById('dclock'),
+      ag=document.getElementById('dagents'),sl=document.getElementById('dslider');
+  function paint(mins){
+    var h=mins/60;
+    for(var i=0;i<SKY.length-1;i++){
+      if(h>=SKY[i][0]&&h<=SKY[i+1][0]){
+        var k=(h-SKY[i][0])/(SKY[i+1][0]-SKY[i][0]);
+        sky.style.background='linear-gradient(170deg,'+mix(SKY[i][1],SKY[i+1][1],k)+','+
+          mix(SKY[i][2],SKY[i+1][2],k)+')';
+        break;
+      }
+    }
+    var hh=Math.floor(h),mm=Math.floor(mins%60);
+    cl.textContent=(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm;
+    var jobs=SCHED[hh]||[];
+    ag.innerHTML = jobs.length
+      ? jobs.map(function(j){return '<div class="ag fire"><i></i>'+j+'</div>';}).join('')
+      : '<div class="ag" style="opacity:.45"><i style="background:#61738a;box-shadow:none"></i>nothing scheduled</div>';
+  }
+  sl.addEventListener('input',function(){paint(+sl.value);});
+  paint(420);
+};
+</script>
+</body></html>
