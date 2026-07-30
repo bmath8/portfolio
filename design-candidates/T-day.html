@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Brian Mathew — 24 hours inside a machine</title>
+<link rel="stylesheet" href="../vendor/fonts.css"/>
+<script type="importmap">
+{"imports":{"three":"/vendor/three.module.min.js","three/addons/":"/vendor/"}}
+</script>
+<style>
+/* ==========================================================================
+   T — THE DAY
+   The mechanic: SCROLL IS TIME. Scrolling does not rotate an object; it moves
+   the clock from 00:00 to 24:00 on Brian's actual machine, and the cortex
+   shows what was really running. Nothing here spins for decoration -- the
+   06:40 cascade happens because nine agents genuinely fire in twenty minutes.
+   Real MNI cortical surface, 81,924 verts, correct anatomical orientation.
+   ========================================================================== */
+:root{
+  --n0:#05050a; --n1:#0b0b14; --paper:#eeeef4; --ink:#0a0a12;
+  --dim:#6d6d84; --line:#1d1d2e;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --disp:"Bricolage Grotesque","IBM Plex Sans",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--n0);color:#c9c9dd;font-family:var(--sans);font-size:16px;
+  line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid #5cc8ff;outline-offset:3px}
+#gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.above{position:relative;z-index:2;pointer-events:none}
+.above a,.above button{pointer-events:auto}
+
+/* ---- fixed chrome ---- */
+.bar{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;
+  padding:20px 26px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);pointer-events:none}
+.bar b{color:#fff;font-weight:500;letter-spacing:.02em;font-family:var(--sans);font-size:14px}
+.bar .act{margin-left:auto;display:flex;gap:8px;pointer-events:auto}
+.pill{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  padding:9px 14px;border-radius:999px;border:1px solid var(--line);
+  background:rgba(255,255,255,.05);color:#fff;backdrop-filter:blur(10px);transition:.2s}
+.pill:hover{border-color:#5cc8ff;color:#5cc8ff}
+.pill.on{background:#fff;border-color:#fff;color:#05050a;font-weight:600}
+
+/* ---- the clock rail: the scrollbar IS a 24h timeline ---- */
+.rail{position:fixed;left:26px;top:50%;transform:translateY(-50%);z-index:40;
+  width:2px;height:46vh;background:var(--line);pointer-events:none}
+.rail .fill{position:absolute;left:0;top:0;width:100%;background:linear-gradient(#5cc8ff,#38f0b0)}
+.rail i{position:absolute;left:-3px;width:8px;height:1px;background:#2e2e46}
+.rail .now{position:absolute;left:-5px;width:12px;height:12px;border-radius:50%;
+  background:#fff;transform:translateY(-50%);box-shadow:0 0 18px #5cc8ff}
+.clock{position:fixed;left:52px;top:50%;transform:translateY(-50%);z-index:40;pointer-events:none}
+.clock .t{font-family:var(--disp);font-weight:800;font-size:clamp(38px,5vw,66px);
+  color:#fff;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.clock .l{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--dim);margin-top:7px}
+.clock .fire{font-family:var(--mono);font-size:11px;color:#5cc8ff;margin-top:12px;min-height:18px}
+
+/* ---- chapters ---- */
+.ch{min-height:118svh;display:flex;align-items:center;padding:0 26px 0 clamp(140px,15vw,300px)}
+.ch .in{max-width:520px}
+.ch .hr{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:#5cc8ff;margin-bottom:16px}
+.ch h2{font-family:var(--disp);font-weight:800;font-size:clamp(28px,4.2vw,58px);line-height:1.02;
+  letter-spacing:-.04em;color:#fff;max-width:15ch}
+.ch p{margin-top:18px;font-size:clamp(14.5px,1.15vw,17px);max-width:46ch}
+.ch p b{color:#fff;font-weight:600}
+.ch .kv{display:flex;gap:26px;flex-wrap:wrap;margin-top:24px;padding-top:16px;border-top:1px solid var(--line)}
+.ch .kv div{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.ch .kv b{display:block;font-family:var(--disp);font-weight:700;font-size:26px;color:#fff;
+  letter-spacing:-.03em;margin-top:4px;text-transform:none}
+.ch .go{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+
+/* live demo frame, not a thumbnail */
+.live{margin-top:26px;border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  background:#000;max-width:520px;pointer-events:auto}
+.live .hd{display:flex;align-items:center;gap:8px;padding:9px 13px;background:#101018;
+  border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.live .hd i{width:7px;height:7px;border-radius:50%;background:#38f0b0;display:block}
+.live .hd span{margin-left:auto;color:#38f0b0}
+.live iframe{width:100%;height:300px;border:0;display:block;background:#fff}
+
+.end{min-height:100svh;display:flex;align-items:center;padding:0 26px 0 clamp(140px,15vw,300px)}
+.end h2{font-family:var(--disp);font-weight:800;font-size:clamp(34px,6vw,86px);line-height:.95;
+  letter-spacing:-.045em;color:#fff;max-width:13ch}
+.end .meta{margin-top:34px;display:flex;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:11px}
+.end .meta a{color:#fff;border-bottom:1px solid var(--line);padding-bottom:3px}
+.end .meta a:hover{border-bottom-color:#5cc8ff}
+#boot{position:fixed;inset:0;z-index:90;background:var(--n0);display:flex;align-items:center;
+  justify-content:center;font-family:var(--mono);font-size:11px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--dim);transition:opacity .8s}
+#boot.out{opacity:0;pointer-events:none}
+@media(max-width:820px){.ch,.end{padding-left:26px;padding-top:16vh}.clock,.rail{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="boot">Reading 24 hours of machine history…</div>
+<canvas id="gl"></canvas>
+
+<div class="bar">
+  <b>Brian Mathew</b>
+  <div class="act">
+    <a class="pill" href="../resume.pdf">Résumé</a>
+    <a class="pill on" href="mailto:mathew.brian@gmail.com">Available — email me</a>
+  </div>
+</div>
+
+<div class="rail"><div class="fill" id="fill"></div><div class="now" id="knob"></div></div>
+<div class="clock">
+  <div class="t" id="clk">00:00</div>
+  <div class="l">Fleet local time · scroll to move</div>
+  <div class="fire" id="fire">&nbsp;</div>
+</div>
+
+<div class="above">
+
+  <section class="ch" data-t="0">
+    <div class="in">
+      <div class="hr">00:00 — midnight</div>
+      <h2>Scroll down. You are moving through my machine's day.</h2>
+      <p>This isn't an animation of a system. It's <b>24 hours of the fleet I actually run</b>,
+        laid on a real cortical surface. Every light is one scheduled job, in the region that
+        matches what it does, firing at the minute it really fires.</p>
+      <div class="kv">
+        <div>Agents<b>25</b></div><div>Tests<b>81</b></div><div>Unattended<b>Daily</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" data-t="90">
+    <div class="in">
+      <div class="hr">01:20 — 02:00 · while I sleep</div>
+      <h2>Three of them run before I wake up.</h2>
+      <p><b>memory-index</b> files everything I wrote yesterday. <b>harmony-backup</b> snapshots.
+        <b>overnight-worker</b> drains the queue. A system you have to babysit isn't finished —
+        that's the whole reason these exist.</p>
+    </div>
+  </section>
+
+  <section class="ch" data-t="419">
+    <div class="in">
+      <div class="hr">06:40 — 07:00 · the cascade</div>
+      <h2>Nine agents in twenty minutes.</h2>
+      <p>Watch the cortex. <b>scout, learning-agent, inbox, finance, health, career, calendar,
+        currency, fleet-health</b> — then the brief. They were written one at a time, over
+        months, each because something broke or something was tedious. This is the fleet's
+        busiest moment and it happens every weekday whether I'm there or not.</p>
+      <div class="kv"><div>Window<b>20 min</b></div><div>Jobs<b>9</b></div><div>Tests green<b>81/81</b></div></div>
+      <div class="go"><a class="pill" href="https://github.com/bmath8/brian-os">Read the source</a></div>
+    </div>
+  </section>
+
+  <section class="ch" data-t="430">
+    <div class="in">
+      <div class="hr">07:10 · the one that ran in front of people</div>
+      <h2>Super Bowl LX Squares</h2>
+      <p>Not everything I build runs in the dark. This one ran a real pool during a real game —
+        a draw that had to be verifiably fair and identical for every viewer, resolving live on
+        the score. One moment to be correct, in front of an audience.</p>
+      <div class="live">
+        <div class="hd"><i></i> fam-super-bowl-squares-2026.vercel.app <span>live</span></div>
+        <iframe src="https://fam-super-bowl-squares-2026.vercel.app" loading="lazy"
+                title="Live Super Bowl LX squares app" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+      <div class="go">
+        <a class="pill on" href="https://fam-super-bowl-squares-2026.vercel.app">Open full ↗</a>
+        <a class="pill" href="https://github.com/bmath8/fam-super-bowl-squares-2026">Source</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" data-t="720">
+    <div class="in">
+      <div class="hr">12:00 · the failure worth showing</div>
+      <h2>The night it all went dark.</h2>
+      <p>A failed process guardian left orphan processes until they filled the disk.
+        <b>Nothing alerted me — the alerting was one of the casualties.</b> I found it, traced
+        the cause, recovered the machine, restored monitoring, and gave the watchdog a watchdog.
+        The hardest bug I've had was operational, not logical.</p>
+    </div>
+  </section>
+
+  <section class="ch" data-t="1020">
+    <div class="in">
+      <div class="hr">17:00 · the rest of the stack</div>
+      <h2>BoomBox</h2>
+      <p>Collaborative music — shared queues, live rooms, listening in sync. Durable Postgres
+        state kept deliberately apart from transient WebSocket and Redis Pub/Sub, because they
+        fail in completely different ways and shouldn't share a failure mode.</p>
+      <div class="go"><a class="pill" href="https://github.com/bmath8/boombox">Read the source</a></div>
+    </div>
+  </section>
+
+  <section class="ch" data-t="1110">
+    <div class="in">
+      <div class="hr">18:30 · before the code</div>
+      <h2>Years of it were people, not processes.</h2>
+      <p><b>Best Buy — Appliances Department Lead.</b> High-volume floor, high-consideration
+        purchases, complaints resolved in person, a small team to coordinate. Then a year driving
+        independently for Uber. Undergraduate coursework at Penn State Berks and CCNY.</p>
+    </div>
+  </section>
+
+  <div class="end">
+    <div>
+      <h2>Let me run your systems the way I run mine.</h2>
+      <p style="margin-top:20px;max-width:44ch">Full-time — developer, technical support, or
+        operations. Available immediately; remote, hybrid, on-site or relocation.</p>
+      <div class="meta">
+        <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+        <a href="tel:+16098151685">(609) 815-1685</a>
+        <a href="https://github.com/bmath8">github.com/bmath8</a>
+        <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+        <a href="../resume.pdf">Résumé</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+const REDUCE=matchMedia('(prefers-reduced-motion:reduce)').matches;
+/* real crontab, 2026-07-30: name, minute-of-day, lane */
+const JOBS=[['memory-index',80,0],['harmony-backup',90,3],['overnight-worker',120,0],
+ ['model-review',180,1],['scout',400,1],['learning-agent',405,1],['inbox',408,2],
+ ['finance',410,4],['health',412,3],['career',413,1],['calendar',415,2],['currency',418,1],
+ ['fleet-health',419,3],['daily-brief',420,2],['gig-scanner',430,4],['ceo-report',450,4],
+ ['currency-weekly',990,1],['wiki',1005,1],['outcome-learner',1010,1],['weekly-review',1020,2],
+ ['feedback',1020,2],['research',1080,1],['skill-miner',1110,1],['dashboard',-1,0],
+ ['system-watchdog',-2,3]];
+const COL=[0x38f0b0,0x5cc8ff,0xff7a63,0xa98bff,0xffc65c];
+const LANE=[[0.05,0.62,0.20],[0.18,0.10,0.88],[0.66,-0.05,-0.10],[0.02,-0.40,-0.78],[-0.15,0.42,-0.62]];
+
+const THREE=await import('/vendor/three.module.min.js');
+const {RoomEnvironment}=await import('/vendor/RoomEnvironment.js');
+const PP=await import('/vendor/postprocessing.module.js');
+const {EffectComposer,RenderPass,EffectPass,BloomEffect,VignetteEffect,NoiseEffect,
+       ToneMappingEffect,SMAAEffect,DepthOfFieldEffect,BlendFunction,KernelSize}=PP;
+
+const buf=await (await fetch('/vendor/mesh/brain-mni.bin')).arrayBuffer();
+const dv=new DataView(buf); const nV=dv.getUint32(0,true), nT=dv.getUint32(4,true);
+let o=8;
+const qp=new Int16Array(buf,o,nV*3); o+=nV*6;
+const qn=new Int8Array(buf,o,nV*3);  o+=nV*3;
+const idx=new Uint32Array(buf.slice(o,o+nT*12));
+const pos=new Float32Array(nV*3), nrm=new Float32Array(nV*3);
+for(let i=0;i<nV*3;i++){pos[i]=qp[i]/32767;nrm[i]=qn[i]/127;}
+
+const geo=new THREE.BufferGeometry();
+geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+geo.setAttribute('normal',new THREE.BufferAttribute(nrm,3));
+geo.setIndex(new THREE.BufferAttribute(idx,1));
+
+const host=document.getElementById('gl');
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(32,innerWidth/innerHeight,0.01,60);
+const renderer=new THREE.WebGLRenderer({canvas:host,antialias:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));
+renderer.setSize(innerWidth,innerHeight,false);
+renderer.toneMapping=THREE.NoToneMapping;
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(),0.03).texture;
+scene.add(new THREE.AmbientLight(0xffffff,0.22));
+const key=new THREE.DirectionalLight(0xcfd8ff,2.4); key.position.set(-3,3,4); scene.add(key);
+const rim=new THREE.DirectionalLight(0x4a6bff,2.6); rim.position.set(4,-1,-4); scene.add(rim);
+
+const pivot=new THREE.Group(); scene.add(pivot);
+const mat=new THREE.MeshPhysicalMaterial({color:0x151a26,roughness:0.52,metalness:0.05,
+  clearcoat:0.7,clearcoatRoughness:0.4,sheen:0.8,sheenColor:new THREE.Color(0x3f5cff),
+  envMapIntensity:0.55});
+pivot.add(new THREE.Mesh(geo,mat));
+
+/* nodes snapped to the nearest REAL vertex */
+const _v=new THREE.Vector3();
+function snap(d){let b=0,bd=-1e9;
+  for(let i=0;i<nV;i+=5){const s=pos[i*3]*d.x+pos[i*3+1]*d.y+pos[i*3+2]*d.z;
+    if(s>bd){bd=s;b=i;}}
+  return new THREE.Vector3(pos[b*3],pos[b*3+1],pos[b*3+2]);}
+const nodeGeo=new THREE.SphereGeometry(0.014,14,10);
+const N=[];
+JOBS.forEach((j,i)=>{
+  const l=LANE[j[2]];
+  _v.set(l[0]+(Math.random()-.5)*.42,l[1]+(Math.random()-.5)*.34,l[2]+(Math.random()-.5)*.42).normalize();
+  const p=snap(_v).multiplyScalar(1.012);
+  const c=COL[j[2]];
+  const m=new THREE.MeshBasicMaterial({color:new THREE.Color(c),toneMapped:false});
+  const mesh=new THREE.Mesh(nodeGeo,m); mesh.position.copy(p); pivot.add(mesh);
+  N.push({job:j,mesh,m,base:new THREE.Color(c),heat:0});
+});
+
+/* ---- post ---- */
+const composer=new EffectComposer(renderer,{frameBufferType:THREE.HalfFloatType});
+composer.addPass(new RenderPass(scene,cam));
+const dof=new DepthOfFieldEffect(cam,{worldFocusDistance:2.9,worldFocusRange:1.6,bokehScale:2.2,height:640});
+const bloom=new BloomEffect({intensity:2.0,luminanceThreshold:0.32,luminanceSmoothing:0.34,
+  kernelSize:KernelSize.HUGE,mipmapBlur:true});
+composer.addPass(new EffectPass(cam,dof,bloom,
+  new VignetteEffect({offset:0.22,darkness:0.85}),
+  (()=>{const n=new NoiseEffect({blendFunction:BlendFunction.OVERLAY});n.blendMode.opacity.value=0.1;return n;})(),
+  new ToneMappingEffect(PP.ToneMappingMode?{mode:PP.ToneMappingMode.AGX}:undefined)));
+composer.addPass(new EffectPass(cam,new SMAAEffect()));
+
+/* ---- scroll IS time ---- */
+const chs=[...document.querySelectorAll('.ch')];
+const clk=document.getElementById('clk'), fireEl=document.getElementById('fire'),
+      fill=document.getElementById('fill'), knob=document.getElementById('knob');
+const hhmm=m=>('0'+Math.floor(m/60)).slice(-2)+':'+('0'+Math.floor(m%60)).slice(-2);
+let T=0, targetT=0;
+
+/* Time is anchored to the chapters, not to raw scroll distance. Each chapter
+   declares the minute it describes; the clock interpolates between the anchors
+   either side of the viewport centre. Linear scroll->time made the clock read
+   03:49 while the copy claimed 07:10, which breaks the entire premise. */
+const ANCH=chs.map(c=>({el:c,t:+c.dataset.t}));
+function onScroll(){
+  const mid=scrollY+innerHeight*0.5;
+  let a=ANCH[0], b=ANCH[ANCH.length-1];
+  for(let i=0;i<ANCH.length;i++){
+    const top=ANCH[i].el.offsetTop+ANCH[i].el.offsetHeight*0.5;
+    if(top<=mid) a=ANCH[i];
+    if(top>mid){ b=ANCH[i]; break; }
+  }
+  const at=a.el.offsetTop+a.el.offsetHeight*0.5;
+  const bt=b.el.offsetTop+b.el.offsetHeight*0.5;
+  let u = bt>at ? (mid-at)/(bt-at) : 1;
+  u=Math.min(1,Math.max(0,u));
+  targetT = a.t + (b.t-a.t)*u;
+  /* past the last chapter, run the clock out to midnight */
+  const maxS=document.body.scrollHeight-innerHeight;
+  if(mid > bt && b===ANCH[ANCH.length-1]){
+    const tail=Math.min(1,(scrollY-(bt-innerHeight*0.5))/Math.max(1,maxS-(bt-innerHeight*0.5)));
+    targetT = b.t + (1439-b.t)*tail;
+  }
+  const p=Math.min(1,Math.max(0,targetT/1439));
+  fill.style.height=(p*100)+'%'; knob.style.top=(p*100)+'%';
+}
+addEventListener('scroll',onScroll,{passive:true}); onScroll();
+addEventListener('resize',()=>{
+  cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight,false);composer.setSize(innerWidth,innerHeight);onScroll();});
+
+document.getElementById('boot').classList.add('out');
+
+let last=performance.now();
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt=Math.min((now-last)/16.7,3); last=now;
+  T += (targetT-T)*0.13*dt;
+
+  clk.textContent=hhmm(T);
+
+  /* camera: a considered arc through the day, never a spin.
+     Night = far and low. The 06:40 cascade = close on the motor strip.
+     Evening = pulled back and high. */
+  const p=T/1439;
+  const ang=-2.35+p*1.5;
+  const dist=3.55-Math.exp(-Math.pow((T-419)/95,2))*1.05;
+  const hgt=0.55-Math.sin(p*Math.PI)*0.62;
+  cam.position.set(Math.sin(ang)*dist,hgt,Math.cos(ang)*dist);
+  cam.lookAt(0,0.02,0);
+  dof.cocMaterial.worldFocusDistance=dist;
+
+  /* each node's heat is derived from the real schedule, nothing decorative */
+  let firing=null;
+  for(let i=0;i<N.length;i++){
+    const n=N[i], m=n.job[1];
+    let h;
+    if(m<0){ h=0.18+0.10*Math.sin(now*0.0013+i); }
+    else{
+      const d=Math.abs(T-m);
+      h = d<10 ? Math.pow(1-d/10,1.6) : 0.05;
+      if(d<3 && !firing) firing=n.job[0];
+    }
+    n.heat += (h-n.heat)*0.16*dt;
+    n.m.color.copy(n.base).multiplyScalar(0.25+n.heat*5.5);
+    n.mesh.scale.setScalar(0.55+n.heat*2.6);
+  }
+  fireEl.textContent = firing ? firing+' firing' : '';
+  bloom.intensity = 1.5 + Math.exp(-Math.pow((T-419)/70,2))*1.9;
+
+  composer.render();
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
