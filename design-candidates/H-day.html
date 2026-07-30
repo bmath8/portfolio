@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — a day inside a system that runs itself</title>
+<meta name="description" content="Developer in New Jersey. Scroll through 24 hours of a 25-agent fleet running unattended. Python, TypeScript, real-time systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;800;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CANDIDATE H — "A DAY"
+   Structurally unlike A-G: the spine is a PINNED HORIZONTAL
+   scrub through 24 hours of Brian's real crontab. Scroll down,
+   move sideways through the day.
+
+   The signature: the sky changes colour as you travel — night,
+   dawn at 06:45 when the fleet wakes, daylight, dusk, night
+   again. It's not decoration; the gradient IS the clock, and
+   the hours it lands on are his actual schedule.
+
+   Why this shape: a fleet's defining property is that it runs
+   on a cycle without him. A timeline is the honest diagram of
+   that, and nobody's portfolio is a scrubbable day.
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#f2f6f8;--ink2:#aebccb;--mute:#7c8b9b;--edge:rgba(255,255,255,.14);
+  --cyan:#22e6c8;--amber:#ffc247;--mag:#ff4d8d;--violet:#9d8cff;
+  --d:'Geist',system-ui,sans-serif;--m:'Geist Mono',ui-monospace,Consolas,monospace;
+}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{background:#050a14;color:var(--ink);font-family:var(--d);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 26px}
+
+/* the sky: one fixed layer whose colour is driven by scroll progress */
+#sky{position:fixed;inset:0;z-index:-2;background:#050a14;transition:none}
+#stars{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:1}
+
+/* ---------- intro ---------- */
+.intro{min-height:100vh;display:flex;align-items:center;position:relative}
+.kick{font-family:var(--m);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.kick i{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan);
+  display:block;animation:bp 2.2s infinite}
+@keyframes bp{50%{opacity:.3}}
+h1{font-size:clamp(40px,7.4vw,94px);font-weight:900;letter-spacing:-.045em;line-height:.95;max-width:15ch}
+h1 em{font-style:normal;color:var(--amber)}
+.sub{margin-top:26px;max-width:52ch;color:var(--ink2);font-size:18px}
+.sub b{color:var(--ink);font-weight:600}
+.cta{display:flex;gap:9px;flex-wrap:wrap;margin-top:32px;font-family:var(--m);font-size:13px}
+.cta a{padding:11px 17px;border-radius:8px;text-decoration:none;border:1px solid var(--edge);
+  color:var(--ink2);background:rgba(255,255,255,.05);backdrop-filter:blur(8px);transition:.18s}
+.cta a:hover{border-color:var(--cyan);color:var(--cyan)}
+.cta a.p{background:var(--cyan);border-color:var(--cyan);color:#04120f;font-weight:600}
+.hint{position:absolute;left:26px;bottom:34px;font-family:var(--m);font-size:10.5px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+
+/* ---------- the pinned day ---------- */
+#day{position:relative;height:100vh;overflow:hidden}
+/* width:max-content is load-bearing. Without it an absolutely-positioned flex
+   container does not size to its children, scrollWidth == innerWidth, the
+   translate distance computes to 0, and the track never moves while the sky
+   still animates — the two silently disagree. */
+#track{position:absolute;top:0;left:0;height:100%;width:max-content;display:flex;
+  align-items:center;will-change:transform;padding:0 8vw}
+.hour{position:relative;flex:none;width:190px;height:100%;display:flex;flex-direction:column;
+  justify-content:center;border-left:1px solid var(--edge)}
+.hour .t{position:absolute;top:16%;left:14px;font-family:var(--m);font-size:12px;
+  letter-spacing:.1em;color:var(--mute)}
+.hour.q .t{color:var(--ink);font-weight:500}
+.hour .jobs{position:absolute;top:calc(16% + 30px);left:14px;right:10px;display:flex;
+  flex-direction:column;gap:5px}
+.job{font-family:var(--m);font-size:11px;color:var(--ink2);display:flex;align-items:center;gap:7px}
+.job i{width:5px;height:5px;border-radius:50%;flex:none;background:var(--cyan);box-shadow:0 0 7px var(--cyan)}
+.job.a i{background:var(--amber);box-shadow:0 0 7px var(--amber)}
+.job.m i{background:var(--mag);box-shadow:0 0 7px var(--mag)}
+.job.v i{background:var(--violet);box-shadow:0 0 7px var(--violet)}
+
+/* project cards live on the track at the hour they relate to */
+/* Anchored in px, not %: a percentage bottom resolved against the full-height
+   column and pushed the card off the bottom of the viewport. */
+.card{position:absolute;top:auto;bottom:72px;left:14px;width:430px;padding:22px;border-radius:14px;
+  background:rgba(6,12,22,.78);backdrop-filter:blur(14px);border:1px solid var(--edge);
+  box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.card h3{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+.card .meta{font-family:var(--m);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--c);margin-bottom:10px}
+.card p{font-size:14.5px;color:var(--ink2);margin-bottom:12px}
+.card p b{color:var(--ink);font-weight:600}
+.card .nums{display:flex;gap:16px;font-family:var(--m);flex-wrap:wrap}
+.card .nums div span{display:block;font-size:18px;color:var(--c)}
+.card .nums div small{font-size:10px;color:var(--mute)}
+@media(max-width:640px){.card{width:78vw}}
+
+.dayhead{position:absolute;top:32px;left:0;right:0;z-index:5;pointer-events:none}
+.dayhead .wrap{display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--m);font-size:11px;color:var(--mute);flex-wrap:wrap;gap:8px}
+.dayhead b{color:var(--ink);font-weight:500}
+#clock{font-size:26px;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+
+/* ---------- vertical tail ---------- */
+.sh{font-family:var(--m);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--mute);margin:80px 0 24px;display:flex;align-items:center;gap:14px}
+.sh::after{content:"";flex:1;height:1px;background:var(--edge)}
+.xp{display:grid;grid-template-columns:112px 1fr;gap:20px;padding:18px 0;border-top:1px solid var(--edge)}
+@media(max-width:560px){.xp{grid-template-columns:1fr;gap:5px}}
+.xp .y{font-family:var(--m);font-size:12px;color:var(--mute)}
+.xp h4{font-size:17px;font-weight:700}.xp h4 span{color:var(--mute);font-weight:400}
+.xp p{color:var(--ink2);font-size:14.5px;margin-top:5px;max-width:62ch}
+.edu{font-family:var(--m);font-size:12px;color:var(--mute);margin-top:18px;padding-top:16px;
+  border-top:1px solid var(--edge);line-height:1.9}
+.end{padding:90px 0 40px}
+.end h2{font-size:clamp(30px,5.2vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1.04;max-width:18ch}
+.end h2 em{font-style:normal;color:var(--amber)}
+.end p{color:var(--ink2);max-width:56ch;margin-top:20px;font-size:17px}
+footer{padding:26px 0 60px;font-family:var(--m);font-size:11.5px;color:var(--mute);
+  line-height:1.9;border-top:1px solid var(--edge);margin-top:44px}
+.rv{opacity:1}
+html.js .rv{opacity:0;transform:translateY(20px)}
+@media(prefers-reduced-motion:reduce){html.js .rv{opacity:1!important;transform:none!important}}
+/* JS-off fallback: the horizontal track becomes a readable vertical list */
+html:not(.js) #day{height:auto;overflow:visible}
+html:not(.js) #track{position:static;display:block;padding:40px 26px}
+html:not(.js) .hour{width:auto;height:auto;border-left:0;border-top:1px solid var(--edge);padding:14px 0}
+html:not(.js) .hour .t,html:not(.js) .hour .jobs,html:not(.js) .card{position:static;width:auto}
+</style></head>
+<body>
+<div id="sky"></div>
+<canvas id="stars"></canvas>
+
+<!-- ================= intro ================= -->
+<section class="intro"><div class="wrap">
+  <div class="kick"><i></i>25 agents · running right now · New Jersey</div>
+  <h1 class="rv">A day inside a system that <em>runs itself.</em></h1>
+  <p class="sub rv">I'm Brian — a developer in Python and TypeScript. Rather than list what I've
+  built, here's <b>one real day of my agent fleet</b>: 25 scheduled jobs on my own machine, on a
+  local model, costing nothing per run. <b>Scroll to move through the 24 hours.</b></p>
+  <div class="cta rv">
+    <a class="p" href="mailto:mathew.brian@gmail.com">Email me</a>
+    <a href="resume.pdf">Résumé</a>
+    <a href="https://github.com/bmath8">GitHub</a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+  </div>
+  <div class="hint">scroll ↓ &nbsp; the day moves sideways</div>
+</div></section>
+
+<!-- ================= the pinned day ================= -->
+<section id="day">
+  <div class="dayhead"><div class="wrap">
+    <span><b>hermes cron</b> — 25 jobs, all active, 24/25 last run ok</span>
+    <span id="clock">00:00</span>
+  </div></div>
+  <div id="track"></div>
+</section>
+
+<!-- ================= vertical tail ================= -->
+<div class="wrap">
+  <div class="sh rv">Before software</div>
+  <div class="xp rv"><div class="y">2022</div><div><h4>Uber <span>— Independent Driver</span></h4>
+    <p>A year of independent, customer-facing work — routes, schedules and changing needs handled
+    without supervision.</p></div></div>
+  <div class="xp rv"><div class="y">earlier</div><div><h4>Best Buy <span>— Appliances Department Lead</span></h4>
+    <p>Led the appliances floor: advised customers through major purchases and handled the
+    complaints in person. Where I learned not to get defensive.</p></div></div>
+  <p class="edu rv">Penn State Berks — undergraduate coursework &nbsp;·&nbsp;
+    The City College of New York — undergraduate coursework</p>
+
+  <section class="end">
+    <h2 class="rv">My systems already run without me. <em>I'd rather run yours.</em></h2>
+    <p class="rv">Open to junior developer, AI application, or support-engineering roles — remote,
+    hybrid, on-site or relocation. Happy to walk through any of this live, including the parts
+    that broke.</p>
+    <div class="cta rv" style="margin-top:28px">
+      <a class="p" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+      <a href="tel:+16098151685">(609) 815-1685</a>
+      <a href="resume.pdf">Résumé (PDF)</a>
+      <a href="https://github.com/bmath8">GitHub</a>
+      <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+    </div>
+  </section>
+  <footer>The timeline is my real crontab, read off this machine 2026-07-29.<br>
+  Smooth scroll by Lenis · motion by GSAP ScrollTrigger · self-hosted, no CDN.</footer>
+</div>
+
+<script src="../vendor/lenis.min.js"></script>
+<script src="../vendor/gsap.min.js"></script>
+<script src="../vendor/ScrollTrigger.min.js"></script>
+<script>
+document.documentElement.classList.add('js');
+var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ---------- real crontab, by hour ---------- */
+var SCHED = {
+  2:[['memory-index','v'],['overnight-worker','v']], 3:[['model-review','v']],
+  6:[['fleet-health',''],['learning-agent','a'],['career',''],['calendar',''],['currency','']],
+  7:[['daily-brief','a'],['scout',''],['gig-scanner','']],
+  8:[['inbox','m']], 9:[['finance','m'],['health','m']], 11:[['research','']],
+  12:[['dashboard','']], 13:[['wiki','']], 16:[['weekly-review','v'],['currency-weekly','v']],
+  17:[['inbox','m']], 18:[['ceo-report','a'],['fleet-health','']],
+  20:[['outcome-learner','v']], 21:[['feedback','m']], 22:[['harmony-backup','v']],
+  23:[['skill-miner','v']]
+};
+/* projects placed at the hour they belong to */
+var CARDS = {
+  7:{c:'var(--amber)',t:'Brian OS',m:'07:00 · the brief lands',
+     p:'<b>This is the moment the whole fleet exists for.</b> A brief arrives on my phone: the one thing that matters today, what needs me, what the watchdog caught overnight. Everything else on this timeline is in service of that.',
+     n:[['25','cron jobs'],['81','tests green'],['24/25','last run ok'],['$0','per run']]},
+  13:{c:'var(--mag)',t:'BoomBox',m:'built in the daylight hours',
+     p:'<b>Real-time collaborative listening.</b> Synced playback over a Node WebSocket layer with Redis Pub/Sub. Where I learned heartbeats, reconnection, and what happens to a listener whose socket drops mid-song.',
+     n:[['~48k','lines TS'],['20','test files'],['Redis','pub/sub']]},
+  20:{c:'var(--violet)',t:'Super Bowl Squares',m:'20:00 · shipped for a real game',
+     p:'<b>Built for an actual game, with real people on it.</b> Live score sync, chat, host controls, and a write-lock so nobody can claim a square after kickoff. Small — but it shipped on the day and held up.',
+     n:[['100','squares live'],['React','+ Firebase']]}
+};
+
+/* ---------- build the track ---------- */
+var track = document.getElementById('track');
+for (var h = 0; h < 24; h++) {
+  var col = document.createElement('div');
+  col.className = 'hour' + (h % 6 === 0 ? ' q' : '');
+  var label = (h < 10 ? '0' : '') + h + ':00';
+  var html = '<span class="t">' + label + '</span>';
+  if (SCHED[h]) {
+    html += '<div class="jobs">' + SCHED[h].map(function (j) {
+      return '<div class="job ' + j[1] + '"><i></i>' + j[0] + '</div>';
+    }).join('') + '</div>';
+  }
+  if (CARDS[h]) {
+    var c = CARDS[h];
+    html += '<div class="card" style="--c:' + c.c + '"><div class="meta">' + c.m + '</div>' +
+      '<h3>' + c.t + '</h3><p>' + c.p + '</p><div class="nums">' +
+      c.n.map(function (n) { return '<div><span>' + n[0] + '</span><small>' + n[1] + '</small></div>'; }).join('') +
+      '</div></div>';
+  }
+  col.innerHTML = html;
+  track.appendChild(col);
+}
+
+/* ---------- sky: the gradient IS the clock ---------- */
+var SKY = [
+  [0,  '#050a14', '#0a1226'],   // deep night
+  [5,  '#0b1428', '#20223f'],   // pre-dawn
+  [7,  '#2a2340', '#c07a3a'],   // dawn — the fleet wakes, brief lands
+  [10, '#20486e', '#7fb4d8'],   // morning
+  [14, '#1c5b86', '#a8d4ea'],   // daylight
+  [18, '#3a3457', '#d98a4a'],   // dusk
+  [21, '#101a30', '#1c2440'],   // evening
+  [24, '#050a14', '#0a1226']    // night again
+];
+function mix(a, b, t) {
+  function p(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+  var A=p(a),B=p(b);
+  return 'rgb('+A.map(function(v,i){return Math.round(v+(B[i]-v)*t);}).join(',')+')';
+}
+function skyAt(hour) {
+  for (var i = 0; i < SKY.length - 1; i++) {
+    if (hour >= SKY[i][0] && hour <= SKY[i+1][0]) {
+      var t = (hour - SKY[i][0]) / (SKY[i+1][0] - SKY[i][0]);
+      return [mix(SKY[i][1], SKY[i+1][1], t), mix(SKY[i][2], SKY[i+1][2], t)];
+    }
+  }
+  return [SKY[0][1], SKY[0][2]];
+}
+function paint(hour) {
+  var c = skyAt(hour);
+  document.getElementById('sky').style.background =
+    'linear-gradient(170deg,' + c[0] + ' 0%,' + c[1] + ' 100%)';
+  // stars fade out in daylight
+  document.getElementById('stars').style.opacity =
+    String(hour > 6 && hour < 19 ? Math.max(0, 1 - Math.abs(12.5 - hour) < 0 ? 0 : (1 - (6.5 - Math.abs(12.5 - hour)) / 6.5)) : 1);
+  var m = Math.floor((hour % 1) * 60);
+  document.getElementById('clock').textContent =
+    (Math.floor(hour) < 10 ? '0' : '') + Math.floor(hour) + ':' + (m < 10 ? '0' : '') + m;
+}
+paint(0);
+
+/* ---------- stars ---------- */
+(function(){
+  var c=document.getElementById('stars'),x=c.getContext('2d'),S=[];
+  function size(){var d=Math.min(devicePixelRatio||1,2);c.width=innerWidth*d;c.height=innerHeight*d;
+    x.setTransform(d,0,0,d,0,0);S=[];
+    for(var i=0;i<130;i++)S.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight*.8,
+      r:Math.random()*1.2+.3,p:Math.random()*6.283});}
+  var t=0;
+  function frame(){t+=.008;x.clearRect(0,0,innerWidth,innerHeight);
+    S.forEach(function(s){var a=.35+.45*Math.sin(t*1.6+s.p);
+      x.fillStyle='rgba(255,255,255,'+a.toFixed(3)+')';
+      x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fill();});
+    requestAnimationFrame(frame);}
+  addEventListener('resize',size);size();frame();
+})();
+
+/* ---------- Lenis + the horizontal pin ---------- */
+if (window.Lenis && window.gsap && !reduce) {
+  gsap.registerPlugin(ScrollTrigger);
+  var lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+  gsap.ticker.lagSmoothing(0);
+
+  gsap.to('.intro .rv', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: .12, delay: .15 });
+  gsap.utils.toArray('.wrap .rv').forEach(function (el) {
+    gsap.to(el, { opacity: 1, y: 0, duration: .8, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 88%' } });
+  });
+
+  // The spine: pin the day, translate the track sideways, and drive the sky
+  // from the same progress value so colour and position can never disagree.
+  var dist = function () { return track.scrollWidth - innerWidth; };
+  ScrollTrigger.create({
+    trigger: '#day', start: 'top top', end: function () { return '+=' + (dist() * 1.15); },
+    pin: true, scrub: true, invalidateOnRefresh: true,
+    onUpdate: function (self) {
+      gsap.set(track, { x: -dist() * self.progress });
+      paint(self.progress * 24);
+    }
+  });
+} else {
+  document.querySelectorAll('.rv').forEach(function (e) { e.style.opacity = 1; e.style.transform = 'none'; });
+  paint(7);
+}
+</script>
+</body></html>
