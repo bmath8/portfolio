@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — GPGPU morph hero</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#05070c;--ink:#eef1f7;--dim:#7c869e;--green:#4ade80;--line:#1a2030}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);overflow-x:hidden;
+    font:15px/1.55 ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif}
+  #stage{position:fixed;inset:0;z-index:0}
+  canvas{display:block}
+  .wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 28px}
+  .screen{height:100vh;min-height:620px;display:flex;flex-direction:column;justify-content:center;
+    pointer-events:none}
+  .screen *{pointer-events:auto}
+  h1{font-size:clamp(36px,6.4vw,80px);line-height:.97;letter-spacing:-.035em;font-weight:600}
+  h1 em{font-style:normal;color:var(--dim)}
+  .kicker{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-bottom:20px}
+  .sub{max-width:46ch;margin-top:20px;color:#a9b2c6;font-size:16.5px}
+  .cta{margin-top:28px;display:flex;gap:11px;flex-wrap:wrap}
+  .cta a{border:1px solid var(--line);padding:11px 17px;border-radius:9px;color:var(--ink);
+    text-decoration:none;font-size:14px;background:rgba(8,11,18,.6);backdrop-filter:blur(8px)}
+  .cta a.solid{background:var(--green);border-color:var(--green);color:#06210e;font-weight:650}
+  .cta a:hover{border-color:#3a4560}
+  .stagelabel{position:fixed;left:28px;bottom:30px;z-index:3;font-size:11px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--dim)}
+  .stagelabel b{color:var(--green);font-weight:600}
+  .dial{position:fixed;right:28px;bottom:28px;text-align:right;font-size:11px;color:var(--dim);
+    letter-spacing:.05em;z-index:3}
+  .dial b{display:block;font-size:24px;color:var(--ink);letter-spacing:-.02em;font-weight:600}
+  .scrollcue{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;
+    font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);opacity:.75}
+  .fallback{position:fixed;inset:0;z-index:1;display:grid;place-items:center;opacity:.42}
+  .fallback svg{width:min(58vw,500px)}
+  @media (max-width:700px){.dial,.stagelabel{display:none}}
+</style></head>
+<body>
+
+<div class="fallback" id="fallback" aria-hidden="true">
+  <svg viewBox="0 0 200 160" fill="none" stroke="#28324a" stroke-width=".7">
+    <ellipse cx="100" cy="72" rx="66" ry="52"/><ellipse cx="100" cy="72" rx="44" ry="38"/>
+    <path d="M100 20v104"/><ellipse cx="126" cy="116" rx="26" ry="15"/>
+  </svg>
+</div>
+<div id="stage"></div>
+
+<div class="wrap">
+  <section class="screen">
+    <div class="kicker">New Jersey · Remote / Hybrid / On-site / Relocation</div>
+    <h1>I build working systems —<br><em>then I keep them running.</em></h1>
+    <p class="sub">65,536 particles. Every one is simulated on the GPU. Scroll and they
+      reassemble into the thing they actually describe.</p>
+    <div class="cta">
+      <a class="solid" href="mailto:mathew.brian@gmail.com">Email me</a>
+      <a href="https://github.com/bmath8">github.com/bmath8</a>
+      <a href="resume.pdf">Resume</a>
+    </div>
+  </section>
+  <section class="screen">
+    <h1 style="font-size:clamp(28px,4vw,52px)">A system,<br><em>not a diagram.</em></h1>
+    <p class="sub">The same particles now hold a network — nodes and the paths between
+      them. Nothing was added. They were re-simulated into a new shape.</p>
+  </section>
+  <section class="screen">
+    <h1 style="font-size:clamp(28px,4vw,52px)">25 agents.<br><em>81 tests green.</em></h1>
+    <p class="sub">The final form is my real crontab: 25 scheduled agents running
+      unattended on my machine right now, with a maintained 81-test suite.</p>
+    <div class="cta">
+      <a href="https://github.com/bmath8/brian-os">Read the code</a>
+      <a href="https://fam-super-bowl-squares-2026.vercel.app">Open a live app</a>
+    </div>
+  </section>
+</div>
+
+<div class="stagelabel">FORM <b id="formName">CORTEX</b></div>
+<div class="dial"><b>25</b>scheduled agents<b>81/81</b>tests passing</div>
+<div class="scrollcue">scroll to morph</div>
+
+<script type="importmap">{"imports":{
+ "three":"https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js",
+ "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer }   from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass }       from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass }  from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MOBILE  = innerWidth < 760;
+const SIZE    = MOBILE ? 128 : 256;          // 16,384 or 65,536 particles
+const COUNT   = SIZE * SIZE;
+
+let renderer;
+try { renderer = new THREE.WebGLRenderer({antialias:false, alpha:false, powerPreference:'high-performance'}); }
+catch(e){ /* SVG fallback stays */ }
+
+if (renderer && renderer.capabilities.isWebGL2 !== undefined) {
+  document.getElementById('fallback').style.display='none';
+  const DPR = Math.min(devicePixelRatio, 1.75);
+  renderer.setPixelRatio(DPR);
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setClearColor(0x05070c, 1);
+  document.getElementById('stage').appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, .1, 200);
+  cam.position.set(0,0,17);
+
+  // ================= TARGET FORMS =========================================
+  // Three float textures, each COUNT xyz targets. RGBA32F via DataTexture.
+  function tex(fill){
+    const d = new Float32Array(COUNT*4);
+    for (let i=0;i<COUNT;i++){ const p = fill(i); d[i*4]=p[0]; d[i*4+1]=p[1]; d[i*4+2]=p[2]; d[i*4+3]=p[3]??1; }
+    const t = new THREE.DataTexture(d, SIZE, SIZE, THREE.RGBAFormat, THREE.FloatType);
+    t.needsUpdate = true; return t;
+  }
+  const R = (a,b)=>a+Math.random()*(b-a);
+
+  // --- FORM 0: cortex. Suggestive, not anatomical. Two lobes + cerebellum + stem.
+  function hash(x,y,z){ const s=Math.sin(x*127.1+y*311.7+z*74.7)*43758.5453; return s-Math.floor(s); }
+  function vnoise(x,y,z){
+    const xi=Math.floor(x),yi=Math.floor(y),zi=Math.floor(z),xf=x-xi,yf=y-yi,zf=z-zi;
+    const u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf),w=zf*zf*(3-2*zf);
+    let n=0;
+    for(let i=0;i<2;i++)for(let j=0;j<2;j++)for(let k=0;k<2;k++)
+      n+=(i?u:1-u)*(j?v:1-v)*(k?w:1-w)*hash(xi+i,yi+j,zi+k);
+    return n*2-1;
+  }
+  function field(x,y,z){
+    const lobe=1-(Math.pow((Math.abs(x)-1.55)/3.45,2)+Math.pow(y/3.05,2)+Math.pow(z/3.7,2));
+    const cere=1-(Math.pow(x/2.0,2)+Math.pow((y+2.85)/1.15,2)+Math.pow((z+1.5)/1.5,2));
+    const stem=1-(Math.pow(x/0.52,2)+Math.pow((y+3.5)/1.5,2)+Math.pow((z+0.35)/0.62,2));
+    return Math.max(lobe,cere*0.94,stem*0.9)+vnoise(x*1.15,y*1.15,z*1.15)*0.135;
+  }
+  const cortex=[]; { let g=0;
+    while(cortex.length<COUNT && g<COUNT*300){ g++;
+      const x=R(-5.6,5.6),y=R(-4.9,4.9),z=R(-4.6,4.6),f=field(x,y,z);
+      if(f<0.006||f>0.145) continue;
+      if(Math.abs(x)<0.14 && Math.random()<0.8) continue;
+      cortex.push([x,y,z]);
+    }
+    while(cortex.length<COUNT) cortex.push(cortex[cortex.length%Math.max(1,cortex.length)]||[0,0,0]);
+  }
+
+  // --- FORM 1: network. Nodes on a sphere + particles strung along the edges.
+  const NODES=64, net=[];
+  const nodeP=[...Array(NODES)].map((_,i)=>{
+    const y=1-(i/(NODES-1))*2, r=Math.sqrt(Math.max(0,1-y*y)), th=i*2.399963;
+    return [Math.cos(th)*r*5.0, y*4.4, Math.sin(th)*r*5.0];
+  });
+  { const edges=[];
+    for(let i=0;i<NODES;i++) for(let k=1;k<=3;k++) edges.push([i,(i*7+k*11)%NODES]);
+    for(let i=0;i<COUNT;i++){
+      if(i%14===0){ const n=nodeP[i%NODES]; net.push([n[0]+R(-.09,.09),n[1]+R(-.09,.09),n[2]+R(-.09,.09)]); }
+      else { const e=edges[i%edges.length],a=nodeP[e[0]],b=nodeP[e[1]],t=Math.random();
+        const bx=(a[0]+b[0])*0.5*0.72,by=(a[1]+b[1])*0.5*0.72,bz=(a[2]+b[2])*0.5*0.72,m=1-t;
+        net.push([ m*m*a[0]+2*m*t*bx+t*t*b[0]+R(-.05,.05),
+                   m*m*a[1]+2*m*t*by+t*t*b[1]+R(-.05,.05),
+                   m*m*a[2]+2*m*t*bz+t*t*b[2]+R(-.05,.05) ]); }
+    }
+  }
+
+  // --- FORM 2: the real crontab. 25 rings, one per agent, radius by cadence.
+  const AGENTS=['daily-brief','system-watchdog','overnight-worker','learning-agent','harmony-backup',
+    'model-review','finance','health','weekly-review','scout','memory-index','feedback','calendar',
+    'research','skill-miner','career','inbox','dashboard','currency','currency-weekly','wiki',
+    'outcome-learner','gig-scanner','ceo-report','career-scout'];
+  const cron=[];
+  for(let i=0;i<COUNT;i++){
+    const a=i%AGENTS.length, ring=1.8+a*0.185, ang=(i/COUNT)*Math.PI*2*11+a*0.6;
+    const tilt=(a/AGENTS.length-0.5)*0.9;
+    const x=Math.cos(ang)*ring, z=Math.sin(ang)*ring;
+    cron.push([x, Math.sin(ang*2)*0.16 + tilt*ring*0.55 + (a-12)*0.12, z]);
+  }
+
+  const T0=tex(i=>cortex[i]), T1=tex(i=>net[i]), T2=tex(i=>cron[i]);
+
+  // ================= GPGPU PING-PONG ======================================
+  const rtOpts={type:THREE.FloatType,format:THREE.RGBAFormat,
+    minFilter:THREE.NearestFilter,magFilter:THREE.NearestFilter,depthBuffer:false};
+  let rtA=new THREE.WebGLRenderTarget(SIZE,SIZE,rtOpts), rtB=rtA.clone();
+
+  const simScene=new THREE.Scene(), simCam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+  const simMat=new THREE.ShaderMaterial({
+    uniforms:{ uPos:{value:null}, uT0:{value:T0}, uT1:{value:T1}, uT2:{value:T2},
+               uMorph:{value:0}, uTime:{value:0}, uBurst:{value:0} },
+    vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.,1.); }`,
+    fragmentShader:`
+      uniform sampler2D uPos,uT0,uT1,uT2; uniform float uMorph,uTime,uBurst;
+      varying vec2 vUv;
+      vec3 hash3(vec3 p){ p=vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),
+        dot(p,vec3(113.5,271.9,124.6))); return fract(sin(p)*43758.5453)*2.-1.; }
+      float n3(vec3 p){ vec3 i=floor(p),f=fract(p); vec3 u=f*f*(3.-2.*f); float r=0.;
+        for(int x=0;x<2;x++)for(int y=0;y<2;y++)for(int z=0;z<2;z++){ vec3 o=vec3(x,y,z);
+          r+=dot(hash3(i+o),f-o)*((x==0?1.-u.x:u.x)*(y==0?1.-u.y:u.y)*(z==0?1.-u.z:u.z)); }
+        return r; }
+      vec3 curl(vec3 p){ float e=.42;
+        float x=n3(vec3(p.y+e,p.z,p.x))-n3(vec3(p.y-e,p.z,p.x));
+        float y=n3(vec3(p.x,p.z+e,p.y))-n3(vec3(p.x,p.z-e,p.y));
+        float z=n3(vec3(p.x+e,p.y,p.z))-n3(vec3(p.x-e,p.y,p.z));
+        return normalize(vec3(y-z,z-x,x-y)+1e-5); }
+      void main(){
+        vec3 p = texture2D(uPos,vUv).xyz;
+        vec3 a = texture2D(uT0,vUv).xyz;
+        vec3 b = texture2D(uT1,vUv).xyz;
+        vec3 c = texture2D(uT2,vUv).xyz;
+        vec3 tgt = uMorph < 1.0 ? mix(a,b,smoothstep(0.,1.,uMorph))
+                                : mix(b,c,smoothstep(0.,1.,uMorph-1.0));
+        // turbulence spikes mid-transition -> the particles visibly "fly" between forms
+        vec3 v = (tgt - p) * 0.062;
+        v += curl(p*0.24 + uTime*0.055) * (0.010 + uBurst*0.115);
+        p += v;
+        gl_FragColor = vec4(p, 1.0);
+      }`
+  });
+  simScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2), simMat));
+
+  { // seed positions: scattered shell
+    const seed=new Float32Array(COUNT*4);
+    for(let i=0;i<COUNT;i++){ const r=16+Math.random()*22,th=Math.random()*6.2832,ph=Math.acos(Math.random()*2-1);
+      seed[i*4]=r*Math.sin(ph)*Math.cos(th); seed[i*4+1]=r*Math.sin(ph)*Math.sin(th);
+      seed[i*4+2]=r*Math.cos(ph); seed[i*4+3]=1; }
+    const st=new THREE.DataTexture(seed,SIZE,SIZE,THREE.RGBAFormat,THREE.FloatType); st.needsUpdate=true;
+    simMat.uniforms.uPos.value=st;
+    renderer.setRenderTarget(rtA); renderer.render(simScene,simCam);
+    renderer.setRenderTarget(rtB); renderer.render(simScene,simCam);
+    renderer.setRenderTarget(null);
+  }
+
+  // ================= RENDER PARTICLES =====================================
+  const ref=new Float32Array(COUNT*2), rnd=new Float32Array(COUNT);
+  for(let i=0;i<COUNT;i++){ ref[i*2]=(i%SIZE)/SIZE; ref[i*2+1]=Math.floor(i/SIZE)/SIZE; rnd[i]=Math.random(); }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(COUNT*3),3));
+  g.setAttribute('aRef',new THREE.BufferAttribute(ref,2));
+  g.setAttribute('aRnd',new THREE.BufferAttribute(rnd,1));
+  g.boundingSphere=new THREE.Sphere(new THREE.Vector3(),60);
+
+  const drawMat=new THREE.ShaderMaterial({
+    transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    uniforms:{ uPos:{value:null}, uDpr:{value:DPR}, uMorph:{value:0}, uBurst:{value:0} },
+    vertexShader:`
+      uniform sampler2D uPos; uniform float uDpr,uMorph,uBurst;
+      attribute vec2 aRef; attribute float aRnd;
+      varying float vR, vD;
+      void main(){
+        vec3 p = texture2D(uPos, aRef).xyz;
+        vR = aRnd;
+        vec4 mv = modelViewMatrix * vec4(p,1.);
+        vD = -mv.z;
+        float s = (0.9 + aRnd*1.9) * (1.0 + uBurst*1.5);
+        gl_PointSize = s * uDpr * (30.0 / max(vD,0.001));
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader:`
+      uniform float uMorph,uBurst; varying float vR,vD;
+      void main(){
+        vec2 c=gl_PointCoord-0.5; float d=length(c);
+        if(d>0.5) discard;
+        float a=smoothstep(0.5,0.0,d);
+        vec3 cool=vec3(0.46,0.60,0.92);
+        vec3 warm=vec3(0.29,0.87,0.50);
+        vec3 col=mix(cool,warm,clamp(uMorph*0.5+uBurst*0.7+vR*0.12,0.,1.));
+        float fog=clamp(1.35-vD*0.038,0.15,1.0);
+        gl_FragColor=vec4(col*(0.55+uBurst*0.9), a*0.62*fog);
+      }`
+  });
+  scene.add(new THREE.Points(g, drawMat));
+
+  // ================= BLOOM ================================================
+  const composer=new EffectComposer(renderer);
+  composer.setPixelRatio(DPR); composer.setSize(innerWidth,innerHeight);
+  composer.addPass(new RenderPass(scene,cam));
+  const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight), 0.62, 0.72, 0.22);
+  composer.addPass(bloom);
+
+  // ================= LOOP =================================================
+  const NAMES=['CORTEX','NETWORK','CRONTAB'];
+  const label=document.getElementById('formName');
+  let t0=performance.now(), morph=0, shown=-1, hidden=false;
+  document.addEventListener('visibilitychange',()=>hidden=document.hidden);
+
+  function scrollMorph(){
+    const max=document.body.scrollHeight-innerHeight;
+    return max>0 ? (window.scrollY/max)*2 : 0;     // 0 -> 2 across the page
+  }
+
+  function loop(now){
+    requestAnimationFrame(loop);
+    if(hidden) return;
+    const t=(now-t0)/1000;
+    const want = reduced ? 0 : scrollMorph();
+    morph += (want-morph)*0.075;
+
+    // burst = how far mid-transition we are. Drives turbulence, size, colour, bloom.
+    const seg = morph<1 ? morph : morph-1;
+    const burst = Math.sin(Math.min(Math.max(seg,0),1)*Math.PI);
+
+    simMat.uniforms.uTime.value=t;
+    simMat.uniforms.uMorph.value=morph;
+    simMat.uniforms.uBurst.value=burst;
+    simMat.uniforms.uPos.value=rtA.texture;
+    renderer.setRenderTarget(rtB); renderer.render(simScene,simCam); renderer.setRenderTarget(null);
+    const s=rtA; rtA=rtB; rtB=s;
+
+    drawMat.uniforms.uPos.value=rtA.texture;
+    drawMat.uniforms.uMorph.value=morph;
+    drawMat.uniforms.uBurst.value=burst;
+    bloom.strength = 0.5 + burst*1.15;           // peaks mid-transition
+
+    scene.rotation.y = t*0.045 + morph*0.5;
+    scene.rotation.x = Math.sin(t*0.16)*0.05;
+    composer.render();
+
+    const idx=Math.round(morph);
+    if(idx!==shown && NAMES[idx]){ shown=idx; label.textContent=NAMES[idx]; }
+  }
+  requestAnimationFrame(loop);
+
+  addEventListener('resize',()=>{
+    cam.aspect=innerWidth/innerHeight; cam.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight); composer.setSize(innerWidth,innerHeight);
+    bloom.resolution.set(innerWidth,innerHeight);
+  });
+}
+</script>
+</body></html>
