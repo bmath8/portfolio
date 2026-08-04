@@ -67,8 +67,62 @@ no page around them). Judge them. Take the one that works and build the page aro
   noise, smooth merging. This is the vocabulary for *transitions*, which Brian specifically
   called out as weak.
 - **Three.js Journey Lesson 41** — GPGPU flow-field particles, the canonical implementation.
-- **labs.lusion.co** — their R&D site. Fully client-rendered, so it needs a real browser
-  (Chrome MCP / `get_page_text`) rather than a plain fetch. **Not yet studied — do this.**
+- **labs.lusion.co** — opened in a real browser 2026-08-04. **Result: pure `<canvas>`.**
+  `get_page_text` returns nothing; the accessibility tree exposes only social links, an
+  email field and a newsletter box. There is no DOM to learn from — the entire experience
+  is drawn. That is itself the finding: at this tier the page *is* the render target, not
+  a document with effects layered on. Studying it further requires screenshots/video, not
+  text extraction.
+
+## TYPOGRAPHY — what top portfolios ACTUALLY use (hard data, 2026-08-04)
+
+Pulled from **maxibestof.one/websites/portfolio** via browser — a curated gallery that
+records the real font stack of every site it features. This is measured, not guessed.
+Corpus: 1.2k sans / 480 serif / 155 mono across the gallery.
+
+**Most-used across the featured portfolios (by repeat appearances):**
+
+| Font | Seen on | Type |
+|---|---|---|
+| **Suisse Int'l** / Suisse Neue / Suisse Int'l Mono | Fiona Yumi Kayayan, Pena Design, Satoshi Watanabe, Clémence Guillemot, Ravi Klaassens | Swiss neo-grotesque — **the single most-used face in this corpus** |
+| **Monument Grotesk** / Monument Grotesk Mono | Ervin Latimer, Bas Strien, Extreme Present | grotesque + its mono companion |
+| **ABC Diatype** | Postnew, Viacheslav Novoseltsev | contemporary grotesque |
+| **ABC Arizona / Arizona Flare** | Jack Mcentee, Jules Andrieu | serif with real character |
+| **PP Neue Montreal** | Alexandre Araujo | |
+| **Neue Haas Grotesk** (+ Display) | Krabb | |
+| **Instrument Serif** | Northzone | ← the one I used in v4. It *is* current. |
+| **LL Replica · Reckless Neue** | Ravi Klaassens | |
+| Fraktion Mono · SF Mono · Roboto Mono | Nicolas Alain, Eugene Serpokrylov, Postnew | mono as an accent voice |
+| GT Canon · Louize · TWK Lausanne · Greed · General Sans · Aktiv Grotesk · Mercure · Animo | various | |
+
+**Two things this data contradicts:**
+1. The `frontend-design` skill says *never* use Inter/Arial. In practice **Konolee, Will
+   Phan (Inter) and Jordan Robson (Arial)** are all in a curated best-of gallery. The real
+   rule is not "avoid these fonts" — it is *"don't use them as a default because you didn't
+   choose."* A deliberate Arial portfolio is fine; an accidental system-font one is not.
+2. **Pairing pattern is consistent:** one grotesque for structure + one mono for data +
+   optionally one serif for voice. That is the actual convention, and v4's serif-heavy
+   approach was off-pattern.
+
+**Concrete recommendation for Brian's site:** Suisse Int'l is the corpus favourite but is
+commercial. Free equivalents with the same energy: **Inter Display** (used by Artem
+Astakhov alongside Instrument Sans), **General Sans**, or **Aktiv Grotesk**. Pair with a
+mono for all the measurements (25 agents, 81/81, cron times) — that half of v4 was right.
+
+**Gallery is worth revisiting** — it filters by font and has an MCP server of its own
+(`maxibestof.one` → MCP). Worth wiring up.
+
+## Other studios to study (named by 2026 round-ups, not yet opened)
+- **Active Theory** — advanced motion, immersive environments, technical storytelling;
+  cited for proving performance and spectacle can coexist.
+- **Resn** — experimental interaction, surreal visuals; study for **creative risk-taking**.
+- **Immersive Garden** — elegance + technical polish; project pages give real context on
+  the creative challenge.
+- **Unseen Studio** — Hubtown, Awwwards SOTD June 2026 (glowing 3D monolith over a dark
+  reflective landscape).
+- **Vide Infra** — "Springs", SOTD + Developer Award, March 2026.
+- **OFF+BRAND** — Steven.com, SOTD + Developer Award, June 2026.
+- **Locomotive**, **Femme Fatale Studio** — also named.
 
 ## Awwwards signal (Q1 2026)
 - **29 of 47** Site-of-the-Day winners used Three.js.
