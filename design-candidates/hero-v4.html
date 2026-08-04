@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — Instrument</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   AESTHETIC: TECHNICAL INSTRUMENT
+   Swiss technical documentation crossed with an oscilloscope face.
+   Bone paper, ink black, one signal green. Mono for every measurement,
+   a high-contrast serif for every human sentence. Hairline rules everywhere,
+   like a spec sheet. Grain over the whole thing so it reads as printed matter.
+   ══════════════════════════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bone:#eae7df; --bone2:#e2ded3; --ink:#0f1113; --ink2:#3a3f45;
+  --rule:#c9c4b6; --signal:#0f7a3d; --alert:#b23a1f; --scope:#0a0c0e;
+  --ser:'Instrument Serif',Georgia,serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bone);color:var(--ink);font-family:var(--sans);font-size:15px;
+  line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+/* printed-matter grain */
+body::after{content:'';position:fixed;inset:0;z-index:99;pointer-events:none;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E")}
+.wrap{max-width:1240px;margin:0 auto;padding:0 34px}
+.mono{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+
+/* ── HEADER: a spec-sheet masthead ── */
+.mast{position:sticky;top:0;z-index:60;background:rgba(234,231,223,.9);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--ink)}
+.mast .in{max-width:1240px;margin:0 auto;padding:0 34px;display:flex;align-items:stretch;
+  min-height:62px}
+.brandcell{display:flex;align-items:center;gap:12px;padding-right:22px;
+  border-right:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+.sigil{width:40px;height:40px;border:1.5px solid var(--ink);display:grid;place-items:center;
+  font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.04em;
+  background:var(--ink);color:var(--bone)}
+.brandcell .nm{font-family:var(--ser);font-size:21px;line-height:1.05;letter-spacing:.01em}
+.brandcell .lo{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink2)}
+.ports{margin-left:auto;display:flex;align-items:stretch}
+.ports a{display:flex;align-items:center;gap:8px;padding:0 16px;border-left:1px solid var(--rule);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;transition:background .15s,color .15s}
+.ports a:hover{background:var(--ink);color:var(--bone)}
+.ports a.pri{background:var(--signal);color:#fff;border-left-color:var(--signal)}
+.ports a.pri:hover{background:var(--ink);border-left-color:var(--ink)}
+.ports svg{width:14px;height:14px;flex:none}
+@media(max-width:900px){.ports a span{display:none}.ports a{padding:0 13px}
+  .brandcell .lo{display:none}}
+
+/* ── HERO: asymmetric. 7/5 split, scope overlaps the rule. ── */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:0;
+  border-bottom:1px solid var(--ink);position:relative}
+.hero .left{padding:74px 44px 66px 0;border-right:1px solid var(--rule)}
+.hero .right{padding:34px 0 34px 44px;display:flex;align-items:center;position:relative}
+@media(max-width:940px){.hero{grid-template-columns:1fr}
+  .hero .left{padding:48px 0 34px;border-right:none;border-bottom:1px solid var(--rule)}
+  .hero .right{padding:30px 0}}
+.tick{display:flex;align-items:center;gap:10px;color:var(--ink2)}
+.tick i{width:7px;height:7px;background:var(--signal);border-radius:50%;
+  animation:bl 2.4s steps(1,end) infinite}
+@keyframes bl{0%,70%{opacity:1}71%,100%{opacity:.25}}
+h1{font-family:var(--ser);font-weight:400;font-size:clamp(46px,6.6vw,88px);line-height:.92;
+  letter-spacing:-.015em;margin:26px 0 0;max-width:13ch}
+h1 i{font-style:italic;color:var(--ink2)}
+.lede{margin-top:24px;max-width:46ch;font-size:16.5px;color:var(--ink2)}
+.readout{display:flex;margin-top:36px;border:1px solid var(--rule);background:var(--bone2)}
+.readout div{flex:1;padding:13px 15px;border-right:1px solid var(--rule)}
+.readout div:last-child{border-right:none}
+.readout b{display:block;font-family:var(--mono);font-size:25px;font-weight:500;
+  letter-spacing:-.02em;line-height:1;margin-bottom:5px}
+.readout .lbl{font-family:var(--mono);font-size:9px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ink2)}
+/* the scope: black instrument face, deliberately breaking the grid */
+.scope{position:relative;width:100%;aspect-ratio:1/1;background:var(--scope);
+  border:1px solid var(--ink);box-shadow:14px 14px 0 -1px var(--rule)}
+.scope canvas{display:block;width:100%;height:100%}
+.scope .corner{position:absolute;width:9px;height:9px;border:1px solid #2c3238}
+.scope .c1{top:7px;left:7px;border-right:0;border-bottom:0}
+.scope .c2{top:7px;right:7px;border-left:0;border-bottom:0}
+.scope .c3{bottom:7px;left:7px;border-right:0;border-top:0}
+.scope .c4{bottom:7px;right:7px;border-left:0;border-top:0}
+.scope .cap{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:9px;
+  letter-spacing:.15em;text-transform:uppercase;color:#5b6570}
+.scope .cap b{color:var(--signal);font-weight:500}
+.scope .leds{position:absolute;right:13px;top:13px;display:grid;
+  grid-template-columns:repeat(5,1fr);gap:3px}
+.scope .leds i{width:7px;height:7px;background:#1c2228;transition:background .4s}
+.scope .leds i.on{background:var(--signal)}
+
+/* ── SECTIONS ── */
+section{border-bottom:1px solid var(--ink);padding:66px 0}
+.shead{display:flex;align-items:baseline;gap:16px;padding-bottom:16px;
+  border-bottom:1px solid var(--rule);margin-bottom:34px}
+.shead .idx{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink2)}
+h2{font-family:var(--ser);font-weight:400;font-size:clamp(27px,3.3vw,40px);letter-spacing:-.01em}
+h2 i{font-style:italic;color:var(--ink2)}
+
+/* project = spec sheet */
+.spec{border:1px solid var(--ink);margin-bottom:26px;background:var(--bone2)}
+.spec .top{display:grid;grid-template-columns:1fr auto;gap:20px;padding:22px 24px;
+  border-bottom:1px solid var(--rule)}
+.spec h3{font-family:var(--ser);font-size:27px;font-weight:400;letter-spacing:-.01em;
+  line-height:1.1}
+.spec .sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink2);margin-bottom:7px}
+.spec p{max-width:70ch;color:var(--ink2);margin-top:12px}
+.badge{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  padding:6px 10px;border:1px solid var(--ink);height:fit-content;white-space:nowrap}
+.badge.live{background:var(--signal);color:#fff;border-color:var(--signal)}
+.rack{display:flex;flex-wrap:wrap;border-top:1px solid var(--rule)}
+.rack span{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+  padding:9px 13px;border-right:1px solid var(--rule);color:var(--ink2)}
+.view{border-top:1px solid var(--ink);background:#fff;position:relative}
+.view .bar{display:flex;align-items:center;gap:9px;padding:9px 14px;
+  border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink2)}
+.view .bar b{color:var(--signal)}
+.view iframe{display:block;width:100%;height:470px;border:0}
+.view canvas{display:block;width:100%}
+.meas{display:flex;flex-wrap:wrap;border-top:1px solid var(--ink);background:var(--bone)}
+.meas div{padding:12px 16px;border-right:1px solid var(--rule)}
+.meas .lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink2)}
+.meas b{font-family:var(--mono);font-size:14px;font-weight:500;display:block;margin-top:3px}
+.meas .go{margin-left:auto;display:flex}
+.meas .go a{display:flex;align-items:center;padding:0 18px;border-left:1px solid var(--rule);
+  font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  text-decoration:none;color:var(--ink);transition:background .15s,color .15s}
+.meas .go a:hover{background:var(--ink);color:var(--bone)}
+.meas .go a.pri{background:var(--ink);color:var(--bone)}
+
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  border:1px solid var(--rule)}
+.grid3 > div{padding:22px;border-right:1px solid var(--rule)}
+.grid3 h4{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink2);padding-bottom:11px;margin-bottom:11px;border-bottom:1px solid var(--rule)}
+.grid3 li{list-style:none;padding:4px 0;color:var(--ink2);font-size:14.5px}
+.rec{display:grid;grid-template-columns:150px 1fr;gap:22px;padding:20px 0;
+  border-bottom:1px solid var(--rule)}
+.rec:last-child{border-bottom:none}
+.rec h3{font-family:var(--ser);font-size:21px;font-weight:400}
+.rec h3 i{font-style:italic;color:var(--ink2);font-size:16px}
+.rec p{color:var(--ink2);max-width:68ch;margin-top:5px;font-size:14.5px}
+@media(max-width:700px){.rec{grid-template-columns:1fr;gap:6px}}
+.close{font-family:var(--ser);font-size:clamp(30px,4.4vw,58px);line-height:1.02;
+  letter-spacing:-.015em;max-width:17ch;font-weight:400}
+.close i{font-style:italic;color:var(--ink2)}
+footer{padding:30px 0 60px;display:flex;gap:26px;flex-wrap:wrap;color:var(--ink2)}
+/* staggered load */
+.rv{opacity:0;transform:translateY(14px);animation:rise .8s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none}
+  .tick i{animation:none}}
+</style></head>
+<body>
+
+<div class="mast"><div class="in">
+  <a class="brandcell" href="#top"><span class="sigil">BM</span>
+    <span><span class="nm">Brian Mathew</span><span class="lo">New Jersey · Rel. OK</span></span></a>
+  <nav class="ports">
+    <a href="mailto:mathew.brian@gmail.com" title="mathew.brian@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="20" height="16"/><path d="m2 6 10 7 10-7"/></svg><span>Email</span></a>
+    <a href="tel:+16098151685" title="(609) 815-1685"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7 12 12 0 0 0 .7 2.8 2 2 0 0 1-.4 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.4 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg><span>609·815·1685</span></a>
+    <a href="https://github.com/bmath8" title="github.com/bmath8"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8 0-.7.3-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .3.3.7 1 .7 2v2.9c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg><span>GitHub</span></a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.3c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9V21h-4z"/></svg><span>LinkedIn</span></a>
+    <a class="pri" href="resume.pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg><span>Résumé</span></a>
+  </nav>
+</div></div>
+
+<div class="wrap" id="top">
+  <div class="hero">
+    <div class="left">
+      <div class="tick mono rv" style="animation-delay:.05s"><i></i> Fleet nominal · 25 agents · 81/81 green</div>
+      <h1 class="rv" style="animation-delay:.12s">I build working systems — <i>then I keep them running.</i></h1>
+      <p class="lede rv" style="animation-delay:.2s">Developer and operator. I write software, test it,
+        document it, then run it in production for the most demanding user I have: myself.
+        Everything below is code you can read or an app you can open right now.</p>
+      <div class="readout rv" style="animation-delay:.28s">
+        <div><b>25</b><span class="lbl">Scheduled agents</span></div>
+        <div><b>81/81</b><span class="lbl">Tests passing</span></div>
+        <div><b>01</b><span class="lbl">Live public app</span></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="scope rv" style="animation-delay:.34s">
+        <span class="corner c1"></span><span class="corner c2"></span>
+        <span class="corner c3"></span><span class="corner c4"></span>
+        <div class="leds" id="leds"></div>
+        <canvas id="brain"></canvas>
+        <div class="cap">Fig. 01 — cortex · <b>each point = one process</b></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+<section>
+  <div class="shead"><span class="idx">§ 01</span><h2>Selected work — <i>open them, don't just read them</i></h2></div>
+
+  <article class="spec">
+    <div class="top">
+      <div><div class="sub">Fig. 02 · 2026 · Firebase realtime</div>
+        <h3>Super Bowl LX Squares</h3>
+        <p>A real-time squares pool real people used during a real game. 100 squares, live
+          random draw, score-driven winner resolution updating for everyone at once. An
+          event app gets exactly one moment to be correct.</p></div>
+      <span class="badge live">● Live</span>
+    </div>
+    <div class="rack"><span>JavaScript</span><span>React</span><span>Firebase RTDB</span><span>Vercel</span></div>
+    <div class="view">
+      <div class="bar"><b>● Running</b> fam-super-bowl-squares-2026.vercel.app — interact with it here</div>
+      <iframe src="https://fam-super-bowl-squares-2026.vercel.app" loading="lazy"
+              title="Super Bowl Squares live demo" referrerpolicy="no-referrer"></iframe>
+    </div>
+    <div class="meas">
+      <div><span class="lbl">Status</span><b>Live</b></div>
+      <div><span class="lbl">Squares</span><b>100</b></div>
+      <div><span class="lbl">Ran</span><b>Super Bowl LX</b></div>
+      <div class="go"><a class="pri" href="https://fam-super-bowl-squares-2026.vercel.app" target="_blank">Full screen ↗</a>
+        <a href="https://github.com/bmath8/fam-super-bowl-squares-2026" target="_blank">Source</a></div>
+    </div>
+  </article>
+
+  <article class="spec">
+    <div class="top">
+      <div><div class="sub">Fig. 03 · 2026– · running daily</div>
+        <h3>Brian OS — Windows agent fleet</h3>
+        <p>25 scheduled agents running unattended. They prepare briefs, watch system health,
+          take commands over Telegram, and stay draft-only until I approve anything that
+          sends, spends, deploys or deletes.</p>
+        <p><b>The hardest bug was operational.</b> A failed process guardian silently left
+          orphan processes that exhausted the disk. I traced it to root cause, recovered the
+          machine, and wrote the liveness check that catches it now.</p></div>
+      <span class="badge">Operating</span>
+    </div>
+    <div class="rack"><span>Python</span><span>Windows</span><span>PowerShell</span><span>Ollama</span><span>pytest</span></div>
+    <div class="view">
+      <div class="bar"><b>● Interactive</b> the real 24-hour schedule — hover a trace</div>
+      <canvas id="sched" height="238"></canvas>
+    </div>
+    <div class="meas">
+      <div><span class="lbl">Agents</span><b>25</b></div>
+      <div><span class="lbl">Tests</span><b>81 pass / 0 fail</b></div>
+      <div><span class="lbl">Uptime</span><b>Daily</b></div>
+      <div class="go"><a class="pri" href="https://github.com/bmath8/brian-os" target="_blank">Source ↗</a></div>
+    </div>
+  </article>
+
+  <article class="spec">
+    <div class="top">
+      <div><div class="sub">Fig. 04 · 2025– · prototype</div>
+        <h3>BoomBox — collaborative listening</h3>
+        <p>Shared queues and synchronized playback. Durable Postgres state kept deliberately
+          separate from transient WebSocket and Redis Pub/Sub state — each layer with one
+          clear responsibility.</p></div>
+      <span class="badge">Prototype</span>
+    </div>
+    <div class="rack"><span>TypeScript</span><span>Next.js</span><span>PostgreSQL</span><span>WebSockets</span><span>Redis</span></div>
+    <div class="view">
+      <div class="bar"><b>● Schematic</b> durable vs transient — packets show the split</div>
+      <canvas id="arch" height="222"></canvas>
+    </div>
+    <div class="meas">
+      <div><span class="lbl">Source</span><b>Public</b></div>
+      <div><span class="lbl">Deployed</span><b>No — honest</b></div>
+      <div class="go"><a href="https://github.com/bmath8/boombox" target="_blank">Source ↗</a></div>
+    </div>
+  </article>
+</section>
+
+<section>
+  <div class="shead"><span class="idx">§ 02</span><h2>Capabilities</h2></div>
+  <div class="grid3">
+    <div><h4>Support &amp; service</h4><ul>
+      <li>Application troubleshooting</li><li>Issue reproduction &amp; isolation</li>
+      <li>Customer communication</li><li>Technical documentation</li></ul></div>
+    <div><h4>Systems &amp; tools</h4><ul>
+      <li>Python · Flask · SQL · APIs</li><li>TypeScript · React · Next.js</li>
+      <li>Windows · PowerShell · CLI</li><li>Git · local AI tooling</li></ul></div>
+    <div><h4>Quality &amp; operations</h4><ul>
+      <li>Automated testing &amp; smoke checks</li><li>Failure diagnosis &amp; recovery</li>
+      <li>Monitoring · liveness checks</li><li>Unattended scheduled execution</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="idx">§ 03</span><h2>Customer &amp; operations <i>experience</i></h2></div>
+  <div class="rec"><div class="mono" style="color:var(--ink2)">Earlier</div>
+    <div><h3>Best Buy <i>— Appliances Department Lead</i></h3>
+      <p>Led the appliances department on a high-volume retail floor. Helped customers
+        through high-consideration purchases, resolved complaints and post-sale issues in
+        person, coordinated a small team.</p></div></div>
+  <div class="rec"><div class="mono" style="color:var(--ink2)">2022</div>
+    <div><h3>Uber <i>— Independent Driver</i></h3>
+      <p>About a year of sustained, independent, customer-facing work — routes, schedules,
+        communication and changing needs without direct supervision.</p></div></div>
+  <div class="rec"><div class="mono" style="color:var(--ink2)">Education</div>
+    <div><p><b>Penn State Berks</b> — undergraduate coursework ·
+      <b>The City College of New York</b> — undergraduate coursework</p></div></div>
+</section>
+
+<section style="border-bottom:none">
+  <div class="shead"><span class="idx">§ 04</span><h2>Contact</h2></div>
+  <p class="close">Looking for someone who builds, tests, <i>and follows through?</i></p>
+  <p class="lede" style="margin-top:20px">Full-time role building or supporting software —
+    developer, technical support, or operations.</p>
+  <div class="ports" style="margin-top:26px;border:1px solid var(--ink);display:inline-flex">
+    <a class="pri" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+    <a href="tel:+16098151685">609·815·1685</a>
+    <a href="https://github.com/bmath8">GitHub</a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+    <a href="resume.pdf">Résumé</a>
+  </div>
+</section>
+
+<footer class="mono"><span>© 2026 Brian Mathew</span><span>New Jersey, USA</span>
+  <span>Every number on this page is checkable</span></footer>
+</div>
+
+<script type="importmap">{"imports":{
+ "three":"https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const AGENTS=[['daily-brief',7,0],['system-watchdog',0,0],['overnight-worker',2,0],
+ ['learning-agent',6,45],['harmony-backup',1,30],['model-review',3,0],['finance',6,50],
+ ['health',6,52],['weekly-review',17,0],['scout',6,40],['memory-index',1,20],['feedback',17,0],
+ ['calendar',6,55],['research',18,0],['skill-miner',18,30],['career',6,53],['inbox',6,48],
+ ['dashboard',5,0],['currency',6,58],['currency-weekly',16,30],['wiki',16,45],
+ ['outcome-learner',16,50],['gig-scanner',7,10],['ceo-report',7,30],['career-scout',7,15]];
+
+const leds=document.getElementById('leds');
+AGENTS.forEach((a,i)=>{const e=document.createElement('i');e.title=a[0];
+  if(i%4===0)e.classList.add('on');leds.appendChild(e);});
+if(!reduced)setInterval(()=>{leds.children[(Math.random()*25)|0].classList.toggle('on');},1500);
+
+/* ── the scope ── */
+const cv=document.getElementById('brain'),box=cv.parentElement;
+let rn; try{rn=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});}catch(e){}
+if(rn){
+  const DPR=Math.min(devicePixelRatio,2);
+  const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(42,1,.1,100);cam.position.z=14.6;
+  const N=innerWidth<760?5000:12500;
+  const hs=(x,y,z)=>{const s=Math.sin(x*127.1+y*311.7+z*74.7)*43758.5453;return s-Math.floor(s);};
+  const vn=(x,y,z)=>{const xi=~~x,yi=~~y,zi=~~z,xf=x-xi,yf=y-yi,zf=z-zi,
+    u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf),w=zf*zf*(3-2*zf);let n=0;
+    for(let i=0;i<2;i++)for(let j=0;j<2;j++)for(let k=0;k<2;k++)
+      n+=(i?u:1-u)*(j?v:1-v)*(k?w:1-w)*hs(xi+i,yi+j,zi+k);return n*2-1;};
+  const fld=(x,y,z)=>{
+    const l=1-(((Math.abs(x)-1.55)/3.45)**2+(y/3.05)**2+(z/3.7)**2);
+    const c=1-((x/2)**2+((y+2.85)/1.15)**2+((z+1.5)/1.5)**2);
+    const s=1-((x/.52)**2+((y+3.5)/1.5)**2+((z+.35)/.62)**2);
+    return Math.max(l,c*.94,s*.9)+vn(x*1.15,y*1.15,z*1.15)*.135;};
+  const tg=new Float32Array(N*3),eg=new Float32Array(N);let m=0,g=0;
+  while(m<N&&g<N*300){g++;const x=(Math.random()*2-1)*5.6,y=(Math.random()*2-1)*4.9,
+    z=(Math.random()*2-1)*4.6,f=fld(x,y,z);
+    if(f<.006||f>.145)continue; if(Math.abs(x)<.14&&Math.random()<.8)continue;
+    tg[m*3]=x;tg[m*3+1]=y;tg[m*3+2]=z;eg[m]=1-Math.min(1,f/.145);m++;}
+  const po=new Float32Array(N*3),sz=new Float32Array(N),sd=new Float32Array(N);
+  for(let i=0;i<N;i++){const r=13+Math.random()*11,t=Math.random()*6.2832,p=Math.acos(Math.random()*2-1);
+    po[i*3]=r*Math.sin(p)*Math.cos(t);po[i*3+1]=r*Math.sin(p)*Math.sin(t);po[i*3+2]=r*Math.cos(p);
+    sz[i]=.7+Math.random()*1.2;sd[i]=Math.random()*100;}
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(po,3));
+  geo.setAttribute('aS',new THREE.BufferAttribute(sz,1));
+  geo.setAttribute('aE',new THREE.BufferAttribute(eg,1));
+  sc.add(new THREE.Points(geo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,
+    blending:THREE.AdditiveBlending,uniforms:{d:{value:DPR}},
+    vertexShader:`attribute float aS,aE;uniform float d;varying float vD,vE;
+      void main(){vec4 m=modelViewMatrix*vec4(position,1.);vD=-m.z;vE=aE;
+      gl_PointSize=aS*d*(24./max(vD,.001))*(1.+vE*.55);gl_Position=projectionMatrix*m;}`,
+    fragmentShader:`varying float vD,vE;
+      void main(){vec2 c=gl_PointCoord-.5;float l=length(c);if(l>.5)discard;
+      float a=smoothstep(.5,.05,l),f=clamp(1.5-vD*.048,.1,1.);
+      vec3 col=mix(vec3(.22,.34,.42),vec3(.18,.78,.42),vE*.85);
+      gl_FragColor=vec4(col,a*(.22+vE*.26)*f);}`})));
+  let t0=performance.now(),cv2=reduced?1:0,hid=false,px=0,py=0,tx=0,ty=0;
+  new IntersectionObserver(e=>e.forEach(x=>hid=!x.isIntersecting)).observe(box);
+  box.addEventListener('pointermove',e=>{const r=box.getBoundingClientRect();
+    tx=((e.clientX-r.left)/r.width-.5)*.5;ty=((e.clientY-r.top)/r.height-.5)*.35;},{passive:true});
+  box.addEventListener('pointerleave',()=>{tx=0;ty=0;});
+  const P=geo.attributes.position.array;
+  const fit=()=>{const w=box.clientWidth,h=box.clientHeight;rn.setPixelRatio(DPR);
+    rn.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();};
+  (function lp(now){requestAnimationFrame(lp);if(hid)return;
+    const t=(now-t0)/1000;if(!reduced)cv2=Math.min(1,cv2+(1-cv2)*.021+.0012);
+    const k=cv2*cv2*(3-2*cv2);
+    for(let i=0;i<N;i++){const i3=i*3;let dx=tg[i3],dy=tg[i3+1],dz=tg[i3+2];
+      if(!reduced){const s=sd[i];dx+=Math.sin(t*.26+s)*.075;dy+=Math.cos(t*.23+s*1.7)*.075;
+        dz+=Math.sin(t*.2+s*2.3)*.075;}
+      P[i3]+=(dx-P[i3])*(.01+.048*k);P[i3+1]+=(dy-P[i3+1])*(.01+.048*k);
+      P[i3+2]+=(dz-P[i3+2])*(.01+.048*k);}
+    geo.attributes.position.needsUpdate=true;
+    px+=(tx-px)*.05;py+=(ty-py)*.05;
+    sc.rotation.y=-.28+t*.016+px;sc.rotation.x=-.04+py;rn.render(sc,cam);})(0);
+  fit();addEventListener('resize',fit);
+}
+
+/* ── schedule trace ── */
+(function(){const c=document.getElementById('sched'),x=c.getContext('2d');let hv=-1;
+  function d(){const w=c.clientWidth,h=238,D=Math.min(devicePixelRatio,2);
+    c.width=w*D;c.height=h*D;x.setTransform(D,0,0,D,0,0);x.clearRect(0,0,w,h);
+    const L=52,R=18,B=36,gw=w-L-R,gh=h-B-20;
+    x.strokeStyle='#ded9cc';x.lineWidth=1;
+    x.font='9.5px "IBM Plex Mono",monospace';x.fillStyle='#7b8189';
+    for(let q=0;q<=24;q+=3){const gx=L+q/24*gw;x.beginPath();x.moveTo(gx,16);x.lineTo(gx,16+gh);x.stroke();
+      x.fillText(String(q).padStart(2,'0')+'00',gx-11,h-14);}
+    x.strokeStyle='#0f1113';x.beginPath();x.moveTo(L,16+gh);x.lineTo(L+gw,16+gh);x.stroke();
+    AGENTS.forEach((a,i)=>{const gx=L+((a[1]+a[2]/60)/24)*gw,bh=11+(i%5)*5;
+      const gy=16+gh-bh-((i%7)*(gh-34)/7);
+      x.fillStyle=i===hv?'#0f7a3d':'#2a3038';x.fillRect(gx-2,gy,4,bh);
+      x.strokeStyle=i===hv?'#0f7a3d':'#c9c4b6';x.beginPath();
+      x.moveTo(gx,gy+bh);x.lineTo(gx,16+gh);x.stroke();
+      if(i===hv){const lb=a[0]+' · '+String(a[1]).padStart(2,'0')+':'+String(a[2]).padStart(2,'0');
+        x.font='500 11px "IBM Plex Mono",monospace';const tw=x.measureText(lb).width;
+        const bx=Math.min(Math.max(gx-tw/2-8,4),w-tw-20);
+        x.fillStyle='#0f1113';x.fillRect(bx,gy-26,tw+16,20);
+        x.fillStyle='#eae7df';x.fillText(lb,bx+8,gy-12);}});
+    x.fillStyle='#7b8189';x.font='9.5px "IBM Plex Mono",monospace';
+    x.fillText('AGENTS',10,22);x.fillText('24H',10,16+gh);}
+  c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect(),w=c.clientWidth,
+    L=52,gw=w-L-18;let b=-1,bd=1e9;
+    AGENTS.forEach((a,i)=>{const gx=L+((a[1]+a[2]/60)/24)*gw,dd=Math.abs(gx-(e.clientX-r.left));
+      if(dd<bd){bd=dd;b=i;}});hv=bd<11?b:-1;d();});
+  c.addEventListener('pointerleave',()=>{hv=-1;d();});d();addEventListener('resize',d);})();
+
+/* ── architecture schematic ── */
+(function(){const c=document.getElementById('arch'),x=c.getContext('2d');let t=0;
+  const B=[['CLIENT',.11,.44],['WEBSOCKET',.40,.19],['REDIS PUB/SUB',.71,.19],['POSTGRES',.55,.76]];
+  function d(){const w=c.clientWidth,h=222,D=Math.min(devicePixelRatio,2);
+    c.width=w*D;c.height=h*D;x.setTransform(D,0,0,D,0,0);x.clearRect(0,0,w,h);
+    const P=B.map(b=>[b[1]*w,b[2]*h]);
+    [[0,1,'#0f7a3d','TRANSIENT'],[1,2,'#0f7a3d',''],[0,3,'#0f1113','DURABLE']]
+      .forEach(([a,b,col,lb],i)=>{
+      x.strokeStyle=col;x.globalAlpha=.3;x.lineWidth=1.2;x.setLineDash(lb==='TRANSIENT'?[4,4]:[]);
+      x.beginPath();x.moveTo(P[a][0],P[a][1]);x.lineTo(P[b][0],P[b][1]);x.stroke();
+      x.setLineDash([]);x.globalAlpha=1;
+      const p=((t*.32)+i*.33)%1;
+      x.fillStyle=col;x.beginPath();
+      x.arc(P[a][0]+(P[b][0]-P[a][0])*p,P[a][1]+(P[b][1]-P[a][1])*p,3,0,6.2832);x.fill();
+      if(lb){x.fillStyle=col;x.font='500 8.5px "IBM Plex Mono",monospace';
+        x.fillText(lb,(P[a][0]+P[b][0])/2-20,(P[a][1]+P[b][1])/2-9);}});
+    B.forEach((b,i)=>{const[cx,cy]=P[i];x.font='500 10px "IBM Plex Mono",monospace';
+      const tw=x.measureText(b[0]).width,bw=tw+24,bh=30;
+      x.fillStyle='#eae7df';x.strokeStyle='#0f1113';x.lineWidth=1;
+      x.fillRect(cx-bw/2,cy-bh/2,bw,bh);x.strokeRect(cx-bw/2,cy-bh/2,bw,bh);
+      x.fillStyle='#0f1113';x.fillText(b[0],cx-tw/2,cy+4);});
+    t+=.016;if(!reduced)requestAnimationFrame(d);}
+  d();})();
+</script>
+</body></html>
