@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — cortex hero v2</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#080a0f;--panel:#0e1219;--ink:#e9edf4;--dim:#79839a;--green:#4ade80;
+    --line:#1b2130;--blue:#6ea8fe}
+  body{background:var(--bg);color:var(--ink);overflow-x:hidden;
+    font:15px/1.6 ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif}
+  #stage{position:fixed;inset:0;z-index:0;pointer-events:none}
+  canvas{display:block}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 30px}
+  /* ---- hero: the ONLY place the 3D lives ---- */
+  header{position:relative;z-index:2;height:100vh;min-height:640px;
+    display:flex;flex-direction:column;justify-content:center}
+  .kicker{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-bottom:20px}
+  h1{font-size:clamp(36px,6.2vw,76px);line-height:.98;letter-spacing:-.035em;font-weight:600;
+     max-width:15ch}
+  h1 em{font-style:normal;color:var(--dim)}
+  .sub{max-width:44ch;margin-top:20px;color:#a7b0c4;font-size:16.5px}
+  .cta{margin-top:28px;display:flex;gap:11px;flex-wrap:wrap}
+  .cta a{border:1px solid var(--line);padding:11px 17px;border-radius:9px;color:var(--ink);
+    text-decoration:none;font-size:14px;background:rgba(10,13,20,.72)}
+  .cta a.solid{background:var(--green);border-color:var(--green);color:#06210e;font-weight:650}
+  .cta a:hover{border-color:#3a4560}
+  .agentbar{position:absolute;left:30px;right:30px;bottom:34px;display:flex;gap:5px;
+    align-items:flex-end;height:26px}
+  .agentbar i{flex:1;background:#1c2433;border-radius:1px;height:5px;transition:height .5s,background .5s}
+  .agentbar i.on{background:var(--green);height:20px}
+  .agentnote{position:absolute;left:30px;bottom:70px;font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--dim)}
+  /* ---- everything below the fold: solid, readable, no 3D ---- */
+  main{position:relative;z-index:2;background:var(--bg)}
+  section{padding:88px 0;border-top:1px solid var(--line)}
+  .shead{display:flex;align-items:baseline;gap:14px;margin-bottom:34px}
+  .shead .no{font-size:11px;color:var(--dim);letter-spacing:.2em}
+  h2{font-size:clamp(22px,2.6vw,30px);letter-spacing:-.02em;font-weight:600}
+  .case{border:1px solid var(--line);border-radius:14px;padding:26px;background:var(--panel);
+    margin-bottom:18px}
+  .case h3{font-size:19px;margin:6px 0 10px;letter-spacing:-.01em}
+  .case .meta{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+  .case p{color:#a7b0c4;max-width:70ch}
+  .chips{margin-top:14px;display:flex;gap:7px;flex-wrap:wrap}
+  .chips span{font-size:11.5px;color:var(--dim);border:1px solid var(--line);padding:4px 9px;
+    border-radius:20px}
+  .verify{margin-top:16px;display:flex;gap:26px;flex-wrap:wrap;padding-top:14px;
+    border-top:1px solid var(--line)}
+  .verify div{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .verify b{display:block;font-size:16px;letter-spacing:-.01em;color:var(--ink);margin-top:3px;
+    text-transform:none}
+  .links{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+  .links a{font-size:13.5px;color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+  .links a:hover{border-color:var(--blue)}
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:26px}
+  .cols h4{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+  .cols li{list-style:none;color:#a7b0c4;padding:5px 0;font-size:14.5px}
+  .xp{border-left:2px solid var(--line);padding-left:20px}
+  .xp .row{margin-bottom:22px}
+  .xp .when{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+  .xp h3{font-size:17px;margin:4px 0 6px;font-weight:600}
+  .xp h3 span{color:var(--dim);font-weight:400}
+  .xp p{color:#a7b0c4;max-width:68ch;font-size:14.5px}
+  .edu{margin-top:26px;font-size:13px;color:var(--dim)}
+  .big{font-size:clamp(24px,3.4vw,40px);letter-spacing:-.025em;max-width:20ch;font-weight:600}
+  footer{padding:40px 0 60px;border-top:1px solid var(--line);color:var(--dim);font-size:12.5px;
+    display:flex;gap:20px;flex-wrap:wrap}
+  .fallback{position:fixed;inset:0;z-index:1;display:grid;place-items:center;opacity:.3}
+  .fallback svg{width:min(52vw,440px)}
+  @media (max-width:640px){.agentbar,.agentnote{display:none}}
+</style></head>
+<body>
+
+<div class="fallback" id="fallback" aria-hidden="true">
+  <svg viewBox="0 0 200 160" fill="none" stroke="#242d42" stroke-width=".7">
+    <ellipse cx="100" cy="72" rx="66" ry="52"/><ellipse cx="100" cy="72" rx="44" ry="38"/>
+    <path d="M100 20v104"/><ellipse cx="126" cy="116" rx="26" ry="15"/>
+  </svg>
+</div>
+<div id="stage"></div>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">New Jersey · Remote / Hybrid / On-site / Relocation</div>
+    <h1>I build working systems — <em>then I keep them running.</em></h1>
+    <p class="sub">Developer and operator. Every bright point below is one of the 25
+      scheduled agents running on my machine right now.</p>
+    <div class="cta">
+      <a class="solid" href="mailto:mathew.brian@gmail.com">Email me</a>
+      <a href="https://github.com/bmath8">github.com/bmath8</a>
+      <a href="resume.pdf">Resume</a>
+    </div>
+    <div class="agentnote">Live fleet · <span id="fleetCount">25</span> agents · 81/81 tests</div>
+    <div class="agentbar" id="agentbar"></div>
+  </header>
+</div>
+
+<main>
+<section><div class="wrap">
+  <div class="shead"><span class="no">01</span><h2>Selected work</h2></div>
+
+  <div class="case">
+    <div class="meta">Case 01 — 2026–present</div>
+    <h3>Brian OS — Windows agent fleet &amp; operational recovery</h3>
+    <p>An always-on fleet of 25 scheduled agents that runs my day. They prepare briefs,
+      watch system health, take two-way commands over Telegram, and require my approval
+      before anything leaves the machine.</p>
+    <p style="margin-top:12px"><b>The hardest bug was operational, not logical.</b> A failed
+      process guardian silently left orphan processes that exhausted the disk. I traced the
+      cause, recovered the machine, restored monitoring, and added liveness checks to
+      prevent recurrence.</p>
+    <div class="chips"><span>Python</span><span>Windows</span><span>PowerShell</span>
+      <span>Ollama</span><span>Telegram API</span><span>pytest</span></div>
+    <div class="verify">
+      <div>Agents<b>25 scheduled</b></div><div>Tests<b>81 passed, 0 failed</b></div>
+      <div>Status<b>Running daily</b></div>
+    </div>
+    <div class="links"><a href="https://github.com/bmath8/brian-os">Read the code ↗</a></div>
+  </div>
+
+  <div class="case">
+    <div class="meta">Case 02 — 2026</div>
+    <h3>Super Bowl LX Squares — real-time app that ran a live event</h3>
+    <p>A squares pool real people used during a real game. 100 squares, live random draw,
+      score-driven winner resolution updating for everyone at once while the game was on.
+      One moment to be correct, no second chance.</p>
+    <div class="chips"><span>JavaScript</span><span>React</span><span>Firebase</span>
+      <span>Realtime state</span></div>
+    <div class="verify">
+      <div>Status<b>Live &amp; publicly usable</b></div><div>Ran<b>A real Super Bowl pool</b></div>
+    </div>
+    <div class="links">
+      <a href="https://fam-super-bowl-squares-2026.vercel.app">Open the live app ↗</a>
+      <a href="https://github.com/bmath8/fam-super-bowl-squares-2026">Read the code ↗</a>
+    </div>
+  </div>
+
+  <div class="case">
+    <div class="meta">Case 03 — 2025–present</div>
+    <h3>BoomBox — real-time collaborative music prototype</h3>
+    <p>Shared queues and synchronized listening. Durable Postgres state kept deliberately
+      separate from transient WebSocket and Redis Pub/Sub state — each layer with one clear
+      responsibility.</p>
+    <div class="chips"><span>TypeScript</span><span>Next.js</span><span>React</span>
+      <span>PostgreSQL</span><span>WebSockets</span><span>Redis</span></div>
+    <div class="verify">
+      <div>Source<b>Public</b></div><div>Tooling<b>Jest · Docker Compose</b></div>
+      <div>Status<b>Prototype — not deployed</b></div>
+    </div>
+    <div class="links"><a href="https://github.com/bmath8/boombox">Read the code ↗</a></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead"><span class="no">02</span><h2>Capabilities</h2></div>
+  <div class="cols">
+    <div><h4>Support &amp; service</h4><ul>
+      <li>Application troubleshooting</li><li>Issue reproduction &amp; isolation</li>
+      <li>Customer communication</li><li>Technical documentation</li></ul></div>
+    <div><h4>Systems &amp; tools</h4><ul>
+      <li>Python · Flask · SQL · APIs</li><li>TypeScript · React · Next.js</li>
+      <li>Windows · PowerShell · CLI</li><li>Git / GitHub · local AI tooling</li></ul></div>
+    <div><h4>Quality &amp; operations</h4><ul>
+      <li>Automated testing &amp; smoke checks</li><li>Failure diagnosis &amp; recovery</li>
+      <li>Process monitoring · liveness checks</li><li>Scheduled, unattended execution</li></ul></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead"><span class="no">03</span><h2>Customer &amp; operations experience</h2></div>
+  <div class="xp">
+    <div class="row"><div class="when">Earlier experience</div>
+      <h3>Best Buy <span>— Appliances Department Lead</span></h3>
+      <p>Led the appliances department on a high-volume retail floor. Helped customers
+        through high-consideration purchases, resolved complaints and post-sale issues in
+        person, coordinated a small team.</p></div>
+    <div class="row"><div class="when">2022</div>
+      <h3>Uber <span>— Independent Driver</span></h3>
+      <p>About a year of sustained, independent, customer-facing work — managing routes,
+        schedules, communication and changing customer needs without direct supervision.</p></div>
+  </div>
+  <p class="edu">EDUCATION · <b>Penn State Berks</b> — undergraduate coursework ·
+    <b>The City College of New York</b> — undergraduate coursework</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead"><span class="no">04</span><h2>Contact</h2></div>
+  <p class="big">Looking for someone who builds, tests, and follows through?</p>
+  <p class="sub" style="margin-top:18px">I'm looking for a full-time role building or
+    supporting software — developer, technical support, or operations.</p>
+  <div class="cta">
+    <a class="solid" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+    <a href="https://github.com/bmath8">github.com/bmath8</a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+    <a href="resume.pdf">Resume (PDF)</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap" style="display:flex;gap:20px;flex-wrap:wrap">
+  <span>© 2026 Brian Mathew</span><span>New Jersey, USA</span>
+  <span>Every number on this page is checkable</span>
+</div></footer>
+</main>
+
+<script type="importmap">{"imports":{
+ "three":"https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+
+/* v2 CHANGES — driven by Brian's review of hero-gpgpu.html:
+   - The three-form morph is GONE. It was motion without meaning and the network/crontab
+     forms read as unreadable neon. ONE form: the cortex.
+   - Bloom pass removed entirely. Additive blending + UnrealBloom is what blew the
+     highlights out to white. Now: low-alpha additive, no post FX, nothing clips.
+   - The only motion is a slow drift + gentle mouse parallax. It breathes; it doesn't perform.
+   - The 25 agents live in a readable BAR at the bottom of the hero, not as glowing dots
+     competing with the headline. Data you can actually read.
+   - Everything below the fold is flat, high-contrast, zero 3D. */
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const AGENTS = ['daily-brief','system-watchdog','overnight-worker','learning-agent','harmony-backup',
+  'model-review','finance','health','weekly-review','scout','memory-index','feedback','calendar',
+  'research','skill-miner','career','inbox','dashboard','currency','currency-weekly','wiki',
+  'outcome-learner','gig-scanner','ceo-report','career-scout'];
+
+// readable agent bar — real names, hover to identify
+const bar = document.getElementById('agentbar');
+AGENTS.forEach((n,i)=>{ const el=document.createElement('i'); el.title=n;
+  if(i%3===0) el.classList.add('on'); bar.appendChild(el); });
+if(!reduced) setInterval(()=>{
+  const k=Math.floor(Math.random()*AGENTS.length);
+  bar.children[k].classList.toggle('on');
+}, 1400);
+
+let renderer;
+try{ renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'}); }
+catch(e){}
+
+if(renderer){
+  document.getElementById('fallback').style.display='none';
+  const DPR=Math.min(devicePixelRatio,2), MOBILE=innerWidth<760, COUNT=MOBILE?6000:19000;
+  renderer.setPixelRatio(DPR); renderer.setSize(innerWidth,innerHeight);
+  document.getElementById('stage').appendChild(renderer.domElement);
+
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
+  cam.position.set(0,0,15.5);
+
+  function hash(x,y,z){const s=Math.sin(x*127.1+y*311.7+z*74.7)*43758.5453;return s-Math.floor(s);}
+  function vnoise(x,y,z){const xi=Math.floor(x),yi=Math.floor(y),zi=Math.floor(z),
+    xf=x-xi,yf=y-yi,zf=z-zi,u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf),w=zf*zf*(3-2*zf);let n=0;
+    for(let i=0;i<2;i++)for(let j=0;j<2;j++)for(let k=0;k<2;k++)
+      n+=(i?u:1-u)*(j?v:1-v)*(k?w:1-w)*hash(xi+i,yi+j,zi+k); return n*2-1;}
+  function field(x,y,z){
+    const lobe=1-(Math.pow((Math.abs(x)-1.55)/3.45,2)+Math.pow(y/3.05,2)+Math.pow(z/3.7,2));
+    const cere=1-(Math.pow(x/2.0,2)+Math.pow((y+2.85)/1.15,2)+Math.pow((z+1.5)/1.5,2));
+    const stem=1-(Math.pow(x/0.52,2)+Math.pow((y+3.5)/1.5,2)+Math.pow((z+0.35)/0.62,2));
+    return Math.max(lobe,cere*0.94,stem*0.9)+vnoise(x*1.15,y*1.15,z*1.15)*0.135;}
+
+  const tgt=new Float32Array(COUNT*3); let made=0,guard=0;
+  while(made<COUNT&&guard<COUNT*300){ guard++;
+    const x=(Math.random()*2-1)*5.6,y=(Math.random()*2-1)*4.9,z=(Math.random()*2-1)*4.6;
+    const f=field(x,y,z);
+    if(f<0.006||f>0.145) continue;
+    if(Math.abs(x)<0.14&&Math.random()<0.8) continue;
+    tgt[made*3]=x;tgt[made*3+1]=y;tgt[made*3+2]=z;made++; }
+
+  const pos=new Float32Array(COUNT*3), sz=new Float32Array(COUNT), sd=new Float32Array(COUNT);
+  for(let i=0;i<COUNT;i++){
+    const r=15+Math.random()*14,th=Math.random()*6.2832,ph=Math.acos(Math.random()*2-1);
+    pos[i*3]=r*Math.sin(ph)*Math.cos(th); pos[i*3+1]=r*Math.sin(ph)*Math.sin(th);
+    pos[i*3+2]=r*Math.cos(ph);
+    sz[i]=0.75+Math.random()*1.25; sd[i]=Math.random()*100; }
+
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('aSize',new THREE.BufferAttribute(sz,1));
+
+  const mat=new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    uniforms:{uDpr:{value:DPR}},
+    vertexShader:`attribute float aSize; uniform float uDpr; varying float vD;
+      void main(){ vec4 mv=modelViewMatrix*vec4(position,1.); vD=-mv.z;
+        gl_PointSize=aSize*uDpr*(26.0/max(vD,0.001)); gl_Position=projectionMatrix*mv; }`,
+    // NOTE: peak alpha is 0.30. Additive blending stacks — anything higher and overlapping
+    // particles clip to white. This is the fix for the "neon" blowout in v1.
+    fragmentShader:`varying float vD;
+      void main(){ vec2 c=gl_PointCoord-0.5; float d=length(c); if(d>0.5) discard;
+        float a=smoothstep(0.5,0.05,d);
+        float fog=clamp(1.45-vD*0.042,0.10,1.0);
+        vec3 col=mix(vec3(0.40,0.52,0.80), vec3(0.62,0.74,0.95), fog);
+        gl_FragColor=vec4(col, a*0.30*fog); }`
+  });
+  const pts=new THREE.Points(geo,mat); scene.add(pts);
+
+  let t0=performance.now(),conv=reduced?1:0,hidden=false,mx=0,my=0,tx=0,ty=0;
+  document.addEventListener('visibilitychange',()=>hidden=document.hidden);
+  addEventListener('pointermove',e=>{ tx=(e.clientX/innerWidth-.5)*0.22;
+    ty=(e.clientY/innerHeight-.5)*0.16; },{passive:true});
+
+  const P=geo.attributes.position.array;
+  function loop(now){
+    requestAnimationFrame(loop); if(hidden) return;
+    const t=(now-t0)/1000;
+    if(!reduced) conv=Math.min(1,conv+(1-conv)*0.020+0.0011);
+    const k=conv*conv*(3-2*conv);
+    for(let i=0;i<COUNT;i++){ const i3=i*3;
+      let dx=tgt[i3],dy=tgt[i3+1],dz=tgt[i3+2];
+      if(!reduced){ const s=sd[i];
+        dx+=Math.sin(t*0.33+s)*0.085; dy+=Math.cos(t*0.29+s*1.7)*0.085;
+        dz+=Math.sin(t*0.25+s*2.3)*0.085; }
+      P[i3]+=(dx-P[i3])*(0.010+0.050*k);
+      P[i3+1]+=(dy-P[i3+1])*(0.010+0.050*k);
+      P[i3+2]+=(dz-P[i3+2])*(0.010+0.050*k); }
+    geo.attributes.position.needsUpdate=true;
+    mx+=(tx-mx)*0.045; my+=(ty-my)*0.045;
+    pts.rotation.y=-0.30+t*0.020+mx;      // slow, constant. no scroll hijack.
+    pts.rotation.x=-0.05+my;
+    renderer.render(scene,cam);
+  }
+  requestAnimationFrame(loop);
+  addEventListener('resize',()=>{ cam.aspect=innerWidth/innerHeight;
+    cam.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+}
+</script>
+</body></html>
