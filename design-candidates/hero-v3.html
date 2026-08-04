@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — v3</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --paper:#f4f2ee; --paper2:#eceae5; --ink:#14171d; --mid:#5b6474; --rule:#d9d5cd;
+    --dark:#0d1017; --darkink:#e9ecf3; --green:#12a150; --blue:#2563eb; --amber:#c2410c;
+  }
+  body{background:var(--paper);color:var(--ink);overflow-x:hidden;
+    font:15.5px/1.6 ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif}
+  .wrap{max-width:1150px;margin:0 auto;padding:0 30px}
+
+  /* ---------- STICKY HEADER: monogram left, contact right ---------- */
+  .bar{position:sticky;top:0;z-index:50;background:rgba(244,242,238,.86);
+    backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+  .bar .in{max-width:1150px;margin:0 auto;padding:11px 30px;display:flex;align-items:center;gap:16px}
+  .mono{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink)}
+  .mono .sq{width:38px;height:38px;border-radius:9px;background:var(--ink);color:var(--paper);
+    display:grid;place-items:center;font-weight:700;font-size:15px;letter-spacing:.02em}
+  .mono b{font-size:15px;letter-spacing:-.01em;display:block;line-height:1.15}
+  .mono s{text-decoration:none;font-size:11.5px;color:var(--mid);display:block}
+  .contact{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .contact a{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:500;
+    padding:8px 13px;border-radius:8px;border:1px solid var(--rule);background:#fff;
+    color:var(--ink);text-decoration:none;white-space:nowrap}
+  .contact a:hover{border-color:var(--ink)}
+  .contact a.hi{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .contact a.hi:hover{background:#000}
+  .contact svg{width:15px;height:15px;flex:none}
+  @media(max-width:860px){.contact a span{display:none}.contact a{padding:9px 11px}}
+
+  /* ---------- HERO: brain is a CONTAINED panel, not a background ---------- */
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center;
+    padding:64px 0 72px}
+  @media(max-width:900px){.hero{grid-template-columns:1fr;gap:30px;padding:40px 0 52px}}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--mid);border:1px solid var(--rule);background:#fff;
+    padding:6px 11px;border-radius:20px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 0 3px rgba(18,161,80,.16)}
+  h1{font-size:clamp(34px,5vw,58px);line-height:1.03;letter-spacing:-.035em;font-weight:680;
+    margin:20px 0 0;max-width:16ch}
+  h1 em{font-style:normal;color:var(--mid)}
+  .lede{margin-top:18px;max-width:48ch;color:#3f4756;font-size:16.5px}
+  .stats{display:flex;gap:30px;margin-top:26px;flex-wrap:wrap}
+  .stats div{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--mid)}
+  .stats b{display:block;font-size:26px;letter-spacing:-.025em;color:var(--ink);
+    text-transform:none;font-weight:680;margin-top:2px}
+  /* the dark panel — this is where ALL the contrast comes from */
+  .panel{position:relative;background:var(--dark);border-radius:18px;overflow:hidden;
+    aspect-ratio:1/1;box-shadow:0 24px 60px -28px rgba(13,16,23,.6)}
+  .panel canvas{display:block}
+  .panel .tagline{position:absolute;left:18px;bottom:16px;z-index:2;color:#8d97ad;
+    font-size:10.5px;letter-spacing:.18em;text-transform:uppercase}
+  .panel .tagline b{color:#4ade80}
+  .panel .agents{position:absolute;right:16px;top:16px;z-index:2;display:grid;
+    grid-template-columns:repeat(5,1fr);gap:4px}
+  .panel .agents i{width:9px;height:9px;border-radius:2px;background:#222a38;transition:background .45s}
+  .panel .agents i.on{background:#4ade80}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:74px 0;border-top:1px solid var(--rule)}
+  section.dark{background:var(--dark);color:var(--darkink);border-top:none}
+  section.dark h2,section.dark h3{color:#fff}
+  section.dark .muted{color:#9aa4b8}
+  .shead{display:flex;align-items:baseline;gap:13px;margin-bottom:30px}
+  .shead .no{font-size:11px;letter-spacing:.2em;color:var(--mid)}
+  h2{font-size:clamp(21px,2.4vw,29px);letter-spacing:-.022em;font-weight:660}
+  .muted{color:#525b6b}
+
+  /* ---------- PROJECT CARD with LIVE DEMO ---------- */
+  .proj{border:1px solid var(--rule);border-radius:16px;background:#fff;overflow:hidden;
+    margin-bottom:22px}
+  .proj .head{padding:22px 24px 0}
+  .proj .tag{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--mid)}
+  .proj h3{font-size:20px;letter-spacing:-.015em;margin:6px 0 9px;font-weight:660}
+  .proj p{color:#4a5262;max-width:74ch;font-size:15px}
+  .chips{margin:14px 0 0;display:flex;gap:6px;flex-wrap:wrap}
+  .chips span{font-size:11.5px;color:var(--mid);background:var(--paper2);padding:4px 9px;
+    border-radius:20px}
+  .demo{margin:20px 24px 0;border:1px solid var(--rule);border-radius:12px;overflow:hidden;
+    background:var(--paper2);position:relative}
+  .demo .cap{display:flex;align-items:center;gap:8px;padding:9px 13px;background:#fff;
+    border-bottom:1px solid var(--rule);font-size:11.5px;color:var(--mid)}
+  .demo .cap b{color:var(--green);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+  .demo iframe{display:block;width:100%;height:460px;border:0;background:#fff}
+  .demo canvas{display:block;width:100%}
+  .foot{display:flex;gap:26px;flex-wrap:wrap;padding:18px 24px 22px;margin-top:18px;
+    border-top:1px solid var(--rule)}
+  .foot div{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mid)}
+  .foot b{display:block;font-size:15px;color:var(--ink);text-transform:none;letter-spacing:-.01em;
+    margin-top:3px;font-weight:600}
+  .foot .links{margin-left:auto;display:flex;gap:9px;align-items:center}
+  .foot .links a{font-size:13.5px;font-weight:500;color:#fff;background:var(--ink);
+    padding:8px 13px;border-radius:8px;text-decoration:none}
+  .foot .links a.ghost{background:#fff;color:var(--ink);border:1px solid var(--rule)}
+  .foot .links a:hover{opacity:.88}
+
+  .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:28px}
+  .cols h4{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#9aa4b8;
+    margin-bottom:11px}
+  .cols li{list-style:none;padding:5px 0;font-size:14.5px;color:#c7cee0}
+  .xp{border-left:2px solid #232b3a;padding-left:20px;max-width:78ch}
+  .xp .row{margin-bottom:22px}
+  .xp .when{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#8d97ad}
+  .xp h3{font-size:17px;margin:4px 0 6px;font-weight:620}
+  .xp h3 span{color:#8d97ad;font-weight:400}
+  .big{font-size:clamp(24px,3.2vw,38px);letter-spacing:-.028em;max-width:19ch;font-weight:660}
+  footer{padding:34px 0 56px;border-top:1px solid var(--rule);color:var(--mid);font-size:12.5px;
+    display:flex;gap:20px;flex-wrap:wrap}
+</style></head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<div class="bar"><div class="in">
+  <a class="mono" href="#top">
+    <span class="sq">BM</span>
+    <span><b>Brian Mathew</b><s>New Jersey · open to relocation</s></span>
+  </a>
+  <nav class="contact">
+    <a href="mailto:mathew.brian@gmail.com" title="mathew.brian@gmail.com">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+      <span>Email</span></a>
+    <a href="tel:+16098151685" title="(609) 815-1685">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.4 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+      <span>(609) 815-1685</span></a>
+    <a href="https://github.com/bmath8" title="github.com/bmath8">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8 0-.7.3-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .3.3.7 1 .7 2v2.9c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg>
+      <span>GitHub</span></a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556" title="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.3c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9V21h-4z"/></svg>
+      <span>LinkedIn</span></a>
+    <a class="hi" href="resume.pdf">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+      <span>Resume</span></a>
+  </nav>
+</div></div>
+
+<div class="wrap" id="top">
+  <div class="hero">
+    <div>
+      <span class="eyebrow"><i class="dot"></i> Fleet running · 25 agents · 81/81 tests</span>
+      <h1>I build working systems — <em>then I keep them running.</em></h1>
+      <p class="lede">Developer and operator. I write software, test it, document it, and
+        then run it in production for the most demanding user I have — myself. Everything
+        below is code you can read or an app you can open.</p>
+      <div class="stats">
+        <div>Scheduled agents<b>25</b></div>
+        <div>Tests passing<b>81/81</b></div>
+        <div>Live apps<b>1 public</b></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="agents" id="agents"></div>
+      <canvas id="brain"></canvas>
+      <div class="tagline">Cortex · <b>each point is a scheduled process</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WORK, WITH LIVE DEMOS ============ -->
+<section><div class="wrap">
+  <div class="shead"><span class="no">01</span><h2>Selected work — open them, don't just read them</h2></div>
+
+  <div class="proj">
+    <div class="head">
+      <div class="tag">Case 01 · 2026 · live &amp; publicly usable</div>
+      <h3>Super Bowl LX Squares</h3>
+      <p>A real-time squares pool that real people used during a real game. 100 squares,
+        live random draw, score-driven winner resolution updating for everyone at once.
+        An event app gets exactly one moment to be correct.</p>
+      <div class="chips"><span>JavaScript</span><span>React</span><span>Firebase Realtime DB</span><span>Vercel</span></div>
+    </div>
+    <div class="demo">
+      <div class="cap"><b>● Live</b> fam-super-bowl-squares-2026.vercel.app — the same app that ran on game day</div>
+      <iframe src="https://fam-super-bowl-squares-2026.vercel.app" loading="lazy"
+              title="Super Bowl Squares live demo" referrerpolicy="no-referrer"></iframe>
+    </div>
+    <div class="foot">
+      <div>Status<b>Live</b></div><div>Squares<b>100, live draw</b></div>
+      <div class="links">
+        <a href="https://fam-super-bowl-squares-2026.vercel.app" target="_blank">Open full screen ↗</a>
+        <a class="ghost" href="https://github.com/bmath8/fam-super-bowl-squares-2026" target="_blank">Code</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="proj">
+    <div class="head">
+      <div class="tag">Case 02 · 2026–present · running daily</div>
+      <h3>Brian OS — Windows agent fleet</h3>
+      <p>25 scheduled agents running unattended on my machine. They prepare briefs, watch
+        system health, take commands over Telegram, and are draft-only until I approve
+        anything that sends, spends, deploys or deletes.</p>
+      <p style="margin-top:10px"><b>The hardest bug was operational.</b> A failed process
+        guardian silently left orphan processes that exhausted the disk. I traced it to
+        root cause, recovered the machine, and added the liveness check that catches it now.</p>
+      <div class="chips"><span>Python</span><span>Windows</span><span>PowerShell</span><span>Ollama</span><span>pytest</span></div>
+    </div>
+    <div class="demo">
+      <div class="cap"><b>● Interactive</b> the real 24-hour schedule — hover a bar to see the agent</div>
+      <canvas id="sched" height="230"></canvas>
+    </div>
+    <div class="foot">
+      <div>Agents<b>25 scheduled</b></div><div>Tests<b>81 passed, 0 failed</b></div>
+      <div class="links"><a href="https://github.com/bmath8/brian-os" target="_blank">Read the code ↗</a></div>
+    </div>
+  </div>
+
+  <div class="proj">
+    <div class="head">
+      <div class="tag">Case 03 · 2025–present · prototype</div>
+      <h3>BoomBox — real-time collaborative music</h3>
+      <p>Shared queues and synchronized listening. Durable Postgres state kept deliberately
+        separate from transient WebSocket and Redis Pub/Sub state — each layer with one
+        clear responsibility.</p>
+      <div class="chips"><span>TypeScript</span><span>Next.js</span><span>PostgreSQL</span><span>WebSockets</span><span>Redis</span></div>
+    </div>
+    <div class="demo">
+      <div class="cap"><b>● Diagram</b> how the real-time layer stays separate from durable state</div>
+      <canvas id="arch" height="215"></canvas>
+    </div>
+    <div class="foot">
+      <div>Source<b>Public</b></div><div>Status<b>Prototype, not deployed</b></div>
+      <div class="links"><a class="ghost" href="https://github.com/bmath8/boombox" target="_blank">Read the code ↗</a></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ DARK BAND for contrast ============ -->
+<section class="dark"><div class="wrap">
+  <div class="shead"><span class="no">02</span><h2>Capabilities</h2></div>
+  <div class="cols">
+    <div><h4>Support &amp; service</h4><ul>
+      <li>Application troubleshooting</li><li>Issue reproduction &amp; isolation</li>
+      <li>Customer communication</li><li>Technical documentation</li></ul></div>
+    <div><h4>Systems &amp; tools</h4><ul>
+      <li>Python · Flask · SQL · APIs</li><li>TypeScript · React · Next.js</li>
+      <li>Windows · PowerShell · CLI</li><li>Git / GitHub · local AI tooling</li></ul></div>
+    <div><h4>Quality &amp; operations</h4><ul>
+      <li>Automated testing &amp; smoke checks</li><li>Failure diagnosis &amp; recovery</li>
+      <li>Process monitoring · liveness checks</li><li>Unattended scheduled execution</li></ul></div>
+  </div>
+
+  <div class="shead" style="margin-top:56px"><span class="no">03</span><h2>Customer &amp; operations experience</h2></div>
+  <div class="xp">
+    <div class="row"><div class="when">Earlier experience</div>
+      <h3>Best Buy <span>— Appliances Department Lead</span></h3>
+      <p class="muted">Led the appliances department on a high-volume retail floor. Helped
+        customers through high-consideration purchases, resolved complaints and post-sale
+        issues in person, coordinated a small team.</p></div>
+    <div class="row"><div class="when">2022</div>
+      <h3>Uber <span>— Independent Driver</span></h3>
+      <p class="muted">About a year of sustained, independent, customer-facing work —
+        routes, schedules, communication and changing needs without direct supervision.</p></div>
+  </div>
+  <p class="muted" style="margin-top:22px;font-size:13px">EDUCATION ·
+    <b style="color:#fff">Penn State Berks</b> — undergraduate coursework ·
+    <b style="color:#fff">The City College of New York</b> — undergraduate coursework</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead"><span class="no">04</span><h2>Contact</h2></div>
+  <p class="big">Looking for someone who builds, tests, and follows through?</p>
+  <p class="lede">I'm looking for a full-time role building or supporting software —
+    developer, technical support, or operations.</p>
+  <nav class="contact" style="margin:24px 0 0">
+    <a class="hi" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+    <a href="tel:+16098151685">(609) 815-1685</a>
+    <a href="https://github.com/bmath8">github.com/bmath8</a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+    <a href="resume.pdf">Resume (PDF)</a>
+  </nav>
+</div></section>
+
+<footer><div class="wrap" style="display:flex;gap:20px;flex-wrap:wrap">
+  <span>© 2026 Brian Mathew</span><span>New Jersey, USA</span>
+  <span>Every number on this page is checkable</span></div></footer>
+
+<script type="importmap">{"imports":{
+ "three":"https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const AGENTS=[['daily-brief',7,0],['system-watchdog',0,0],['overnight-worker',2,0],
+ ['learning-agent',6,45],['harmony-backup',1,30],['model-review',3,0],['finance',6,50],
+ ['health',6,52],['weekly-review',17,0],['scout',6,40],['memory-index',1,20],['feedback',17,0],
+ ['calendar',6,55],['research',18,0],['skill-miner',18,30],['career',6,53],['inbox',6,48],
+ ['dashboard',5,0],['currency',6,58],['currency-weekly',16,30],['wiki',16,45],
+ ['outcome-learner',16,50],['gig-scanner',7,10],['ceo-report',7,30],['career-scout',7,15]];
+
+/* ---- agent LEDs in the panel ---- */
+const ab=document.getElementById('agents');
+AGENTS.forEach((a,i)=>{const el=document.createElement('i');el.title=a[0];
+  if(i%4===0)el.classList.add('on');ab.appendChild(el);});
+if(!reduced) setInterval(()=>{const k=(Math.random()*AGENTS.length)|0;
+  ab.children[k].classList.toggle('on');},1500);
+
+/* ================= CONTAINED CORTEX (panel only) ================= */
+const cv=document.getElementById('brain'), panel=cv.parentElement;
+let renderer;
+try{ renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true}); }catch(e){}
+if(renderer){
+  const DPR=Math.min(devicePixelRatio,2);
+  function fit(){ const w=panel.clientWidth,h=panel.clientHeight;
+    renderer.setPixelRatio(DPR); renderer.setSize(w,h,false);
+    cam.aspect=w/h; cam.updateProjectionMatrix(); }
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(42,1,.1,100); cam.position.set(0,0,14.6);
+  const COUNT=innerWidth<760?5200:13000;
+
+  function hash(x,y,z){const s=Math.sin(x*127.1+y*311.7+z*74.7)*43758.5453;return s-Math.floor(s);}
+  function vn(x,y,z){const xi=Math.floor(x),yi=Math.floor(y),zi=Math.floor(z),
+    xf=x-xi,yf=y-yi,zf=z-zi,u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf),w=zf*zf*(3-2*zf);let n=0;
+    for(let i=0;i<2;i++)for(let j=0;j<2;j++)for(let k=0;k<2;k++)
+      n+=(i?u:1-u)*(j?v:1-v)*(k?w:1-w)*hash(xi+i,yi+j,zi+k);return n*2-1;}
+  function field(x,y,z){
+    const lobe=1-(Math.pow((Math.abs(x)-1.55)/3.45,2)+Math.pow(y/3.05,2)+Math.pow(z/3.7,2));
+    const cere=1-(Math.pow(x/2.0,2)+Math.pow((y+2.85)/1.15,2)+Math.pow((z+1.5)/1.5,2));
+    const stem=1-(Math.pow(x/0.52,2)+Math.pow((y+3.5)/1.5,2)+Math.pow((z+0.35)/0.62,2));
+    return Math.max(lobe,cere*0.94,stem*0.9)+vn(x*1.15,y*1.15,z*1.15)*0.135;}
+
+  const tgt=new Float32Array(COUNT*3),edge=new Float32Array(COUNT);
+  let m=0,g=0;
+  while(m<COUNT&&g<COUNT*300){g++;
+    const x=(Math.random()*2-1)*5.6,y=(Math.random()*2-1)*4.9,z=(Math.random()*2-1)*4.6;
+    const f=field(x,y,z);
+    if(f<0.006||f>0.145)continue;
+    if(Math.abs(x)<0.14&&Math.random()<0.8)continue;
+    tgt[m*3]=x;tgt[m*3+1]=y;tgt[m*3+2]=z;
+    edge[m]=1.0-Math.min(1,f/0.145);          // near the rim -> brighter. reads the outline.
+    m++;}
+
+  const pos=new Float32Array(COUNT*3),sz=new Float32Array(COUNT),sd=new Float32Array(COUNT);
+  for(let i=0;i<COUNT;i++){const r=13+Math.random()*11,th=Math.random()*6.2832,
+    ph=Math.acos(Math.random()*2-1);
+    pos[i*3]=r*Math.sin(ph)*Math.cos(th);pos[i*3+1]=r*Math.sin(ph)*Math.sin(th);
+    pos[i*3+2]=r*Math.cos(ph);sz[i]=.7+Math.random()*1.2;sd[i]=Math.random()*100;}
+
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('aSize',new THREE.BufferAttribute(sz,1));
+  geo.setAttribute('aEdge',new THREE.BufferAttribute(edge,1));
+  const mat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,
+    blending:THREE.AdditiveBlending,uniforms:{uDpr:{value:DPR}},
+    vertexShader:`attribute float aSize,aEdge;uniform float uDpr;varying float vD,vE;
+      void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vD=-mv.z;vE=aEdge;
+        gl_PointSize=aSize*uDpr*(24.0/max(vD,0.001))*(1.0+vE*0.5);
+        gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`varying float vD,vE;
+      void main(){vec2 c=gl_PointCoord-0.5;float d=length(c);if(d>0.5)discard;
+        float a=smoothstep(0.5,0.05,d);
+        float fog=clamp(1.5-vD*0.048,0.10,1.0);
+        vec3 body=vec3(0.34,0.46,0.76), rim=vec3(0.42,0.86,0.58);
+        vec3 col=mix(body,rim,vE*0.75);
+        gl_FragColor=vec4(col,a*(0.20+vE*0.22)*fog);}`});
+  scene.add(new THREE.Points(geo,mat));
+
+  let t0=performance.now(),conv=reduced?1:0,hid=false,px=0,py=0,txp=0,typ=0;
+  document.addEventListener('visibilitychange',()=>hid=document.hidden);
+  panel.addEventListener('pointermove',e=>{const r=panel.getBoundingClientRect();
+    txp=((e.clientX-r.left)/r.width-.5)*0.5; typ=((e.clientY-r.top)/r.height-.5)*0.35;},{passive:true});
+  panel.addEventListener('pointerleave',()=>{txp=0;typ=0;});
+
+  const P=geo.attributes.position.array;
+  const io=new IntersectionObserver(es=>es.forEach(e=>hid=!e.isIntersecting));
+  io.observe(panel);
+  function loop(now){requestAnimationFrame(loop);if(hid)return;
+    const t=(now-t0)/1000;
+    if(!reduced)conv=Math.min(1,conv+(1-conv)*0.021+0.0012);
+    const k=conv*conv*(3-2*conv);
+    for(let i=0;i<COUNT;i++){const i3=i*3;
+      let dx=tgt[i3],dy=tgt[i3+1],dz=tgt[i3+2];
+      if(!reduced){const s=sd[i];
+        dx+=Math.sin(t*0.26+s)*0.075;dy+=Math.cos(t*0.23+s*1.7)*0.075;dz+=Math.sin(t*0.20+s*2.3)*0.075;}
+      P[i3]+=(dx-P[i3])*(0.010+0.048*k);P[i3+1]+=(dy-P[i3+1])*(0.010+0.048*k);
+      P[i3+2]+=(dz-P[i3+2])*(0.010+0.048*k);}
+    geo.attributes.position.needsUpdate=true;
+    px+=(txp-px)*0.05;py+=(typ-py)*0.05;
+    scene.rotation.y=-0.28+t*0.016+px; scene.rotation.x=-0.04+py;
+    renderer.render(scene,cam);}
+  fit(); addEventListener('resize',fit); requestAnimationFrame(loop);
+}
+
+/* ================= DEMO: real 24h schedule ================= */
+(function(){
+  const c=document.getElementById('sched'),x=c.getContext('2d');let hoverI=-1;
+  function draw(){
+    const w=c.clientWidth,h=230,dpr=Math.min(devicePixelRatio,2);
+    c.width=w*dpr;c.height=h*dpr;x.setTransform(dpr,0,0,dpr,0,0);
+    x.clearRect(0,0,w,h);
+    const padL=44,padR=16,padB=34,gw=w-padL-padR,gh=h-padB-18;
+    x.strokeStyle='#e2ded6';x.lineWidth=1;x.font='10px ui-sans-serif';x.fillStyle='#8a92a3';
+    for(let hh=0;hh<=24;hh+=3){const gx=padL+(hh/24)*gw;
+      x.beginPath();x.moveTo(gx,14);x.lineTo(gx,14+gh);x.stroke();
+      x.fillText(String(hh).padStart(2,'0')+':00',gx-13,h-12);}
+    AGENTS.forEach((a,i)=>{
+      const gx=padL+((a[1]+a[2]/60)/24)*gw, bh=10+(i%5)*4;
+      const gy=14+gh-bh-((i%7)*(gh-30)/7);
+      x.fillStyle = i===hoverI ? '#12a150' : '#2f3a4d';
+      x.fillRect(gx-2.5,gy,5,bh);
+      if(i===hoverI){x.fillStyle='#14171d';x.font='600 12px ui-sans-serif';
+        const lbl=a[0]+'  '+String(a[1]).padStart(2,'0')+':'+String(a[2]).padStart(2,'0');
+        const tw=x.measureText(lbl).width;
+        x.fillRect(Math.min(gx-tw/2-7,w-tw-16),gy-24,tw+14,19);
+        x.fillStyle='#fff';x.fillText(lbl,Math.min(gx-tw/2,w-tw-9),gy-11);}
+    });
+    x.fillStyle='#8a92a3';x.font='10px ui-sans-serif';
+    x.fillText('agents',8,20);x.fillText('24h',8,14+gh);
+  }
+  c.addEventListener('pointermove',e=>{
+    const r=c.getBoundingClientRect(),w=c.clientWidth,padL=44,gw=w-padL-16;
+    let best=-1,bd=1e9;
+    AGENTS.forEach((a,i)=>{const gx=padL+((a[1]+a[2]/60)/24)*gw;
+      const d=Math.abs(gx-(e.clientX-r.left));if(d<bd){bd=d;best=i;}});
+    hoverI=bd<11?best:-1;draw();});
+  c.addEventListener('pointerleave',()=>{hoverI=-1;draw();});
+  draw();addEventListener('resize',draw);
+})();
+
+/* ================= DEMO: boombox architecture ================= */
+(function(){
+  const c=document.getElementById('arch'),x=c.getContext('2d');let t=0,raf;
+  const BOX=[['Next.js client',0.10,0.44],['WebSocket server',0.40,0.20],
+             ['Redis Pub/Sub',0.70,0.20],['Postgres (Supabase)',0.55,0.74]];
+  function draw(){
+    const w=c.clientWidth,h=215,dpr=Math.min(devicePixelRatio,2);
+    c.width=w*dpr;c.height=h*dpr;x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);
+    const P=BOX.map(b=>[b[1]*w,b[2]*h]);
+    const edges=[[0,1,'#12a150','transient'],[1,2,'#12a150',''],[0,3,'#2563eb','durable']];
+    edges.forEach(([a,b,col,lbl],i)=>{
+      x.strokeStyle=col;x.globalAlpha=.32;x.lineWidth=1.6;
+      x.beginPath();x.moveTo(P[a][0],P[a][1]);x.lineTo(P[b][0],P[b][1]);x.stroke();
+      x.globalAlpha=1;
+      const p=((t*0.35)+i*0.33)%1;
+      const cx=P[a][0]+(P[b][0]-P[a][0])*p, cy=P[a][1]+(P[b][1]-P[a][1])*p;
+      x.fillStyle=col;x.beginPath();x.arc(cx,cy,3.2,0,6.2832);x.fill();
+      if(lbl){x.fillStyle=col;x.font='600 10px ui-sans-serif';
+        x.fillText(lbl,(P[a][0]+P[b][0])/2-16,(P[a][1]+P[b][1])/2-8);}
+    });
+    BOX.forEach((b,i)=>{const[cx,cy]=P[i];
+      x.font='600 12px ui-sans-serif';const tw=x.measureText(b[0]).width;
+      x.fillStyle='#fff';x.strokeStyle='#d9d5cd';x.lineWidth=1;
+      const bw=tw+22,bh=30;
+      x.beginPath();x.roundRect(cx-bw/2,cy-bh/2,bw,bh,8);x.fill();x.stroke();
+      x.fillStyle='#14171d';x.fillText(b[0],cx-tw/2,cy+4);});
+    t+=0.016;raf=requestAnimationFrame(draw);
+  }
+  if(!reduced){draw();}else{t=0.4;draw();cancelAnimationFrame(raf);}
+  addEventListener('resize',()=>{});
+})();
+</script>
+</body></html>
