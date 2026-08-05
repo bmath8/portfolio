@@ -26,7 +26,25 @@ scripts/
 #      several MB of public dead weight on a site whose whole argument is
 #      that it loads fast.
 #
-# Deny the directory, then re-allow only what the live page actually uses.
-vendor/*
-!vendor/fonts.css
-!vendor/fonts/
+# DO NOT use `vendor/*` + `!vendor/fonts/` here. That pattern is correct under
+# git's matcher (verified) but Vercel did NOT honour the directory re-include:
+# deployed 2026-08-05, /vendor/fonts/IBMPlexSans-400.woff2 came back 404 and the
+# live site silently fell back to system fonts. Caught by post-deploy checks.
+#
+# Every exclusion is therefore listed EXPLICITLY, with no negation to get wrong.
+# Keep in sync if anything new is vendored: the only things the live index.html
+# loads from vendor/ are fonts.css and the seven woff2 files it references.
+vendor/mesh/
+vendor/hdr/
+vendor/lines/
+vendor/loaders/
+vendor/objects/
+vendor/shaders/
+vendor/postprocessing/
+vendor/postprocessing.module.js
+vendor/three.core.min.js
+vendor/three.module.min.js
+vendor/RoomEnvironment.js
+vendor/gsap.min.js
+vendor/lenis.min.js
+vendor/ScrollTrigger.min.js
