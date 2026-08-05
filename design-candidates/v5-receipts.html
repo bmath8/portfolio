@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brian Mathew — every claim, next to its receipt</title>
+<meta name="description" content="Brian Mathew, self-taught developer in New Jersey. 25 scheduled agents running unattended, 81/81 tests passing, one live app that ran a real event. Every claim on this page is standing next to something you can check.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Brian Mathew — every claim, next to its receipt">
+<meta property="og:description" content="Self-taught developer in New Jersey. I don't just build software, I run it. 25 scheduled agents, 81/81 tests passing, one live app. Check any of it.">
+<meta property="og:url" content="https://github.com/bmath8">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Brian Mathew — every claim, next to its receipt">
+<meta name="twitter:description" content="Self-taught developer in New Jersey. 25 scheduled agents, 81/81 tests passing, one live app anyone can open.">
+<meta name="theme-color" content="#f4f1eb">
+<style>
+:root{
+  --paper:      oklch(0.970 0.007 84);
+  --paper-2:    oklch(0.944 0.010 82);
+  --paper-3:    oklch(0.920 0.012 80);
+  --ink:        oklch(0.245 0.012 62);
+  --ink-2:      oklch(0.455 0.010 62);
+  --ink-3:      oklch(0.610 0.009 62);
+  --rule:       oklch(0.862 0.010 80);
+  --rule-hard:  oklch(0.560 0.012 70);
+  --accent:     oklch(0.525 0.170 33);
+  --serif: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
+  --pad: clamp(14px, 2.1vw, 30px);
+  --edge: clamp(16px, 3.4vw, 60px);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:     oklch(0.186 0.008 68);
+    --paper-2:   oklch(0.232 0.009 68);
+    --paper-3:   oklch(0.268 0.010 68);
+    --ink:       oklch(0.930 0.008 84);
+    --ink-2:     oklch(0.740 0.008 80);
+    --ink-3:     oklch(0.600 0.008 78);
+    --rule:      oklch(0.330 0.010 70);
+    --rule-hard: oklch(0.520 0.012 72);
+    --accent:    oklch(0.695 0.155 41);
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-size:16px; line-height:1.5;
+  text-rendering:optimizeLegibility; overflow-x:hidden;
+}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:1px}
+.wrap{max-width:1560px; margin:0 auto; padding:0 var(--edge)}
+
+/* ── top bar ─────────────────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:20; background:var(--paper);
+  border-bottom:1px solid var(--rule);
+}
+.topbar .wrap{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 22px;
+  padding-top:9px; padding-bottom:9px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3);
+}
+.topbar b{font-weight:400; color:var(--ink); letter-spacing:.16em}
+.topbar .sep{color:var(--rule-hard)}
+.topbar .right{margin-left:auto; display:flex; flex-wrap:wrap; gap:6px 18px; text-transform:none; letter-spacing:.04em}
+.topbar a{text-decoration:none; border-bottom:1px solid var(--rule-hard); padding-bottom:1px}
+.topbar a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+
+/* ── the shared ledger grid: idx | claim | receipt | check ── */
+.row{
+  display:grid;
+  grid-template-columns:4.5rem minmax(0,1.06fr) minmax(0,0.94fr) 14.25rem;
+  border-top:1px solid var(--rule);
+  transition:background .18s linear;
+}
+.row > *{padding:var(--pad) var(--pad) calc(var(--pad) + 2px) 0}
+.row .receipt, .row .check{border-left:1px solid var(--rule); padding-left:var(--pad)}
+.row:hover{background:var(--paper-2)}
+.row:hover .idx{color:var(--accent)}
+
+.idx{
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em;
+  color:var(--ink-3); padding-top:calc(var(--pad) + 4px);
+  font-variant-numeric:tabular-nums;
+}
+
+/* claim track */
+.claim p{margin:0; font-size:clamp(1.02rem,.72rem + .55vw,1.24rem); line-height:1.46; max-width:44ch}
+.claim p + p{margin-top:.7em; color:var(--ink-2); font-size:clamp(.94rem,.7rem + .38vw,1.04rem)}
+.claim .h{
+  display:block; font-family:var(--mono); font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:.85em;
+}
+em{font-style:normal; box-shadow:inset 0 -0.42em 0 var(--paper-3)}
+
+/* receipt track */
+.receipt{font-family:var(--mono); font-size:.775rem; line-height:1.62; color:var(--ink-2); letter-spacing:.005em}
+.receipt p{margin:0 0 .8em}
+.receipt p:last-child{margin-bottom:0}
+.receipt strong{font-weight:400; color:var(--ink)}
+.src{
+  color:var(--ink-3); font-size:.7rem; letter-spacing:.06em; text-transform:uppercase;
+  padding-top:.7em; border-top:1px solid var(--rule); margin-top:1em !important;
+}
+.no{color:var(--accent)}
+
+/* check track */
+.check{font-family:var(--mono); font-size:.72rem; line-height:1.55; letter-spacing:.03em; color:var(--ink-3)}
+.check a{
+  display:inline-block; color:var(--ink); text-decoration:none;
+  border-bottom:1px solid var(--rule-hard); overflow-wrap:anywhere; padding-bottom:2px;
+}
+.check a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.check .lbl{display:block; text-transform:uppercase; letter-spacing:.13em; font-size:.66rem; color:var(--ink-3); margin-bottom:.7em}
+.check .arw{color:var(--accent)}
+.live{display:inline-flex; align-items:center; gap:.5em; color:var(--accent); text-transform:uppercase; letter-spacing:.14em; font-size:.66rem; margin-bottom:.7em}
+.live::before{content:""; width:6px; height:6px; background:var(--accent); border-radius:50%}
+
+/* ── section band ─────────────────────────────────────── */
+.band{border-top:2px solid var(--rule-hard); background:transparent}
+.band > *{padding-top:calc(var(--pad) * .78); padding-bottom:calc(var(--pad) * .5)}
+.band:hover, .mast:hover{background:transparent}
+.band .idx{color:var(--ink-2); padding-top:calc(var(--pad) * .78)}
+.band h2{
+  margin:0; font-family:var(--mono); font-weight:400;
+  font-size:.82rem; letter-spacing:.19em; text-transform:uppercase; color:var(--ink);
+}
+.band .lbl2{font-family:var(--mono); font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3)}
+
+/* ── masthead ─────────────────────────────────────────── */
+.mast{border-top:none}
+.mast > *{padding-top:clamp(26px,4.2vw,54px); padding-bottom:clamp(26px,3.4vw,46px)}
+h1{
+  margin:0 0 .5em; font-weight:400; letter-spacing:-.022em;
+  font-size:clamp(1.85rem,1.05rem + 2.15vw,2.85rem); line-height:1.1; max-width:19ch;
+}
+h1 .q{color:var(--ink-3)}
+.lede{margin:0; font-size:clamp(.98rem,.76rem + .42vw,1.1rem); line-height:1.55; color:var(--ink-2); max-width:47ch}
+.lede + .lede{margin-top:.75em}
+.claim p.who{
+  font-family:var(--mono); font-size:.7rem; line-height:1.6; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-3); margin:0 0 2.1em; max-width:none;
+}
+
+/* numbers block inside masthead receipt */
+.figs{margin:0; font-family:var(--mono)}
+.figs div{
+  display:flex; align-items:baseline; gap:.9rem;
+  padding:.62rem 0; border-top:1px solid var(--rule);
+}
+.figs div:first-child{border-top:none; padding-top:0}
+.figs dt{
+  font-size:clamp(1.15rem,.9rem + .55vw,1.5rem); line-height:1; color:var(--ink);
+  font-variant-numeric:tabular-nums; letter-spacing:-.02em; min-width:4.4rem; flex:none;
+}
+.figs dd{margin:0; font-size:.735rem; line-height:1.45; color:var(--ink-2); letter-spacing:.01em}
+.figs .zero dt{color:var(--accent)}
+.figs-cap{
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 1.1em;
+}
+
+/* contact block in masthead check column */
+.avail{
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink); border:1px solid var(--rule-hard); padding:.5em .7em; display:inline-block; margin-bottom:1.1em;
+}
+.cont{font-family:var(--mono); font-size:.68rem; line-height:1.7; color:var(--ink-2)}
+.cont a{
+  display:block; color:var(--ink); max-width:100%; overflow-wrap:anywhere; padding:.42em 0;
+  border-bottom:1px solid var(--rule); text-decoration:none;
+}
+.cont a:last-child{border-bottom:none}
+.cont a:hover{color:var(--accent)}
+
+/* ── incident timeline ────────────────────────────────── */
+.steps{margin:0; padding:0; list-style:none; counter-reset:s}
+.steps li{
+  counter-increment:s; position:relative; padding:.5rem 0 .5rem 2.3rem;
+  border-top:1px solid var(--rule);
+}
+.steps li:first-child{border-top:none; padding-top:0}
+.steps li::before{
+  content:counter(s,decimal-leading-zero); position:absolute; left:0; top:.5rem;
+  color:var(--ink-3); font-variant-numeric:tabular-nums;
+}
+.steps li:first-child::before{top:0}
+.steps b{font-weight:400; color:var(--ink); letter-spacing:.09em; text-transform:uppercase; font-size:.7rem; display:block}
+
+/* ── stack list ───────────────────────────────────────── */
+.stack{
+  margin:0 0 .8em; display:flex; flex-wrap:wrap; align-items:baseline; gap:.35em .9em;
+  font-family:var(--mono); font-size:.8rem; line-height:1.9; color:var(--ink); letter-spacing:.02em;
+}
+.stack span{white-space:nowrap}
+.stack span::after{content:"·"; color:var(--rule-hard); padding-left:.9em}
+.stack span:last-child::after{content:""; padding:0}
+
+/* ── footer ───────────────────────────────────────────── */
+footer{border-top:2px solid var(--rule-hard); margin-top:0}
+.foot{
+  display:grid; grid-template-columns:4.5rem minmax(0,1.06fr) minmax(0,0.94fr) 14.25rem;
+  padding-bottom:clamp(40px,6vw,90px);
+}
+.foot > *{padding:clamp(28px,3.6vw,48px) var(--pad) 0 0}
+.foot .receipt, .foot .check{border-left:1px solid var(--rule); padding-left:var(--pad)}
+.foot h2{
+  margin:0 0 .45em; font-family:var(--serif); font-weight:400; letter-spacing:-.02em;
+  font-size:clamp(1.4rem,1rem + 1.1vw,1.95rem); line-height:1.15; text-transform:none;
+}
+.big{font-family:var(--mono); font-size:clamp(.86rem,.72rem + .4vw,1rem); line-height:2; letter-spacing:.01em}
+.big a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule-hard); overflow-wrap:anywhere}
+.big a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.colophon{font-family:var(--mono); font-size:.66rem; line-height:1.7; letter-spacing:.06em; color:var(--ink-3); text-transform:uppercase}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important; animation:none !important; scroll-behavior:auto !important}
+}
+
+/* ── narrow ───────────────────────────────────────────── */
+@media (max-width: 1080px){
+  .row, .foot{grid-template-columns:3.4rem minmax(0,1fr) minmax(0,1fr); }
+  .row .check, .foot .check{
+    grid-column:2 / -1; border-left:none; padding-left:0; padding-top:0;
+  }
+  .mast .check{padding-top:var(--pad)}
+  .band .lbl2.c{display:none}
+}
+@media (max-width: 720px){
+  :root{--pad:14px}
+  .row, .foot{grid-template-columns:2.6rem minmax(0,1fr)}
+  .row > *, .foot > *{padding-right:0}
+  .row .idx{grid-row:1; padding-bottom:0}
+  .row .claim{grid-column:2}
+  .row .receipt, .row .check, .foot .receipt, .foot .check{
+    grid-column:2; border-left:1px solid var(--rule); padding-left:14px; margin-bottom:2px;
+  }
+  .row .receipt{padding-top:0}
+  .row .check{padding-top:14px; border-left-color:var(--rule)}
+  .band .lbl2{display:none}
+  .band .receipt, .band .check{border-left:none}
+  h1{max-width:none}
+  .claim p{max-width:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <b>Brian Mathew</b>
+    <span class="sep">/</span>
+    <span>New Jersey</span>
+    <span class="right">
+      <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+      <a href="tel:+16098151685">(609) 815-1685</a>
+      <a href="https://github.com/bmath8" rel="me noopener">github.com/bmath8</a>
+      <a href="https://www.linkedin.com/in/brian-mathew-66235556" rel="me noopener">linkedin</a>
+    </span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ══ MASTHEAD ══════════════════════════════════════ -->
+  <section class="row mast" aria-labelledby="t">
+    <div class="idx">00</div>
+
+    <div class="claim">
+      <p class="who">Self-taught developer · seeking junior dev / IT &amp; technical support</p>
+      <h1 id="t">I don't just build software. <span class="q">I run it, every day.</span></h1>
+      <p class="lede">Most of what I've built is still running right now, on a machine in my house, on a schedule, without me watching it. That means I've had to do the unglamorous half of this job: the health checks, the guardrails, the 2am root cause.</p>
+      <p class="lede">I have no degree and no certifications, so I'm not going to ask you to take my word for anything. Every line on this page has something next to it you can open and check yourself.</p>
+    </div>
+
+    <div class="receipt">
+      <p class="figs-cap">The four things you can verify</p>
+      <dl class="figs">
+        <div>
+          <dt>25</dt>
+          <dd>Python agents on a real schedule, running unattended on Windows. Source is public — count the registered tasks yourself.</dd>
+        </div>
+        <div>
+          <dt>81/81</dt>
+          <dd>pytest, passing. Verified 30&nbsp;Jul&nbsp;2026. The test suite is in the public repo.</dd>
+        </div>
+        <div>
+          <dt>1</dt>
+          <dd>App that ran a live event, in real time, for a real audience — and is still open to anyone.</dd>
+        </div>
+        <div class="zero">
+          <dt>0</dt>
+          <dd>Degrees. Also zero certifications. Stated up front, on purpose.</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="check">
+      <span class="avail">Open to work</span>
+      <div class="cont">
+        <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+        <a href="tel:+16098151685">(609) 815-1685</a>
+        <a href="https://github.com/bmath8" rel="noopener">github.com/bmath8</a>
+        <a href="https://www.linkedin.com/in/brian-mathew-66235556" rel="noopener">linkedin.com/in/<wbr>brian-mathew-66235556</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 01 — BRIAN OS ═════════════════════════════════ -->
+  <section class="row band" aria-hidden="false">
+    <div class="idx">01</div>
+    <div class="claim"><h2>The system I operate daily</h2></div>
+    <div class="receipt"><span class="lbl2">Receipt</span></div>
+    <div class="check"><span class="lbl2 c">Check it yourself</span></div>
+  </section>
+
+  <div class="row">
+    <div class="idx">01.1</div>
+    <div class="claim">
+      <p><span class="h">Brian OS</span>Twenty-five Python agents live on my own Windows machine. They wake up on a schedule and do their work whether or not I'm sitting at the desk.</p>
+      <p>Anyone can write a script. The difference is that these have to survive Tuesday.</p>
+    </div>
+    <div class="receipt">
+      <p><strong>25 scheduled agents</strong>, registered as real recurring tasks on Windows — not a loop I start by hand. Health checks re-run failed jobs instead of quietly dying.</p>
+      <p class="src">Source — scheduled-task registry, counted 30 Jul 2026 · configuration is public</p>
+    </div>
+    <div class="check">
+      <span class="lbl">Read the source</span>
+      <a href="https://github.com/bmath8/brian-os" rel="noopener">github.com/bmath8/<wbr>brian-os <span class="arw">&#8599;</span></a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="idx">01.2</div>
+    <div class="claim">
+      <p>I test it. Not as a formality — because it acts without me, and something that acts without me had better be checked before it does.</p>
+    </div>
+    <div class="receipt">
+      <p><strong>81 of 81 tests passing.</strong> pytest. Full suite, not a subset. If that number has drifted since you're reading this, the repo will tell you, not me.</p>
+      <p class="src">Source — pytest run on the full suite, verified 30 Jul 2026</p>
+    </div>
+    <div class="check">
+      <span class="lbl">The suite itself</span>
+      <a href="https://github.com/bmath8/brian-os" rel="noopener">brian-os / tests <span class="arw">&#8599;</span></a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="idx">01.3</div>
+    <div class="claim">
+      <p>Nothing <em>sends, spends, deploys or deletes</em> on its own. Every agent writes a draft and stops. I'm the one who presses go, from my phone.</p>
+    </div>
+    <div class="receipt">
+      <p>Draft-only guardrail enforced in code, not in a policy document. Approval comes back through <strong>two-way Telegram control</strong> — I can read what it wants to do and answer from anywhere.</p>
+      <p class="src">Source — guardrail + Telegram handler, both in the public repo</p>
+    </div>
+    <div class="check">
+      <span class="lbl">Guardrail code</span>
+      <a href="https://github.com/bmath8/brian-os" rel="noopener">brian-os <span class="arw">&#8599;</span></a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="idx">01.4</div>
+    <div class="claim">
+      <p>The model calls route through a local LLM first, so a system that thinks all day doesn't bill me all day.</p>
+    </div>
+    <div class="receipt">
+      <p>Local-LLM routing via <strong>Ollama</strong>, on my own GPU. Remote calls are the exception, not the default. Cost of running it: electricity.</p>
+      <p class="src">Source — routing layer, public repo</p>
+    </div>
+    <div class="check">
+      <span class="lbl">Routing layer</span>
+      <a href="https://github.com/bmath8/brian-os" rel="noopener">brian-os <span class="arw">&#8599;</span></a>
+    </div>
+  </div>
+
+  <!-- ══ 02 — SQUARES ══════════════════════════════════ -->
+  <section class="row band">
+    <div class="idx">02</div>
+    <div class="claim"><h2>Shipped in front of people</h2></div>
+    <div class="receipt"><span class="lbl2">Receipt</span></div>
+    <div class="check"><span class="lbl2 c">Check it yourself</span></div>
+  </section>
+
+  <div class="row">
+    <div class="idx">02.1</div>
+    <div class="claim">
+      <p><span class="h">Super Bowl LX Squares</span>I built a squares pool and then ran it live during the game, for a room of real people who were not going to be polite about bugs.</p>
+      <p>When the score changed, the winner changed on everybody's screen at the same moment. That is the whole test, and it passed in front of an audience.</p>
+    </div>
+    <div class="receipt">
+      <p>100-square grid, randomized draw, live score-driven winner resolution, chat, and host controls. It ran a real event start to finish.</p>
+      <p><strong>Still deployed.</strong> You don't have to take my word for any of the above — open it and click around.</p>
+      <p class="src">Source — live deployment, public repo</p>
+    </div>
+    <div class="check">
+      <span class="live">Live now</span>
+      <a href="https://fam-super-bowl-squares-2026.vercel.app" rel="noopener">fam-super-bowl-<wbr>squares-2026<wbr>.vercel.app <span class="arw">&#8599;</span></a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="idx">02.2</div>
+    <div class="claim">
+      <p><span class="h">Boombox — prototype, not deployed</span>A real-time collaborative listening app: shared queues, everyone hearing the same second of the same song.</p>
+      <p>I'd rather tell you this myself than have you find out — it is not live. Source only.</p>
+    </div>
+    <div class="receipt">
+      <p>The part I'd defend in an interview: durable state lives in <strong>Postgres</strong>, kept deliberately separate from the transient <strong>WebSocket / Redis Pub/Sub</strong> state. A dropped socket loses a moment, never the queue.</p>
+      <p><span class="no">Not deployed.</span> No live URL. Read the code instead.</p>
+      <p class="src">Source — public source, no deployment claimed</p>
+    </div>
+    <div class="check">
+      <span class="lbl">Source only</span>
+      <a href="https://github.com/bmath8" rel="noopener">github.com/bmath8 <span class="arw">&#8599;</span></a>
+    </div>
+  </div>
+
+  <!-- ══ 03 — INCIDENT ═════════════════════════════════ -->
+  <section class="row band">
+    <div class="idx">03</div>
+    <div class="claim"><h2>The day it broke</h2></div>
+    <div class="receipt"><span class="lbl2">What I actually did, in order</span></div>
+    <div class="check"><span class="lbl2 c">Outcome</span></div>
+  </section>
+
+  <div class="row">
+    <div class="idx">03.1</div>
+    <div class="claim">
+      <p>A process guardian failed silently and filled the disk. Nothing alerted me, because the thing whose job was to notice <em>was the thing that died.</em></p>
+      <p>I traced it to root cause, got the machine back, and then wrote the check that catches it next time. That last part is the part I actually care about — an incident you don't learn from is just a bad day.</p>
+    </div>
+    <div class="receipt">
+      <ol class="steps">
+        <li><b>Symptom</b> Disk at capacity. Agents failing on write.</li>
+        <li><b>Trace</b> Guardian process gone. No crash, no non-zero exit, no alarm.</li>
+        <li><b>Root cause</b> The watcher had failed silently — the workload was fine.</li>
+        <li><b>Recovery</b> Reclaimed the disk, brought the machine back to running.</li>
+        <li><b>Fix</b> Wrote a health check that fails loudly when the guardian is absent.</li>
+        <li><b>State</b> That check is in the fleet now, running on schedule with the rest.</li>
+      </ol>
+    </div>
+    <div class="check">
+      <span class="lbl">Result</span>
+      A failure mode that used to be invisible is now noisy. Ask me about this one in the interview — it's my favorite thing to talk about.
+    </div>
+  </div>
+
+  <!-- ══ 04 — WHAT I DON'T HAVE ════════════════════════ -->
+  <section class="row band">
+    <div class="idx">04</div>
+    <div class="claim"><h2>What I don't have</h2></div>
+    <div class="receipt"><span class="lbl2">Receipt</span></div>
+    <div class="check"><span class="lbl2 c">Check it yourself</span></div>
+  </section>
+
+  <div class="row">
+    <div class="idx">04.1</div>
+    <div class="claim">
+      <p>No degree. No certifications. I'm self-taught, and I'd rather say it in my own words on my own page than have it come up as a surprise on a screening call.</p>
+      <p>The trade I'm offering is simple: I can't hand you a credential, so I've handed you the source instead.</p>
+    </div>
+    <div class="receipt">
+      <p>Undergraduate coursework at <strong>Penn State Berks</strong> and <strong>The City College of New York</strong>. <span class="no">No degree awarded.</span> Certifications: <span class="no">none.</span></p>
+      <p>Everything above this line is what I'm offering in place of one, and all of it is readable, runnable, or open in a browser right now.</p>
+      <p class="src">Source — stated by me, verifiable by asking me</p>
+    </div>
+    <div class="check">
+      <span class="lbl">Instead of a credential</span>
+      <a href="https://github.com/bmath8" rel="noopener">read the code <span class="arw">&#8599;</span></a>
+    </div>
+  </div>
+
+  <!-- ══ 05 — TOOLS & EARLIER WORK ═════════════════════ -->
+  <section class="row band">
+    <div class="idx">05</div>
+    <div class="claim"><h2>Tools &amp; earlier work</h2></div>
+    <div class="receipt"><span class="lbl2">Receipt</span></div>
+    <div class="check"><span class="lbl2 c">Note</span></div>
+  </section>
+
+  <div class="row">
+    <div class="idx">05.1</div>
+    <div class="claim">
+      <p><span class="h">What I reach for</span>These aren't things I read about. They're the things the running system is made of.</p>
+    </div>
+    <div class="receipt">
+      <p class="stack">
+        <span>Python</span> <span>SQL</span> <span>TypeScript</span> <span>React</span> <span>Windows</span> <span>PowerShell</span> <span>Ollama</span> <span>Telegram&nbsp;API</span> <span>pytest</span>
+      </p>
+      <p class="src">Source — every one of these appears in the public repos above</p>
+    </div>
+    <div class="check">
+      <span class="lbl">In use</span>
+      Daily, on the fleet that is running while you read this.
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="idx">05.2</div>
+    <div class="claim">
+      <p><span class="h">Before software</span>Best Buy, Appliances Department Lead. I led the floor: I owned a department, trained people on it, and stood in front of customers when something went wrong.</p>
+      <p>Then Uber, as an independent driver, in 2022.</p>
+    </div>
+    <div class="receipt">
+      <p><strong>Best Buy</strong> — Department Lead, Appliances. Team lead responsibility, customer-facing, escalation handling.</p>
+      <p><strong>Uber</strong> — independent driver, 2022.</p>
+      <p class="src">Source — employment history, references on request</p>
+    </div>
+    <div class="check">
+      <span class="lbl">Why it counts</span>
+      Support work is the same instinct as an incident: find the real problem, then explain it to a person who is already frustrated.
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="idx">06</div>
+    <div class="claim">
+      <h2>If any of the above is worth ten minutes, I'm easy to reach.</h2>
+      <p class="lede">I'm looking for a junior developer, IT support, or technical support role. Email is fastest, and the phone actually rings.</p>
+    </div>
+    <div class="receipt big">
+      <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a><br>
+      <a href="tel:+16098151685">(609) 815-1685</a><br>
+      <a href="https://github.com/bmath8" rel="noopener">github.com/bmath8</a><br>
+      <a href="https://www.linkedin.com/in/brian-mathew-66235556" rel="noopener">linkedin.com/in/<wbr>brian-mathew-66235556</a>
+    </div>
+    <div class="check colophon">
+      Brian Mathew<br>
+      New Jersey, USA<br><br>
+      Figures on this page verified 30 Jul 2026.<br><br>
+      No stock photography, no generated imagery, no claim without a receipt.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 02 — parcellated opaque brain</title>
+<style>
+  :root{
+    /* From the Claude Design system project, foundations/colors.html */
+    --void:#050a12; --deep:#0a1420; --panel:#0e1c2b; --edge:#1b2f44;
+    --ink:#eaf2f8; --ink2:#9db2c6; --mute:#63798f;
+    --cyan:#22e6c8; --magenta:#ff4d8d; --amber:#ffc247; --violet:#8b7bff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--void);color:var(--ink);overflow:hidden;
+    font:13px/1.55 ui-monospace,"Cascadia Mono",Menlo,monospace}
+  #app{position:fixed;inset:0}
+  canvas{display:block}
+  #fb{position:fixed;inset:0;display:grid;place-items:center;
+    background:radial-gradient(70% 70% at 50% 45%,#0e1c2b,#050a12 72%)}
+  #fb p{color:var(--mute);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .hud{position:fixed;left:26px;bottom:24px;max-width:56ch;pointer-events:none}
+  .hud h1{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:7px;color:var(--ink)}
+  .hud p{color:var(--ink2);font-size:12px;margin-bottom:10px}
+  .key{display:flex;flex-wrap:wrap;gap:12px;font-size:10px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--mute)}
+  .key i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;
+    vertical-align:-1px;font-style:normal}
+  .t{position:fixed;right:26px;top:24px;text-align:right;color:var(--mute);
+    font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+  .t b{color:var(--cyan);font-weight:400}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="fb"><p>Lab 02 · parcellated mesh · WebGL required</p></div>
+
+<div class="t">Lab 02 — <b>opaque · depth-tested</b><br>no additive · no bloom · no fog</div>
+
+<div class="hud">
+  <h1>Structure read from colour adjacency, not from shading.</h1>
+  <p>The test: <em>can you see a brain?</em> Every prior version used a transparent,
+  additive, unoccluded primitive — which is mechanically why they read as cloud.
+  This one occludes.</p>
+  <div class="key">
+    <span><i style="background:#22e6c8"></i>frontal</span>
+    <span><i style="background:#8b7bff"></i>parietal</span>
+    <span><i style="background:#ff4d8d"></i>temporal</span>
+    <span><i style="background:#ffc247"></i>occipital</span>
+    <span><i style="background:#4a6b86"></i>cerebellum</span>
+    <span><i style="background:#33566f"></i>brainstem</span>
+    <span><i style="background:#dfe9f2"></i>corpus callosum</span>
+  </div>
+</div>
+
+<script type="module">
+/* ---------------------------------------------------------------------------
+   LAB 02 - PARCELLATED OPAQUE BRAIN. Form + legibility only.
+   Per references/brain-hero-technique.md. ONE variable: does an opaque,
+   flat-parcellated, depth-tested mesh read as anatomy where 27 transparent
+   attempts did not?
+
+   Deliberately NOT here yet: clipping cutaway (lab 03), tracts + pulses
+   (lab 04), agent nodes + labels (lab 05). One variable at a time.
+--------------------------------------------------------------------------- */
+import * as THREE from '../../vendor/three.module.min.js';
+
+const app = document.getElementById('app');
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1, 2));
+renderer.setSize(innerWidth, innerHeight);
+app.appendChild(renderer.domElement);
+document.getElementById('fb').style.display='none';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#050a12');
+
+const camera = new THREE.PerspectiveCamera(38, innerWidth/innerHeight, .1, 100);
+camera.position.set(0, .35, 7.4);
+camera.lookAt(0,0,0);
+
+/* -- lighting: shape-revealing, not atmospheric ---------------------------
+   A key from upper-left, a cool fill from the right, and a low warm bounce.
+   Contrast between them is what makes the folds read.                     */
+scene.add(new THREE.AmbientLight(0x2a4258, 1.05));
+const key = new THREE.DirectionalLight(0xdff4ff, 2.5);  key.position.set(-4, 5.5, 4);
+const fill= new THREE.DirectionalLight(0x22e6c8, 0.85); fill.position.set(5, .5, 1.5);
+const bounce=new THREE.DirectionalLight(0xff4d8d, 0.5); bounce.position.set(1,-4,-2.5);
+scene.add(key, fill, bounce);
+
+/* -- gyri: displace a sphere with layered noise ---------------------------
+   Suggest the folding; never model it. Anatomical accuracy reads as mush.  */
+function hash(x,y,z){
+  const s = Math.sin(x*127.1 + y*311.7 + z*74.7) * 43758.5453;
+  return s - Math.floor(s);
+}
+function vnoise(x,y,z){
+  const xi=Math.floor(x), yi=Math.floor(y), zi=Math.floor(z);
+  const xf=x-xi, yf=y-yi, zf=z-zi;
+  const u=xf*xf*(3-2*xf), v=yf*yf*(3-2*yf), w=zf*zf*(3-2*zf);
+  const L=(a,b,t)=>a+(b-a)*t;
+  return L(L(L(hash(xi,yi,zi),hash(xi+1,yi,zi),u),
+             L(hash(xi,yi+1,zi),hash(xi+1,yi+1,zi),u),v),
+           L(L(hash(xi,yi,zi+1),hash(xi+1,yi,zi+1),u),
+             L(hash(xi,yi+1,zi+1),hash(xi+1,yi+1,zi+1),u),v),w);
+}
+function fold(x,y,z){
+  // two octaves only - more reads as noise, not gyri
+  return vnoise(x*3.1,y*3.1,z*3.1)*0.62 + vnoise(x*6.3,y*6.3,z*6.3)*0.30;
+}
+
+function lobe(rx,ry,rz, seg=96){
+  const g = new THREE.SphereGeometry(1, seg, seg*0.6);
+  const p = g.attributes.position;
+  const v = new THREE.Vector3();
+  for(let i=0;i<p.count;i++){
+    v.fromBufferAttribute(p,i);
+    const d = fold(v.x+7.3, v.y+2.1, v.z+5.9);
+    const s = 1 + (d-0.46)*0.115;               // shallow: keeps silhouette clean
+    v.multiplyScalar(s);
+    p.setXYZ(i, v.x*rx, v.y*ry, v.z*rz);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+
+/* -- flat, distinct, saturated parcellation ------------------------------
+   Legibility device: hard colour boundaries. Structure is read from colour
+   ADJACENCY, not from a gradient across a region.                         */
+function mat(hex, rough=0.62){
+  return new THREE.MeshStandardMaterial({
+    color:new THREE.Color(hex), roughness:rough, metalness:0.06,
+    flatShading:false, transparent:false, depthWrite:true   // <- the whole point
+  });
+}
+
+const brain = new THREE.Group();
+
+// Regions, mirrored per hemisphere. Colours from the design-system accents.
+const REGIONS = [
+  // [x, y, z, rx, ry, rz, colour]
+  [ .60,  .34,  .40,  .88,.76,.86, '#22e6c8'],   // frontal   L
+  [-.60,  .34,  .40,  .88,.76,.86, '#22e6c8'],   // frontal   R
+  [ .62,  .46, -.46,  .80,.74,.82, '#8b7bff'],   // parietal  L
+  [-.62,  .46, -.46,  .80,.74,.82, '#8b7bff'],   // parietal  R
+  [ .86, -.36,  .02,  .62,.54,.80, '#ff4d8d'],   // temporal  L
+  [-.86, -.36,  .02,  .62,.54,.80, '#ff4d8d'],   // temporal  R
+  [ .46,  .12, -1.02, .70,.66,.62, '#ffc247'],   // occipital L
+  [-.46,  .12, -1.02, .70,.66,.62, '#ffc247'],   // occipital R
+];
+for(const [x,y,z,rx,ry,rz,c] of REGIONS){
+  const m = new THREE.Mesh(lobe(rx,ry,rz), mat(c));
+  m.position.set(x,y,z);
+  brain.add(m);
+}
+
+// cerebellum - desaturated so it recedes behind the cortex
+const cb = new THREE.Mesh(lobe(.78,.44,.54,72), mat('#4a6b86', .74));
+cb.position.set(0,-.86,-.92); brain.add(cb);
+// brainstem
+const st = new THREE.Mesh(new THREE.CapsuleGeometry(.20,.62,8,28), mat('#33566f',.7));
+st.position.set(0,-1.24,-.26); st.rotation.x = .34; brain.add(st);
+
+// corpus callosum hint: a thin bright band in the midline fissure
+const cc = new THREE.Mesh(new THREE.TorusGeometry(.62,.075,12,44,Math.PI*1.15),
+                          mat('#dfe9f2',.5));
+cc.rotation.set(0, Math.PI/2, -.22); cc.position.set(0,.06,-.10); brain.add(cc);
+
+brain.scale.setScalar(1.28);
+scene.add(brain);
+
+/* -- ground shadow-ish anchor: a dark ellipse so it isn't floating in void */
+const anchor = new THREE.Mesh(
+  new THREE.CircleGeometry(2.6, 64),
+  new THREE.MeshBasicMaterial({color:0x081020})
+);
+anchor.rotation.x = -Math.PI/2; anchor.position.y = -2.5; scene.add(anchor);
+
+/* -- interaction ---------------------------------------------------------- */
+let tx=0, ty=0, mx=0, my=0;
+addEventListener('pointermove', e=>{
+  tx=(e.clientX/innerWidth -.5)*2;
+  ty=(e.clientY/innerHeight-.5)*2;
+},{passive:true});
+
+addEventListener('resize', ()=>{
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+let running = true;
+document.addEventListener('visibilitychange', ()=>{
+  running = !document.hidden; if(running) requestAnimationFrame(tick);
+});
+
+const t0 = performance.now();
+function tick(){
+  if(!running) return;
+  const t = (performance.now()-t0)/1000;
+  mx += (tx-mx)*.05; my += (ty-my)*.05;
+  brain.rotation.y = reduce ? -0.5 : (-0.5 + t*0.13 + mx*0.5);
+  brain.rotation.x = -0.06 + my*0.20;
+  renderer.render(scene, camera);
+  if(!reduce) requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>

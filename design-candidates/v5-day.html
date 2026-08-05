@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brian Mathew — A Day on the Machine</title>
+<meta name="description" content="Twenty-five scheduled agents run on one Windows machine in New Jersey. This is one real day of that crontab, start to finish — and the developer who operates it.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Brian Mathew — A Day on the Machine">
+<meta property="og:description" content="Twenty-five scheduled agents. Ten of them fire between 06:40 and 07:00, before I wake up. 81/81 tests passing. I don't just build things — I operate them.">
+<meta property="og:site_name" content="Brian Mathew">
+<meta property="og:url" content="https://github.com/bmath8">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#f4f1ea">
+<style>
+/* ============================================================
+   A DAY ON THE MACHINE — one file, no requests, no images.
+   Type: Georgia (prose) + system mono (time, data, machine).
+   Surface: paper. One inversion for the night. One accent.
+   ============================================================ */
+
+:root{
+  --paper:      oklch(0.963 0.008 84);
+  --paper-2:    oklch(0.935 0.010 84);
+  --ink:        oklch(0.215 0.014 258);
+  --ink-soft:   oklch(0.435 0.012 258);
+  --ink-faint:  oklch(0.605 0.010 258);
+  --rule:       oklch(0.845 0.010 84);
+  --rule-hard:  oklch(0.700 0.012 84);
+
+  --night:      oklch(0.188 0.016 262);
+  --night-2:    oklch(0.235 0.017 262);
+  --on-night:   oklch(0.930 0.008 84);
+  --on-night-s: oklch(0.735 0.012 262);
+  --night-rule: oklch(0.330 0.016 262);
+
+  --accent:     oklch(0.470 0.163 33);   /* on paper  — 6.4:1 */
+  --accent-up:  oklch(0.735 0.148 44);   /* on night  — 8.1:1 */
+
+  --serif: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
+
+  --pad: clamp(1.15rem, 3.4vw, 4.5rem);
+  --maxw: 1500px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:clamp(16px,0.55vw + 14.2px,18px);
+  line-height:1.5;
+  overflow-x:hidden;
+  font-kerning:normal;
+  text-rendering:optimizeLegibility;
+}
+img,svg{ max-width:100%; }
+p{ margin:0 0 0.9em; }
+p:last-child{ margin-bottom:0; }
+
+a{ color:inherit; text-decoration:none; }
+a.lnk{
+  border-bottom:1px solid var(--rule-hard);
+  padding-bottom:1px;
+  transition:border-color .12s linear, color .12s linear;
+}
+a.lnk:hover{ color:var(--accent); border-bottom-color:var(--accent); }
+:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+  border-radius:1px;
+}
+.night :focus-visible{ outline-color:var(--accent-up); }
+
+.wrap{ max-width:var(--maxw); margin:0 auto; padding-inline:var(--pad); }
+
+.mono{ font-family:var(--mono); }
+.lbl{
+  font-family:var(--mono);
+  font-size:0.6875rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  font-weight:400;
+}
+.night .lbl{ color:var(--on-night-s); }
+.acc{ color:var(--accent); }
+.night .acc{ color:var(--accent-up); }
+.sr{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+/* ---------------------------------------------- masthead --- */
+.mast{
+  border-bottom:1px solid var(--ink);
+  padding-block:0.85rem 0.75rem;
+  display:flex; flex-wrap:wrap; gap:0.6rem 1.6rem;
+  align-items:baseline; justify-content:space-between;
+}
+.mast .who{
+  font-family:var(--mono);
+  font-size:0.75rem; letter-spacing:0.22em; text-transform:uppercase;
+}
+.mast nav{ display:flex; flex-wrap:wrap; gap:0.35rem 1.15rem; }
+.mast nav a{
+  font-family:var(--mono); font-size:0.75rem; color:var(--ink-soft);
+  border-bottom:1px solid transparent; padding-bottom:2px;
+}
+.mast nav a:hover{ color:var(--accent); border-bottom-color:var(--accent); }
+
+/* -------------------------------------------------- hero --- */
+.hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);
+  gap:clamp(1.5rem,4vw,4.5rem);
+  padding-block:clamp(1.8rem,3.6vw,3.1rem) clamp(1.4rem,2.6vw,2.2rem);
+  align-items:start;
+}
+h1{
+  font-family:var(--serif);
+  font-weight:400;
+  font-size:clamp(2.35rem,5.6vw,4.55rem);
+  line-height:0.98;
+  letter-spacing:-0.021em;
+  margin:0 0 1.05rem;
+  max-width:16ch;
+}
+h1 .b{ display:block; }
+h1 .thin{ color:var(--ink-soft); }
+.deck{
+  font-size:clamp(1rem,0.42vw + 0.92rem,1.14rem);
+  line-height:1.52;
+  max-width:56ch;
+  color:var(--ink);
+}
+.deck strong{ font-weight:400; border-bottom:2px solid var(--accent); }
+
+.proof{ border-top:2px solid var(--ink); padding-top:0.55rem; }
+.proof dl{ margin:0; }
+.proof .row{
+  display:grid;
+  grid-template-columns:minmax(5.5rem,auto) minmax(0,1fr);
+  gap:0 1.1rem;
+  padding:0.62rem 0;
+  border-bottom:1px solid var(--rule);
+  align-items:baseline;
+}
+.proof dt{
+  font-family:var(--mono);
+  font-size:1.32rem;
+  letter-spacing:-0.02em;
+  line-height:1;
+}
+.proof dd{ margin:0; font-size:0.875rem; line-height:1.35; }
+.proof .src{
+  display:block; font-family:var(--mono); font-size:0.6875rem;
+  color:var(--ink-faint); letter-spacing:0.02em; margin-top:0.2rem;
+}
+
+.seeking{ margin-top:1.6rem; border-top:2px solid var(--ink); padding-top:0.55rem; }
+.seek-line{ font-size:1rem; line-height:1.4; margin:0 0 0.9rem; }
+.seek-line .mono{ font-size:0.8125rem; color:var(--ink-soft); }
+.direct{ list-style:none; margin:0; padding:0; }
+.direct li{ border-top:1px solid var(--rule); }
+.direct a{
+  display:grid; grid-template-columns:minmax(6rem,auto) minmax(0,1fr);
+  gap:0.5rem 1rem; align-items:baseline; padding:0.55rem 0;
+  font-family:var(--mono); font-size:0.8125rem; overflow-wrap:anywhere;
+}
+.direct b{
+  font-weight:400; color:var(--ink-faint); font-size:0.6875rem;
+  letter-spacing:0.13em; text-transform:uppercase;
+}
+.direct a:hover{ color:var(--accent); }
+.direct a:hover b{ color:var(--accent); }
+
+/* ------------------------------------------------- ruler --- */
+.ruler-sec{ border-top:1px solid var(--ink); padding-block:1.1rem 1.25rem; }
+.ruler-head{
+  display:flex; flex-wrap:wrap; gap:0.3rem 1.5rem;
+  justify-content:space-between; align-items:baseline; margin-bottom:1.05rem;
+}
+.ruler-head h2{
+  font-size:0.9375rem; font-weight:400; margin:0;
+  font-family:var(--mono); letter-spacing:0.02em;
+}
+.ruler{ position:relative; }
+.lane{ position:relative; height:64px; border-bottom:1px solid var(--ink); }
+.lane.lane-2{ height:30px; border-bottom:1px solid var(--rule-hard); margin-top:0; }
+.lane .hr{
+  position:absolute; top:0; bottom:0; left:var(--x);
+  width:1px; background:var(--rule);
+}
+.tick{
+  position:absolute; bottom:0; left:var(--x);
+  width:2px; background:var(--ink); transform:translateX(-1px);
+}
+.tick.d{ height:100%; }
+.tick.w{ height:58%; background:var(--ink-soft); }
+.tick.m{ height:34%; background:var(--ink-faint); }
+.tick.c{ height:52%; width:1px; background:var(--rule-hard); }
+.tick.c.q{ background:var(--accent); width:2px; height:100%; }
+.tick::after{
+  content:attr(data-t);
+  position:absolute; bottom:calc(100% + 6px); left:50%;
+  transform:translateX(-50%);
+  font-family:var(--mono); font-size:0.6875rem; white-space:nowrap;
+  background:var(--ink); color:var(--paper); padding:2px 6px;
+  opacity:0; pointer-events:none; z-index:5;
+}
+.tick:hover::after,.tick:focus-visible::after{ opacity:1; }
+.now{
+  position:absolute; top:-9px; bottom:0; left:var(--now,-99%);
+  width:1px; background:var(--accent); z-index:4;
+}
+.now::before{
+  content:""; position:absolute; top:-1px; left:-3px;
+  width:7px; height:7px; background:var(--accent);
+}
+.axis{
+  position:relative; height:1.5rem; margin-top:0.4rem;
+  font-family:var(--mono); font-size:0.6875rem; color:var(--ink-faint);
+}
+.axis span{ position:absolute; left:var(--x); transform:translateX(-50%); }
+.axis span:first-child{ transform:none; }
+.axis span:last-child{ transform:translateX(-100%); }
+.key{
+  display:flex; flex-wrap:wrap; gap:0.35rem 1.4rem;
+  font-family:var(--mono); font-size:0.6875rem; color:var(--ink-soft);
+  margin-top:0.55rem;
+}
+.key b{ font-weight:400; color:var(--ink); }
+
+/* ------------------------------------------------ shelf ---- */
+.shelf{
+  border-top:1px solid var(--ink);
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0;
+}
+.shelf > article{
+  padding:1.15rem clamp(1rem,2vw,1.9rem) 1.4rem;
+  border-right:1px solid var(--rule);
+  min-width:0;
+}
+.shelf > article:first-child{ padding-left:0; }
+.shelf > article:last-child{ border-right:0; padding-right:0; }
+.shelf h3{
+  font-size:1.5rem; font-weight:400; margin:0.35rem 0 0.4rem;
+  letter-spacing:-0.015em; line-height:1.06;
+}
+.shelf p{ font-size:0.9rem; line-height:1.45; color:var(--ink-soft); }
+.status{
+  display:inline-flex; align-items:center; gap:0.45rem;
+  font-family:var(--mono); font-size:0.6875rem;
+  letter-spacing:0.13em; text-transform:uppercase;
+}
+.status::before{
+  content:""; width:6px; height:6px; background:var(--ink-faint);
+  flex:none;
+}
+.status.live::before{ background:var(--accent); }
+.status.live{ color:var(--accent); }
+.go{
+  display:inline-block; margin-top:0.75rem;
+  font-family:var(--mono); font-size:0.75rem;
+  border-bottom:1px solid var(--rule-hard); padding-bottom:2px;
+  word-break:break-word;
+}
+.go:hover{ color:var(--accent); border-bottom-color:var(--accent); }
+
+/* ------------------------------------------------- night --- */
+.night{
+  background:var(--night); color:var(--on-night);
+  border-top:1px solid var(--ink);
+}
+.night a.lnk{ border-bottom-color:var(--night-rule); }
+.night a.lnk:hover{ color:var(--accent-up); border-bottom-color:var(--accent-up); }
+
+/* --------------------------------------------------- day --- */
+.chapter{ padding-block:clamp(2rem,4vw,3.6rem); }
+.chapter-head{
+  display:flex; flex-wrap:wrap; align-items:baseline;
+  gap:0.4rem 1.5rem; margin-bottom:clamp(1.2rem,2.4vw,2rem);
+  border-bottom:1px solid var(--rule); padding-bottom:0.7rem;
+}
+.night .chapter-head{ border-bottom-color:var(--night-rule); }
+.chapter-head h2{
+  font-size:clamp(1.6rem,2.9vw,2.5rem); font-weight:400;
+  margin:0; letter-spacing:-0.018em; line-height:1.02;
+}
+.chapter-head .span{ font-family:var(--mono); font-size:0.8125rem; color:var(--ink-faint); }
+.night .chapter-head .span{ color:var(--on-night-s); }
+
+.day{ display:block; }
+.ev{
+  display:grid;
+  grid-template-columns:7.5rem minmax(0,63ch) minmax(0,1fr);
+  column-gap:clamp(1.1rem,2.6vw,3.2rem);
+}
+.tm{
+  font-family:var(--mono);
+  text-align:right;
+  padding:1.15rem 1.2rem 1.15rem 0;
+  border-right:1px solid var(--rule);
+  position:relative;
+  font-size:0.9375rem;
+  letter-spacing:-0.01em;
+  color:var(--ink);
+}
+.night .tm{ border-right-color:var(--night-rule); color:var(--on-night); }
+.tm::after{
+  content:""; position:absolute; right:-4px; top:1.35rem;
+  width:7px; height:7px; background:var(--paper);
+  border:1px solid var(--ink);
+}
+.night .tm::after{ background:var(--night); border-color:var(--on-night-s); }
+.ev.mark .tm::after{ background:var(--accent); border-color:var(--accent); }
+.night .ev.mark .tm::after{ background:var(--accent-up); border-color:var(--accent-up); }
+.tm small{
+  display:block; font-size:0.625rem; letter-spacing:0.13em;
+  text-transform:uppercase; color:var(--ink-faint); margin-top:0.28rem;
+}
+.night .tm small{ color:var(--on-night-s); }
+.bd{ padding:1.15rem 0 1.3rem; min-width:0; }
+.nt{
+  padding:1.15rem 0 1.3rem;
+  font-family:var(--mono); font-size:0.75rem; line-height:1.55;
+  color:var(--ink-faint); min-width:0;
+}
+.night .nt{ color:var(--on-night-s); }
+.ev.wide .bd{ grid-column:2 / 4; }
+.ev h3{
+  font-family:var(--mono); font-weight:400;
+  font-size:0.9375rem; margin:0 0 0.35rem; letter-spacing:0.01em;
+}
+.ev h3.big{
+  font-family:var(--serif); font-size:clamp(1.5rem,2.6vw,2.1rem);
+  letter-spacing:-0.018em; line-height:1.05; margin-bottom:0.6rem;
+}
+.ev p{ font-size:0.9375rem; line-height:1.55; color:var(--ink-soft); }
+.night .ev p{ color:var(--on-night-s); }
+.ev .lead{ font-size:1.0625rem; line-height:1.55; color:var(--on-night); }
+.thin-row .bd{ padding-block:0.85rem; }
+.thin-row .tm{ padding-block:0.85rem; }
+.thin-row .tm::after{ top:1.05rem; }
+.thin-row .nt{ padding-block:0.85rem; }
+
+/* incident */
+.incident{
+  border-left:2px solid var(--accent-up);
+  padding-left:clamp(0.9rem,1.6vw,1.5rem);
+  margin-top:0.6rem;
+}
+.incident .pull{
+  font-size:clamp(1.15rem,1.9vw,1.5rem);
+  line-height:1.28; letter-spacing:-0.012em;
+  color:var(--on-night); margin:0 0 0.85rem;
+}
+
+/* burst */
+.burst-bar{
+  position:relative; height:44px; margin:1.1rem 0 0.2rem;
+  border-bottom:1px solid var(--rule-hard);
+}
+.burst-bar i{
+  position:absolute; bottom:0; left:var(--x);
+  width:2px; height:100%; background:var(--ink); transform:translateX(-1px);
+}
+.burst-bar i::after{
+  content:attr(data-t); position:absolute; bottom:calc(100% + 5px); left:50%;
+  transform:translateX(-50%); font-family:var(--mono); font-size:0.6875rem;
+  background:var(--ink); color:var(--paper); padding:2px 6px;
+  white-space:nowrap; opacity:0; pointer-events:none; z-index:5;
+}
+.burst-bar i:hover::after{ opacity:1; }
+.burst-ends{
+  display:flex; justify-content:space-between;
+  font-family:var(--mono); font-size:0.6875rem; color:var(--ink-faint);
+  margin-top:0.35rem;
+}
+.roster{
+  list-style:none; margin:1.4rem 0 0; padding:0;
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,15.5rem),1fr));
+  border-top:1px solid var(--rule);
+}
+.roster li{
+  display:flex; gap:0.85rem; align-items:baseline;
+  font-family:var(--mono); font-size:0.8125rem;
+  padding:0.5rem 1.1rem 0.5rem 0;
+  border-bottom:1px solid var(--rule);
+}
+.roster li b{ font-weight:400; color:var(--ink-faint); flex:none; }
+.roster li span{ min-width:0; overflow-wrap:anywhere; }
+
+/* project block inside the day */
+.work{
+  border-top:2px solid var(--ink);
+  margin-top:0.4rem; padding-top:0.9rem;
+}
+.work h3{
+  font-family:var(--serif); font-size:clamp(1.45rem,2.4vw,1.95rem);
+  font-weight:400; letter-spacing:-0.018em; margin:0.3rem 0 0.5rem; line-height:1.05;
+}
+.facts{
+  list-style:none; margin:0.9rem 0 0; padding:0;
+  font-family:var(--mono); font-size:0.8125rem; color:var(--ink-soft);
+}
+.facts li{
+  padding:0.42rem 0; border-top:1px solid var(--rule);
+  display:grid; grid-template-columns:minmax(6.5rem,auto) minmax(0,1fr);
+  gap:0.4rem 1rem;
+}
+.facts li b{ font-weight:400; color:var(--ink-faint); }
+.facts li span{ overflow-wrap:anywhere; }
+
+/* quiet hours */
+.quiet{
+  border-top:1px solid var(--ink); border-bottom:1px solid var(--ink);
+  padding:clamp(1.5rem,3vw,2.6rem) 0;
+  display:grid; grid-template-columns:7.5rem minmax(0,1fr);
+  column-gap:clamp(1.1rem,2.6vw,3.2rem);
+}
+.quiet .tm{ border-right:0; }
+.quiet .tm::after{ display:none; }
+.quiet p{
+  font-size:clamp(1.15rem,2.1vw,1.6rem); line-height:1.32;
+  letter-spacing:-0.012em; max-width:34ch; margin:0;
+}
+
+/* constant band */
+.band{
+  background:var(--paper-2);
+  border-top:1px solid var(--ink); border-bottom:1px solid var(--ink);
+}
+.band .inner{
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);
+  gap:clamp(1.2rem,3vw,3.5rem); padding-block:clamp(1.6rem,3vw,2.6rem);
+  align-items:start;
+}
+.band h2{
+  font-size:clamp(1.5rem,2.6vw,2.1rem); font-weight:400; margin:0.3rem 0 0;
+  letter-spacing:-0.018em; line-height:1.05;
+}
+.band .two{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));
+  gap:0 clamp(1.2rem,3vw,3rem);
+}
+.band .two > div{ border-top:1px solid var(--rule-hard); padding-top:0.6rem; }
+.band .two h3{ font-family:var(--mono); font-size:0.9375rem; font-weight:400; margin:0 0 0.3rem; }
+.band .two p{ font-size:0.875rem; color:var(--ink-soft); line-height:1.5; }
+
+/* record */
+.record{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr)); gap:0; }
+.record > div{
+  padding:1rem clamp(1rem,2vw,2rem) 1.2rem 0;
+  border-top:1px solid var(--rule);
+}
+.record h3{ font-size:1.15rem; font-weight:400; margin:0.25rem 0 0.35rem; }
+.record p{ font-size:0.875rem; color:var(--ink-soft); line-height:1.5; }
+
+/* stack */
+.stack{
+  display:flex; flex-wrap:wrap; gap:0.45rem 0;
+  font-family:var(--mono); font-size:0.8125rem;
+  list-style:none; margin:0; padding:0;
+}
+.stack li{ padding-right:0.9rem; margin-right:0.9rem; border-right:1px solid var(--night-rule); }
+.stack li:last-child{ border-right:0; margin-right:0; padding-right:0; }
+
+/* footer */
+footer.night{ border-top:1px solid var(--ink); }
+.foot{
+  display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);
+  gap:clamp(1.5rem,4vw,4rem);
+  padding-block:clamp(2.2rem,4.5vw,4rem) clamp(1.6rem,3vw,2.6rem);
+}
+.foot h2{
+  font-size:clamp(1.9rem,4vw,3.2rem); font-weight:400; margin:0.4rem 0 0.9rem;
+  letter-spacing:-0.02em; line-height:1.02; max-width:16ch;
+}
+.foot p{ color:var(--on-night-s); max-width:48ch; font-size:0.9375rem; }
+.contact{ list-style:none; margin:0; padding:0; border-top:2px solid var(--on-night-s); }
+.contact li{ border-bottom:1px solid var(--night-rule); }
+.contact a, .contact span{
+  display:grid; grid-template-columns:minmax(4.5rem,auto) minmax(0,1fr);
+  gap:0.5rem 1rem; align-items:baseline;
+  padding:0.72rem 0; font-family:var(--mono); font-size:0.875rem;
+  overflow-wrap:anywhere;
+}
+.contact b{ font-weight:400; color:var(--on-night-s); font-size:0.6875rem; letter-spacing:0.13em; text-transform:uppercase; }
+.contact a:hover{ color:var(--accent-up); }
+.colophon{
+  border-top:1px solid var(--night-rule);
+  padding-block:0.9rem 1.6rem;
+  display:flex; flex-wrap:wrap; gap:0.4rem 1.5rem; justify-content:space-between;
+  font-family:var(--mono); font-size:0.6875rem; color:var(--on-night-s);
+}
+
+/* --------------------------------------------- responsive --- */
+@media (max-width:1080px){
+  .hero{ grid-template-columns:minmax(0,1fr); gap:1.9rem; }
+  h1{ max-width:20ch; }
+  .band .inner{ grid-template-columns:minmax(0,1fr); }
+  .foot{ grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:880px){
+  .shelf{ grid-template-columns:minmax(0,1fr); }
+  .shelf > article{
+    border-right:0; border-top:1px solid var(--rule);
+    padding-inline:0;
+  }
+  .shelf > article:first-child{ border-top:0; }
+  .ev{ grid-template-columns:minmax(0,1fr); }
+  .ev.wide .bd{ grid-column:auto; }
+  .tm{
+    text-align:left; border-right:0; padding:1.05rem 0 0;
+    border-top:1px solid var(--rule);
+    display:flex; align-items:baseline; gap:0.75rem;
+  }
+  .night .tm{ border-top-color:var(--night-rule); }
+  .tm::after{ display:none; }
+  .tm small{ margin-top:0; }
+  .bd{ padding:0.5rem 0 1.25rem; }
+  .nt{ padding:0 0 1.25rem; }
+  .thin-row .bd{ padding-block:0.45rem 1rem; }
+  .quiet{ grid-template-columns:minmax(0,1fr); }
+  .quiet .tm{ border-top:0; padding-top:0; }
+  .lane{ height:52px; }
+  .tick::after,.burst-bar i::after{ display:none; }
+}
+@media (max-width:520px){
+  .proof .row{ grid-template-columns:minmax(0,1fr); gap:0.15rem; }
+  .roster{ grid-template-columns:minmax(0,1fr); }
+  .contact a, .contact span{ grid-template-columns:minmax(0,1fr); gap:0.1rem; }
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ transition:none !important; animation:none !important; }
+}
+@media print{
+  .night{ background:#fff; color:#000; }
+  .now{ display:none; }
+}
+</style>
+</head>
+<body>
+
+<a class="sr" href="#day">Skip to the schedule</a>
+
+<header class="wrap mast">
+  <div class="who">Brian&nbsp;Mathew <span style="color:var(--ink-faint)">— New Jersey</span></div>
+  <nav aria-label="Contact and profiles">
+    <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+    <a href="tel:+16098151685">(609) 815-1685</a>
+    <a href="https://github.com/bmath8" rel="me noopener">github.com/bmath8</a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556" rel="me noopener">linkedin</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ======================================================= HERO -->
+<section class="wrap hero" aria-labelledby="lede">
+  <div>
+    <p class="lbl" style="margin-bottom:0.9rem">One machine · One day · 01:20 → 18:30</p>
+    <h1 id="lede">
+      <span class="b">Twenty-five agents</span>
+      <span class="b">wake up</span>
+      <span class="b thin">before I do.</span>
+    </h1>
+    <div class="deck">
+      <p>I'm Brian — a self-taught developer in New Jersey. What you're reading is one real day on my machine: <strong>my actual schedule</strong>, in order, from the 01:20 memory index to the 18:30 skill miner. Ten of these fire between 6:40 and 7:00 while I'm still asleep, and a brief is waiting for me when I get up.</p>
+      <p>Plenty of people can build a thing once. The part I've gotten good at is the part after that — keeping it alive on a real box, on a real schedule, and knowing what to do at 2 a.m. when it isn't.</p>
+    </div>
+  </div>
+
+  <div class="proof">
+    <p class="lbl" style="margin:0 0 0.35rem">Checkable</p>
+    <dl>
+      <div class="row">
+        <dt>25</dt>
+        <dd>scheduled agents on one Windows box
+          <span class="src">14 daily · 7 weekly · 2 monthly · 2 continuous</span></dd>
+      </div>
+      <div class="row">
+        <dt>81/81</dt>
+        <dd>tests passing in Brian&nbsp;OS
+          <span class="src">pytest · verified 30 Jul 2026</span></dd>
+      </div>
+      <div class="row">
+        <dt>10</dt>
+        <dd>agents fire in the 20-minute morning burst
+          <span class="src">06:40 → 07:00, every day</span></dd>
+      </div>
+      <div class="row" style="border-bottom:0">
+        <dt>1</dt>
+        <dd>live event run for a real audience
+          <span class="src">Super Bowl LX Squares · still online</span></dd>
+      </div>
+    </dl>
+
+    <div class="seeking">
+      <p class="lbl" style="margin:0 0 0.5rem">Looking for</p>
+      <p class="seek-line">Junior developer · IT support · technical support<br><span class="mono">$50–60k · New Jersey · open now</span></p>
+      <ul class="direct">
+        <li><a href="https://fam-super-bowl-squares-2026.vercel.app" rel="noopener"><b>Live demo</b><span>fam-super-bowl-squares-2026.vercel.app →</span></a></li>
+        <li><a href="https://github.com/bmath8/brian-os" rel="noopener"><b>The machine</b><span>github.com/bmath8/brian-os →</span></a></li>
+        <li><a href="#day"><b>The day</b><span>read the schedule below ↓</span></a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== RULER -->
+<section class="wrap ruler-sec" aria-labelledby="ruler-h">
+  <div class="ruler-head">
+    <h2 id="ruler-h">The whole day, to scale</h2>
+    <p class="lbl" style="margin:0">Sparse at night · a spike at dawn · quiet all afternoon · a second cluster at dusk</p>
+  </div>
+
+  <div class="ruler">
+    <div class="lane" role="img" aria-label="A 24-hour ruler. Four jobs run between 1:20 and 3:00 a.m., ten cluster tightly between 6:40 and 7:00 a.m., two more by 7:30, then nothing until a second cluster between 4:30 and 6:30 p.m.">
+      <span class="hr" style="--x:25%"></span>
+      <span class="hr" style="--x:50%"></span>
+      <span class="hr" style="--x:75%"></span>
+
+      <i class="tick d" style="--x:5.56%"  data-t="01:20 memory-index"></i>
+      <i class="tick d" style="--x:6.25%"  data-t="01:30 harmony-backup"></i>
+      <i class="tick d" style="--x:8.33%"  data-t="02:00 overnight-worker"></i>
+      <i class="tick m" style="--x:12.5%"  data-t="03:00 model-review · monthly"></i>
+      <i class="tick d" style="--x:27.78%" data-t="06:40 scout"></i>
+      <i class="tick d" style="--x:28.13%" data-t="06:45 learning-agent"></i>
+      <i class="tick d" style="--x:28.33%" data-t="06:48 inbox"></i>
+      <i class="tick d" style="--x:28.47%" data-t="06:50 finance"></i>
+      <i class="tick d" style="--x:28.61%" data-t="06:52 health"></i>
+      <i class="tick d" style="--x:28.68%" data-t="06:53 career"></i>
+      <i class="tick d" style="--x:28.82%" data-t="06:55 calendar"></i>
+      <i class="tick d" style="--x:29.03%" data-t="06:58 currency"></i>
+      <i class="tick d" style="--x:29.10%" data-t="06:59 fleet-health"></i>
+      <i class="tick d" style="--x:29.17%" data-t="07:00 daily-brief"></i>
+      <i class="tick d" style="--x:29.86%" data-t="07:10 gig-scanner"></i>
+      <i class="tick m" style="--x:31.25%" data-t="07:30 ceo-report · monthly"></i>
+      <i class="tick w" style="--x:68.75%" data-t="16:30 currency-weekly"></i>
+      <i class="tick w" style="--x:69.79%" data-t="16:45 wiki"></i>
+      <i class="tick w" style="--x:70.14%" data-t="16:50 outcome-learner"></i>
+      <i class="tick w" style="--x:70.83%" data-t="17:00 weekly-review + feedback"></i>
+      <i class="tick w" style="--x:75%"    data-t="18:00 research"></i>
+      <i class="tick w" style="--x:77.08%" data-t="18:30 skill-miner"></i>
+
+      <span class="now" id="now" hidden></span>
+    </div>
+
+    <div class="lane lane-2" aria-hidden="true">
+      <i class="tick c q" style="--x:0%"></i><i class="tick c" style="--x:4.17%"></i><i class="tick c" style="--x:8.33%"></i><i class="tick c" style="--x:12.5%"></i>
+      <i class="tick c q" style="--x:16.67%"></i><i class="tick c" style="--x:20.83%"></i><i class="tick c" style="--x:25%"></i><i class="tick c" style="--x:29.17%"></i>
+      <i class="tick c q" style="--x:33.33%"></i><i class="tick c" style="--x:37.5%"></i><i class="tick c" style="--x:41.67%"></i><i class="tick c" style="--x:45.83%"></i>
+      <i class="tick c q" style="--x:50%"></i><i class="tick c" style="--x:54.17%"></i><i class="tick c" style="--x:58.33%"></i><i class="tick c" style="--x:62.5%"></i>
+      <i class="tick c q" style="--x:66.67%"></i><i class="tick c" style="--x:70.83%"></i><i class="tick c" style="--x:75%"></i><i class="tick c" style="--x:79.17%"></i>
+      <i class="tick c q" style="--x:83.33%"></i><i class="tick c" style="--x:87.5%"></i><i class="tick c" style="--x:91.67%"></i><i class="tick c" style="--x:95.83%"></i>
+    </div>
+
+    <div class="axis" aria-hidden="true">
+      <span style="--x:0%">00:00</span>
+      <span style="--x:25%">06:00</span>
+      <span style="--x:50%">12:00</span>
+      <span style="--x:75%">18:00</span>
+      <span style="--x:100%">24:00</span>
+    </div>
+  </div>
+
+  <p class="key">
+    <span><b>▮</b> daily</span>
+    <span><b>▮</b> weekly</span>
+    <span><b>▮</b> monthly</span>
+    <span>lower lane: <b>dashboard</b> every hour · <b class="acc">system-watchdog</b> every 4 hours</span>
+    <span>hover any tick for its name</span>
+  </p>
+</section>
+
+<!-- ====================================================== SHELF -->
+<section class="wrap shelf" aria-label="Selected work">
+
+  <article>
+    <p class="status live">Live · public source</p>
+    <h3>Brian OS</h3>
+    <p>The machine this page describes. 25 scheduled Python agents on Windows, running unattended: local-LLM routing through Ollama, two-way Telegram control, self-healing health checks, and draft-only guardrails — nothing sends, spends, deploys or deletes without my approval.</p>
+    <a class="go lnk" href="https://github.com/bmath8/brian-os" rel="noopener">github.com/bmath8/brian-os →</a>
+  </article>
+
+  <article>
+    <p class="status live">Live · ran a real event</p>
+    <h3>Super Bowl LX Squares</h3>
+    <p>A real-time squares pool that carried an actual audience through an actual game. 100-square grid, randomized draw, winners resolved live off the score, chat, and host controls. It had to work once, in front of people, with no second take.</p>
+    <a class="go lnk" href="https://fam-super-bowl-squares-2026.vercel.app" rel="noopener">fam-super-bowl-squares-2026.vercel.app →</a>
+  </article>
+
+  <article>
+    <p class="status">Prototype · not deployed</p>
+    <h3>Boombox</h3>
+    <p>Real-time collaborative listening: shared queues, everyone hearing the same second. The interesting part is the state split — durable state in Postgres, kept deliberately separate from the transient WebSocket / Redis Pub/Sub layer. Source is public; I haven't deployed it.</p>
+    <a class="go lnk" href="https://github.com/bmath8" rel="noopener">source on github.com/bmath8 →</a>
+  </article>
+
+</section>
+
+<!-- ==================================================== I. NIGHT -->
+<section class="night" id="day" aria-labelledby="night-h">
+  <div class="wrap chapter">
+    <div class="chapter-head">
+      <h2 id="night-h">I. The night shift</h2>
+      <p class="span">01:20 — 03:00 · four jobs · nobody watching</p>
+    </div>
+
+    <div class="day">
+
+      <div class="ev thin-row">
+        <div class="tm">01:20 <small>daily</small></div>
+        <div class="bd">
+          <h3>memory-index</h3>
+          <p>Everything the day produced gets read back and indexed so tomorrow's agents can find it. The system's short-term memory becomes long-term memory while I sleep.</p>
+        </div>
+        <div class="nt">First job of the day. The day it doesn't run, everything downstream gets slightly dumber.</div>
+      </div>
+
+      <div class="ev mark">
+        <div class="tm">01:30 <small>daily</small></div>
+        <div class="bd">
+          <h3>harmony-backup</h3>
+          <p class="lead">This is the one that told me something was wrong.</p>
+
+          <div class="incident">
+            <p class="pull">A process guardian I wrote failed silently — and a silent guardian is worse than none at all.</p>
+            <p>It was supposed to stop a worker from multiplying. One night it stopped doing its job without stopping reporting. It kept saying <span class="mono">healthy</span> while the worker spawned copies of itself and wrote logs until the disk was full.</p>
+            <p>I found out because the 01:30 backup had nowhere left to write. I traced it back to the root cause, recovered the machine, and then did the part that actually counts: I wrote the check that catches it next time. That check is <span class="mono acc">fleet-health</span>, and it runs at 06:59 every morning. <span class="mono acc">system-watchdog</span> runs every four hours behind it. Both are loud on purpose now.</p>
+            <p>I'd rather tell you about the night I broke my own machine than about a project that never had to survive anything.</p>
+          </div>
+        </div>
+        <div class="nt">Root cause → recovery → a new check. The third step is the one most people skip.</div>
+      </div>
+
+      <div class="ev thin-row">
+        <div class="tm">02:00 <small>daily</small></div>
+        <div class="bd">
+          <h3>overnight-worker</h3>
+          <p>The heavy, slow, unglamorous batch. It runs at two in the morning precisely because nothing else needs the machine then — including me.</p>
+        </div>
+        <div class="nt">Scheduling is a resource decision, not a preference.</div>
+      </div>
+
+      <div class="ev thin-row">
+        <div class="tm">03:00 <small>monthly</small></div>
+        <div class="bd">
+          <h3>model-review</h3>
+          <p>Once a month the system audits which local model each agent is routed to through Ollama, and whether that's still the right call. Cheap models for bounded jobs; the expensive one only where judgment is needed.</p>
+        </div>
+        <div class="nt">Monthly, not daily. Not everything deserves to run every night.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================== II. DAWN -->
+<section class="wrap chapter" aria-labelledby="dawn-h">
+  <div class="chapter-head">
+    <h2 id="dawn-h">II. The burst</h2>
+    <p class="span">06:40 — 07:00 · ten agents · twenty minutes</p>
+  </div>
+
+  <div class="day">
+    <div class="ev wide mark">
+      <div class="tm">06:40<br>07:00 <small>daily</small></div>
+      <div class="bd">
+        <h3 class="big">Ten agents, staggered by minutes, so they don't trip over each other.</h3>
+        <p>Each one is scheduled on its own minute for a boring, real reason: they compete for the same GPU, the same network, and the same rate limits. Stack them and they fail together. Spread them across twenty minutes and each one gets a clean run — and the last of them, <span class="mono">daily-brief</span>, has all nine outputs to work from by the time it starts at 07:00.</p>
+
+        <div class="burst-bar" role="img" aria-label="Zoom of the twenty-minute window from 6:40 to 7:00, showing ten jobs firing at staggered minutes and bunching toward the end.">
+          <i style="--x:0%"   data-t="06:40 scout"></i>
+          <i style="--x:25%"  data-t="06:45 learning-agent"></i>
+          <i style="--x:40%"  data-t="06:48 inbox"></i>
+          <i style="--x:50%"  data-t="06:50 finance"></i>
+          <i style="--x:60%"  data-t="06:52 health"></i>
+          <i style="--x:65%"  data-t="06:53 career"></i>
+          <i style="--x:75%"  data-t="06:55 calendar"></i>
+          <i style="--x:90%"  data-t="06:58 currency"></i>
+          <i style="--x:95%"  data-t="06:59 fleet-health"></i>
+          <i style="--x:100%" data-t="07:00 daily-brief"></i>
+        </div>
+        <div class="burst-ends"><span>06:40</span><span>twenty minutes, to scale</span><span>07:00</span></div>
+
+        <ul class="roster">
+          <li><b>06:40</b><span>scout</span></li>
+          <li><b>06:45</b><span>learning-agent</span></li>
+          <li><b>06:48</b><span>inbox</span></li>
+          <li><b>06:50</b><span>finance</span></li>
+          <li><b>06:52</b><span>health</span></li>
+          <li><b>06:53</b><span>career</span></li>
+          <li><b>06:55</b><span>calendar</span></li>
+          <li><b>06:58</b><span>currency</span></li>
+          <li><b>06:59</b><span>fleet-health</span></li>
+          <li><b>07:00</b><span>daily-brief</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ev mark">
+      <div class="tm">07:00 <small>daily</small></div>
+      <div class="bd">
+        <div class="work">
+          <p class="status live">Live · public source</p>
+          <h3>Brian OS</h3>
+          <p>The brief lands and the machine has done its shift. This is what all of it is: 25 Python agents on Windows Task Scheduler, routed to local models through Ollama, controllable both ways over Telegram, checking their own health, and — the rule I care most about — <strong style="font-weight:400;border-bottom:2px solid var(--accent)">draft-only by default</strong>. The agents write. I sign. Nothing sends, spends, deploys or deletes on its own.</p>
+          <ul class="facts">
+            <li><b>tests</b><span>81 / 81 passing · pytest · verified 30 Jul 2026</span></li>
+            <li><b>runtime</b><span>Python · Windows Task Scheduler · Ollama · Telegram API</span></li>
+            <li><b>safety</b><span>draft-only guardrails; human approval before any side effect</span></li>
+            <li><b>recovery</b><span>self-healing health checks; watchdog every 4 hours</span></li>
+            <li><b>source</b><span><a class="lnk" href="https://github.com/bmath8/brian-os" rel="noopener">github.com/bmath8/brian-os</a></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="nt">The brief is the product. The other twenty-four agents are the supply chain.</div>
+    </div>
+
+    <div class="ev thin-row">
+      <div class="tm">07:10 <small>daily</small></div>
+      <div class="bd">
+        <h3>gig-scanner</h3>
+        <p>Scans for work worth applying to and drafts nothing I haven't read. Which is how I ended up writing this page.</p>
+      </div>
+      <div class="nt">Looking for: junior developer, IT support, or technical support. $50–60k.</div>
+    </div>
+
+    <div class="ev thin-row">
+      <div class="tm">07:30 <small>monthly</small></div>
+      <div class="bd">
+        <h3>ceo-report</h3>
+        <p>Once a month, a report on the system itself: what ran, what failed, what cost what. The machine files against itself.</p>
+      </div>
+      <div class="nt">Twelve of the day's jobs have now finished — and it's 7:30 in the morning.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================== III. QUIET -->
+<section class="wrap" aria-labelledby="quiet-h">
+  <div class="quiet">
+    <div class="tm">07:30<br>16:30 <small>nine hours</small></div>
+    <div>
+      <h2 id="quiet-h" class="sr">The quiet hours</h2>
+      <p>Nothing is scheduled for nine hours. That gap isn't idle time — it's the only part of the day the machine leaves to me.</p>
+      <p class="lbl" style="margin-top:1.1rem">What gets built in the gap</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" aria-label="Projects built in the quiet hours">
+  <div class="day">
+
+    <div class="ev">
+      <div class="tm">built <small>Feb 2026</small></div>
+      <div class="bd">
+        <div class="work">
+          <p class="status live">Live · ran a real event</p>
+          <h3>Super Bowl LX Squares</h3>
+          <p>A squares pool for a real party on a real Sunday. Everyone claims squares on a 100-square grid, the numbers are drawn at random, and winners resolve live off the score as the game moves. There's chat, and there are host controls, because someone has to run the room.</p>
+          <p>The thing I learned here isn't in the code. It's what it feels like to ship something that has exactly one chance to work correctly, in front of people who are not going to file a bug report — they're just going to say it's broken.</p>
+          <ul class="facts">
+            <li><b>live</b><span><a class="lnk" href="https://fam-super-bowl-squares-2026.vercel.app" rel="noopener">fam-super-bowl-squares-2026.vercel.app</a></span></li>
+            <li><b>real-time</b><span>randomized draw · score-driven winner resolution · chat</span></li>
+            <li><b>operations</b><span>host controls for running the room during the game</span></li>
+            <li><b>source</b><span><a class="lnk" href="https://github.com/bmath8" rel="noopener">public on github.com/bmath8</a></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="nt">Try it. It's still up.</div>
+    </div>
+
+    <div class="ev">
+      <div class="tm">built <small>prototype</small></div>
+      <div class="bd">
+        <div class="work">
+          <p class="status">Prototype · not deployed</p>
+          <h3>Boombox</h3>
+          <p>Collaborative listening — shared queues, everyone synchronized to the same second. What I'd point at in a code review is the state boundary: durable state lives in Postgres, and the transient real-time layer (WebSockets over Redis Pub/Sub) is kept deliberately separate from it. Sockets drop. Postgres shouldn't care.</p>
+          <p>I want to be straight about this one: it's a prototype and I have not deployed it. The source is public and the architecture is the point.</p>
+          <ul class="facts">
+            <li><b>durable</b><span>Postgres — the state that must survive a disconnect</span></li>
+            <li><b>transient</b><span>WebSocket / Redis Pub/Sub — the state that shouldn't</span></li>
+            <li><b>status</b><span>not deployed · prototype only</span></li>
+            <li><b>source</b><span><a class="lnk" href="https://github.com/bmath8" rel="noopener">public on github.com/bmath8</a></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="nt">Honest status beats a dead demo link.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================== IV. THE CONSTANT -->
+<section class="band" aria-labelledby="const-h">
+  <div class="wrap inner">
+    <div>
+      <p class="lbl">Running underneath all of it</p>
+      <h2 id="const-h">Two jobs that never stop</h2>
+    </div>
+    <div class="two">
+      <div>
+        <h3>dashboard <span class="lbl">— every hour</span></h3>
+        <p>Twenty-four runs a day. It renders the current state of the fleet so that "is everything fine?" is a thing I can look at instead of a thing I assume.</p>
+      </div>
+      <div>
+        <h3 class="acc">system-watchdog <span class="lbl">— every 4 hours</span></h3>
+        <p>Six runs a day. This one exists because of the night the guardian went quiet. It doesn't trust anything that reports its own health, including itself.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================ V. THE EVENING -->
+<section class="wrap chapter" aria-labelledby="eve-h">
+  <div class="chapter-head">
+    <h2 id="eve-h">III. The review block</h2>
+    <p class="span">16:30 — 18:30 · weekly · the day grades itself</p>
+  </div>
+
+  <div class="day">
+
+    <div class="ev thin-row">
+      <div class="tm">16:30 <small>weekly</small></div>
+      <div class="bd">
+        <h3>currency-weekly</h3>
+        <p>The weekly counterpart to the 06:58 daily run — the same data, read at a longer wavelength.</p>
+      </div>
+      <div class="nt">Same signal, two time horizons.</div>
+    </div>
+
+    <div class="ev thin-row">
+      <div class="tm">16:45 <small>weekly</small></div>
+      <div class="bd">
+        <h3>wiki</h3>
+        <p>Writes the week back into documentation. If it isn't in the repo, it didn't happen — and next week's version of me can't read my memory.</p>
+      </div>
+      <div class="nt">The repo is the memory.</div>
+    </div>
+
+    <div class="ev thin-row">
+      <div class="tm">16:50 <small>weekly</small></div>
+      <div class="bd">
+        <h3>outcome-learner</h3>
+        <p>Compares what the agents predicted against what actually happened. Not "did it run" — <em style="font-style:normal;border-bottom:1px solid var(--rule-hard)">did it turn out to be right</em>.</p>
+      </div>
+      <div class="nt">Green checks are not results.</div>
+    </div>
+
+    <div class="ev thin-row mark">
+      <div class="tm">17:00 <small>weekly ×2</small></div>
+      <div class="bd">
+        <h3>weekly-review &nbsp;+&nbsp; feedback</h3>
+        <p>Two jobs on the same minute — the only collision in the schedule, and it's deliberate: one summarizes the week, the other takes my corrections. Together they're how the guardrails get tightened. Every rule in this system started as something that went wrong once.</p>
+      </div>
+      <div class="nt">Draft-only isn't a feature I designed up front. It's a scar.</div>
+    </div>
+
+    <div class="ev thin-row">
+      <div class="tm">18:00 <small>weekly</small></div>
+      <div class="bd">
+        <h3>research</h3>
+        <p>Reads ahead so I'm not learning a tool for the first time on the day I need it.</p>
+      </div>
+      <div class="nt">Self-taught means the curriculum is also my job.</div>
+    </div>
+
+    <div class="ev thin-row">
+      <div class="tm">18:30 <small>weekly</small></div>
+      <div class="bd">
+        <h3>skill-miner</h3>
+        <p>The last job of the day. It looks for anything I've now done twice by hand and proposes turning it into something the machine can do instead. That's the whole loop: do it, notice it, automate it, review it, do the next thing.</p>
+      </div>
+      <div class="nt">Last tick on the ruler. In seven hours, memory-index runs again.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================================================== VI. RECORD -->
+<section class="wrap chapter" aria-labelledby="rec-h" style="padding-top:0">
+  <div class="chapter-head">
+    <h2 id="rec-h">Before this</h2>
+    <p class="span">The plain record, with nothing rounded up</p>
+  </div>
+
+  <div class="record">
+    <div>
+      <p class="lbl">Retail</p>
+      <h3>Best Buy</h3>
+      <p>Appliances Department Lead. Running a floor teaches you the same thing running a fleet does — you find out what's broken from the person standing in front of you, not from a dashboard.</p>
+    </div>
+    <div>
+      <p class="lbl">Independent</p>
+      <h3>Uber — driver, 2022</h3>
+      <p>Self-directed work, with the schedule and the accounting entirely on me. It's where the habit of measuring my own output started.</p>
+    </div>
+    <div>
+      <p class="lbl">Coursework</p>
+      <h3>Penn State Berks · City College of New York</h3>
+      <p>Undergraduate coursework at both. <span class="mono" style="border-bottom:1px solid var(--rule-hard)">No degree, and no certifications.</span> Everything above I taught myself, and everything above is public, so you can check.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================================================== FOOTER -->
+<footer class="night">
+  <div class="wrap foot">
+    <div>
+      <p class="lbl">01:20 tomorrow, it all starts again</p>
+      <h2>I'd like to do this for your team.</h2>
+      <p>I'm looking for a junior developer, IT support, or technical support role in the $50–60k range. I don't have a degree and I'm not going to pretend otherwise — what I have is a machine that has been running unattended for months, a live thing I shipped to a real audience, and a fairly specific memory of what it's like to be the person responsible when it breaks.</p>
+      <p style="margin-top:1rem">Email is fastest. I answer everything.</p>
+      <ul class="stack" style="margin-top:1.4rem">
+        <li>Python</li><li>SQL</li><li>TypeScript</li><li>React</li><li>Windows</li><li>PowerShell</li><li>Ollama</li><li>Telegram API</li><li>pytest</li>
+      </ul>
+    </div>
+
+    <div>
+      <ul class="contact">
+        <li><a href="mailto:mathew.brian@gmail.com"><b>Email</b><span>mathew.brian@gmail.com</span></a></li>
+        <li><a href="tel:+16098151685"><b>Phone</b><span>(609) 815-1685</span></a></li>
+        <li><a href="https://github.com/bmath8" rel="me noopener"><b>GitHub</b><span>github.com/bmath8</span></a></li>
+        <li><a href="https://linkedin.com/in/brian-mathew-66235556" rel="me noopener"><b>LinkedIn</b><span>brian-mathew-66235556</span></a></li>
+        <li><span><b>Based</b><span>New Jersey</span></span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap colophon">
+    <span>Brian Mathew — a day on the machine</span>
+    <span>Every time on this page is a real entry in a real schedule.</span>
+    <span>Set in Georgia and the system monospace.</span>
+  </div>
+</footer>
+
+<script>
+/* Enhancement only: place a marker on the ruler at the reader's local time.
+   With JS off, the marker stays hidden and nothing else changes. */
+(function () {
+  try {
+    var el = document.getElementById('now');
+    if (!el) return;
+    var place = function () {
+      var d = new Date();
+      var pct = ((d.getHours() * 60 + d.getMinutes()) / 1440) * 100;
+      el.style.setProperty('--now', pct.toFixed(3) + '%');
+      el.hidden = false;
+      el.setAttribute('title', 'Your local time — ' +
+        String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'));
+    };
+    place();
+    setInterval(place, 60000);
+  } catch (e) {}
+})();
+</script>
+
+</body>
+</html>
