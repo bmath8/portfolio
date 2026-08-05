@@ -1,0 +1,269 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>lab 03 — real mesh, opaque. Does anatomy read?</title>
+<!--
+  THE EXPERIMENT THAT WAS NEVER ACTUALLY RUN.
+
+  Labs 01 and 02 are both cited as proof that "a brain mesh reads as a cloud."
+  Neither one loaded the real mesh:
+    lab 01 = fragment-shader volumetric raymarch, zero geometry
+    lab 02 = displaced SphereGeometry blobs (8 ellipsoids + capsule + torus)
+  So the question "does a REAL opaque anatomical surface read as anatomy?"
+  has never been tested. This tests exactly that and nothing else.
+
+  Deliberately absent, because each one caused a documented rejection:
+    - no bloom            ("too bright / neon / not readable")
+    - no additive blending ("just a bunch of lights")
+    - no transparency      (transparency is what makes solids look like fog)
+    - no scroll-driven 3D  ("animations for the sake of")
+    - no morphing
+
+  Present: hard opaque shading, depth test, inverted-hull silhouette, and
+  per-vertex curvature computed from the mesh so sulci read as GROOVES
+  rather than as noise.
+
+  LICENSE WARNING: /vendor/mesh/brain-mni.bin is AGPL-3.0 (aces/brainbrowser).
+  LOCAL EXPERIMENT ONLY. Never deploy this asset. Clean replacements:
+  MNI ICBM152 2009c (MIT-like) or NIH 3D 3DPX-021161 (CC-BY 4.0).
+
+  Serve:  cd C:\Brian\02_Projects\portfolio && python -m http.server 8899
+  Open:   http://localhost:8899/design-candidates/lab/03-real-mesh-opaque.html
+  Keys:   1 matcap · 2 PBR+IBL · 3 toon+curvature · O outline · C cutaway
+
+  ================= RESULT, 2026-08-05, screenshotted =================
+  ANSWERED: YES. The real opaque mesh reads unmistakably as a brain. Gyri and
+  sulci are legible, the silhouette is hard, and it is nobody's idea of a cloud.
+  The premise behind 26 point-cloud candidates and the volumetric raymarch --
+  "the technique fights the subject" -- was wrong. The subject was never tried.
+  It was the MATERIAL all along: opaque + depth-tested + curvature-shaded.
+  Mesh decode 17-23ms, curvature 85-86ms, both trivial.
+
+  THREE THINGS LEARNED, all visible in the screenshots:
+
+  1. The inverted-hull outline at 0.018 is TOO THICK. It bleeds dark halos into
+     every sulcus and pokes black spikes through the surface, because the hull
+     offset exceeds the width of the folds themselves. Anatomy this convoluted
+     does not want an inverted hull. Either drop to ~0.004 or use a depth/normal
+     discontinuity pass instead. Outline OFF is markedly cleaner -- that
+     screenshot is the best read of the three.
+
+  2. The clip plane WITHOUT a stencil cap makes it look BROKEN, not sectioned.
+     You see straight through into a hollow shell with jagged clipped edges.
+     This confirms the research: the cap face is the entire device. A bare
+     clipping plane is worse than no clipping plane. Build the stencil group
+     (back faces increment, front faces decrement, cap where count != 0) before
+     showing a cutaway to anyone.
+
+  3. rAF throttles to ~1fps in a backgrounded tab, so the fps readout here is
+     meaningless unless the tab is focused. Do not read it as a perf result.
+
+  NEXT: shrink or replace the outline, then build the stencil cap. Do NOT add
+  bloom, transparency or additive blending to "improve" this -- each one is a
+  documented rejection, and none of them is what made this work.
+-->
+<style>
+  html,body{margin:0;height:100%;background:#050a12;overflow:hidden}
+  canvas{display:block;width:100vw;height:100vh}
+  #hud{position:fixed;left:16px;bottom:14px;font:12px/1.7 ui-monospace,Menlo,Consolas,monospace;
+       color:#63798f;letter-spacing:.04em}
+  #hud b{color:#22e6c8;font-weight:500}
+  #fb{position:fixed;inset:0;display:grid;place-items:center;color:#9db2c6;
+      font:14px ui-monospace,monospace}
+</style>
+<div id="fb">loading cortical surface…</div>
+<canvas id="gl"></canvas>
+<div id="hud"></div>
+<!-- vendor/RoomEnvironment.js imports the bare specifier "three", so the map is
+     required even though everything here is self-hosted. -->
+<script type="importmap">
+{ "imports": {
+  "three": "/vendor/three.module.min.js",
+  "three/webgpu": "/vendor/three.module.min.js",
+  "three/tsl": "/vendor/three.module.min.js"
+} }
+</script>
+<script type="module">
+const hud = document.getElementById('hud');
+const fb  = document.getElementById('fb');
+
+const THREE = await import('/vendor/three.module.min.js');
+const { RoomEnvironment } = await import('/vendor/RoomEnvironment.js');
+
+/* ---------- the real cortical surface ---------- */
+const t0 = performance.now();
+const buf = await (await fetch('/vendor/mesh/brain-mni.bin')).arrayBuffer();
+const dv  = new DataView(buf);
+const nV  = dv.getUint32(0, true), nT = dv.getUint32(4, true);
+let o = 8;
+const qp  = new Int16Array(buf, o, nV * 3); o += nV * 3 * 2;
+const qn  = new Int8Array(buf, o, nV * 3);  o += nV * 3;
+const idx = new Uint32Array(buf.slice(o, o + nT * 3 * 4));
+const pos = new Float32Array(nV * 3), nrm = new Float32Array(nV * 3);
+for (let i = 0; i < nV * 3; i++) { pos[i] = qp[i] / 32767; nrm[i] = qn[i] / 127; }
+const tLoad = performance.now() - t0;
+
+/* ---------- per-vertex curvature, computed from the mesh ----------
+   For each edge, compare a neighbour's offset direction against this vertex's
+   normal. Concave (sulcus) accumulates negative, convex (gyrus) positive.
+   This is the device that turns folds into readable structure instead of noise. */
+const t1 = performance.now();
+const curv = new Float32Array(nV), deg = new Float32Array(nV);
+const accum = (a, b) => {
+  const ax = pos[a*3], ay = pos[a*3+1], az = pos[a*3+2];
+  let dx = pos[b*3] - ax, dy = pos[b*3+1] - ay, dz = pos[b*3+2] - az;
+  const L = Math.hypot(dx, dy, dz) || 1e-9;
+  dx /= L; dy /= L; dz /= L;
+  curv[a] += dx*nrm[a*3] + dy*nrm[a*3+1] + dz*nrm[a*3+2];
+  deg[a]  += 1;
+};
+for (let t = 0; t < nT; t++) {
+  const a = idx[t*3], b = idx[t*3+1], c = idx[t*3+2];
+  accum(a,b); accum(b,c); accum(c,a); accum(b,a); accum(c,b); accum(a,c);
+}
+let lo = 1e9, hi = -1e9;
+for (let i = 0; i < nV; i++) { curv[i] /= (deg[i] || 1); if (curv[i]<lo) lo=curv[i]; if (curv[i]>hi) hi=curv[i]; }
+// normalise to 0..1, then bias so the mid-range keeps contrast
+for (let i = 0; i < nV; i++) curv[i] = (curv[i] - lo) / ((hi - lo) || 1);
+const tCurv = performance.now() - t1;
+
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+geo.setAttribute('normal',   new THREE.BufferAttribute(nrm, 3));
+geo.setAttribute('aCurv',    new THREE.BufferAttribute(curv, 1));
+geo.setIndex(new THREE.BufferAttribute(idx, 1));
+geo.computeBoundingSphere();
+
+/* ---------- procedural matcap (no external asset, no generated image) ---------- */
+function matcapTexture() {
+  const s = 256, c = document.createElement('canvas'); c.width = c.height = s;
+  const g = c.getContext('2d');
+  const grad = g.createRadialGradient(s*0.36, s*0.30, s*0.03, s*0.5, s*0.5, s*0.52);
+  grad.addColorStop(0.00, '#eaf6ff');
+  grad.addColorStop(0.22, '#9fc4dd');
+  grad.addColorStop(0.55, '#3d6480');
+  grad.addColorStop(0.82, '#16293c');
+  grad.addColorStop(1.00, '#0a1420');
+  g.fillStyle = grad; g.beginPath(); g.arc(s/2, s/2, s/2, 0, 7); g.fill();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+
+/* ---------- scene ---------- */
+const canvas   = document.getElementById('gl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, stencil: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));   // 1.5, not 2 - fill-rate
+renderer.setSize(innerWidth, innerHeight, false);
+renderer.localClippingEnabled = true;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050a12);
+const cam = new THREE.PerspectiveCamera(32, innerWidth/innerHeight, 0.01, 60);
+cam.position.set(0, 0.10, 3.35);
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
+scene.add(new THREE.AmbientLight(0xffffff, 0.28));
+const key = new THREE.DirectionalLight(0xdfe6ff, 2.6); key.position.set(-3, 4, 4); scene.add(key);
+const rim = new THREE.DirectionalLight(0x22e6c8, 1.6); rim.position.set(4, -1.5, -4); scene.add(rim);
+
+const pivot = new THREE.Group(); scene.add(pivot);
+pivot.rotation.set(0.05, -1.0, 0);
+
+const clip = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0.42);
+
+/* ---------- three shading modes; ONE variable changes between them ---------- */
+const CURV_CHUNK = {
+  head: 'attribute float aCurv;\nvarying float vCurv;',
+  body: 'vCurv = aCurv;',
+  frag: 'varying float vCurv;',
+};
+function withCurvature(mat, strength) {
+  mat.onBeforeCompile = (s) => {
+    s.vertexShader = s.vertexShader
+      .replace('void main() {', CURV_CHUNK.head + '\nvoid main() {')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\n' + CURV_CHUNK.body);
+    s.fragmentShader = s.fragmentShader
+      .replace('void main() {', CURV_CHUNK.frag + '\nvoid main() {')
+      .replace('#include <dithering_fragment>',
+        '#include <dithering_fragment>\n' +
+        'float cav = smoothstep(0.28, 0.72, vCurv);\n' +
+        `gl_FragColor.rgb *= mix(${(1-strength).toFixed(2)}, 1.18, cav);`);
+  };
+  mat.needsUpdate = true;
+  return mat;
+}
+
+const modes = {
+  1: { name: 'matcap (hard, unlit)', mat: withCurvature(
+        new THREE.MeshMatcapMaterial({ matcap: matcapTexture(), clippingPlanes: [clip] }), 0.55) },
+  2: { name: 'PBR + IBL', mat: withCurvature(
+        new THREE.MeshPhysicalMaterial({ color: 0x7d93a8, roughness: 0.62, metalness: 0.0,
+          clearcoat: 0.35, clearcoatRoughness: 0.5, clippingPlanes: [clip] }), 0.5) },
+  3: { name: 'toon + curvature', mat: withCurvature(
+        new THREE.MeshToonMaterial({ color: 0x8fb3c9, clippingPlanes: [clip] }), 0.7) },
+};
+let mode = 1;
+
+const brain = new THREE.Mesh(geo, modes[mode].mat);
+pivot.add(brain);
+
+/* ---------- inverted-hull outline: the hard silhouette ---------- */
+const outline = new THREE.Mesh(geo, new THREE.ShaderMaterial({
+  side: THREE.BackSide, clippingPlanes: [clip], clipping: true,
+  vertexShader: `void main(){
+    vec3 p = position + normal * 0.018;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(p,1.0);
+  }`,
+  fragmentShader: `void main(){ gl_FragColor = vec4(0.016,0.055,0.09,1.0); }`,
+}));
+pivot.add(outline);
+let outlineOn = true;
+
+// Clip plane is -z, so it hides everything with z > constant.
+// Mesh positions are normalised to roughly -1..1, so 1.2 = fully uncut.
+let cutaway = false;
+const CUT_OPEN = 1.2, CUT_SECTION = 0.12;
+clip.constant = CUT_OPEN;
+
+/* ---------- loop ---------- */
+let frames = 0, fps = 0, tf = performance.now(), running = true;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.addEventListener('visibilitychange', () => {           // lab 01 forgot this
+  running = !document.hidden; if (running) requestAnimationFrame(tick);
+});
+addEventListener('resize', () => {
+  cam.aspect = innerWidth/innerHeight; cam.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight, false);
+});
+addEventListener('keydown', (e) => {
+  const k = e.key.toLowerCase();
+  if (modes[k]) { mode = k; brain.material = modes[k].mat; }
+  if (k === 'o') { outlineOn = !outlineOn; outline.visible = outlineOn; }
+  if (k === 'c') { cutaway = !cutaway; }
+  paint();
+});
+
+function paint() {
+  hud.innerHTML =
+    `<b>${nV.toLocaleString()}</b> verts · <b>${nT.toLocaleString()}</b> tris · ` +
+    `mesh ${tLoad|0}ms · curvature ${tCurv|0}ms · <b>${fps}</b>fps<br>` +
+    `[1] ${modes[1].name} &nbsp; [2] ${modes[2].name} &nbsp; [3] ${modes[3].name}<br>` +
+    `mode <b>${modes[mode].name}</b> · outline <b>${outlineOn?'on':'off'}</b> · ` +
+    `cutaway <b>${cutaway?'on':'off'}</b> &nbsp; [O] [C]`;
+}
+
+function tick() {
+  if (!running) return;
+  if (!reduce) pivot.rotation.y += 0.0016;
+  clip.constant += ((cutaway ? CUT_SECTION : CUT_OPEN) - clip.constant) * 0.25;
+  renderer.render(scene, cam);
+  frames++;
+  const now = performance.now();
+  if (now - tf > 500) { fps = Math.round(frames * 1000 / (now - tf)); frames = 0; tf = now; paint(); }
+  requestAnimationFrame(tick);
+}
+fb.remove();
+paint();
+requestAnimationFrame(tick);
+</script>

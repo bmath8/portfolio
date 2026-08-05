@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brian Mathew — Daily Operations Brief</title>
+<meta name="description" content="Brian Mathew, self-taught developer in New Jersey. I operate Brian OS: 25 scheduled Python agents running unattended, 81/81 tests passing. Looking for junior developer, IT support, or technical support work.">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Brian Mathew — Daily Operations Brief">
+<meta property="og:description" content="I build the system, then I run it every day. 25 scheduled agents, 81/81 tests passing, one live event served. Junior developer / IT support / technical support.">
+<meta property="og:site_name" content="Brian Mathew">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Brian Mathew — Daily Operations Brief">
+<meta name="twitter:description" content="I build the system, then I run it every day. 25 scheduled agents, 81/81 tests passing, one live event served.">
+<meta name="author" content="Brian Mathew">
+<meta name="theme-color" content="#f3efe8">
+<style>
+  :root{
+    color-scheme: only light;
+
+    --paper:      oklch(0.968 0.006 84);
+    --paper-sunk: oklch(0.941 0.009 82);
+    --ink:        oklch(0.235 0.013 68);
+    --ink-mid:    oklch(0.455 0.012 70);
+    --ink-faint:  oklch(0.615 0.011 72);
+    --rule:       oklch(0.862 0.011 80);
+    --rule-soft:  oklch(0.915 0.009 82);
+    --accent:     oklch(0.523 0.174 34);
+
+    --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Times New Roman", serif;
+    --mono: ui-monospace, "Cascadia Mono", "SF Mono", "Menlo", "DejaVu Sans Mono", "Consolas", monospace;
+
+    --gutter: 4.25rem;
+    --pad: clamp(1.15rem, 3.2vw, 3.25rem);
+    --rail: 22.5rem;
+    --railgap: clamp(2rem, 3.4vw, 3.75rem);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+
+  html{ -webkit-text-size-adjust:100%; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(16px, 0.55vw + 14.6px, 17.5px);
+    line-height: 1.56;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection{ background: var(--accent); color: var(--paper); }
+
+  a{ color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); }
+  a:hover{ border-bottom-color: var(--accent); color: var(--accent); }
+  a:focus-visible, [tabindex]:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  h1,h2,h3{ font-weight:400; margin:0; }
+
+  .wrap{
+    max-width: 1560px;
+    margin: 0 auto;
+    padding: 0 var(--pad) 0;
+    border-left: 1px solid var(--rule-soft);
+    border-right: 1px solid var(--rule-soft);
+    min-height: 100vh;
+  }
+
+  /* ── shared type utilities ───────────────────────────── */
+  .mono{ font-family: var(--mono); }
+  .tag{
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+  }
+  .src{
+    font-family: var(--mono);
+    font-size: 0.645rem;
+    letter-spacing: 0.045em;
+    line-height: 1.45;
+    color: var(--ink-faint);
+    text-transform: none;
+  }
+  .lead-in{
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* ── masthead ────────────────────────────────────────── */
+  .masthead{
+    display:grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    align-items: end;
+    gap: 1.25rem 2rem;
+    padding: clamp(1.5rem,3vw,2.4rem) 0 0.85rem;
+    border-bottom: 3px solid var(--ink);
+  }
+  .masthead .name{
+    font-family: var(--serif);
+    font-size: clamp(1.9rem, 4.2vw, 3.15rem);
+    line-height: 0.95;
+    letter-spacing: -0.022em;
+    margin: 0;
+  }
+  .masthead .name .surname{ color: var(--ink-mid); }
+  .masthead .kicker{
+    display:block;
+    margin-bottom: 0.55rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+  }
+  .masthead-meta{
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    line-height: 1.85;
+    letter-spacing: 0.02em;
+    text-align: right;
+    color: var(--ink-mid);
+  }
+  .masthead-meta a{ border-bottom-color: var(--rule); color: var(--ink); }
+  .masthead-meta .k{ color: var(--ink-faint); }
+  .dot{
+    display:inline-block; width:0.5em; height:0.5em;
+    background: var(--accent); margin-right: 0.45em;
+    vertical-align: 0.05em;
+  }
+  .rule-thin{ height:1px; background: var(--ink); margin-top: 2px; }
+
+  /* ── lede ────────────────────────────────────────────── */
+  .lede{
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) var(--rail);
+    gap: var(--railgap);
+    padding: clamp(1.75rem, 3.4vw, 3rem) 0 clamp(1.5rem,2.6vw,2.25rem);
+    border-bottom: 1px solid var(--rule);
+  }
+  h1{
+    font-size: clamp(2.35rem, 5.6vw, 4.55rem);
+    line-height: 0.99;
+    letter-spacing: -0.028em;
+    max-width: 16ch;
+    margin: 0.35rem 0 1.15rem;
+  }
+  h1 .em{ color: var(--accent); }
+  .deck{
+    font-size: clamp(1.02rem, 0.5vw + 0.9rem, 1.18rem);
+    line-height: 1.55;
+    max-width: 54ch;
+    color: var(--ink);
+    margin: 0 0 1.15rem;
+  }
+  .deck + .deck{ color: var(--ink-mid); font-size: 1rem; max-width: 56ch; }
+  .cta{
+    display:flex; flex-wrap:wrap; gap: 0.55rem 1.5rem; align-items:baseline;
+    margin-top: 1.6rem;
+    font-family: var(--mono);
+    font-size: 0.79rem;
+    letter-spacing: 0.02em;
+  }
+  .cta a{ border-bottom-width:1px; }
+  .cta .primary{
+    border: 1px solid var(--ink);
+    padding: 0.55rem 0.95rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+  }
+  .cta .primary:hover{ background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+  /* figures */
+  .figures{
+    align-self: stretch;
+    border-left: 1px solid var(--rule);
+    padding-left: clamp(1.5rem, 2.2vw, 2.4rem);
+  }
+  .fig{
+    display:grid;
+    grid-template-columns: minmax(4.6rem, auto) minmax(0,1fr);
+    gap: 0 1.1rem;
+    padding: 0.8rem 0 0.85rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .fig:first-child{ border-top: 1px solid var(--ink); }
+  .fig .l, .fig .src{ display:block; }
+  .fig .src{ margin-top: 0.3rem; max-width: 40ch; }
+  .fig .n{
+    font-family: var(--mono);
+    font-size: clamp(1.5rem, 2.2vw, 1.9rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .fig .l{ font-size: 0.94rem; line-height: 1.35; margin-bottom: 0.25rem; }
+
+  /* ── body grid ───────────────────────────────────────── */
+  .body{
+    display:grid;
+    grid-template-columns: minmax(0,1fr) var(--rail);
+    gap: 0 var(--railgap);
+    align-items: start;
+  }
+  .col-side{
+    border-left: 1px solid var(--rule);
+    padding-left: clamp(1.5rem, 2.2vw, 2.4rem);
+    padding-top: 2.25rem;
+    padding-bottom: 3rem;
+  }
+
+  /* ── day strip ───────────────────────────────────────── */
+  .strip-block{ padding: 2.25rem 0 2.15rem; border-bottom: 1px solid var(--rule); }
+  .strip-head{
+    display:flex; flex-wrap:wrap; justify-content:space-between;
+    gap: 0.4rem 1.5rem; align-items:baseline; margin-bottom: 1.15rem;
+  }
+  .strip-head h2{
+    font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+    letter-spacing: -0.012em;
+  }
+  .ds-ann{
+    position:relative; height: 1.15rem;
+    font-family: var(--mono); font-size: 0.63rem;
+    letter-spacing: 0.11em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .ds-ann span{ position:absolute; bottom:0; white-space: nowrap; }
+  @media (max-width: 900px){ .ds-ann{ display:none; } }
+  .ds{
+    position:relative;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-sunk);
+  }
+  .ds-plot{
+    position:relative;
+    height: clamp(96px, 12vw, 138px);
+    background-image:
+      repeating-linear-gradient(90deg, var(--rule) 0 1px, transparent 1px calc(100% / 4)),
+      repeating-linear-gradient(90deg, var(--rule-soft) 0 1px, transparent 1px calc(100% / 24));
+  }
+  .tick{
+    position:absolute; bottom:0; width:1px;
+    background: var(--ink);
+  }
+  .tick.d{ height: 100%; }
+  .tick.w{ height: 58%; background: var(--ink-mid); }
+  .tick.m{ height: 34%; background: var(--ink-faint); }
+  .tick.a{ background: var(--accent); width:2px; }
+  .ds-lane{
+    position:relative; height: 15px;
+    border-top: 1px solid var(--rule);
+  }
+  .ds-lane .m8{ position:absolute; top:4px; width:1px; height:7px; background: var(--ink-faint); }
+  .ds-lane .m8.a{ background: var(--accent); width:2px; height:9px; top:3px; }
+  .ds-axis{
+    position:relative; height: 1.5rem; margin-top: 0.35rem;
+    font-family: var(--mono); font-size: 0.63rem; letter-spacing: 0.1em; color: var(--ink-faint);
+  }
+  .ds-axis span{ position:absolute; top:0; transform: translateX(-50%); }
+  .ds-axis .e0{ left:0; transform:none; }
+  .ds-axis .e1{ left:100%; transform: translateX(-100%); }
+  .ds-key{
+    display:flex; flex-wrap:wrap; gap: 0.35rem 1.35rem;
+    margin-top: 0.55rem;
+  }
+  .ds-key b{ font-weight:400; color: var(--ink); }
+
+  /* ── entries ─────────────────────────────────────────── */
+  .entry{
+    display:grid;
+    grid-template-columns: var(--gutter) minmax(0,1fr);
+    gap: 0 clamp(1rem,1.6vw,1.75rem);
+    padding: clamp(2rem,3vw,2.9rem) 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .entry > .gut{ padding-top: 0.55rem; }
+  .secnum{
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    display:block;
+  }
+  .gut .side-note{
+    display:block; margin-top: 0.6rem;
+    font-family: var(--mono); font-size: 0.6rem; line-height:1.5;
+    letter-spacing: 0.04em; color: var(--ink-faint);
+  }
+  .entry h2{
+    font-size: clamp(1.75rem, 3.1vw, 2.55rem);
+    line-height: 1.03;
+    letter-spacing: -0.024em;
+    margin: 0 0 0.15rem;
+    max-width: 21ch;
+  }
+  .status-line{
+    display:flex; flex-wrap:wrap; gap: 0.3rem 0.85rem; align-items:baseline;
+    margin: 0.7rem 0 1.15rem;
+  }
+  .pill{
+    font-family: var(--mono); font-size: 0.63rem; letter-spacing: 0.13em;
+    text-transform: uppercase; border: 1px solid var(--rule);
+    padding: 0.24rem 0.5rem; color: var(--ink-mid);
+  }
+  .pill.live{ border-color: var(--accent); color: var(--accent); }
+  .pill.off{ color: var(--ink-faint); }
+  .entry p{ max-width: 66ch; margin: 0 0 1rem; }
+  .entry p.wide{ max-width: 72ch; }
+  .entry .links{
+    display:flex; flex-wrap:wrap; gap: 0.4rem 1.4rem;
+    font-family: var(--mono); font-size: 0.735rem; letter-spacing: 0.01em;
+    margin-top: 1.25rem;
+  }
+  .entry .links a{ overflow-wrap: anywhere; }
+
+  /* spec table */
+  .spec{
+    width:100%; border-collapse: collapse; margin: 1.35rem 0 0.4rem;
+    font-family: var(--mono); font-size: 0.735rem; letter-spacing: 0.01em;
+    max-width: 46rem;
+  }
+  .spec th{
+    text-align:left; font-weight:400; color: var(--ink-faint);
+    text-transform: uppercase; letter-spacing: 0.11em; font-size: 0.63rem;
+    padding: 0.42rem 1.1rem 0.42rem 0; white-space: nowrap;
+    vertical-align: baseline; width: 1%;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .spec td{
+    padding: 0.42rem 0; color: var(--ink);
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: baseline;
+  }
+  .spec tr:last-child th, .spec tr:last-child td{ border-bottom:0; }
+
+  .split-body{
+    display:grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: 0 var(--railgap);
+    align-items: start;
+  }
+  .split-body .spec{ margin-top: 0.35rem; }
+  .split-body .links{ margin-top: 1.1rem; }
+  @media (max-width: 1080px){
+    .split-body{ grid-template-columns: minmax(0,1fr); gap: 0; }
+  }
+
+  /* two-up spread */
+  .spread{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    border-bottom: 1px solid var(--rule);
+  }
+  .spread > .entry{
+    border-bottom: 0;
+    padding-right: calc(var(--railgap) / 2);
+  }
+  .spread > .entry + .entry{
+    border-left: 1px solid var(--rule);
+    padding-left: calc(var(--railgap) / 2);
+    padding-right: 0;
+  }
+  .spread .entry h2{ font-size: clamp(1.6rem, 2.4vw, 2.05rem); max-width: 19ch; }
+
+  /* incident */
+  .entry.incident .entry-body{
+    border-left: 2px solid var(--accent);
+    padding-left: clamp(1rem, 1.8vw, 1.75rem);
+  }
+  .entry.incident h2{ color: var(--ink); }
+
+  /* background lists */
+  .stack{
+    display:flex; flex-wrap:wrap; gap: 0.45rem;
+    margin: 0.35rem 0 1.6rem; padding:0; list-style:none;
+  }
+  .stack li{
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.02em;
+    border: 1px solid var(--rule); padding: 0.28rem 0.55rem; color: var(--ink);
+  }
+  .hist{ margin: 0; padding: 0; }
+  .hist div{
+    display:grid; grid-template-columns: minmax(0,1fr); gap: 0.15rem;
+    padding: 0.95rem 0; border-top: 1px solid var(--rule-soft);
+  }
+  .hist dt{ font-size: 1.02rem; }
+  .hist dd{ margin:0; color: var(--ink-mid); font-size: 0.95rem; max-width: 60ch; }
+
+  /* ── side rail ───────────────────────────────────────── */
+  .panel{ margin-bottom: 2.4rem; }
+  .panel h3{
+    font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.17em;
+    text-transform: uppercase; color: var(--ink-mid);
+    padding-bottom: 0.5rem; border-bottom: 1px solid var(--ink);
+    margin-bottom: 0.65rem;
+  }
+  .readout{
+    display:grid; grid-template-columns: minmax(0,1fr) auto; gap: 0 1rem;
+    font-family: var(--mono); font-size: 0.735rem;
+    padding: 0.4rem 0; border-bottom: 1px solid var(--rule-soft);
+  }
+  .readout .v{ text-align:right; font-variant-numeric: tabular-nums; }
+  .readout.hi .v{ color: var(--accent); }
+
+  .sheet-group{ margin-top: 1.1rem; }
+  .sheet-group > .lead-in{ display:block; margin-bottom: 0.35rem; color: var(--ink-faint); }
+  .runrow{
+    display:grid; grid-template-columns: 4.1rem minmax(0,1fr) 1.6rem;
+    gap: 0 0.6rem;
+    font-family: var(--mono); font-size: 0.715rem;
+    padding: 0.22rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+    letter-spacing: 0.01em;
+  }
+  .runrow .t{ color: var(--ink-mid); font-variant-numeric: tabular-nums; }
+  .runrow .f{ color: var(--ink-faint); text-align:right; }
+  .runrow.mark .n, .runrow.mark .t{ color: var(--accent); }
+
+  .prov li{ margin-bottom: 0.6rem; }
+  .prov{ padding-left: 1.05rem; margin: 0; }
+  .prov li{ font-size: 0.83rem; line-height: 1.45; color: var(--ink-mid); }
+
+  /* ── contact ─────────────────────────────────────────── */
+  .contact{
+    border-top: 3px solid var(--ink);
+    display:grid;
+    grid-template-columns: minmax(0,1.15fr) minmax(0,1fr);
+    gap: clamp(1.5rem,3vw,3.5rem);
+    padding: clamp(2rem,3.4vw,3rem) 0 1.5rem;
+  }
+  .contact h2{
+    font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+    letter-spacing: -0.024em; line-height: 1.02; margin-bottom: 0.9rem;
+    max-width: 15ch;
+  }
+  .contact p{ max-width: 48ch; color: var(--ink-mid); margin: 0 0 1rem; }
+  .clines{ font-family: var(--mono); font-size: 0.9rem; }
+  .cline{
+    display:grid; grid-template-columns: 5.5rem minmax(0,1fr); gap: 0 1rem;
+    padding: 0.62rem 0; border-bottom: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .cline .k{ font-size: 0.63rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ink-faint); }
+  .cline a, .cline span.val{ overflow-wrap: anywhere; }
+  .cline a{ border-bottom-color: var(--rule); }
+
+  footer.colophon{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap: 0.5rem 2rem;
+    padding: 1.4rem 0 2.75rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ── responsive ──────────────────────────────────────── */
+  @media (max-width: 1080px){
+    .body{ grid-template-columns: minmax(0,1fr); }
+    .col-side{
+      border-left: 0; border-top: 1px solid var(--ink);
+      padding-left: 0; padding-top: 1.75rem;
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+      gap: 0 clamp(1.5rem,3vw,3rem);
+    }
+  }
+  @media (max-width: 860px){
+    .spread{ grid-template-columns: minmax(0,1fr); border-bottom: 0; }
+    .spread > .entry{ padding-right: 0; border-bottom: 1px solid var(--rule); }
+    .spread > .entry + .entry{ border-left: 0; padding-left: 0; }
+    .lede{ grid-template-columns: minmax(0,1fr); }
+    .figures{ max-width: 40rem; border-left: 0; padding-left: 0; }
+    .contact{ grid-template-columns: minmax(0,1fr); }
+    .masthead{ grid-template-columns: minmax(0,1fr); }
+    .masthead-meta{ text-align: left; }
+  }
+  @media (max-width: 640px){
+    .entry{ grid-template-columns: minmax(0,1fr); }
+    .entry > .gut{ padding-top:0; margin-bottom: 0.55rem; display:flex; gap: 1rem; align-items:baseline; flex-wrap:wrap; }
+    .gut .side-note{ margin-top:0; }
+    .col-side{ grid-template-columns: minmax(0,1fr); }
+    .cline{ grid-template-columns: minmax(0,1fr); gap: 0.1rem; }
+    .fig{ grid-template-columns: minmax(0,1fr); gap: 0.25rem; }
+    .spec{ display:block; }
+    .spec tbody, .spec tr{ display:block; }
+    .spec th, .spec td{ display:block; width:auto; border-bottom:0; padding: 0; }
+    .spec th{ padding-top: 0.6rem; }
+    .spec td{ padding-bottom: 0.6rem; border-bottom: 1px solid var(--rule-soft); }
+    .runrow{ grid-template-columns: 4.1rem minmax(0,1fr) 1.6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+  @media print{
+    .wrap{ border:0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <span class="kicker">Daily Operations Brief &nbsp;·&nbsp; Edition 001</span>
+      <p class="name">Brian <span class="surname">Mathew</span></p>
+    </div>
+    <div class="masthead-meta">
+      <span class="k">Filed from</span> New Jersey, USA<br>
+      <a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a> &nbsp;·&nbsp;
+      <a href="tel:+16098151685">(609) 815-1685</a><br>
+      <span class="dot" aria-hidden="true"></span><span class="k">Fleet status</span> 25 agents scheduled · next run <span class="mono" id="nextrun">07:00 daily-brief</span>
+    </div>
+  </header>
+  <div class="rule-thin" aria-hidden="true"></div>
+
+  <section class="lede" aria-labelledby="headline">
+    <div>
+      <span class="lead-in">Junior Developer · IT Support · Technical Support</span>
+      <h1 id="headline">I build the system, then I <span class="em">run</span> it every day.</h1>
+      <p class="deck">I'm a self-taught developer in New Jersey. Every morning a fleet of twenty-five Python agents wakes up on my Windows machine, does its work without me, and files a brief. This page is laid out the way that brief is — what runs, what shipped, what broke, and what I did about it.</p>
+      <p class="deck">Plenty of people can build a thing once. The part I'm actually good at is the part after that: keeping it running, noticing when it quietly stops, and finding out why. No degree and no certifications — everything below is something I built, operated, and can walk you through line by line.</p>
+      <div class="cta">
+        <a class="primary" href="https://fam-super-bowl-squares-2026.vercel.app">Open the live demo →</a>
+        <a href="https://github.com/bmath8/brian-os">github.com/bmath8/brian-os</a>
+        <a href="#incident">Read the incident report ↓</a>
+      </div>
+    </div>
+
+    <div class="figures" aria-label="Key figures">
+      <div class="fig">
+        <span class="n">25</span>
+        <span><span class="l">scheduled agents, running unattended</span><span class="src">Source: the fleet crontab. All 25 entries and their run times are printed in the run sheet on this page.</span></span>
+      </div>
+      <div class="fig">
+        <span class="n">81/81</span>
+        <span><span class="l">tests passing on Brian OS</span><span class="src">Source: pytest suite in github.com/bmath8/brian-os. Verified 30 Jul 2026. Run it yourself.</span></span>
+      </div>
+      <div class="fig">
+        <span class="n">1</span>
+        <span><span class="l">live event served to a real audience</span><span class="src">Source: Super Bowl LX Squares, run live during the game for family and friends. Still deployed at the link above.</span></span>
+      </div>
+      <div class="fig">
+        <span class="n">0</span>
+        <span><span class="l">actions that send, spend, deploy or delete without my approval</span><span class="src">Source: the draft-only guardrail in Brian OS. Agents write drafts; a human presses go. That is the design, not a policy I wrote afterwards.</span></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="body">
+    <main class="col-main">
+
+      <!-- ── day strip ─────────────────────────────── -->
+      <section class="strip-block" aria-labelledby="shape-of-day">
+        <div class="strip-head">
+          <h2 id="shape-of-day">The shape of a day</h2>
+          <span class="src">Every mark is a real scheduled run. 25 crontab entries, plotted across 24 hours.</span>
+        </div>
+
+        <div class="ds-ann" aria-hidden="true">
+          <span style="left:5.4%">Overnight</span>
+          <span style="left:27.7%">Morning burst — 12 runs in 50 minutes</span>
+          <span style="left:68.6%">Evening</span>
+        </div>
+
+        <div class="ds" role="img" aria-label="A 24-hour timeline of 25 scheduled agents. Four run overnight between 01:20 and 03:00. Twelve run in a tight burst between 06:40 and 07:30, ending with the 07:00 daily brief. Seven run in the evening between 16:30 and 18:30. A dashboard agent runs every hour and a system watchdog runs every four hours.">
+          <div class="ds-plot">
+            <span class="tick d" style="left:5.54%"></span>
+            <span class="tick d" style="left:6.25%"></span>
+            <span class="tick d" style="left:8.33%"></span>
+            <span class="tick m" style="left:12.50%"></span>
+            <span class="tick d" style="left:27.79%"></span>
+            <span class="tick d" style="left:28.13%"></span>
+            <span class="tick d" style="left:28.33%"></span>
+            <span class="tick d" style="left:28.46%"></span>
+            <span class="tick d" style="left:28.63%"></span>
+            <span class="tick d" style="left:28.67%"></span>
+            <span class="tick d" style="left:28.83%"></span>
+            <span class="tick d" style="left:29.04%"></span>
+            <span class="tick d" style="left:29.08%"></span>
+            <span class="tick d a" style="left:29.17%"></span>
+            <span class="tick d" style="left:29.88%"></span>
+            <span class="tick m" style="left:31.25%"></span>
+            <span class="tick w" style="left:68.75%"></span>
+            <span class="tick w" style="left:69.79%"></span>
+            <span class="tick w" style="left:70.13%"></span>
+            <span class="tick w" style="left:70.83%"></span>
+            <span class="tick w" style="left:70.84%"></span>
+            <span class="tick w" style="left:75.00%"></span>
+            <span class="tick w" style="left:77.08%"></span>
+          </div>
+          <div class="ds-lane">
+            <span class="m8" style="left:0.33%"></span><span class="m8" style="left:4.50%"></span>
+            <span class="m8" style="left:8.67%"></span><span class="m8" style="left:12.83%"></span>
+            <span class="m8" style="left:17.00%"></span><span class="m8" style="left:21.17%"></span>
+            <span class="m8" style="left:25.33%"></span><span class="m8" style="left:29.50%"></span>
+            <span class="m8" style="left:33.67%"></span><span class="m8" style="left:37.83%"></span>
+            <span class="m8" style="left:42.00%"></span><span class="m8" style="left:46.17%"></span>
+            <span class="m8" style="left:50.33%"></span><span class="m8" style="left:54.50%"></span>
+            <span class="m8" style="left:58.67%"></span><span class="m8" style="left:62.83%"></span>
+            <span class="m8" style="left:67.00%"></span><span class="m8" style="left:71.17%"></span>
+            <span class="m8" style="left:75.33%"></span><span class="m8" style="left:79.50%"></span>
+            <span class="m8" style="left:83.67%"></span><span class="m8" style="left:87.83%"></span>
+            <span class="m8" style="left:92.00%"></span><span class="m8" style="left:96.17%"></span>
+          </div>
+          <div class="ds-lane">
+            <span class="m8 a" style="left:0%"></span><span class="m8 a" style="left:16.67%"></span>
+            <span class="m8 a" style="left:33.33%"></span><span class="m8 a" style="left:50%"></span>
+            <span class="m8 a" style="left:66.67%"></span><span class="m8 a" style="left:83.33%"></span>
+          </div>
+        </div>
+
+        <div class="ds-axis" aria-hidden="true">
+          <span class="e0">00:00</span>
+          <span style="left:25%">06:00</span>
+          <span style="left:50%">12:00</span>
+          <span style="left:75%">18:00</span>
+          <span class="e1">24:00</span>
+        </div>
+
+        <div class="ds-key src">
+          <span>Tall mark <b>= daily</b></span>
+          <span>Mid <b>= weekly</b></span>
+          <span>Short <b>= monthly</b></span>
+          <span>Lower lanes <b>= hourly dashboard, 4-hourly watchdog</b></span>
+          <span>Red <b>= 07:00 daily-brief &amp; the watchdog</b></span>
+        </div>
+      </section>
+
+      <!-- ── 01 Brian OS ───────────────────────────── -->
+      <section class="entry" id="brian-os" aria-labelledby="h-brianos">
+        <div class="gut">
+          <span class="secnum">§ 01</span>
+          <span class="side-note">Written in Python. Runs on the machine under my desk.</span>
+        </div>
+        <div class="entry-body">
+          <h2 id="h-brianos">Brian OS — a fleet of 25 agents I actually operate</h2>
+          <div class="status-line">
+            <span class="pill live"><span class="dot" aria-hidden="true"></span>Running daily</span>
+            <span class="pill">Public source</span>
+            <span class="pill">81/81 tests</span>
+          </div>
+
+          <p class="wide">Twenty-five Python agents run on a schedule on one Windows box. They index my notes, back up state, read my inbox, watch my spending, scan for work, check each other's health, and write me a brief at 07:00. Most of the reasoning is routed to a local model through Ollama, so the thing that runs every morning costs nothing to run. I drive it from Telegram — two-way, so I can ask it a question from my phone in a parking lot and get an answer back.</p>
+
+          <p class="wide">The rule I care most about is the boring one: <strong>nothing sends, spends, deploys, or deletes on its own.</strong> Agents write drafts and wait for me. That single constraint is what makes it safe to leave a system running unattended for months, and it is exactly the instinct I would bring to a production system that belonged to someone else.</p>
+
+          <p class="wide">Health checks run against the fleet on a schedule and repair what they can reach. The rest pages me. Eighty-one of eighty-one tests pass under pytest — I ran the suite and checked the date, 30 July 2026, because a number on a portfolio that nobody can check is just decoration.</p>
+
+          <table class="spec">
+            <tbody>
+              <tr><th scope="row">Runtime</th><td>Python · Windows · scheduled tasks, unattended</td></tr>
+              <tr><th scope="row">Models</th><td>Local-first routing via Ollama</td></tr>
+              <tr><th scope="row">Control</th><td>Telegram bot, two-way — commands in, answers out</td></tr>
+              <tr><th scope="row">Recovery</th><td>Self-healing health checks across all 25 agents</td></tr>
+              <tr><th scope="row">Guardrail</th><td>Draft-only. Human approval before anything leaves the machine</td></tr>
+              <tr><th scope="row">Tests</th><td>pytest — 81 passing, 81 total (verified 30 Jul 2026)</td></tr>
+            </tbody>
+          </table>
+
+          <div class="links">
+            <a href="https://github.com/bmath8/brian-os">Source → github.com/bmath8/brian-os</a>
+            <a href="#run-sheet">See the full run sheet ↓</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 02 Incident ───────────────────────────── -->
+      <section class="entry incident" id="incident" aria-labelledby="h-incident">
+        <div class="gut">
+          <span class="secnum">§ 02</span>
+          <span class="side-note">The story I'd tell in an interview.</span>
+        </div>
+        <div class="entry-body">
+          <h2 id="h-incident">Incident report: the guardian that failed quietly</h2>
+          <div class="status-line">
+            <span class="pill">Resolved</span>
+            <span class="pill">Root cause found</span>
+            <span class="pill">Check written</span>
+          </div>
+
+          <p class="wide">A process guardian stopped doing its job. It did not crash, it did not throw, and it did not alert — it just sat there looking alive while the thing it was supposed to be managing kept writing. The disk filled. That is the worst kind of failure, because every dashboard you own says green.</p>
+
+          <p class="wide">I worked it backwards from the symptom to the actual cause rather than clearing space and moving on, recovered the machine, and then wrote the check that catches this exact shape of failure next time — not "is the process alive" but "is the process still doing the work." A silent failure is only allowed to happen once.</p>
+
+          <table class="spec">
+            <tbody>
+              <tr><th scope="row">Symptom</th><td>Disk filled on the machine running the fleet</td></tr>
+              <tr><th scope="row">Difficulty</th><td>The guardian process was still running — it had simply stopped working. No error, no alert</td></tr>
+              <tr><th scope="row">Response</th><td>Traced it to root cause, recovered the machine, brought the fleet back</td></tr>
+              <tr><th scope="row">Follow-up</th><td>Wrote a liveness check that verifies work is happening, not just that a process exists</td></tr>
+              <tr><th scope="row">Takeaway</th><td>Monitoring that only asks "is it up?" will lie to you eventually</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── 03 Squares ────────────────────────────── -->
+      <section class="entry" id="squares" aria-labelledby="h-squares">
+        <div class="gut">
+          <span class="secnum">§ 03</span>
+          <span class="side-note">Shipped, then supported live, in front of real people.</span>
+        </div>
+        <div class="entry-body">
+          <h2 id="h-squares">Super Bowl LX Squares — real-time pool, run live</h2>
+          <div class="status-line">
+            <span class="pill live"><span class="dot" aria-hidden="true"></span>Live</span>
+            <span class="pill">Public source</span>
+            <span class="pill">Ran during the game</span>
+          </div>
+
+          <div class="split-body">
+          <div>
+          <p>A hundred-square pool that a real audience used during an actual Super Bowl. People claim squares, the host locks the board, numbers are drawn at random, and from there the app resolves winners off the live score as the game moves. There's a chat, and there are host controls for the person running the pool.</p>
+
+          <p>What I got out of it wasn't the grid — it was being on the hook while people were using it. Once a room full of people is watching a score update, "it works on my machine" stops being a sentence you're allowed to say. It's still up; you can open it right now.</p>
+          </div>
+          <div>
+          <table class="spec">
+            <tbody>
+              <tr><th scope="row">Board</th><td>100 squares, claimed live, locked by the host</td></tr>
+              <tr><th scope="row">Draw</th><td>Randomized number assignment after lock</td></tr>
+              <tr><th scope="row">Scoring</th><td>Winner resolution driven by the live game score</td></tr>
+              <tr><th scope="row">Social</th><td>In-app chat + host controls</td></tr>
+              <tr><th scope="row">Status</th><td>Deployed and reachable today</td></tr>
+            </tbody>
+          </table>
+
+          <div class="links">
+            <a href="https://fam-super-bowl-squares-2026.vercel.app">Live → fam-super-bowl-squares-2026.vercel.app</a>
+            <a href="https://github.com/bmath8">Source is public → github.com/bmath8</a>
+          </div>
+          </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ── side rail ──────────────────────────────── -->
+    <aside class="col-side" aria-label="Fleet readouts and run sheet">
+
+      <section class="panel">
+        <h3>Status board</h3>
+        <div class="readout"><span>Agents scheduled</span><span class="v">25</span></div>
+        <div class="readout"><span>Daily / weekly / monthly</span><span class="v">14 · 7 · 2</span></div>
+        <div class="readout"><span>Continuous</span><span class="v">1h · 4h</span></div>
+        <div class="readout"><span>Tests passing</span><span class="v">81 / 81</span></div>
+        <div class="readout"><span>Last verified</span><span class="v">2026-07-30</span></div>
+        <div class="readout hi"><span>Next daily run</span><span class="v mono" id="nextrun2">07:00</span></div>
+        <p class="src" style="margin:0.7rem 0 0">Human approval is required before any agent sends, spends, deploys, or deletes. That is enforced in code, not by habit.</p>
+      </section>
+
+      <section class="panel" id="run-sheet">
+        <h3>Run sheet — all 25</h3>
+
+        <div class="sheet-group">
+          <span class="lead-in">Overnight</span>
+          <div class="runrow"><span class="t">01:20</span><span class="n">memory-index</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">01:30</span><span class="n">harmony-backup</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">02:00</span><span class="n">overnight-worker</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">03:00</span><span class="n">model-review</span><span class="f">m</span></div>
+        </div>
+
+        <div class="sheet-group">
+          <span class="lead-in">Morning burst</span>
+          <div class="runrow"><span class="t">06:40</span><span class="n">scout</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">06:45</span><span class="n">learning-agent</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">06:48</span><span class="n">inbox</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">06:50</span><span class="n">finance</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">06:52</span><span class="n">health</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">06:53</span><span class="n">career</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">06:55</span><span class="n">calendar</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">06:58</span><span class="n">currency</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">06:59</span><span class="n">fleet-health</span><span class="f">d</span></div>
+          <div class="runrow mark"><span class="t">07:00</span><span class="n">daily-brief</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">07:10</span><span class="n">gig-scanner</span><span class="f">d</span></div>
+          <div class="runrow"><span class="t">07:30</span><span class="n">ceo-report</span><span class="f">m</span></div>
+        </div>
+
+        <div class="sheet-group">
+          <span class="lead-in">Evening</span>
+          <div class="runrow"><span class="t">16:30</span><span class="n">currency-weekly</span><span class="f">w</span></div>
+          <div class="runrow"><span class="t">16:45</span><span class="n">wiki</span><span class="f">w</span></div>
+          <div class="runrow"><span class="t">16:50</span><span class="n">outcome-learner</span><span class="f">w</span></div>
+          <div class="runrow"><span class="t">17:00</span><span class="n">weekly-review</span><span class="f">w</span></div>
+          <div class="runrow"><span class="t">17:00</span><span class="n">feedback</span><span class="f">w</span></div>
+          <div class="runrow"><span class="t">18:00</span><span class="n">research</span><span class="f">w</span></div>
+          <div class="runrow"><span class="t">18:30</span><span class="n">skill-miner</span><span class="f">w</span></div>
+        </div>
+
+        <div class="sheet-group">
+          <span class="lead-in">Continuous</span>
+          <div class="runrow"><span class="t">:05</span><span class="n">dashboard</span><span class="f">1h</span></div>
+          <div class="runrow mark"><span class="t">00:00</span><span class="n">system-watchdog</span><span class="f">4h</span></div>
+        </div>
+
+        <p class="src" style="margin:0.9rem 0 0">d = daily · w = weekly · m = monthly. Times are taken from the crontab and rounded to the nearest minute.</p>
+      </section>
+
+      <section class="panel">
+        <h3>What I'm looking for</h3>
+        <div class="readout"><span>Role</span><span class="v">Junior dev · IT support</span></div>
+        <div class="readout"><span>Range</span><span class="v">$50–60k</span></div>
+        <div class="readout"><span>Where</span><span class="v">New Jersey / remote</span></div>
+        <div class="readout"><span>Reply time</span><span class="v">Same day</span></div>
+        <p class="src" style="margin:0.7rem 0 0"><a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a><br><a href="tel:+16098151685">(609) 815-1685</a></p>
+      </section>
+
+      <section class="panel">
+        <h3>Where the numbers come from</h3>
+        <ul class="prov">
+          <li><span class="mono">25</span> — the run sheet above is the whole list, not a sample.</li>
+          <li><span class="mono">81/81</span> — pytest on <span class="mono">brian-os</span>, run 30 Jul 2026. The suite is in the public repo; clone it and run it.</li>
+          <li><span class="mono">Live</span> — the Squares link resolves to a running deployment, not a screenshot.</li>
+          <li><span class="mono">Not deployed</span> — Boombox. Said plainly, because a portfolio that rounds up is worthless.</li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+
+  <div class="spread">
+    <!-- ── 04 Boombox ────────────────────────────── -->
+    <section class="entry" id="boombox" aria-labelledby="h-boombox">
+      <div class="gut">
+        <span class="secnum">§ 04</span>
+        <span class="side-note">Honest status: prototype, not deployed.</span>
+      </div>
+      <div class="entry-body">
+        <h2 id="h-boombox">Boombox — collaborative listening, in progress</h2>
+        <div class="status-line">
+          <span class="pill off">Not deployed</span>
+          <span class="pill">Prototype</span>
+          <span class="pill">Public source</span>
+        </div>
+
+        <p>A prototype for listening to music together: a shared queue, everyone hearing the same thing at the same time. The interesting problem is state. Some of it has to survive a restart — whose queue it is, what's in it — and that lives in Postgres. Some of it is only true while you're connected: who's in the room, who just skipped. That runs over WebSockets with Redis Pub/Sub and is deliberately kept out of the database.</p>
+
+        <p>Keeping those two apart is the whole design. The server can go down and come back without anyone losing their queue, and presence never leaves stale rows behind. To be straight with you: this one is <strong>not deployed</strong>. The source is public and the architecture is real, but I'm not going to call a prototype a product.</p>
+
+        <div class="links">
+          <a href="https://github.com/bmath8">Source is public → github.com/bmath8</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 05 Background ─────────────────────────── -->
+    <section class="entry" id="background" aria-labelledby="h-background">
+      <div class="gut">
+        <span class="secnum">§ 05</span>
+        <span class="side-note">Where I've worked, and what I use.</span>
+      </div>
+      <div class="entry-body">
+        <h2 id="h-background">Tools, and the jobs before this</h2>
+
+        <span class="tag">Stack I work in</span>
+        <ul class="stack">
+          <li>Python</li><li>SQL</li><li>TypeScript</li><li>React</li>
+          <li>Windows</li><li>PowerShell</li><li>Ollama</li>
+          <li>Telegram API</li><li>pytest</li>
+        </ul>
+
+        <dl class="hist">
+          <div>
+            <dt>Best Buy — Appliances Department Lead</dt>
+            <dd>Ran a department floor: staffing, escalations, and the customer whose delivery went wrong. Retail lead work is support work — you triage, you communicate under pressure, and you own the outcome in front of the person it happened to.</dd>
+          </div>
+          <div>
+            <dt>Uber — Independent driver <span class="mono src">· 2022</span></dt>
+            <dd>Self-directed work. Showed up, tracked my own numbers, solved my own problems.</dd>
+          </div>
+          <div>
+            <dt>Penn State Berks · The City College of New York</dt>
+            <dd>Undergraduate coursework. <strong>No degree, and no certifications.</strong> I'd rather you know that now than later — what I have instead is a system that has been running unattended for months, and you can read every line of it.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── contact ─────────────────────────────────── -->
+  <section class="contact" id="contact" aria-labelledby="h-contact">
+    <div>
+      <span class="lead-in">End of brief</span>
+      <h2 id="h-contact">Talk to me directly.</h2>
+      <p>I'm looking for a junior developer, IT support, or technical support role in the $50–60k range, in New Jersey or remote. If you want to see any of this working, ask — I'll walk you through the source, the schedule, or the incident, whichever tells you more.</p>
+      <p>Email or phone both reach me. I answer the same day.</p>
+    </div>
+    <div class="clines">
+      <div class="cline"><span class="k">Email</span><a href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a></div>
+      <div class="cline"><span class="k">Phone</span><a href="tel:+16098151685">(609) 815-1685</a></div>
+      <div class="cline"><span class="k">GitHub</span><a href="https://github.com/bmath8">github.com/bmath8</a></div>
+      <div class="cline"><span class="k">LinkedIn</span><a href="https://linkedin.com/in/brian-mathew-66235556">linkedin.com/in/brian-mathew-66235556</a></div>
+      <div class="cline"><span class="k">Based in</span><span class="val">New Jersey, USA</span></div>
+      <div class="cline"><span class="k">Open to</span><span class="val">Junior dev · IT support · Technical support</span></div>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <span class="src">Brian Mathew · Daily Operations Brief · set in Georgia and the system monospace</span>
+    <span class="src">One hand-written HTML file. No frameworks, no images, no external requests.</span>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  // Progressive enhancement only: the page ships with a correct static default.
+  var runs = [
+    [1.33,'memory-index'],[1.50,'harmony-backup'],[2.00,'overnight-worker'],
+    [6.67,'scout'],[6.75,'learning-agent'],[6.80,'inbox'],[6.83,'finance'],
+    [6.87,'health'],[6.88,'career'],[6.92,'calendar'],[6.97,'currency'],
+    [6.98,'fleet-health'],[7.00,'daily-brief'],[7.17,'gig-scanner']
+  ];
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  var now = new Date();
+  var h = now.getHours() + now.getMinutes() / 60;
+  var next = runs.find(function (r) { return r[0] > h; }) || runs[0];
+  var hh = Math.floor(next[0]);
+  var mm = Math.round((next[0] - hh) * 60);
+  if (mm === 60) { mm = 0; hh += 1; }
+  var t = pad(hh) + ':' + pad(mm);
+  var a = document.getElementById('nextrun');
+  var b = document.getElementById('nextrun2');
+  if (a) { a.textContent = t + ' ' + next[1]; }
+  if (b) { b.textContent = t + ' ' + next[1]; }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lab 01 — raymarched SDF brain</title>
+<style>
+  :root{
+    /* Real palette, not one hue + hairlines. Deep field -> warm core -> cyan rim. */
+    --bg-0:#05060a; --bg-1:#0b0f1a; --ink:#e8ecf5; --dim:#7c88a4;
+    --accent:#38e8c8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg-0);color:var(--ink);
+    font:14px/1.5 ui-monospace,"SF Mono","Cascadia Mono",Menlo,monospace;overflow:hidden}
+  #stage{position:fixed;inset:0}
+  canvas{display:block;width:100%;height:100%}
+  /* Static fallback: visible with JS off or WebGL unavailable. Never a blank page. */
+  #fallback{position:fixed;inset:0;display:grid;place-items:center;
+    background:radial-gradient(60% 60% at 50% 45%,#16233f 0%,#080b14 70%)}
+  #fallback p{color:var(--dim);letter-spacing:.08em;text-transform:uppercase;font-size:11px}
+  canvas+#fallback{display:none}
+  .hud{position:fixed;left:24px;bottom:22px;color:var(--dim);font-size:11px;
+    letter-spacing:.09em;text-transform:uppercase;pointer-events:none}
+  .hud b{color:var(--accent);font-weight:400}
+  .hud .t{color:var(--ink);font-size:12px;text-transform:none;letter-spacing:0;display:block;
+    margin-bottom:6px;max-width:52ch;line-height:1.55}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="fallback"><p>Lab 01 · raymarched SDF · WebGL required</p></div>
+
+<div class="hud">
+  <span class="t">Lab 01 — the form only. A signed distance field marched as <b>volume</b>,
+  not sampled as points. Move the mouse.</span>
+  technique <b>SDF + volumetric raymarch</b> · no geometry · no textures · one fragment shader
+</div>
+
+<script>
+/* ---------------------------------------------------------------------------
+   LAB 01 - SDF BRAIN, FORM ONLY.
+   Per TECHNIQUE.md build order. One variable: the FORM. No dither, no GSAP yet.
+
+   Why this is not another particle field:
+   a point cloud is a shell of samples, so it can only ever read as points -
+   which is exactly what "just looks like a bunch of lights" was describing.
+   Here the shape is DEFINED by math and the ray is pushed THROUGH it,
+   accumulating density, so it has an interior and reads as a solid organ.
+--------------------------------------------------------------------------- */
+const VERT = `
+attribute vec2 p; void main(){ gl_Position = vec4(p,0.,1.); }`;
+
+const FRAG = `
+precision highp float;
+uniform vec2  uRes;
+uniform float uTime;
+uniform vec2  uMouse;
+uniform float uMotion;   // 0 when prefers-reduced-motion
+
+/* -- noise ---------------------------------------------------------------- */
+vec3 hash3(vec3 p){
+  p = vec3(dot(p,vec3(127.1,311.7,74.7)),
+           dot(p,vec3(269.5,183.3,246.1)),
+           dot(p,vec3(113.5,271.9,124.6)));
+  return -1.+2.*fract(sin(p)*43758.5453123);
+}
+float vnoise(vec3 p){
+  vec3 i=floor(p), f=fract(p);
+  vec3 u=f*f*(3.-2.*f);
+  return mix(mix(mix(dot(hash3(i+vec3(0,0,0)),f-vec3(0,0,0)),
+                     dot(hash3(i+vec3(1,0,0)),f-vec3(1,0,0)),u.x),
+                 mix(dot(hash3(i+vec3(0,1,0)),f-vec3(0,1,0)),
+                     dot(hash3(i+vec3(1,1,0)),f-vec3(1,1,0)),u.x),u.y),
+             mix(mix(dot(hash3(i+vec3(0,0,1)),f-vec3(0,0,1)),
+                     dot(hash3(i+vec3(1,0,1)),f-vec3(1,0,1)),u.x),
+                 mix(dot(hash3(i+vec3(0,1,1)),f-vec3(0,1,1)),
+                     dot(hash3(i+vec3(1,1,1)),f-vec3(1,1,1)),u.x),u.y),u.z);
+}
+float fbm(vec3 p){
+  float a=.5, s=0.;
+  for(int i=0;i<4;i++){ s+=a*vnoise(p); p*=2.03; a*=.5; }
+  return s;
+}
+
+/* -- SDF primitives ------------------------------------------------------- */
+float sdEllipsoid(vec3 p, vec3 r){
+  float k0=length(p/r), k1=length(p/(r*r));
+  return k0*(k0-1.)/k1;
+}
+// smooth union - this is what fuses the lobes with no seam
+float smin(float a,float b,float k){
+  float h=clamp(.5+.5*(b-a)/k,0.,1.);
+  return mix(b,a,h)-k*h*(1.-h);
+}
+
+/* -- the brain ------------------------------------------------------------
+   Suggest the form, do not model it. Anatomical accuracy reads as mush at
+   hero scale; two lobes + cerebellum + stem is enough to be unmistakable.  */
+float brain(vec3 p){
+  vec3 q=p;
+  // two hemispheres, mirrored, with a real midline fissure between them
+  float lobeL = sdEllipsoid(q-vec3( .46,0.,0.), vec3(.78,.66,.92));
+  float lobeR = sdEllipsoid(q-vec3(-.46,0.,0.), vec3(.78,.66,.92));
+  float cerebrum = smin(lobeL, lobeR, .22);
+
+  float cereb = sdEllipsoid(q-vec3(0.,-.62,-.52), vec3(.50,.30,.36));
+  float stem  = sdEllipsoid(q-vec3(0.,-.85,-.12), vec3(.17,.34,.19));
+
+  float d = smin(cerebrum, cereb, .16);
+  d = smin(d, stem, .13);
+
+  // gyri: low-frequency folding displacement. Implied, never modelled.
+  float fold = fbm(q*3.1 + vec3(0.,0.,uTime*.05*uMotion));
+  d -= .085*fold;
+  d -= .028*fbm(q*7.4);
+  return d;
+}
+
+/* density inside the surface - this is what makes it a volume, not a shell */
+float density(vec3 p){
+  float d = brain(p);
+  return smoothstep(.10, -.16, d);   // ramps up as we go INSIDE
+}
+
+void main(){
+  vec2 uv = (gl_FragCoord.xy - .5*uRes)/uRes.y;
+
+  // camera - slow orbit, mouse parallax
+  float a = uMouse.x*.7 + uTime*.10*uMotion;
+  float b = uMouse.y*.45 + .08;
+  vec3 ro = vec3(sin(a)*3.05, sin(b)*1.5+.10, cos(a)*3.05);
+  vec3 ta = vec3(0.,-.06,0.);
+  vec3 f=normalize(ta-ro), r=normalize(cross(vec3(0,1,0),f)), u=cross(f,r);
+  vec3 rd = normalize(uv.x*r + uv.y*u + 1.55*f);
+
+  /* -- VOLUMETRIC MARCH --------------------------------------------------
+     Heckel's distinction: don't stop when the ray hits the surface - push
+     through and keep sampling the inside. That is where depth comes from.  */
+  vec4 acc = vec4(0.);                 // rgb = lit colour, a = opacity
+  float t = 1.05;
+  // dithered start kills slice banding without a blue-noise texture
+  t += .035*fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);
+
+  for(int i=0;i<86;i++){
+    if(acc.a>.97 || t>5.2) break;
+    vec3 p = ro + rd*t;
+    float dens = density(p);
+
+    if(dens>.001){
+      // depth inside the form drives the colour ramp
+      float depth = clamp(dens,0.,1.);
+
+      // cheap scattering: sample toward the key light, see how much blocks it
+      vec3  L = normalize(vec3(.55,.75,.35));
+      float shadow = density(p + L*.16);
+      float light  = clamp(1.-shadow*1.15, .06, 1.);
+
+      /* REAL COLOUR - a ramp, not one hue.
+         deep interior: violet-plum -> mid: warm coral -> lit edge: cyan   */
+      vec3 deep = vec3(.24,.10,.34);
+      vec3 mid  = vec3(.86,.34,.32);
+      vec3 hot  = vec3(.22,.91,.78);
+      vec3 col  = mix(deep, mid, smoothstep(.05,.55,depth));
+      col       = mix(col,  hot, pow(light,2.4)*.78);
+
+      // rim: where density falls off toward the silhouette, push the accent
+      float rim = 1.-smoothstep(.0,.42,depth);
+      col += vec3(.16,.62,.58)*rim*.55;
+
+      /* EXPOSURE. First pass used aStep .115 and gain 2.15 over 86 steps: the
+         accumulation saturated and the whole organ clipped to white - the same
+         "too bright / not readable" failure as the old bloom pass. Energy per
+         step must stay low enough that the colour ramp survives to the screen. */
+      float aStep = dens*.052;
+      acc.rgb += (1.-acc.a)*col*aStep*0.92;
+      acc.a   += (1.-acc.a)*aStep;
+    }
+    // step: coarse in empty space, fine inside the form
+    t += mix(.052, .019, clamp(dens*2.,0.,1.));
+  }
+
+  /* -- background: a real gradient field, not a flat fill ---------------- */
+  float v = length(uv)*.85;
+  vec3 bg = mix(vec3(.055,.075,.125), vec3(.015,.018,.033), smoothstep(.0,1.05,v));
+  bg += vec3(.06,.14,.20)*pow(max(0.,1.-v*1.35),3.)*.55;   // soft core glow
+
+  vec3 outc = mix(bg, acc.rgb, clamp(acc.a,0.,1.));
+  outc += acc.rgb*.05;                                     // gentle spill
+  outc = pow(clamp(outc,0.,1.), vec3(.4545));              // gamma
+  gl_FragColor = vec4(outc,1.);
+}`;
+
+(function(){
+  const stage = document.getElementById('stage');
+  const cv = document.createElement('canvas');
+  const gl = cv.getContext('webgl',{antialias:false,alpha:false,powerPreference:'high-performance'});
+  if(!gl) return;                                  // fallback div stays visible
+  stage.appendChild(cv);
+  document.getElementById('fallback').style.display='none';
+
+  function sh(type,src){
+    const s=gl.createShader(type); gl.shaderSource(s,src); gl.compileShader(s);
+    if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+    return s;
+  }
+  const prog=gl.createProgram();
+  gl.attachShader(prog,sh(gl.VERTEX_SHADER,VERT));
+  gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,FRAG));
+  gl.linkProgram(prog); gl.useProgram(prog);
+
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(prog,'p');
+  gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+
+  const uRes=gl.getUniformLocation(prog,'uRes'),
+        uTime=gl.getUniformLocation(prog,'uTime'),
+        uMouse=gl.getUniformLocation(prog,'uMouse'),
+        uMotion=gl.getUniformLocation(prog,'uMotion');
+
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let mx=0,my=0,tx=0,ty=0;
+  addEventListener('pointermove',e=>{
+    tx=(e.clientX/innerWidth-.5)*2; ty=(e.clientY/innerHeight-.5)*2;
+  },{passive:true});
+
+  function size(){
+    // raymarching is fragment-bound: cap DPR or this melts a laptop GPU
+    const dpr=Math.min(devicePixelRatio||1, 1.5);
+    cv.width=Math.floor(innerWidth*dpr); cv.height=Math.floor(innerHeight*dpr);
+    gl.viewport(0,0,cv.width,cv.height);
+    gl.uniform2f(uRes,cv.width,cv.height);
+  }
+  addEventListener('resize',size); size();
+
+  let running=true;
+  document.addEventListener('visibilitychange',()=>{ running=!document.hidden; if(running) raf(); });
+
+  const t0=performance.now();
+  function frame(){
+    if(!running) return;
+    mx+=(tx-mx)*.045; my+=(ty-my)*.045;
+    gl.uniform1f(uTime,(performance.now()-t0)/1000);
+    gl.uniform2f(uMouse,mx,my);
+    gl.uniform1f(uMotion, reduce?0:1);
+    gl.drawArrays(gl.TRIANGLES,0,3);
+    if(!reduce) requestAnimationFrame(frame);
+  }
+  function raf(){ requestAnimationFrame(frame); }
+  raf();
+})();
+</script>
+</body>
+</html>

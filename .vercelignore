@@ -12,8 +12,21 @@ docs/
 scripts/
 .superpowers/
 
-# The motion libraries were only ever used by the design candidates.
-# index.html loads no third-party JS and no third-party fonts at all.
-vendor/gsap.min.js
-vendor/lenis.min.js
-vendor/ScrollTrigger.min.js
+# index.html loads exactly ONE thing from vendor/: fonts.css (and vendor/fonts/).
+# Everything else in vendor/ exists only for the design candidates, and
+# design-candidates/ is already excluded above -- so all of it was shipping
+# publicly for no reason. Two problems with that, both fixed here:
+#
+#   1. LICENSE. vendor/mesh/brain-mni.bin is derived from aces/brainbrowser,
+#      which is AGPL-3.0 (see vendor/mesh/README-LICENSE.md). It was being
+#      served at /vendor/mesh/brain-mni.bin -- verified HTTP 200, 2,703,404
+#      bytes, on 2026-08-05. Distributing an AGPL asset carries source-
+#      provision obligations. It is not referenced by index.html at all.
+#   2. WEIGHT. three.js + postprocessing + the HDR env map + the mesh is
+#      several MB of public dead weight on a site whose whole argument is
+#      that it loads fast.
+#
+# Deny the directory, then re-allow only what the live page actually uses.
+vendor/*
+!vendor/fonts.css
+!vendor/fonts/
