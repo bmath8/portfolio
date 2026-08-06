@@ -1,6 +1,100 @@
 # Current Session
 
-_Updated 2026-08-05. Supersedes the 2026-07-30 entry (kept at the bottom)._
+_Updated 2026-08-06._
+
+---
+
+# ▶ 2026-08-06 — v12 built, FOLDED INTO `index.html`, NOT YET DEPLOYED
+
+`design-candidates/v12-ship.html` → copied to `index.html` with the production meta block
+(canonical, OG/Twitter, favicon, `theme-color` corrected to `#08090b` — it still said the old
+paper `#eef1f0`). **Everything below is verified by running it, not by reading a status file.**
+
+## Five real defects found by screenshotting v11, all fixed in v12
+
+1. **CSS specificity bug — every `<section class="wrap">` and the footer had ZERO vertical
+   padding.** `.wrap{padding:0 32px}` is a class selector and outranked the `section{padding:88px 0}`
+   and `footer{padding:80px 0 96px}` element rules. That is why Experience butted straight into
+   the closing CTA. Restated as `section.wrap` / `footer.wrap`. Page height 3505 → 4021px; the
+   vertical rhythm the design was drawn with had never actually rendered.
+2. **The tuned orientation was being thrown away two seconds after load.** `pivot.rotation.set(-0.10,-1.75,0.06)`
+   set the left-lateral three-quarter that `lab/03` proved reads as anatomy — then the animation
+   loop initialised `rotY=0` and eased `rotation.y` from −1.75 toward 0, a ~100° swing, and kept
+   spinning from there. **The good view existed only on the first frame.** Now `BASE_YAW=-1.75`,
+   `BASE_PITCH=-0.10` (the loop had also been using the *z-roll* value 0.06 as pitch), and the
+   drift is a **±9° sway over ~57s instead of an unbounded spin** — "a box with an animation that
+   spins" is a documented rejection.
+3. **Mobile turned the brain back into wallpaper.** At ≤940px `.hero-right` was hidden but
+   `#stage` stayed `inset:0` behind the copy, so the cortex became a washed-out background under
+   the headline — the exact thing rejected once before. It is now a **contained exhibit above the
+   copy** (`position:relative`, 42vh), and the mobile camera keeps the lateral character instead
+   of sitting dead-on at x=0 showing a frontal view. Contact bar stacks below 620px.
+4. **"3 public repos" was false** — there are 8 public repos on the account. Replaced with
+   **"3 systems shipped"**, which is what the three case studies below it actually argue, matches
+   the OG alt text, and cannot rot when a repo is published or made private.
+5. **JS-off badge said "next run loading…" forever.** Now reads "26 agents scheduled on real
+   cron lines" and JS upgrades it to the real next run.
+
+## Verified, by running it
+
+| Check | Result |
+|---|---|
+| Console errors | **0** (the earlier one was a `favicon.ico` 404 in the candidate file only) |
+| Local load | 30–240 ms |
+| JS disabled | full page renders — **3,868 chars** of visible text, not a blank page |
+| 360px | `scrollWidth` 360, **no horizontal overflow** |
+| Referenced assets | **14/14 exist on disk and all ship** — simulated against `.vercelignore` |
+| AGPL `brain-mni.bin` | excluded by name; appears in `index.html` only inside a comment |
+
+## ⚠️ `.vercelignore` REWRITTEN — this was a shipping blocker
+
+The old file excluded `vendor/three*`, `vendor/lines/` and `vendor/mesh/` outright, because the
+old `index.html` loaded only `fonts.css`. **The new page needs all of them.** Deploying v12 under
+the old manifest would have produced a page with no brain and a hard module error. Now every
+exclusion is explicit (no negation — Vercel does not honour directory re-includes, learned
+2026-08-05), and `vendor/mesh/brain-mni.bin` is excluded **by name** while its directory ships.
+
+Note `three.module.min.js` internally imports `./three.core.min.js`; both must ship. Shipping
+only the first is a silent hard failure.
+
+## ✅ Mesh optimised — 1,314,188 → 836,324 bytes, 36.4% off, provably lossless
+
+**The indices were `Uint32` for a mesh with 39,828 vertices.** Every index fit in 16 bits with
+25,000 to spare, so the top two bytes of all 238,932 indices were always zero. They were
+**72.7% of the entire file**.
+
+Rebuilt as `Uint16`. Verified lossless *before* swapping the file: the round trip was checked
+bit-identical on positions, normals **and** indices (`np.array_equal` on all three) — this is not
+a quantization tradeoff, it is deleting bytes that carried no information. Loader now reads
+`new Uint16Array(buf.slice(o, o+nT*3*2))`. Re-rendered and compared: **visually identical, zero
+page errors.**
+
+⚠️ **If the mesh is ever regenerated above 65,535 vertices this must revert to `Uint32Array`.**
+`scratchpad/build_mesh.py`'s `STEP` controls the vertex count. The loader comment says so.
+
+Notably this beat the researched option. `meshoptimizer`/`gltfpack -cc` was the top
+recommendation, but it would have meant converting to glTF, adding `GLTFLoader` (~100 KB) and a
+WASM decoder (~25 KB) — to compress data whose single biggest redundancy was removable with a
+one-line type change and no new dependency. **Check the format before reaching for a compressor.**
+
+Page weight now **1.68 MB on disk** (was 2.32 MB), of which 223 KB is `resume.pdf` — a download,
+not part of page load. Over the wire it is roughly 836 KB mesh + ~190 KB gzipped JS + 268 KB
+fonts. The headline still paints before any of it; the module graph is deferred.
+
+Remaining, if more is ever needed: vertex-cache reorder + delta-encoded indices (helps only if
+the host actually gzips `application/octet-stream` — unverified), or oct-encoded normals
+(119 KB → 80 KB, small win, real precision risk). Neither is worth doing now. **Do not decimate
+the mesh** — the gyre legibility is the entire point of the hero.
+
+## Honest limitations, stated
+- **`vendor/mesh/brain-mni.bin` (AGPL) is still on disk.** It is excluded from the deploy and
+  404s on the live site, but deleting it outright is the better fix and is pending Brian's call.
+- **Headless screenshots stall on this page** — `Page.screenshot: Timeout 30000ms` with
+  `GPU stall due to ReadPixels`. It is a headless-Chromium capture issue, **not a page fault**:
+  the page evaluates clean (canvas 1440×828, `glfail` hidden, live badge computing the real next
+  run, zero page errors). Capture with `--use-gl=swiftshader --enable-unsafe-swiftshader` and a
+  raised timeout. Do not "fix" the page in response to this.
+- Not deployed. Deploy is Brian's approval, always.
 
 ---
 
