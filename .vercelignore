@@ -4,7 +4,7 @@
 resume/
 
 # Internal only -- never ship these to the public site.
-# design-candidates/ holds 11 rejected drafts. Until this line was added they
+# design-candidates/ holds the rejected drafts. Until this line was added they
 # deployed with the site and were publicly reachable at
 # /design-candidates/<name>.html, and crawlable (robots.txt allows everything).
 design-candidates/
@@ -12,39 +12,55 @@ docs/
 scripts/
 .superpowers/
 
-# index.html loads exactly ONE thing from vendor/: fonts.css (and vendor/fonts/).
-# Everything else in vendor/ exists only for the design candidates, and
-# design-candidates/ is already excluded above -- so all of it was shipping
-# publicly for no reason. Two problems with that, both fixed here:
+# ---------------------------------------------------------------------------
+# WHAT THE LIVE index.html ACTUALLY LOADS FROM vendor/  (updated 2026-08-06)
 #
-#   1. LICENSE. vendor/mesh/brain-mni.bin is derived from aces/brainbrowser,
-#      which is AGPL-3.0 (see vendor/mesh/README-LICENSE.md). It was being
-#      served at /vendor/mesh/brain-mni.bin -- verified HTTP 200, 2,703,404
-#      bytes, on 2026-08-05. Distributing an AGPL asset carries source-
-#      provision obligations. It is not referenced by index.html at all.
-#   2. WEIGHT. three.js + postprocessing + the HDR env map + the mesh is
-#      several MB of public dead weight on a site whose whole argument is
-#      that it loads fast.
+# The page changed. It is no longer the static 2026-07-30 re-skin that pulled
+# one stylesheet; it now renders a real cortical mesh with instanced tract
+# lines, so it needs FOUR things from vendor/ that used to be excluded:
 #
-# DO NOT use `vendor/*` + `!vendor/fonts/` here. That pattern is correct under
-# git's matcher (verified) but Vercel did NOT honour the directory re-include:
-# deployed 2026-08-05, /vendor/fonts/IBMPlexSans-400.woff2 came back 404 and the
-# live site silently fell back to system fonts. Caught by post-deploy checks.
+#   vendor/fonts/*.woff2                  six self-hosted faces
+#   vendor/three.module.min.js            + vendor/three.core.min.js, which it
+#                                         imports internally -- shipping only
+#                                         the first gives a hard module error
+#   vendor/lines/LineSegments2.js         the tract bundle: one instanced draw
+#   vendor/lines/LineSegmentsGeometry.js  call regardless of segment count
+#   vendor/lines/LineMaterial.js
+#   vendor/mesh/brain-icbm152.bin         1.31 MB, 39,828 verts
 #
-# Every exclusion is therefore listed EXPLICITLY, with no negation to get wrong.
-# Keep in sync if anything new is vendored: the only things the live index.html
-# loads from vendor/ are fonts.css and the seven woff2 files it references.
-vendor/mesh/
+# Two rules learned the hard way, both still in force:
+#
+#   1. DO NOT use `vendor/*` + `!vendor/fonts/`. That pattern is correct under
+#      git's matcher (verified) but Vercel did NOT honour the directory
+#      re-include: deployed 2026-08-05, /vendor/fonts/IBMPlexSans-400.woff2
+#      came back 404 and the live site silently fell back to system fonts.
+#      Every exclusion below is therefore EXPLICIT, with no negation to get wrong.
+#
+#   2. vendor/mesh/brain-mni.bin is derived from aces/brainbrowser and is
+#      AGPL-3.0. It was served publicly once already (HTTP 200, 2,703,404
+#      bytes, 2026-08-05). It is superseded by brain-icbm152.bin and nothing
+#      references it. It is excluded BY NAME below -- do not remove that line,
+#      and do not switch this file to a directory-level allow that would let it
+#      back in. Deleting the file outright is the better fix and is pending.
+#
+# Keep this list in sync with the page. After ANY deploy, verify against the
+# deployed URL, not against git: an ignore pattern that git accepts proves
+# nothing about how the host treats it.
+# ---------------------------------------------------------------------------
+
+# AGPL asset -- superseded, must never ship
+vendor/mesh/brain-mni.bin
+
+# vendored but not used by the live page
 vendor/hdr/
-vendor/lines/
 vendor/loaders/
 vendor/objects/
 vendor/shaders/
 vendor/postprocessing/
 vendor/postprocessing.module.js
-vendor/three.core.min.js
-vendor/three.module.min.js
 vendor/RoomEnvironment.js
 vendor/gsap.min.js
 vendor/lenis.min.js
 vendor/ScrollTrigger.min.js
+vendor/lines/Line2.js
+vendor/lines/LineGeometry.js

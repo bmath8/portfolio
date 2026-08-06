@@ -3,26 +3,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Brian Mathew — I build systems, then I keep them running</title>
-<link rel="canonical" href="https://bmath8.vercel.app/" />
-<meta name="description" content="Brian Mathew builds and operates working software: a 26-agent Windows automation fleet with 81 passing tests, a real-time collaborative music prototype, and a live squares app that ran a real event. New Jersey - open to work." />
-
-<!-- Open Graph / link preview. Without these the link unfurls as a bare URL in
-     LinkedIn, email and DMs -- which is where most of these links get pasted. -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://bmath8.vercel.app/" />
-<meta property="og:title" content="Brian Mathew - I build systems, then I keep them running" />
-<meta property="og:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
-<meta property="og:image" content="https://bmath8.vercel.app/og.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="Brian Mathew - I build systems, then I keep them running. 26 agents live, 81 tests green, 3 systems shipped." />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Brian Mathew - I build systems, then I keep them running" />
-<meta name="twitter:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
-<meta name="twitter:image" content="https://bmath8.vercel.app/og.png" />
-<!-- theme-color follows the page: this build is dark, the old one was paper -->
-<meta name="theme-color" content="#08090b" />
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <!--
   CONCEPT A — "LIVE INSTRUMENT"          2026-08-05
 
@@ -515,14 +495,9 @@ if (THREE) {
   let o = 8;
   const qp = new Int16Array(buf,o,nV*3); o += nV*3*2;
   const qn = new Int8Array(buf,o,nV*3);  o += nV*3;
-  /* Indices are UINT16, not uint32 (changed 2026-08-06). There are 39,828
-     vertices, so every index fits in 16 bits with room to spare -- the top two
-     bytes of every uint32 were always zero. They were 72.7% of the file:
-     1,314,188 -> 836,324 bytes, a 36.4% cut, provably lossless (the round trip
-     was verified bit-identical on positions, normals and indices before the
-     swap). Nothing about the geometry or the shading changed.
-     If the mesh is ever regenerated above 65,535 vertices this must go back to
-     Uint32Array -- build_mesh.py's STEP controls that. */
+  /* Indices are UINT16 as of 2026-08-06 -- see index.html for the full note.
+     39,828 verts, so the top two bytes of every uint32 were always zero.
+     1,314,188 -> 836,324 bytes, verified lossless. */
   const idx = new Uint16Array(buf.slice(o,o+nT*3*2));
   const pos = new Float32Array(nV*3), nrm = new Float32Array(nV*3);
   for (let i=0;i<nV*3;i++){ pos[i]=qp[i]/32767; nrm[i]=qn[i]/127; }
