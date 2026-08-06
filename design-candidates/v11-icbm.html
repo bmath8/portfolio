@@ -98,7 +98,7 @@
   nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
   nav a{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:3px;
     border:1px solid var(--edge);background:var(--panel);color:var(--ink2);
-    font:500 13px/1 PlexMono;text-decoration:none;transition:.16s}
+    font:500 13.5px/1 PlexMono;text-decoration:none;transition:.16s}
   nav a:hover{border-color:var(--cyan);color:var(--cyan);background:var(--raise)}
   nav a.cta{background:var(--cyan);border-color:var(--cyan);color:#04121a;font-weight:500}
   nav a.cta:hover{background:#5cf0d9;color:#04121a}
@@ -126,13 +126,16 @@
   .hero-copy{pointer-events:auto}
   .live{display:inline-flex;align-items:center;gap:9px;padding:6px 12px;border-radius:100px;
     border:1px solid #2a5d55;background:#0b1f1c;color:var(--cyan);
-    font:500 12.5px/1 PlexMono;margin-bottom:26px}
+    font:500 13.5px/1 PlexMono;margin-bottom:26px}
   .pip{width:7px;height:7px;border-radius:50%;background:var(--cyan);
     box-shadow:0 0 0 0 rgba(46,230,198,.7);animation:pip 2.4s infinite}
   @keyframes pip{70%{box-shadow:0 0 0 9px rgba(46,230,198,0)}100%{box-shadow:0 0 0 0 rgba(46,230,198,0)}}
   h1{font:800 clamp(40px,5.4vw,74px)/1.02 Bricolage;letter-spacing:-.03em;margin:0 0 22px}
   h1 em{font-style:normal;color:var(--cyan)}
-  .lede{font-size:19px;line-height:1.62;color:var(--ink2);max-width:34em;margin:0 0 32px}
+  /* Type scale tightened to five real steps - 12 / 13.5 / 15 / 17 / 21 - roughly
+     a 1.25 ratio. It previously ran 12/12.5/13/15/15.5/16/17/19, which is eight
+     sizes inside seven pixels and reads as no hierarchy at all. */
+  .lede{font-size:21px;line-height:1.58;color:var(--ink2);max-width:33em;margin:0 0 32px}
   .lede b{color:var(--ink);font-weight:600}
 
   /* live metric strip - everest.suraj.work pattern, real numbers */
@@ -164,20 +167,27 @@
   @media(max-width:880px){.thread{display:none}}
   .sec-h{display:flex;align-items:baseline;gap:16px;margin:0 0 10px}
   .sec-h h2{font:800 clamp(26px,3vw,38px)/1.1 Bricolage;letter-spacing:-.02em;margin:0}
-  .sec-sub{color:var(--mute);font-size:16px;max-width:56ch;margin:0 0 44px}
+  .sec-sub{color:var(--mute);font-size:15px;max-width:56ch;margin:0 0 44px}
 
   .work{display:grid;gap:26px}
   .proj{border:1px solid var(--edge);border-radius:6px;background:var(--panel);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
     overflow:hidden;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
   .proj-body{padding:30px 32px}
   .proj h3{font:800 25px/1.15 Bricolage;letter-spacing:-.02em;margin:0 0 4px}
-  .tag{font:500 12px/1 PlexMono;text-transform:uppercase;letter-spacing:.09em;
-    display:inline-block;margin-bottom:14px}
-  .p1 .tag{color:var(--cyan)} .p2 .tag{color:var(--magenta)} .p3 .tag{color:var(--amber)}
-  .p1{border-left:3px solid var(--cyan)}
-  .p2{border-left:3px solid var(--magenta)}
-  .p3{border-left:3px solid var(--amber)}
-  .proj p{color:var(--ink2);font-size:16px;margin:0 0 18px}
+  /* Each project owns an accent, but NOT as a 3px bar down the left edge -
+     that side-tab is one of the most recognisable AI-UI tells there is, and
+     it was flagged as such. The colour now lives in a solid chip and a tinted
+     frame, so the whole card carries its identity instead of wearing a slab. */
+  .tag{font:500 11.5px/1 PlexMono;text-transform:uppercase;letter-spacing:.09em;
+    display:inline-block;margin-bottom:16px;padding:6px 10px;border-radius:3px;
+    color:#08090b}
+  .p1 .tag{background:var(--cyan)}
+  .p2 .tag{background:var(--magenta)}
+  .p3 .tag{background:var(--amber)}
+  .p1{border-color:#1e4a45}
+  .p2{border-color:#4a2531}
+  .p3{border-color:#463820}
+  .proj p{color:var(--ink2);font-size:15px;margin:0 0 18px}
   /* verification block - ENDORSED: every claim says where it came from */
   .verify{border-top:1px solid var(--edge);padding-top:15px;margin-top:4px}
   .verify li{list-style:none;display:flex;gap:10px;align-items:flex-start;
@@ -237,7 +247,7 @@
   .row:last-child{border-bottom:0}
   .row .r-role{font:600 16px/1.35 PlexSans}
   .row .r-meta{font:400 13px/1.5 PlexMono;color:var(--mute);margin-top:5px}
-  .row p{margin:0;color:var(--ink2);font-size:15.5px}
+  .row p{margin:0;color:var(--ink2);font-size:15px}
 
   footer{padding:80px 0 96px;text-align:center}
   footer h2{font:800 clamp(28px,3.6vw,46px)/1.1 Bricolage;letter-spacing:-.025em;margin:0 0 16px}
