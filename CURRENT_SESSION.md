@@ -1,6 +1,112 @@
 # Current Session
 
-_Updated 2026-08-06._
+_Updated 2026-08-06 (second entry: the load-time work)._
+
+---
+
+# ⏸ READY TO DEPLOY — BRN2 mesh format. Committed, NOT pushed. Brian's call.
+
+Picks up the one open performance item: **cold load 2.86 s against a 2 s budget.** The previous
+entry named two next levers and correctly flagged one as an assumption. That assumption is now
+measured, and it changed the plan.
+
+## The finding that drove everything: the CDN compresses at brotli **q3**
+
+The old note said delta-encoding indices "helps only if the host actually gzips
+`application/octet-stream` — unverified". It does — but weakly, and the exact setting matters:
+
+| brotli quality, run locally on the current file | bytes |
+|---|---|
+| q3 | **748,625** ← byte-for-byte the measured live wire size |
+| q5 | 663,419 |
+| q11 | 559,003 |
+
+So Vercel is leaving ~190 KB on the table versus q11, and **no amount of choosing a cleverer
+compressor helps, because we do not control the compressor.** The only lever that works is
+handing q3 bytes that are already low-entropy. `Invoke-WebRequest` cannot see this — it
+transparently decodes and strips `Content-Encoding`. Measure with `curl` and an explicit
+`Accept-Encoding` header, or you will measure nothing.
+
+## What shipped into the format
+
+`vendor/mesh/brain-icbm152-v2.bin`, magic `BRN2`. Built by **`scratchpad/pack_mesh_v2.py`**,
+which refuses to write the file unless 11 round-trip checks pass.
+
+| | before | after |
+|---|---|---|
+| mesh on disk | 836,324 | **662,624** (−20.8%) |
+| mesh on the wire (q3) | 748,625 | **469,248** (−37.3%, −279,377 B) |
+| **whole page over the wire** | **1,220 KB** | **948 KB** (−22.4%) |
+| JS decode cost | 0 ms | **1.9 ms** median |
+
+- **positions** → plane-split, zigzag delta, LEB128 varint. They were *100.0% incompressible*
+  as stored (brotli returned them 5 bytes larger); delta makes them 194 KB at q3.
+- **indices** → each triangle cyclically rotated so its smallest index leads (winding
+  preserved), triangles sorted, then three delta streams. 477,864 → 313,516 raw.
+- **normals** → deliberately left alone. Delta-encoding them cost 22 KB on disk to save 4 KB
+  on the wire. Not worth a second decode path.
+
+1.9 ms of decode to save 279 KB breaks even at ~1.2 Gbps, so it is a win on every real connection.
+
+## Vertex order is deliberately NOT optimised — this is the trap in this file
+
+The textbook move is a vertex-cache optimiser, which permutes vertices. **Do not.** The page
+seats its 26 agent nodes by farthest-point sampling over a *strided walk of the vertex array*
+(`for i in 0..nV step floor(nV/1400)`). Permuting vertices silently moves every node on the
+cortex — a visual regression with no error message. It was measured anyway (scheme "A": 672,316
+on disk) and it compressed **worse** than the scheme that leaves vertex order alone.
+
+## Verified, by running it
+
+Round-trip, in the packer and again in Node against the decoder pasted out of `index.html`:
+positions **bit-identical**, normals **bit-identical**, triangle set identical under a
+rotation-invariant order-insensitive comparison, all indices in range, whole buffer consumed.
+Both suites include a **negative control** — a deliberate 1-index corruption that the check is
+confirmed to catch — because a check that cannot fail proves nothing.
+
+Triangle order *does* change, and curvature is a float accumulation over triangles, so shading
+is the one thing not bit-identical. Quantified rather than hand-waved: max Δ **1.8e-7**,
+**0 of 39,828 vertices differ at 8-bit output precision.** Invisible, provably.
+
+In a real browser (localhost, Chrome, not headless): mesh fetched and decoded, canvas
+2545×860, WebGL fallback hidden, **zero console messages**, zero failed requests, zero
+third-party requests. At 360 px: no horizontal overflow, `#stage` still `position:relative`
+at 336 px — the contained exhibit, not wallpaper. A/B screenshot against the live v1 site:
+indistinguishable (node and tract differences are sway phase and pulse position).
+
+## Two defects found on the way, both fixed
+
+1. **`scratchpad/` was not in `.vercelignore`** — the new packer would have deployed publicly.
+   Added. (`build_mesh.py` was already absent, so nothing had leaked yet.)
+2. **`const tmp` collided** with the `THREE.Vector3` named `tmp` at line 753. The whole module
+   died with `SyntaxError`, and — exactly the documented 2026-07-29 failure mode — the page
+   still *looked* fine, because the JS-off fallback renders. Caught only by asserting the mesh
+   was actually requested. **Never judge this page from a screenshot alone.**
+
+## 🚩 `build_mesh.py` DOES NOT EXIST — provenance gap, unresolved
+
+The previous entry and the old loader comment both said to regenerate the mesh with
+`scratchpad/build_mesh.py`. That file is **not on disk and has never been in git history**
+(`git log --all --diff-filter=A` returns nothing). `brain-icbm152.bin` is therefore the *only*
+surviving source for this geometry — which is why `.vercelignore` keeps it on disk while
+excluding it from the deploy. **Do not delete it.** Regenerating would mean rewriting the
+script from scratch (threshold combined GM+WM probability maps of MNI ICBM152 2009c, marching
+cubes, Taubin smoothing). The false pointer is now corrected in `index.html`.
+
+## Still open
+
+- **Not deployed.** Committed to `main` locally and deliberately **not pushed** — pushing to
+  `main` is what triggers the Vercel deploy, and deploy is Brian's call. Rollback target
+  remains `f0fc046`.
+- **Cold load** should be re-measured against the live URL after deploy. 279 KB off the
+  critical path should help materially, but the 2.86 s figure was measured live and the new
+  number must be too — do not report a projection as a result.
+- **`vendor/mesh/brain-mni.bin` (AGPL) is still on disk**, still excluded, still 404 live.
+  Deleting it outright remains the better fix and is still pending Brian's call.
+- Remaining lever if ever needed: serving a pre-brotli-q11 `.br` file with an explicit
+  `Content-Encoding` header would reach **404,898 B** (another 64 KB). Not done, because it
+  breaks any client that does not send `Accept-Encoding: br` and that is a real robustness
+  trade on a public job-hunt site. Brian's call, not mine.
 
 ---
 

@@ -10,6 +10,7 @@ resume/
 design-candidates/
 docs/
 scripts/
+scratchpad/
 .superpowers/
 
 # ---------------------------------------------------------------------------
@@ -26,7 +27,7 @@ scripts/
 #   vendor/lines/LineSegments2.js         the tract bundle: one instanced draw
 #   vendor/lines/LineSegmentsGeometry.js  call regardless of segment count
 #   vendor/lines/LineMaterial.js
-#   vendor/mesh/brain-icbm152.bin         1.31 MB, 39,828 verts
+#   vendor/mesh/brain-icbm152-v2.bin      663 KB, 39,828 verts (BRN2 format)
 #
 # Two rules learned the hard way, both still in force:
 #
@@ -50,6 +51,13 @@ scripts/
 
 # AGPL asset -- superseded, must never ship
 vendor/mesh/brain-mni.bin
+
+# v1 of the shippable mesh. Superseded 2026-08-06 by brain-icbm152-v2.bin (BRN2:
+# same geometry, 836,324 -> 662,624 on disk, 748,625 -> 469,248 on the wire).
+# Kept on disk ONLY because scratchpad/pack_mesh_v2.py reads it to build v2 --
+# it is the sole surviving source for this mesh, so do not delete it. Excluded
+# by name so the two never both ship.
+vendor/mesh/brain-icbm152.bin
 
 # vendored but not used by the live page
 vendor/hdr/
