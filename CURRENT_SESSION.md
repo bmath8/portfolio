@@ -4,11 +4,45 @@ _Updated 2026-08-06 (second entry: the load-time work)._
 
 ---
 
-# ⏸ READY TO DEPLOY — BRN2 mesh format. Committed, NOT pushed. Brian's call.
+# ✅ DEPLOYED 2026-08-06 (second deploy) — BRN2 mesh, live and independently verified
 
-Picks up the one open performance item: **cold load 2.86 s against a 2 s budget.** The previous
-entry named two next levers and correctly flagged one as an assumption. That assumption is now
-measured, and it changed the plan.
+**Live commit: `fd3797c` on `main` → https://bmath8.vercel.app**
+**Rollback target: `f0fc046`** (the v1-mesh build, itself verified live earlier today).
+
+## ⚠️ THE 2.86 s LOAD FIGURE WAS WRONG — corrected here
+
+The previous entry recorded *"cold load is 2.86 s on the live URL, against a stated 2 s budget"*
+and treated it as the one open performance problem. **That measurement was taken seconds after a
+deploy, so it hit a COLD CDN EDGE.** It is the first-visitor-after-a-deploy number, not what any
+real visitor experiences.
+
+Re-measured on the warm edge, three consecutive runs, **fresh browser context each time so the
+browser cache is empty**:
+
+| run | load | FCP | wire |
+|---|---|---|---|
+| 1 | 137 ms | 132 ms | 877 KB |
+| 2 | 159 ms | 124 ms | 877 KB |
+| 3 | 169 ms | 132 ms | 877 KB |
+
+**FCP ~130 ms, load ~155 ms.** Isolation runs confirm the page is not JS- or GPU-bound:
+TTFB 49–55 ms, HTML complete 56–111 ms, FCP 120 ms with JavaScript disabled entirely.
+
+**The 2 s budget is met with room to spare.** The lesson is procedural: *never benchmark
+immediately after a deploy* — you measure the CDN's cold start, not the page. Report both numbers
+or neither, and say which is which.
+
+Independently verified before pushing, by decoding BRN2 **from the format spec in a separate
+implementation** rather than by re-running the packer:
+positions bit-identical · normals bit-identical · same triangle set, same count ·
+**winding preserved on all 79,644 triangles** · byte stream consumed exactly (662,624 of 662,624).
+
+Measured live with `curl` and an explicit `Accept-Encoding`: mesh **469,245 B** on the wire
+(`content-encoding: br`) against the 469,248 predicted — a 3-byte miss. Whole page **877 KB**.
+`three.core` 104 KB and `three.module` 90 KB over the wire, not the 742 KB their on-disk size
+suggested. Zero third-party requests, zero console errors, zero HTTP ≥400.
+`/vendor/mesh/brain-icbm152.bin`, `/vendor/mesh/brain-mni.bin` (AGPL), `/design-candidates/*` and
+`/scratchpad/*` all 404.
 
 ## The finding that drove everything: the CDN compresses at brotli **q3**
 
@@ -124,9 +158,9 @@ something to do without an explicit yes.** The cheaper alternative is making the
 - **Not deployed.** Committed to `main` locally and deliberately **not pushed** — pushing to
   `main` is what triggers the Vercel deploy, and deploy is Brian's call. Rollback target
   remains `f0fc046`.
-- **Cold load** should be re-measured against the live URL after deploy. 279 KB off the
-  critical path should help materially, but the 2.86 s figure was measured live and the new
-  number must be too — do not report a projection as a result.
+- ~~Cold load should be re-measured after deploy.~~ **DONE.** Measured on the warm edge with an
+  empty browser cache, three runs: **load 137/159/169 ms, FCP 132/124/132 ms, 877 KB wire.**
+  The old 2.86 s reading was a cold-CDN-edge artefact of benchmarking seconds after a deploy.
 - **AGPL asset: removed from the tree, still in git history.** See the section above - purging
   it needs a history rewrite + force-push to a public repo, which is Brian's call.
   Deleting it outright remains the better fix and is still pending Brian's call.
@@ -258,11 +292,9 @@ the mesh** — the gyre legibility is the entire point of the hero.
   the page evaluates clean (canvas 1440×828, `glfail` hidden, live badge computing the real next
   run, zero page errors). Capture with `--use-gl=swiftshader --enable-unsafe-swiftshader` and a
   raised timeout. Do not "fix" the page in response to this.
-- **Cold load is 2.86 s on the live URL**, against a stated 2 s budget. The headline paints
-  immediately (the module graph is deferred and the page renders fully with JS off), so the
-  LCP story is better than that number suggests — but it is not inside budget and should not
-  be reported as if it were. Next levers, in order: vertex-cache reorder + delta-encoded
-  indices, and checking whether Vercel gzips `application/octet-stream` at all.
+- ~~Cold load is 2.86 s against a 2 s budget.~~ **RETRACTED — see the top of this file.**
+  That was a cold-CDN-edge measurement taken right after a deploy. Real figure on a warm edge
+  with an empty browser cache is **~155 ms load / ~130 ms FCP**.
 
 ---
 
