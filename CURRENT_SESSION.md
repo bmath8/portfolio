@@ -4,10 +4,132 @@ _Updated 2026-08-05. Supersedes the 2026-07-30 entry (kept at the bottom)._
 
 ---
 
+# ✅ DEPLOYED 2026-08-05 — live state recorded
+
+**Live commit: `ba5166f` on `main` → https://bmath8.vercel.app**
+**Rollback target if ever needed: `c668400`** (`git revert` or reset + force push).
+
+Four commits shipped, each verified against the deployed URL, not assumed:
+
+1. `792de58` — **stopped serving the AGPL mesh.** `/vendor/mesh/brain-mni.bin` now 404s
+   (was HTTP 200, 2,703,404 bytes). The whole unused three.js/postprocessing/HDR stack is
+   also gone from the deploy.
+2. `f50b67e` — **fixed fonts that commit 1 broke.** `vendor/*` + `!vendor/fonts/` is valid
+   under git's matcher (I verified it there) but **Vercel did not honour the directory
+   re-include** — `/vendor/fonts/IBMPlexSans-400.woff2` returned 404 and the live site
+   silently dropped to system fonts. Post-deploy checks caught it. Now an explicit exclusion
+   list with no negation. **Lesson: verifying an ignore pattern against git does not prove
+   how the host treats it. Verify against the deployed URL.**
+3. `058844f` — **corrected the site to 26 agents** and added the missing `career-scout`
+   (`15 7 * * *`) to the `JOBS` array. The dial had been plotting a fleet that no longer
+   matched the machine.
+4. `ba5166f` — **two remaining bare `25`s**: the dial's own readout and the Brian OS agent
+   row. The dial was plotting 26 while its label said 25. My first check missed these because
+   the regex required 40 chars of context on both sides and `.` doesn't cross newlines.
+
+**Verified live:** all 7 self-hosted fonts 200 · homepage 200 · resume.pdf 200 · og.png 200 ·
+AGPL mesh 404 · three.js 404 · HDR 404 · `design-candidates/` 404 · 26 JOBS entries ·
+zero stale `25`s outside rgba colour values.
+
+---
+
+# 🎨 PALETTE RETRACTED 2026-08-05 — read before touching colour
+
+Brian **retracted his earlier "I like the color scheme"** later the same day. Verbatim:
+
+> *"The blue background and color scheme need to be changed. I like the dark theme but
+> everything is blue and blends into eachother. There is no contrast, flow, clear distinct
+> areas and borders. It can have that dark theme but has to have contrasts with light,
+> accents, differences to appreciate other parts, color scheme, shades."*
+
+**What is retracted:** the near-monochrome blue ramp (`#050a12`/`#0a1420`/`#0e1c2b`/`#1b2f44`).
+Every surface was the same hue at slightly different lightness, so nothing separated.
+
+**What is NOT retracted — still endorsed:** the **dark theme itself**, the brain hero, the
+contact header, the metric strip, real telemetry, verification blocks, the demos, the type
+pairing. Do not rebuild the page. **This is a palette change, not a redesign.**
+
+**The tension to resolve carefully:** he asked for *"each part to flow into each other"*
+earlier and *"clear distinct areas and borders"* now. These are not contradictory — **flow is
+not mush.** Major bands should still dissolve into each other via gradient seams (Phase 4),
+while **cards and panels must become clearly distinct surfaces** with real value separation
+and visible borders. Section transitions flow; content surfaces separate.
+
+---
+
 # ▶ START HERE — resuming 2026-08-05, 4:30pm
 
-**Working file: `design-candidates/v8-demos.html`.** Phases 1, 2, 4 and 5 are done.
-Only **Phase 3 (the 3D upgrade)** and the **AGPL mesh swap** remain.
+**Working file: `design-candidates/v11-icbm.html`. ALL FIVE PHASES DONE, AND THE MESH IS
+NOW LEGALLY SHIPPABLE.** What remains is folding v11 into `index.html` and deploying.
+
+### v11 — the mesh swap (2026-08-05) ✅ the last blocker is gone
+`vendor/mesh/brain-icbm152.bin` — **39,828 verts / 79,644 tris / 1.31 MB**, less than half
+the AGPL asset. Built from the **MNI ICBM152 2009c** template by thresholding combined
+grey+white matter probability maps and running marching cubes, then Taubin-smoothed (shrink-
+free, so the silhouette survives where plain Laplacian would deflate it).
+
+**Licence: permissive.** *"Permission to use, copy, modify, and distribute … for any purpose
+and without fee … provided that the above copyright notice appear in all copies."* The
+notice is now in the page footer and in `vendor/mesh/README-LICENSE.md`. This closes option 1
+of the three the old README listed.
+
+**Why GM+WM and not the supplied brain mask:** the mask yields a smooth bean with no gyri.
+The grey/white boundary is what carries the folds.
+
+**Output matches the existing binary format exactly**, so the page loader needed no change —
+only the fetch path. Regenerate with `scratchpad/build_mesh.py` (needs `nibabel`,
+`scikit-image`, `scipy`, all now installed); raise `STEP` to cut triangle count.
+
+**Two fixes the new mesh forced:**
+- **Curvature normalisation moved from min/max to 3rd/97th percentile.** Min/max is hostage
+  to a few outlier vertices; on this smoother surface it pushed most of the mesh into the
+  bright band and the shading blew out to white. Ceiling also pulled 1.28 → 1.06.
+- **Orientation** re-set to `(-0.10, -1.75, 0.06)` for a left-lateral three-quarter. The
+  first attempt showed it from underneath.
+
+The NIH 3D CC-BY model (`3DPX-021161`) was tried first and abandoned: its asset lives behind
+a signed S3 URL that returns 403 to anything but the site's own session.
+
+### v10 — Phase 3, the 3D upgrade (2026-08-05)
+**Concept: the hero shows a day passing through the machine.**
+- **Tracts.** Agents are sorted by the time they *actually* run, and a bezier tract connects
+  each to the next — so the line network is literally the shape of his day. Built as one
+  `LineSegments2`; `LineSegmentsGeometry extends InstancedBufferGeometry`, so the whole bundle
+  is **one instanced draw call** regardless of segment count.
+- **Travelling signal.** The dash discard is replaced with a Gaussian on `vLineDistance`, so a
+  pulse *travels* while the resting tract stays dim and keeps describing the path. `uHead`
+  sweeps 0→1 over ~14s = one simulated day. Nodes swell as the signal reaches their turn.
+- **Hover interaction.** Raycast against the node `InstancedMesh`; the label names the real
+  agent and prints its real cron line. The hero claim becomes checkable in the hero itself.
+- **Cursor parallax with weight** — eases toward the pointer and carries momentum instead of
+  snapping. Float-and-bob was the thing to avoid.
+- **Scroll does NOT drive the 3D.** Rejected once already; the brain keeps its own clock.
+
+**Tuning notes worth keeping:** the first pass used a lift proportional to node distance,
+which sent long hops (consecutive agents on opposite sides of the brain) swinging out into
+space where they read as stray lines. Clamped to `min(0.085, 0.055 * dist)` so tracts hug the
+surface. Resting alpha also raised 0.085 → 0.20, or the network was invisible between pulses.
+
+**Honest limitation:** in a still frame the tracts read subtly — the pulse is the point, and
+it only makes sense in motion. Judge this one live, not from a screenshot.
+
+**Not yet done in Phase 3:** GSAP is still not wired (the loop is hand-rolled rather than a
+GSAP master timeline), and there is no staged intro lighting nodes in cron order. Both were
+specced; neither is required for the piece to work.
+
+### v9 — the palette rework (2026-08-05)
+- **Base is neutral now, not blue.** `#08090b` / `#0d0f13` / `#15181d` / `#1d2128`. A faint
+  cool cast, no dominant hue — which is what lets an accent read as an accent.
+- **Real value steps** between surfaces, so a card is obviously a card on a page.
+- **Borders you can actually see:** `--edge:#2d333d`. The old `#1b2f44` was barely
+  distinguishable from the panel it was meant to bound.
+- **A genuinely light band** (`--lift:#eef1f5`) under "What I actually do" — he asked for
+  *"contrasts with light"*, and he endorsed a light/dark rhythm back in v3. One light surface
+  mid-page does more for contrast than any amount of tuning within the darks.
+- **Accents warmed and brightened:** `#2ee6c6` cyan, `#ffb340` amber, `#ff5c8a` magenta,
+  `#9b8cff` violet — one cool, one warm, so the page isn't all one temperature.
+- The brain keeps its blue-cyan shading, which now reads as a deliberate coloured object
+  against a neutral base rather than one more blue on blue.
 Serve it and look at it first:
 ```
 cd C:\Brian\02_Projects\portfolio && python -m http.server 8899
