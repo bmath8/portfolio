@@ -244,12 +244,12 @@ const host=document.getElementById('gl');
 try{
   const THREE=await import('/vendor/three.module.min.js');
 
-  const abuf=await (await fetch('/vendor/mesh/brain-mni.bin')).arrayBuffer();
+  const abuf=await (await fetch('/vendor/mesh/brain-icbm152.bin')).arrayBuffer();
   const dv=new DataView(abuf), nV=dv.getUint32(0,true), nT=dv.getUint32(4,true);
   let off=8;
   const qp=new Int16Array(abuf,off,nV*3); off+=nV*6;
   const qn=new Int8Array(abuf,off,nV*3);  off+=nV*3;
-  const idx=new Uint32Array(abuf.slice(off,off+nT*12));
+  const idx=new Uint16Array(abuf.slice(off, off + nT * 6));
   const pos=new Float32Array(nV*3), nrm=new Float32Array(nV*3);
   for(let i=0;i<nV*3;i++){pos[i]=qp[i]/32767;nrm[i]=qn[i]/127;}
   const geo=new THREE.BufferGeometry();

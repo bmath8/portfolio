@@ -368,13 +368,13 @@ let THREE;
 try { THREE = await import('three'); } catch(e){ document.getElementById('glfail').style.display='grid'; }
 
 if (THREE) {
-  const buf = await (await fetch('/vendor/mesh/brain-mni.bin')).arrayBuffer();
+  const buf = await (await fetch('/vendor/mesh/brain-icbm152.bin')).arrayBuffer();
   const dv = new DataView(buf);
   const nV = dv.getUint32(0,true), nT = dv.getUint32(4,true);
   let o = 8;
   const qp = new Int16Array(buf,o,nV*3); o += nV*3*2;
   const qn = new Int8Array(buf,o,nV*3);  o += nV*3;
-  const idx = new Uint32Array(buf.slice(o,o+nT*3*4));
+  const idx = new Uint16Array(buf.slice(o, o + nT * 3 * 2));
   const pos = new Float32Array(nV*3), nrm = new Float32Array(nV*3);
   for (let i=0;i<nV*3;i++){ pos[i]=qp[i]/32767; nrm[i]=qn[i]/127; }
 

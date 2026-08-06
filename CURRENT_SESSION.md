@@ -93,6 +93,32 @@ excluding it from the deploy. **Do not delete it.** Regenerating would mean rewr
 script from scratch (threshold combined GM+WM probability maps of MNI ICBM152 2009c, marching
 cubes, Taubin smoothing). The false pointer is now corrected in `index.html`.
 
+## 🔴 THE AGPL FIX WAS INCOMPLETE — GitHub was still serving it
+
+Earlier entries recorded this as handled: excluded from `.vercelignore`, 404 on the live site.
+**That only ever covered Vercel.** `github.com/bmath8/portfolio` is a **public** repo, it was
+still tracking `vendor/mesh/brain-mni.bin` at `HEAD`, and the file was downloadable at
+**HTTP 200, 2,703,404 bytes** from `raw.githubusercontent.com/.../main/...` — verified, not
+assumed. The repo carries **no LICENSE file**. This is the same shape as the
+`git-history-secret-lesson`: fixing the *serving* path says nothing about the *repo*.
+
+Done now:
+- `git rm vendor/mesh/brain-mni.bin` — gone from the tree, so it leaves `main` on the next push.
+- **11 archived drafts repointed** to `brain-icbm152.bin` so nothing breaks. They needed the
+  index type changed too (81,924 verts/Uint32 → 39,828 verts/Uint16). Two bugs surfaced while
+  doing it: `v11-icbm.html` was already broken — still reading `Uint32Array` from a file that
+  became Uint16 on 2026-08-06 — and `C/S/T` used an inlined `nT*12` stride. Repo-wide there is
+  now **no `Uint32Array` and no fetch of the AGPL mesh** anywhere.
+- The `.vercelignore` deny line stays as defence in depth.
+- The comment in `index.html` claiming *"The old AGPL brain-mni.bin is gone"* is finally true.
+
+**⚠️ STILL EXPOSED, AND IT NEEDS BRIAN: the blob remains in git history** (`cd2746e`,
+`24e1549`) and is fetchable by commit SHA from the public repo right now. `git rm` does not
+touch history. Removing it for real means `git filter-repo` (or BFG) + a **force-push that
+rewrites public history**, and GitHub keeps unreachable blobs until it garbage-collects, so
+Support may need to be asked to run GC. That is destructive and outward-facing — **not
+something to do without an explicit yes.** The cheaper alternative is making the repo private.
+
 ## Still open
 
 - **Not deployed.** Committed to `main` locally and deliberately **not pushed** — pushing to
@@ -101,7 +127,8 @@ cubes, Taubin smoothing). The false pointer is now corrected in `index.html`.
 - **Cold load** should be re-measured against the live URL after deploy. 279 KB off the
   critical path should help materially, but the 2.86 s figure was measured live and the new
   number must be too — do not report a projection as a result.
-- **`vendor/mesh/brain-mni.bin` (AGPL) is still on disk**, still excluded, still 404 live.
+- **AGPL asset: removed from the tree, still in git history.** See the section above - purging
+  it needs a history rewrite + force-push to a public repo, which is Brian's call.
   Deleting it outright remains the better fix and is still pending Brian's call.
 - Remaining lever if ever needed: serving a pre-brotli-q11 `.br` file with an explicit
   `Content-Encoding` header would reach **404,898 B** (another 64 KB). Not done, because it

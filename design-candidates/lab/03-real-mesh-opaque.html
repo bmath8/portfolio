@@ -22,7 +22,7 @@
   per-vertex curvature computed from the mesh so sulci read as GROOVES
   rather than as noise.
 
-  LICENSE WARNING: /vendor/mesh/brain-mni.bin is AGPL-3.0 (aces/brainbrowser).
+  LICENSE WARNING: /vendor/mesh/brain-icbm152.bin is AGPL-3.0 (aces/brainbrowser).
   LOCAL EXPERIMENT ONLY. Never deploy this asset. Clean replacements:
   MNI ICBM152 2009c (MIT-like) or NIH 3D 3DPX-021161 (CC-BY 4.0).
 
@@ -91,13 +91,13 @@ const { RoomEnvironment } = await import('/vendor/RoomEnvironment.js');
 
 /* ---------- the real cortical surface ---------- */
 const t0 = performance.now();
-const buf = await (await fetch('/vendor/mesh/brain-mni.bin')).arrayBuffer();
+const buf = await (await fetch('/vendor/mesh/brain-icbm152.bin')).arrayBuffer();
 const dv  = new DataView(buf);
 const nV  = dv.getUint32(0, true), nT = dv.getUint32(4, true);
 let o = 8;
 const qp  = new Int16Array(buf, o, nV * 3); o += nV * 3 * 2;
 const qn  = new Int8Array(buf, o, nV * 3);  o += nV * 3;
-const idx = new Uint32Array(buf.slice(o, o + nT * 3 * 4));
+const idx = new Uint16Array(buf.slice(o, o + nT * 3 * 2));
 const pos = new Float32Array(nV * 3), nrm = new Float32Array(nV * 3);
 for (let i = 0; i < nV * 3; i++) { pos[i] = qp[i] / 32767; nrm[i] = qn[i] / 127; }
 const tLoad = performance.now() - t0;
