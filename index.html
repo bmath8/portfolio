@@ -509,21 +509,62 @@ let THREE;
 try { THREE = await import('three'); } catch(e){ document.getElementById('glfail').style.display='grid'; }
 
 if (THREE) {
-  const buf = await (await fetch('/vendor/mesh/brain-icbm152.bin')).arrayBuffer();
-  const dv = new DataView(buf);
-  const nV = dv.getUint32(0,true), nT = dv.getUint32(4,true);
-  let o = 8;
-  const qp = new Int16Array(buf,o,nV*3); o += nV*3*2;
-  const qn = new Int8Array(buf,o,nV*3);  o += nV*3;
-  /* Indices are UINT16, not uint32 (changed 2026-08-06). There are 39,828
-     vertices, so every index fits in 16 bits with room to spare -- the top two
-     bytes of every uint32 were always zero. They were 72.7% of the file:
-     1,314,188 -> 836,324 bytes, a 36.4% cut, provably lossless (the round trip
-     was verified bit-identical on positions, normals and indices before the
-     swap). Nothing about the geometry or the shading changed.
-     If the mesh is ever regenerated above 65,535 vertices this must go back to
-     Uint32Array -- build_mesh.py's STEP controls that. */
-  const idx = new Uint16Array(buf.slice(o,o+nT*3*2));
+  /* BRN2 wire format (2026-08-06). Rebuild with scratchpad/pack_mesh_v2.py, which
+     refuses to write unless 11 round-trip checks pass, including a negative control.
+
+     The CDN was measured compressing this asset at brotli q3 -- weak -- so the win
+     came from handing it low-entropy bytes rather than from a stronger compressor:
+     836,324 -> 662,624 on disk, and 748,625 -> 469,248 on the wire (37.3% off).
+     Positions are plane-split zigzag-delta varints; indices are per-triangle deltas
+     after a winding-preserving rotation and sort; normals were left alone because
+     delta-encoding them cost 22KB on disk to save 4KB on the wire.
+
+     Vertex order is UNCHANGED on purpose -- the agent nodes are seated by
+     farthest-point sampling over a strided walk of the vertex array, so permuting
+     vertices (what a normal vertex-cache optimiser does) would silently move every
+     node on the cortex. It also compressed slightly worse.
+
+     Indices stay Uint16: 39,828 vertices. Above 65,535 this needs Uint32, and the
+     packer's "indices fit uint16" check is what will catch it.
+
+     PROVENANCE GAP, verified 2026-08-06: earlier notes said to regenerate the mesh
+     with scratchpad/build_mesh.py. That file does not exist -- not on disk, and
+     never in git history. brain-icbm152.bin is the only surviving source for this
+     geometry, which is why .vercelignore keeps it on disk while excluding it from
+     the deploy. Regenerating from the MNI ICBM152 2009c volume would mean rewriting
+     that script (threshold combined GM+WM probability maps, marching cubes,
+     Taubin smoothing). */
+  const buf = await (await fetch('/vendor/mesh/brain-icbm152-v2.bin')).arrayBuffer();
+  const u8 = new Uint8Array(buf), dv = new DataView(buf);
+  if (dv.getUint32(0,false) !== 0x42524e32) throw new Error('brain mesh: bad magic, expected BRN2');
+  const nV = dv.getUint32(4,true), nT = dv.getUint32(8,true), pLen = dv.getUint32(12,true);
+  let o = 20;
+  /* LEB128 into `out`; returns the offset just past the last value read. */
+  const rd = (out,n,p)=>{
+    for (let k=0;k<n;k++){
+      let v=0, s=0, b;
+      do { b=u8[p++]; v |= (b & 0x7f) << s; s += 7; } while (b & 0x80);
+      out[k]=v;
+    }
+    return p;
+  };
+  const vtmp = new Int32Array(Math.max(nV,nT));
+  const qp = new Int16Array(nV*3);
+  for (let k=0;k<3;k++){                       /* three planes, each a delta chain */
+    o = rd(vtmp,nV,o);
+    let run=0;
+    for (let i=0;i<nV;i++){ const z=vtmp[i]; run += (z>>>1) ^ -(z & 1); qp[i*3+k]=run; }
+  }
+  o = 20 + pLen;
+  const qn = new Int8Array(buf,o,nV*3); o += nV*3;
+  const idx = new Uint16Array(nT*3);
+  o = rd(vtmp,nT,o);
+  let run=0;
+  for (let t=0;t<nT;t++){ run += vtmp[t]; idx[t*3]=run; }
+  o = rd(vtmp,nT,o);
+  for (let t=0;t<nT;t++){ const z=vtmp[t]; idx[t*3+1]=idx[t*3] + (((z>>>1) ^ -(z & 1))|0); }
+  o = rd(vtmp,nT,o);
+  for (let t=0;t<nT;t++){ const z=vtmp[t]; idx[t*3+2]=idx[t*3] + (((z>>>1) ^ -(z & 1))|0); }
   const pos = new Float32Array(nV*3), nrm = new Float32Array(nV*3);
   for (let i=0;i<nV*3;i++){ pos[i]=qp[i]/32767; nrm[i]=qn[i]/127; }
 
