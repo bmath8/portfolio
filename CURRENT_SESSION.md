@@ -4,7 +4,38 @@ _Updated 2026-08-06._
 
 ---
 
-# ▶ 2026-08-06 — v12 built, FOLDED INTO `index.html`, NOT YET DEPLOYED
+# ✅ DEPLOYED 2026-08-06 — live and verified by observation
+
+**Live commit: `f0fc046` on `main` → https://bmath8.vercel.app**
+**Rollback target: `ba5166f`** (the previously-live commit). `git revert f0fc046` or reset+push.
+
+Verified **against the deployed URL**, not against git — the 2026-08-05 font incident proved an
+ignore pattern that git accepts says nothing about how the host treats it:
+
+| Must be 200 | Result |
+|---|---|
+| `/` | 200 · 58,370 B |
+| `/vendor/mesh/brain-icbm152.bin` | 200 · **836,324 B** |
+| `/vendor/three.module.min.js` + `/vendor/three.core.min.js` | 200 · 365,552 B / 385,386 B |
+| `/vendor/lines/{LineSegments2,LineSegmentsGeometry,LineMaterial}.js` | 200 (all three) |
+| all 6 self-hosted fonts | 200 (all six) |
+| `/agents.json` · `/resume.pdf` · `/og.png` · `/favicon.svg` | 200 |
+
+| Must be 404 | Result |
+|---|---|
+| `/vendor/mesh/brain-mni.bin` (**AGPL**) | **404** |
+| `/design-candidates/v11-icbm.html`, `/design-candidates/v12-ship.html` | 404 |
+| `/vendor/postprocessing.module.js`, `/vendor/gsap.min.js` | 404 |
+| `/CURRENT_SESSION.md` | 404 |
+
+**Live browser smoke test:** load **2,859 ms** cold · canvas 1440×828 · WebGL fallback hidden ·
+badge computing the real next run from real cron lines · 26 agents · body height 4021 px ·
+**zero third-party requests** (measured via `performance.getEntriesByType('resource')`, not
+assumed) · **zero console errors, zero page errors, zero HTTP ≥400.**
+
+---
+
+# ▶ 2026-08-06 — what shipped in `f0fc046`
 
 `design-candidates/v12-ship.html` → copied to `index.html` with the production meta block
 (canonical, OG/Twitter, favicon, `theme-color` corrected to `#08090b` — it still said the old
@@ -94,7 +125,11 @@ the mesh** — the gyre legibility is the entire point of the hero.
   the page evaluates clean (canvas 1440×828, `glfail` hidden, live badge computing the real next
   run, zero page errors). Capture with `--use-gl=swiftshader --enable-unsafe-swiftshader` and a
   raised timeout. Do not "fix" the page in response to this.
-- Not deployed. Deploy is Brian's approval, always.
+- **Cold load is 2.86 s on the live URL**, against a stated 2 s budget. The headline paints
+  immediately (the module graph is deferred and the page renders fully with JS off), so the
+  LCP story is better than that number suggests — but it is not inside budget and should not
+  be reported as if it were. Next levers, in order: vertex-cache reorder + delta-encoded
+  indices, and checking whether Vercel gzips `application/octet-stream` at all.
 
 ---
 
