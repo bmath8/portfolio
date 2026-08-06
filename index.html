@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Brian Mathew — I build and operate working systems</title>
-<meta name="description" content="Brian Mathew builds and operates working software: a 25-agent Windows automation fleet with 81 passing tests, a real-time collaborative music prototype, and a live squares app that ran a real event. New Jersey — open to remote, hybrid, on-site, relocation." />
+<meta name="description" content="Brian Mathew builds and operates working software: a 26-agent Windows automation fleet with 81 passing tests, a real-time collaborative music prototype, and a live squares app that ran a real event. New Jersey — open to remote, hybrid, on-site, relocation." />
 <link rel="canonical" href="https://bmath8.vercel.app/" />
 
 <!-- Open Graph / link preview. Without these the link unfurls as a bare URL in
@@ -12,14 +12,14 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://bmath8.vercel.app/" />
 <meta property="og:title" content="Brian Mathew — I build and operate working systems" />
-<meta property="og:description" content="25 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
+<meta property="og:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
 <meta property="og:image" content="https://bmath8.vercel.app/og.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="Brian Mathew — I build and operate working systems. 25 agents live, 81 tests green, 3 systems shipped." />
+<meta property="og:image:alt" content="Brian Mathew — I build and operate working systems. 26 agents live, 81 tests green, 3 systems shipped." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Brian Mathew — I build and operate working systems" />
-<meta name="twitter:description" content="25 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
+<meta name="twitter:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
 <meta name="twitter:image" content="https://bmath8.vercel.app/og.png" />
 <meta name="theme-color" content="#eef1f0" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -181,7 +181,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
     <div>
       <span class="k">NEW JERSEY <b>•</b> OPEN TO REMOTE / HYBRID / ON-SITE / RELOCATION</span>
       <h1>I build working systems — then I <u>keep them running.</u></h1>
-      <p class="sub">Developer and operator. I write software, test it, document it, and then run it in production for the most demanding user I have — myself. <b>25 scheduled agents are executing on my machine right now</b>, and everything below is code you can read.</p>
+      <p class="sub">Developer and operator. I write software, test it, document it, and then run it in production for the most demanding user I have — myself. <b>26 scheduled agents are executing on my machine right now</b>, and everything below is code you can read.</p>
       <div class="hero-links">
         <a class="solid" href="mailto:mathew.brian@gmail.com">Email me</a>
         <a href="https://github.com/bmath8" rel="me">github.com/bmath8</a>
@@ -201,7 +201,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
          so this panel still says something useful with JavaScript disabled. -->
     <aside class="fleet">
       <div class="fh"><span class="dot" aria-hidden="true"></span> My fleet <b id="clock">live</b></div>
-      <canvas id="dial" role="img" aria-label="A 24-hour dial plotting all 25 scheduled agents by the hour they run. Most cluster between 6:40 and 7:10 in the morning."></canvas>
+      <canvas id="dial" role="img" aria-label="A 24-hour dial plotting all 26 scheduled agents by the hour they run. Most cluster between 6:40 and 7:10 in the morning."></canvas>
       <div class="fr"><span>Scheduled agents</span><b>25</b></div>
       <div class="fr"><span>Tests passing</span><b>81 / 81</b></div>
       <div class="fr"><span>Next to fire</span><b id="next">—</b></div>
@@ -220,7 +220,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
       <div>
         <span class="cno">CASE 01 — 2026–PRESENT</span>
         <h3>Brian OS <span>Windows agent fleet &amp; operational recovery</span></h3>
-        <p class="outcome"><b>An always-on fleet of 25 scheduled agents that runs my day.</b> They prepare briefs, watch system health, take two-way commands over Telegram, and require my approval before anything leaves the machine.</p>
+        <p class="outcome"><b>An always-on fleet of 26 scheduled agents that runs my day.</b> They prepare briefs, watch system health, take two-way commands over Telegram, and require my approval before anything leaves the machine.</p>
         <dl>
           <dt>My role</dt>
           <dd>Sole builder and operator — I run this system on my own machine every day.</dd>
@@ -394,8 +394,11 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
 <script>
 /* ============================================================================
    The fleet dial.
-   JOBS is a verbatim transcription of `hermes cron list` on 2026-07-30 --
-   25 jobs, the real names, the real cron expressions. Nothing invented.
+   JOBS is a verbatim transcription of `hermes cron list`, re-checked 2026-08-05 --
+   26 jobs, the real names, the real cron expressions. Nothing invented.
+   The fleet grew from 25 to 26 (career-scout, 15 7 * * *) and this array plus
+   every "25" on the page went stale for a while. Re-run the check before edits:
+     python C:\Brian\03_Career\resumes\variants\verify_metrics.py
    Angle = time of day, so the 06:40-07:10 cluster you can see is the morning
    stack genuinely running back to back.
    All times computed in America/New_York because that is where the fleet runs;
@@ -415,7 +418,8 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
     ['health',            6.87, 'd'], ['career',          6.88, 'd'],
     ['calendar',          6.92, 'd'], ['currency',        6.97, 'd'],
     ['fleet-health',      6.98, 'd'], ['daily-brief',     7.00, 'd'],
-    ['gig-scanner',       7.17, 'd'], ['ceo-report',      7.50, 'm'],
+    ['career-scout',      7.25, 'd'], ['gig-scanner',     7.17, 'd'],
+    ['ceo-report',        7.50, 'm'],
     ['currency-weekly',  16.50, 'w'], ['wiki',           16.75, 'w'],
     ['outcome-learner',  16.83, 'w'], ['weekly-review',  17.00, 'w'],
     ['feedback',         17.00, 'w'], ['research',       18.00, 'w'],
