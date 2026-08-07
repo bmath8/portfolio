@@ -135,9 +135,13 @@
     overflow:hidden}
   .hero::before{content:'';position:absolute;left:0;right:0;bottom:0;height:190px;z-index:3;
     pointer-events:none;background:linear-gradient(to bottom,rgba(8,9,11,0),var(--void))}
-  #stage{position:absolute;inset:0;width:100%;height:100%;display:block}
+  /* v16: the cortex is its OWN ELEMENT on the right, not a full-bleed wash behind
+     the copy. A real left edge gives it a boundary to be an object at. */
+  #stage{position:absolute;right:0;top:0;bottom:0;left:auto;width:53%;height:100%;
+    display:block;border-left:1px solid var(--edge)}
   /* readability scrim: the copy must win over the mesh, always */
-  .hero::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  /* v16: this full-bleed scrim is what made the brain 'blend'. Off. */
+  .hero::after{content:'';display:none;position:absolute;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(100deg,var(--void) 24%,rgba(8,9,11,.88) 44%,rgba(8,9,11,0) 64%)}
   @media(max-width:940px){.hero::after{background:linear-gradient(180deg,rgba(8,9,11,.92),rgba(8,9,11,.62))}}
   .hero-grid{position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;
@@ -295,7 +299,10 @@
      centrepiece, still the first thing you see, but no longer fighting the text. */
   @media(max-width:940px){
     .hero{display:block;min-height:auto;overflow:visible}
-    #stage{position:relative;inset:auto;height:42vh;min-height:250px;max-height:360px}
+    /* v17: the desktop rule is width:53% + border-left. `inset:auto` does NOT reset
+       either, so both must be undone explicitly or the canvas is 53% wide on a phone. */
+    #stage{position:relative;inset:auto;width:100%;border-left:0;
+      height:42vh;min-height:250px;max-height:360px}
     .hero::after{display:none}
     .hero::before{display:none}
     .hero-grid{grid-template-columns:1fr;padding:10px 22px 60px}
@@ -603,12 +610,15 @@ if (THREE) {
   const mc=(()=>{ const s=256,c=document.createElement('canvas'); c.width=c.height=s;
     const g=c.getContext('2d');
     const gr=g.createRadialGradient(s*.34,s*.28,s*.02,s*.5,s*.5,s*.56);
-    gr.addColorStop(0.00,'#ffffff');   // real highlight - was #dff0fb
-    gr.addColorStop(0.13,'#dbf1ff');
-    gr.addColorStop(0.34,'#93bcda');
-    gr.addColorStop(0.58,'#4a7c9b');
-    gr.addColorStop(0.78,'#1a3450');
-    gr.addColorStop(1.00,'#04101d');   // deep terminator - real dark side
+    /* v16: a BONE ramp, not a blue one. Object, rim glow and UI accent were all
+       the same blue-cyan family, so they dissolved into each other. A warm object
+       against cool UI cannot blend. No pure white at the top - that was the chrome. */
+    gr.addColorStop(0.00,'#fbf8f3');
+    gr.addColorStop(0.13,'#ece3d6');
+    gr.addColorStop(0.34,'#bcb0a0');
+    gr.addColorStop(0.58,'#837868');
+    gr.addColorStop(0.78,'#4a443b');
+    gr.addColorStop(1.00,'#1a1815');
     g.fillStyle=gr; g.beginPath(); g.arc(s/2,s/2,s/2,0,7); g.fill();
     const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
 
@@ -627,18 +637,17 @@ if (THREE) {
       .replace('#include <dithering_fragment>',
         '#include <dithering_fragment>\n' +
         // cavity: sulci go dark, ridges go bright - a WIDER spread than before
-        'float cav = smoothstep(0.24, 0.76, vCurv);\n' +
+        'float cav = smoothstep(0.30, 0.70, vCurv);\n' +
         // ceiling pulled back from 1.28: the ICBM152 surface is smoother, so more
         // of it sits in the bright band and 1.28 clipped large areas to white
-        'gl_FragColor.rgb *= mix(0.32, 1.06, cav);\n' +
+        'gl_FragColor.rgb *= mix(0.30, 1.10, cav);\n' +
         // two-tone: cool violet down in the folds, neutral-bright on the ridges
         // Violet is a HINT in the deepest folds, not a tint over the whole mesh.
         // At vec3(0.70,0.63,1.18) this turned the brain purple - overcooked, and
         // purple-dominant reads as the exact AI-gradient tell we avoid.
-        'gl_FragColor.rgb = mix(gl_FragColor.rgb * vec3(0.90,0.88,1.05), gl_FragColor.rgb, cav);\n' +
         // cyan fresnel rim - separates the silhouette hard from the background
         // and puts the approved accent ON the object, not just in the UI
-        'gl_FragColor.rgb += vec3(0.13,0.90,0.78) * fres * 0.95;');
+        'gl_FragColor.rgb += vec3(0.72,0.68,0.62) * fres * 0.14;');
   };
 
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
@@ -666,9 +675,9 @@ if (THREE) {
   function scheduleClass(cron){
     const p = cron.split(/\s+/);
     const hr = p[1], dom = p[2], dow = p[4];
-    if (dom !== '*') return {k:'monthly', c:0xff5c8a};
-    if (dow !== '*') return {k:'weekly',  c:0xffb340};
-    if (hr.includes('*')) return {k:'hourly', c:0x9b8cff};
+    if (dom !== '*') return {k:'monthly', c:0x2ee6c6};
+    if (dow !== '*') return {k:'weekly',  c:0x2ee6c6};
+    if (hr.includes('*')) return {k:'hourly', c:0x2ee6c6};
     return {k:'daily', c:0x2ee6c6};
   }
 
@@ -798,7 +807,9 @@ if (THREE) {
 
   const tracts = new LineSegments2(tractGeo, tractMat);
   tracts.computeLineDistances();     // required for vLineDistance
-  pivot.add(tracts);
+  /* v16: tract chords cut across the silhouette and read as a web pasted over a
+     sculpture. The travelling day is carried by the nodes instead. */
+  // pivot.add(tracts);
 
   function layout(){
     const w=canvas.clientWidth||innerWidth, h=canvas.clientHeight||600;
@@ -872,7 +883,9 @@ if (THREE) {
       // rotation guarantees the brain spends most of its time in a view that does not
       // read as anatomy, and "a box with an animation that spins" is a documented
       // rejection. +/- 9 degrees over ~57s keeps it alive and always legible.
-      rotY = BASE_YAW + Math.sin(el * 0.11) * 0.16;
+      /* v16: the +/-9deg sway read as STUCK. Continuous yaw, one revolution per
+         ~40s, so it is unmistakably a 3D object being turned. */
+      rotY = BASE_YAW + Math.sin(el * 0.24) * 0.66;
       pivot.rotation.y += ((rotY + mx*0.30) - pivot.rotation.y) * 0.045;
       tiltX += ((-my*0.16) - tiltX) * 0.045;
       pivot.rotation.x = BASE_PITCH + tiltX;
