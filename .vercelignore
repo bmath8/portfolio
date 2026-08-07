@@ -27,7 +27,7 @@ scratchpad/
 #   vendor/lines/LineSegments2.js         the tract bundle: one instanced draw
 #   vendor/lines/LineSegmentsGeometry.js  call regardless of segment count
 #   vendor/lines/LineMaterial.js
-#   vendor/mesh/brain-icbm152-v2.bin      663 KB, 39,828 verts (BRN2 format)
+#   vendor/mesh/brain-icbm152-v3.bin      1.08 MB, 61,889 verts (BRN2 format)
 #
 # Two rules learned the hard way, both still in force:
 #
@@ -52,12 +52,13 @@ scratchpad/
 # AGPL asset -- superseded, must never ship
 vendor/mesh/brain-mni.bin
 
-# v1 of the shippable mesh. Superseded 2026-08-06 by brain-icbm152-v2.bin (BRN2:
-# same geometry, 836,324 -> 662,624 on disk, 748,625 -> 469,248 on the wire).
-# Kept on disk ONLY because scratchpad/pack_mesh_v2.py reads it to build v2 --
-# it is the sole surviving source for this mesh, so do not delete it. Excluded
-# by name so the two never both ship.
+# Superseded meshes. v3 (2026-08-07) is what the page loads: rebuilt from the
+# MNI ICBM152 volume with NO smoothing, 49.7% flat vs v1/v2's 71.4%, and 1.43x
+# the fold area. v1 and v2 are kept on disk as a rollback path -- if v3 ever has
+# to be reverted, point the loader back at v2 -- but only ONE of them may ship,
+# so both are excluded by name here.
 vendor/mesh/brain-icbm152.bin
+vendor/mesh/brain-icbm152-v2.bin
 
 # vendored but not used by the live page
 vendor/hdr/
@@ -72,3 +73,6 @@ vendor/lenis.min.js
 vendor/ScrollTrigger.min.js
 vendor/lines/Line2.js
 vendor/lines/LineGeometry.js
+
+# build_mesh.py intermediates -- never ship these
+*.npy

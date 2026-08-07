@@ -21,7 +21,7 @@
 <meta name="twitter:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
 <meta name="twitter:image" content="https://bmath8.vercel.app/og.png" />
 <!-- theme-color follows the page: this build is dark, the old one was paper -->
-<meta name="theme-color" content="#0a0b0b" />
+<meta name="theme-color" content="#191b1c" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <!--
   CONCEPT A — "LIVE INSTRUMENT"          2026-08-05
@@ -87,20 +87,25 @@
        here: its +0.05 offset compresses everything near black, so 1.04:1 reads as
        "similar" when it is actually invisible. Set by perceptual lightness instead,
        ~+6 L* per step, page kept deep because the cortex needs a dark field:
-         void 3.0 -> deep 7.7 -> panel 13.7 -> raise 20.1 -> edge 34.0
+       LIFTED AGAIN 2026-08-07 on Brian's call - the page ground was L* 3.0, i.e.
+       essentially black, which read as flat no matter how well the cards were
+       separated. The whole ramp moved up and kept its steps:
+         void 9.6 -> deep 14.7 -> panel 20.7 -> raise 28.0 -> edge 43.0
+       --mute lifted again to #b0b9c6: on the brighter --raise, #a2acba fell to
+       4.38 and would have failed AA.
        --mute was failing AA body contrast on ALL FOUR surfaces (3.45-4.26). Now 5.7+. */
-    --void:#0a0b0b;      /* page */
-    --deep:#161719;      /* band */
-    --panel:#222326;     /* card */
-    --raise:#2e3134;     /* raised / hover */
+    --void:#191b1c;      /* page */
+    --deep:#242528;      /* band */
+    --panel:#303236;     /* card */
+    --raise:#404247;     /* raised / hover */
     --lift:#eef1f5;      /* the light surface - used sparingly, for rhythm */
 
     /* lines - actually visible, unlike the old ones */
-    --edge:#4d5057;      /* border you can see */
-    --hair:#1c1e20;      /* quiet divider */
+    --edge:#61666c;      /* border you can see */
+    --hair:#2b2c2f;      /* quiet divider */
 
     /* text */
-    --ink:#f5f7fa; --ink2:#c3ccd8; --mute:#a2acba;
+    --ink:#f5f7fa; --ink2:#c3ccd8; --mute:#b0b9c6;
     --ink-on-lift:#12151a; --ink2-on-lift:#454c57;
 
     /* accents - one cool, one warm, so the page is not all one temperature */
@@ -122,7 +127,7 @@
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
 
   /* ---------- contact header: ENDORSED, monogram left, buttons right ---------- */
-  header{position:sticky;top:0;z-index:50;background:rgba(10,11,11,.88);
+  header{position:sticky;top:0;z-index:50;background:rgba(25,27,28,.88);
     backdrop-filter:blur(14px);border-bottom:1px solid var(--edge)}
   .hbar{display:flex;align-items:center;justify-content:space-between;
     max-width:var(--maxw);margin:0 auto;padding:12px var(--gutter);gap:20px}
@@ -147,10 +152,13 @@
      Every section previously ended on a hard 1px border, which is what made the
      page read as stacked blocks. Borders are replaced by long gradient seams so
      each band dissolves into the next. */
-  .hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:center;
+  /* min-height was min(92vh,860px) with align-items:center, so on a tall window the
+     hero content floated in ~215px of dead space top AND bottom. Sized to its
+     content now, with a floor rather than a target. */
+  .hero{position:relative;min-height:min(76vh,720px);display:flex;align-items:center;
     overflow:hidden}
   .hero::before{content:'';position:absolute;left:0;right:0;bottom:0;height:190px;z-index:3;
-    pointer-events:none;background:linear-gradient(to bottom,rgba(10,11,11,0),var(--void))}
+    pointer-events:none;background:linear-gradient(to bottom,rgba(25,27,28,0),var(--void))}
   /* v16: the cortex is its OWN ELEMENT on the right, not a full-bleed wash behind
      the copy. A real left edge gives it a boundary to be an object at. */
   /* THE LAYOUT BUG, fixed 2026-08-07. #stage was position:absolute;right:0;width:53%
@@ -163,8 +171,8 @@
   /* readability scrim: the copy must win over the mesh, always */
   /* v16: this full-bleed scrim is what made the brain 'blend'. Off. */
   .hero::after{content:'';display:none;position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(100deg,var(--void) 24%,rgba(10,11,11,.88) 44%,rgba(10,11,11,0) 64%)}
-  @media(max-width:940px){.hero::after{background:linear-gradient(180deg,rgba(10,11,11,.92),rgba(10,11,11,.62))}}
+    background:linear-gradient(100deg,var(--void) 24%,rgba(25,27,28,.88) 44%,rgba(25,27,28,0) 64%)}
+  @media(max-width:940px){.hero::after{background:linear-gradient(180deg,rgba(25,27,28,.92),rgba(25,27,28,.62))}}
   .hero-grid{position:relative;z-index:2;width:100%;max-width:var(--maxw);margin:0 auto;
     padding:64px var(--gutter);display:grid;
     grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);
@@ -198,7 +206,7 @@
 
   .hero-right{position:relative;min-height:clamp(380px,52vh,620px)}
   .nodelabel{position:absolute;z-index:6;transform:translate(-50%,-150%);pointer-events:none;
-    font:500 12px/1 PlexMono;color:var(--cyan);background:rgba(10,11,11,.94);
+    font:500 12px/1 PlexMono;color:var(--cyan);background:rgba(25,27,28,.94);
     border:1px solid #2a5d55;padding:4px 8px;border-radius:3px;white-space:nowrap;
     opacity:0;transition:opacity .18s}
   #glfail{position:absolute;inset:0;display:none;place-items:center;color:var(--mute);
@@ -267,7 +275,7 @@
   /* hover readout shared by the interactive demos */
   .readout{position:absolute;right:12px;top:12px;z-index:3;text-align:right;
     font:400 11px/1.55 PlexMono;color:var(--ink2);pointer-events:none;
-    background:rgba(10,11,11,.9);border:1px solid var(--edge);border-radius:3px;
+    background:rgba(25,27,28,.9);border:1px solid var(--edge);border-radius:3px;
     padding:8px 12px;opacity:0;transition:opacity .15s}
   .readout.on{opacity:1}
   .readout b{color:var(--cyan);font-weight:500}
@@ -561,17 +569,22 @@ if (THREE) {
      vertices (what a normal vertex-cache optimiser does) would silently move every
      node on the cortex. It also compressed slightly worse.
 
-     Indices stay Uint16: 39,828 vertices. Above 65,535 this needs Uint32, and the
-     packer's "indices fit uint16" check is what will catch it.
+     Indices stay Uint16. v3 has 61,889 vertices - real headroom is now only ~3,600,
+     so any future rebuild must keep build_mesh.py's --verts under 65,535. The
+     packer refuses to write above that rather than producing a silently broken file.
 
-     PROVENANCE GAP, verified 2026-08-06: earlier notes said to regenerate the mesh
-     with scratchpad/build_mesh.py. That file does not exist -- not on disk, and
-     never in git history. brain-icbm152.bin is the only surviving source for this
-     geometry, which is why .vercelignore keeps it on disk while excluding it from
-     the deploy. Regenerating from the MNI ICBM152 2009c volume would mean rewriting
-     that script (threshold combined GM+WM probability maps, marching cubes,
-     Taubin smoothing). */
-  const buf = await (await fetch('/vendor/mesh/brain-icbm152-v2.bin')).arrayBuffer();
+     REBUILT 2026-08-07. The v2 mesh had lost its folds: 71.4% of its surface was
+     essentially flat and its area was 940 cm2 against ~1800 for a real cortex, so
+     "the colours erased the detail" was only half true - half the geometry was not
+     there. scratchpad/build_mesh.py now exists and regenerates from the MNI ICBM152
+     2009c volume with NO smoothing: marching cubes at 1 mm, largest component, then
+     QUADRIC DECIMATION to the vertex budget. Quadric error collapses flat regions
+     first and defends creases; Taubin is a low-pass filter and the gyri ARE the high
+     frequencies. Measured at 0/1/2/5 smoothing passes and every pass made it flatter,
+     so zero were used.
+       flat 71.4% -> 49.7%    fold area 940 -> 1342 cm2 (1.43x)    V 39,828 -> 61,889
+     Cost, stated plainly: 469 KB -> 814 KB over the wire. */
+  const buf = await (await fetch('/vendor/mesh/brain-icbm152-v3.bin')).arrayBuffer();
   const u8 = new Uint8Array(buf), dv = new DataView(buf);
   if (dv.getUint32(0,false) !== 0x42524e32) throw new Error('brain mesh: bad magic, expected BRN2');
   const nV = dv.getUint32(4,true), nT = dv.getUint32(8,true), pLen = dv.getUint32(12,true);
@@ -647,12 +660,16 @@ if (THREE) {
        on a black page that is brass, not tissue. Neutral grey with a faint cool cast,
        and the top pulled down from near-white so the surface is MATTE: the blown
        specular was itself erasing fold detail. */
-    gr.addColorStop(0.00,'#e4e8ea');
-    gr.addColorStop(0.13,'#c8ced3');
-    gr.addColorStop(0.34,'#9ba3aa');
-    gr.addColorStop(0.58,'#6b7278');
-    gr.addColorStop(0.78,'#3c4145');
-    gr.addColorStop(1.00,'#171a1c');
+    /* Brightened 2026-08-07 after the v3 rebuild. v3 carries far more curvature, so
+       the cavity term darkens much more of the surface than it did on the smooth v2 -
+       with the old ramp the whole cortex sank to roughly the value of the (now lifted)
+       page and read as a shadow. The object has to sit clearly ABOVE the page ground. */
+    gr.addColorStop(0.00,'#f4f6f7');
+    gr.addColorStop(0.13,'#e0e5e9');
+    gr.addColorStop(0.34,'#bcc4ca');
+    gr.addColorStop(0.58,'#949ca3');
+    gr.addColorStop(0.78,'#646b71');
+    gr.addColorStop(1.00,'#33383c');
     g.fillStyle=gr; g.beginPath(); g.arc(s/2,s/2,s/2,0,7); g.fill();
     const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
 
@@ -677,7 +694,7 @@ if (THREE) {
         'float cav = smoothstep(0.12, 0.88, vCurv);\n' +
         // ceiling pulled back from 1.28: the ICBM152 surface is smoother, so more
         // of it sits in the bright band and 1.28 clipped large areas to white
-        'gl_FragColor.rgb *= mix(0.44, 1.00, cav);\n' +
+        'gl_FragColor.rgb *= mix(0.58, 1.04, cav);\n' +
         // two-tone: cool violet down in the folds, neutral-bright on the ridges
         // Violet is a HINT in the deepest folds, not a tint over the whole mesh.
         // At vec3(0.70,0.63,1.18) this turned the brain purple - overcooked, and
@@ -851,16 +868,21 @@ if (THREE) {
   function layout(){
     const w=canvas.clientWidth||innerWidth, h=canvas.clientHeight||600;
     renderer.setSize(w,h,false); cam.aspect=w/h;
-    // push the brain to the right half on wide screens so copy has room
-    // Phase 1: further right again, and closer so it has more presence (~12% larger)
+    /* The off-axis framing below (camera x -1.58 looking at -0.46) existed to shove
+       the brain into the right half of a canvas that spanned the WHOLE viewport. The
+       canvas is now the right-hand grid column itself, so that offset was pushing the
+       object out of its own frame - which is why it read as small and adrift. Camera x
+       now matches lookAt x, so it is centred in its column, and z is pulled in from
+       3.62 to 2.95 so it fills the frame. The viewing ANGLE is unchanged: that comes
+       from pivot rotation (BASE_YAW), not from the camera offset. */
     if (w > 940){
-      cam.position.set(-1.58, .04, 3.62); cam.lookAt(-0.46,-.06,0);
+      cam.position.set(0, .04, 2.95); cam.lookAt(0,-.05,0);
     } else {
       // Narrow screens used to sit dead-on at x=0, which showed the brain from the
       // FRONT -- much harder to read as anatomy than the lateral three-quarter, and
       // z=3.18 cropped it top and bottom because the vertical FOV is the binding
       // constraint here. Keep the lateral character, dolly back for margin.
-      cam.position.set(-1.06, .05, 4.05); cam.lookAt(-0.30,-.02,0);
+      cam.position.set(0, .05, 3.30); cam.lookAt(0,-.02,0);
     }
     cam.updateProjectionMatrix();
   }
