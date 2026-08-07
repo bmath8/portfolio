@@ -300,7 +300,10 @@
      centrepiece, still the first thing you see, but no longer fighting the text. */
   @media(max-width:940px){
     .hero{display:block;min-height:auto;overflow:visible}
-    #stage{position:relative;inset:auto;height:42vh;min-height:250px;max-height:360px}
+    /* v17: the desktop rule is width:53% + border-left. `inset:auto` does NOT reset
+       either, so both must be undone explicitly or the canvas is 53% wide on a phone. */
+    #stage{position:relative;inset:auto;width:100%;border-left:0;
+      height:42vh;min-height:250px;max-height:360px}
     .hero::after{display:none}
     .hero::before{display:none}
     .hero-grid{grid-template-columns:1fr;padding:10px 22px 60px}
