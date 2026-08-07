@@ -21,7 +21,7 @@
 <meta name="twitter:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
 <meta name="twitter:image" content="https://bmath8.vercel.app/og.png" />
 <!-- theme-color follows the page: this build is dark, the old one was paper -->
-<meta name="theme-color" content="#191b1c" />
+<meta name="theme-color" content="#0c1014" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <!--
   CONCEPT A — "LIVE INSTRUMENT"          2026-08-05
@@ -79,52 +79,74 @@
      Plus --lift: one genuinely LIGHT surface, because he asked for "contrasts
      with light" and previously endorsed a light/dark rhythm.
      ================================================================ */
+  /* ============================================================================
+     PALETTE, rebuilt 2026-08-07. Brian, verbatim: "It's just basically dark grey
+     and cyan throughout. The same AI design color slop we continue to get over
+     and over." He is right, and it could not be fixed by adjusting the greys -
+     dark-mode-plus-cyan-accent IS the generated-design default, so the scheme
+     itself had to go.
+
+     What changed structurally: the page is now LIGHT-DOMINANT with deep ink zones,
+     instead of dark-everywhere with one light island. Inverting the dominance is
+     the strongest single move away from that default, and it produces the flow and
+     the distinct areas he keeps asking for. Adjacent bands now swing ~85 points of
+     perceptual lightness; before, the biggest step anywhere was 11.
+
+     Colour: warm paper against cool ink, rust as the primary accent, ochre for
+     data. No cyan anywhere.
+
+     SEMANTIC TOKENS. Components reference --bg/--surface/--fg/--edge/--accent, and
+     each band REDEFINES those. That is why a card knows to be light inside a paper
+     band and dark inside an ink band without a single per-section override - and it
+     is why the "cards blend into the background" bug cannot come back by omission.
+     ============================================================================ */
   :root{
-    /* Surfaces. The old comment here claimed "each step is a real, visible jump".
-       Measured 2026-08-07: it was not. void->deep was dL* 1.8 (invisible on a screen)
-       and panel->raise 4.5, so a card could not be told apart from the page - exactly
-       what Brian kept reporting as "no contrast". WCAG ratio is the WRONG metric down
-       here: its +0.05 offset compresses everything near black, so 1.04:1 reads as
-       "similar" when it is actually invisible. Set by perceptual lightness instead,
-       ~+6 L* per step, page kept deep because the cortex needs a dark field:
-       LIFTED AGAIN 2026-08-07 on Brian's call - the page ground was L* 3.0, i.e.
-       essentially black, which read as flat no matter how well the cards were
-       separated. The whole ramp moved up and kept its steps:
-         void 9.6 -> deep 14.7 -> panel 20.7 -> raise 28.0 -> edge 43.0
-       --mute lifted again to #b0b9c6: on the brighter --raise, #a2acba fell to
-       4.38 and would have failed AA.
-       --mute was failing AA body contrast on ALL FOUR surfaces (3.45-4.26). Now 5.7+. */
-    --void:#191b1c;      /* page */
-    --deep:#242528;      /* band */
-    --panel:#303236;     /* card */
-    --raise:#404247;     /* raised / hover */
-    --lift:#eef1f5;      /* the light surface - used sparingly, for rhythm */
+    /* RAW PALETTE. Second attempt, and the first one is worth recording: it was warm
+       cream (#f2eee6) with a rust accent - which the frontend-design calibration names
+       as generated-design default #1, "warm cream near #F4F1EA with a terracotta
+       accent". I had escaped dark-grey-plus-cyan by walking straight into the next
+       cliche. Caught before it shipped.
 
-    /* lines - actually visible, unlike the old ones */
-    --edge:#61666c;      /* border you can see */
-    --hair:#2b2c2f;      /* quiet divider */
+       This palette is derived from the subject instead of from a mood. The hero is a
+       real MNI ICBM152 neuroimaging volume and the page's whole argument is that every
+       number on it is checkable - so the vernacular is radiology and instrumentation:
 
-    /* text */
-    --ink:#f5f7fa; --ink2:#c3ccd8; --mute:#b0b9c6;
-    --ink-on-lift:#12151a; --ink2-on-lift:#454c57;
+         FILM  a light-BOX ground. Cool neutral, faintly blue-green - deliberately NOT
+               warm cream. This is the axis that separates it from default #1.
+         SCAN  cool near-black panels, the field a greyscale volume is read against.
+               Dark is a ZONE here, never the page, which is what separates it from
+               default #2 (near-black page + one acid accent).
+         AMBER a warning-lamp warm against a cool ground. The temperature clash is the
+               deliberate move; cream + terracotta is warm on warm, which is why it
+               reads as a filter rather than a decision.
+         RED   reserved for genuine failure. It is not decoration and appears nowhere
+               on the page today, because nothing is failing.
 
-    /* accents - one cool, one warm, so the page is not all one temperature */
-    /* ONE accent. --amber is the only second hue still in play, and only inside the
-       BoomBox diagram where it means 'transient' against cyan's 'durable' - i.e. it
-       carries a fact. --magenta and --violet are now unused; they were decoration. */
-    --cyan:#2ee6c6; --amber:#ffb340;
-    /* layout tokens - the page adapts instead of sitting in a fixed ribbon */
-    /* TWO widths, not one. --maxw was min(1920px,94vw) and every content section used
-       it, so on a 2560px screen the project cards rendered 1616px wide and the whole
-       page read as horizontally stretched. Section BACKGROUNDS still span the full
-       viewport - that is what makes the page feel like it uses the screen - while the
-       content inside them is capped at a measure you can actually read. */
-    --maxw:min(1560px, 94vw);        /* hero: copy + brain side by side */
-    --maxw-read:min(1180px, 92vw);   /* prose and cards */
+       Display stays Bricolage Grotesque - Brian approved it, and it keeps us off
+       default #3 (broadsheet hairlines + high-contrast serif). */
+    --film:#e7ecee;    --film2:#d8e0e3;   --film3:#c7d1d6;
+    --scan:#0c1014;    --scan2:#151c22;   --scan3:#1f2830;
+    --rule-l:#b3c0c6;  --rule-d:#333f49;
+    --hair-l:#cdd7db;  --hair-d:#1b232a;
+    --txt-l:#0d1215;   --txt-l2:#3d4a52;  --txt-l3:#5d6a72;
+    --txt-d:#eef3f5;   --txt-d2:#a8b6bf;  --txt-d3:#7d8b95;
+    /* the accent needs two values; one cannot pass AA on both grounds */
+    --amb-l:#8a5300;   --amb-d:#f5a623;
+    --fail-l:#a3231b;  --fail-d:#ff7a6b;
+
+    /* DEFAULT ZONE = the scan panel. Hero and footer live here. */
+    --bg:var(--scan); --surface:var(--scan2); --surface2:var(--scan3);
+    --fg:var(--txt-d); --fg2:var(--txt-d2); --fg3:var(--txt-d3);
+    --edge:var(--rule-d); --hair:var(--hair-d);
+    --accent:var(--amb-d); --accent2:var(--fail-d);
+    --on-accent:#180f00;
+
+    --maxw:min(1560px, 94vw);
+    --maxw-read:min(1180px, 92vw);
     --gutter:clamp(20px, 4vw, 64px);
   }
   *{box-sizing:border-box}
-  html,body{margin:0;background:var(--void);color:var(--ink);
+  html,body{margin:0;background:var(--bg);color:var(--fg);
     font:400 17px/1.6 PlexSans,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
   body{overflow-x:hidden}
   a{color:inherit}
@@ -139,16 +161,16 @@
     max-width:var(--maxw);margin:0 auto;padding:12px var(--gutter);gap:20px}
   .mono-badge{display:flex;align-items:center;gap:12px;min-width:0}
   .mk{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:3px;
-    background:var(--cyan);color:#04121a;font:800 15px/1 Bricolage;letter-spacing:.02em}
+    background:var(--accent);color:var(--on-accent);font:800 15px/1 Bricolage;letter-spacing:.02em}
   .who{font:600 15px/1.25 PlexSans;white-space:nowrap}
-  .who small{display:block;font:400 12.5px/1.3 PlexMono;color:var(--mute)}
+  .who small{display:block;font:400 12.5px/1.3 PlexMono;color:var(--fg3)}
   nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
   nav a{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:3px;
-    border:1px solid var(--edge);background:var(--panel);color:var(--ink2);
+    border:1px solid var(--edge);background:var(--surface);color:var(--fg2);
     font:500 13.5px/1 PlexMono;text-decoration:none;transition:.16s}
-  nav a:hover{border-color:var(--cyan);color:var(--cyan);background:var(--raise)}
-  nav a.cta{background:var(--cyan);border-color:var(--cyan);color:#04121a;font-weight:500}
-  nav a.cta:hover{background:#5cf0d9;color:#04121a}
+  nav a:hover{border-color:var(--accent);color:var(--accent);background:var(--surface2)}
+  nav a.cta{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:500}
+  nav a.cta:hover{background:var(--accent);filter:brightness(1.12);color:var(--on-accent)}
   nav svg{width:14px;height:14px;flex:none}
   nav a b{font-weight:500}
   @media(max-width:900px){nav a b{display:none}nav a{padding:8px 12px}}
@@ -164,7 +186,7 @@
   .hero{position:relative;min-height:min(76vh,720px);display:flex;align-items:center;
     overflow:hidden}
   .hero::before{content:'';position:absolute;left:0;right:0;bottom:0;height:190px;z-index:3;
-    pointer-events:none;background:linear-gradient(to bottom,rgba(25,27,28,0),var(--void))}
+    pointer-events:none;background:linear-gradient(to bottom,rgba(25,27,28,0),var(--bg))}
   /* v16: the cortex is its OWN ELEMENT on the right, not a full-bleed wash behind
      the copy. A real left edge gives it a boundary to be an object at. */
   /* THE LAYOUT BUG, fixed 2026-08-07. #stage was position:absolute;right:0;width:53%
@@ -177,7 +199,7 @@
   /* readability scrim: the copy must win over the mesh, always */
   /* v16: this full-bleed scrim is what made the brain 'blend'. Off. */
   .hero::after{content:'';display:none;position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(100deg,var(--void) 24%,rgba(25,27,28,.88) 44%,rgba(25,27,28,0) 64%)}
+    background:linear-gradient(100deg,var(--bg) 24%,rgba(25,27,28,.88) 44%,rgba(25,27,28,0) 64%)}
   @media(max-width:940px){.hero::after{background:linear-gradient(180deg,rgba(25,27,28,.92),rgba(25,27,28,.62))}}
   .hero-grid{position:relative;z-index:2;width:100%;max-width:var(--maxw);margin:0 auto;
     padding:64px var(--gutter);display:grid;
@@ -185,44 +207,44 @@
     gap:40px;align-items:center;pointer-events:none}
   .hero-copy{pointer-events:auto}
   .live{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:100px;
-    border:1px solid #2a5d55;background:#0b1f1c;color:var(--cyan);
+    border:1px solid var(--edge);background:var(--surface);color:var(--accent);
     font:500 13.5px/1 PlexMono;margin-bottom:24px}
-  .pip{width:7px;height:7px;border-radius:50%;background:var(--cyan);
-    box-shadow:0 0 0 0 rgba(46,230,198,.7);animation:pip 2.4s infinite}
-  @keyframes pip{70%{box-shadow:0 0 0 9px rgba(46,230,198,0)}100%{box-shadow:0 0 0 0 rgba(46,230,198,0)}}
+  .pip{width:7px;height:7px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 0 rgba(245,166,35,.7);animation:pip 2.4s infinite}
+  @keyframes pip{70%{box-shadow:0 0 0 9px rgba(245,166,35,0)}100%{box-shadow:0 0 0 0 rgba(245,166,35,0)}}
   h1{font:800 clamp(40px,5.4vw,74px)/1.02 Bricolage;letter-spacing:-.03em;margin:0 0 24px}
-  h1 em{font-style:normal;color:var(--cyan)}
+  h1 em{font-style:normal;color:var(--accent)}
   /* Type scale tightened to five real steps - 12 / 13.5 / 15 / 17 / 21 - roughly
      a 1.25 ratio. It previously ran 12/12.5/13/15/15.5/16/17/19, which is eight
      sizes inside seven pixels and reads as no hierarchy at all. */
-  .lede{font-size:21px;line-height:1.58;color:var(--ink2);max-width:33em;margin:0 0 32px}
-  .lede b{color:var(--ink);font-weight:600}
+  .lede{font-size:21px;line-height:1.58;color:var(--fg2);max-width:33em;margin:0 0 32px}
+  .lede b{color:var(--fg);font-weight:600}
 
   /* live metric strip - everest.suraj.work pattern, real numbers */
   .strip{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--edge);border-radius:4px;
-    background:var(--panel);overflow:hidden;max-width:560px}
+    background:var(--surface);overflow:hidden;max-width:560px}
   .met{flex:1 1 118px;padding:16px 16px;border-right:1px solid var(--edge)}
   .met:last-child{border-right:0}
   .met .v{font:500 26px/1 PlexMono;letter-spacing:-.02em}
-  .met .k{font:400 11.5px/1.4 PlexMono;color:var(--mute);margin-top:8px;
+  .met .k{font:400 11.5px/1.4 PlexMono;color:var(--fg3);margin-top:8px;
     text-transform:uppercase;letter-spacing:.07em}
   /* all four are the same KIND of fact, so same treatment. Colour is reserved for
      the one number that is genuinely live. */
-  .met .v{color:var(--ink)} .met.c .v{color:var(--cyan)}
+  .met .v{color:var(--fg)} .met.c .v{color:var(--accent)}
 
   .hero-right{position:relative;min-height:clamp(380px,52vh,620px)}
   .nodelabel{position:absolute;z-index:6;transform:translate(-50%,-150%);pointer-events:none;
-    font:500 12px/1 PlexMono;color:var(--cyan);background:rgba(25,27,28,.94);
-    border:1px solid #2a5d55;padding:4px 8px;border-radius:3px;white-space:nowrap;
+    font:500 12px/1 PlexMono;color:var(--accent);background:rgba(25,27,28,.94);
+    border:1px solid var(--edge);padding:4px 8px;border-radius:3px;white-space:nowrap;
     opacity:0;transition:opacity .18s}
-  #glfail{position:absolute;inset:0;display:none;place-items:center;color:var(--mute);
+  #glfail{position:absolute;inset:0;display:none;place-items:center;color:var(--fg3);
     font:400 14px PlexMono;text-align:center;padding:24px}
 
   /* ---------- content bands ---------- */
   section{padding:0;position:relative}   /* .band > .wrap owns the rhythm now */
   /* the deep band fades in and out rather than starting and stopping */
   .band-deep{background:linear-gradient(to bottom,
-    var(--void) 0%, var(--deep) 16%, var(--deep) 84%, var(--void) 100%)}
+    var(--bg) 0%, var(--surface) 16%, var(--surface) 84%, var(--bg) 100%)}
   /* REMOVED 2026-08-07. This was a 1px cyan line at left:50% running the full height
      of the page - it read as an unexplained seam down the middle of the layout, which is
      exactly what Brian reported. An earlier note already said "too subtle to see -
@@ -230,26 +252,34 @@
   /* Alternating full-bleed bands. Previously every dark section sat on --void and the
      page was one flat grey from top to bottom with a single light island. Now each band
      is a real step, and the light one is no longer the only relief. */
-  .band{position:relative}
-  /* A REAL light/dark rhythm, not four shades of the same grey. Brian: "the colors of
-     the whole background is mostly everything else is just dark gray ... should be
-     contrast and lighter and not just everything blending together."
-     In perceptual lightness the page now swings:
-        hero  L* 9.6  ->  work  20.7  ->  capabilities  94  ->  before  14.7  ->  foot 9.6
-     Cards inside a band always sit one step ABOVE it, so a card is never the same value
-     as the surface it lies on. */
-  .band-work{background:var(--panel);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)}
-  .band-work .proj{background:var(--raise)}
-  .band-work .demo{background:var(--panel)}
-  .band-before{background:var(--deep);border-top:1px solid var(--hair)}
-  .band-before .row{background:var(--panel)}
-  .band-foot{background:var(--void);border-top:1px solid var(--edge)}
+  .band{position:relative;background:var(--bg);color:var(--fg)}
+  /* Each band REDEFINES the semantic tokens, so every component inside it - cards,
+     borders, muted text, the accent - flips automatically. No per-section overrides.
+     Flow in perceptual lightness:  8 -> 94 -> 8 -> 89 -> 8  (was 9.6 -> 20.7 -> 95 ->
+     14.7 -> 9.6, i.e. one light island in a flat grey page). */
+  .band-paper{
+    --bg:var(--film); --surface:var(--film2); --surface2:var(--film3);
+    --fg:var(--txt-l); --fg2:var(--txt-l2); --fg3:var(--txt-l3);
+    --edge:var(--rule-l); --hair:var(--hair-l);
+    --accent:var(--amb-l); --accent2:var(--fail-l);
+    --on-accent:#f6fafb;
+  }
+  .band-paper2{
+    --bg:var(--film2); --surface:var(--film); --surface2:var(--film3);
+    --fg:var(--txt-l); --fg2:var(--txt-l2); --fg3:var(--txt-l3);
+    --edge:var(--rule-l); --hair:var(--hair-l);
+    --accent:var(--amb-l); --accent2:var(--fail-l);
+    --on-accent:#f6fafb;
+  }
+  /* A hard 1px rule at every zone change, so areas are DISTINCT rather than fading
+     into one another. Brian asked for "borders and distinct lines and areas". */
+  .band + .band{border-top:1px solid var(--edge)}
   .sec-h{display:flex;align-items:baseline;gap:16px;margin:0 0 12px}
   .sec-h h2{font:800 clamp(26px,3vw,38px)/1.1 Bricolage;letter-spacing:-.02em;margin:0}
-  .sec-sub{color:var(--mute);font-size:15px;max-width:56ch;margin:0 0 44px}
+  .sec-sub{color:var(--fg3);font-size:15px;max-width:56ch;margin:0 0 44px}
 
   .work{display:grid;gap:24px}
-  .proj{border:1px solid var(--edge);border-radius:6px;background:var(--panel);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  .proj{border:1px solid var(--edge);border-radius:6px;background:var(--surface);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
     overflow:hidden;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
   .proj-body{padding:32px 32px}
   .proj h3{font:800 25px/1.15 Bricolage;letter-spacing:-.02em;margin:0 0 4px}
@@ -259,76 +289,69 @@
      frame, so the whole card carries its identity instead of wearing a slab. */
   .tag{font:500 11.5px/1 PlexMono;text-transform:uppercase;letter-spacing:.09em;
     display:inline-block;margin-bottom:16px;padding:8px 12px;border-radius:3px;
-    color:#0a0b0b}
+    color:var(--on-accent)}
   /* ONE accent. Four hues were doing three unrelated jobs at once - hero node
      schedule-class, card identity, metric strip - and read as confetti. Cards are
      told apart by their content, not by each wearing a different colour. */
-  .proj .tag{background:transparent;border:1px solid var(--cyan);color:var(--cyan)}
+  .proj .tag{background:transparent;border:1px solid var(--accent);color:var(--accent)}
   .p1,.p2,.p3{border-color:var(--edge)}
-  .proj p{color:var(--ink2);font-size:15px;margin:0 0 20px}
+  .proj p{color:var(--fg2);font-size:15px;margin:0 0 20px}
   /* verification block - ENDORSED: every claim says where it came from */
   .verify{border-top:1px solid var(--edge);padding-top:16px;margin-top:4px}
   .verify li{list-style:none;display:flex;gap:12px;align-items:flex-start;
-    font:400 13.5px/1.55 PlexMono;color:var(--ink2);margin-bottom:8px}
+    font:400 13.5px/1.55 PlexMono;color:var(--fg2);margin-bottom:8px}
   .verify ul{margin:0;padding:0}
-  .verify .ck{color:var(--cyan);flex:none}
-  .verify .src{color:var(--mute)}
+  .verify .ck{color:var(--accent);flex:none}
+  .verify .src{color:var(--fg3)}
   .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
   .links a{padding:8px 16px;border:1px solid var(--edge);border-radius:3px;
-    font:500 13px/1 PlexMono;text-decoration:none;color:var(--ink);transition:.16s}
-  .links a:hover{border-color:var(--cyan);color:var(--cyan)}
-  .demo{background:var(--deep);border-left:1px solid var(--edge);min-height:290px;
+    font:500 13px/1 PlexMono;text-decoration:none;color:var(--fg);transition:.16s}
+  .links a:hover{border-color:var(--accent);color:var(--accent)}
+  .demo{background:var(--surface);border-left:1px solid var(--edge);min-height:290px;
     position:relative;display:grid;place-items:center}
   .demo canvas{display:block;width:100%;height:100%}
-  .demo .cap{position:absolute;left:14px;bottom:12px;font:400 11.5px/1 PlexMono;color:var(--mute);z-index:3}
+  .demo .cap{position:absolute;left:14px;bottom:12px;font:400 11.5px/1 PlexMono;color:var(--fg3);z-index:3}
   /* click-to-load poster for the live Squares app */
   .demo-live{padding:0}
   .poster{position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;
-    background:var(--void);display:grid;place-items:center;color:var(--ink)}
+    background:var(--bg);display:grid;place-items:center;color:var(--fg)}
   .poster canvas{position:absolute;inset:0;opacity:.5;transition:opacity .25s}
   .poster:hover canvas{opacity:.72}
   .play{position:relative;z-index:2;display:inline-flex;align-items:center;gap:8px;
-    padding:12px 20px;border-radius:3px;background:var(--cyan);color:#0a0b0b;
+    padding:12px 20px;border-radius:3px;background:var(--accent);color:var(--on-accent);
     font:500 13.5px/1 PlexMono;transition:.16s}
-  .poster:hover .play{background:#ff6ea3}
+  .poster:hover .play{background:var(--accent);filter:brightness(1.12)}
   .play svg{width:15px;height:15px}
   .poster-note{position:absolute;bottom:34px;left:0;right:0;z-index:2;text-align:center;
-    font:400 10.5px/1 PlexMono;color:var(--mute)}
+    font:400 10.5px/1 PlexMono;color:var(--fg3)}
   .demo-live iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
   /* hover readout shared by the interactive demos */
   .readout{position:absolute;right:12px;top:12px;z-index:3;text-align:right;
-    font:400 11px/1.55 PlexMono;color:var(--ink2);pointer-events:none;
+    font:400 11px/1.55 PlexMono;color:var(--fg2);pointer-events:none;
     background:rgba(25,27,28,.9);border:1px solid var(--edge);border-radius:3px;
     padding:8px 12px;opacity:0;transition:opacity .15s}
   .readout.on{opacity:1}
-  .readout b{color:var(--cyan);font-weight:500}
+  .readout b{color:var(--accent);font-weight:500}
   @media(max-width:880px){.proj{grid-template-columns:1fr}.demo{border-left:0;border-top:1px solid var(--edge)}}
 
   /* THE LIGHT BAND. Brian asked for "contrasts with light", and he endorsed a
      light/dark rhythm back in v3. One genuinely light surface in the middle of
      a dark page does more for contrast than any amount of tuning within the
      darks - and it gives the eye a place to rest before Experience. */
-  .band-lift{background:var(--lift);color:var(--ink-on-lift);
-    /* was an inset bevel - a skeuomorphic device used nowhere else on the page, so the
-     light band read as a different design from the dark cards. Flat rules instead,
-     matching how every other surface is bounded. */
-    border-top:1px solid #c3cad3;border-bottom:1px solid #c3cad3}
-  .band-lift h2{color:var(--ink-on-lift)}
-  .band-lift .sec-sub{color:var(--ink2-on-lift)}
   .caps{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;
-    background:#cfd6de;border:1px solid #cfd6de;border-radius:6px;overflow:hidden}
-  .cap-cell{background:#f7f9fb;padding:24px 24px}
-  .cap-cell h4{font:600 13px/1 PlexMono;color:#0a6f60;margin:0 0 12px;
+    background:var(--edge);border:1px solid var(--edge);border-radius:6px;overflow:hidden}
+  .cap-cell{background:var(--surface);padding:24px 24px}
+  .cap-cell h4{font:600 13px/1 PlexMono;color:var(--accent);margin:0 0 12px;
     text-transform:uppercase;letter-spacing:.08em}
-  .cap-cell p{margin:0;font-size:15px;color:var(--ink2-on-lift);line-height:1.55}
+  .cap-cell p{margin:0;font-size:15px;color:var(--txt-l2);line-height:1.55}
 
   .exp{display:grid;gap:0;border:1px solid var(--edge);border-radius:5px;overflow:hidden}
   .row{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:24px;
-    padding:24px 28px;background:var(--panel);border-bottom:1px solid var(--edge)}
+    padding:24px 28px;background:var(--surface);border-bottom:1px solid var(--edge)}
   .row:last-child{border-bottom:0}
   .row .r-role{font:600 16px/1.35 PlexSans}
-  .row .r-meta{font:400 13px/1.5 PlexMono;color:var(--mute);margin-top:4px}
-  .row p{margin:0;color:var(--ink2);font-size:15px}
+  .row .r-meta{font:400 13px/1.5 PlexMono;color:var(--fg3);margin-top:4px}
+  .row p{margin:0;color:var(--fg2);font-size:15px}
 
   /* SPECIFICITY, twice bitten. `section`/`footer` are element selectors so the
      `.wrap` class rule outranks them - originally that gave every section ZERO
@@ -342,15 +365,15 @@
   footer.band > .wrap{padding-bottom:calc(var(--band-y) + 24px)}
   footer{text-align:center}
   footer h2{font:800 clamp(28px,3.6vw,46px)/1.1 Bricolage;letter-spacing:-.025em;margin:0 0 16px}
-  footer p{color:var(--ink2);max-width:46ch;margin:0 auto 32px}
+  footer p{color:var(--fg2);max-width:46ch;margin:0 auto 32px}
   .fbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
   .fbtns a{padding:12px 24px;border-radius:3px;border:1px solid var(--edge);
-    background:var(--panel);text-decoration:none;font:500 14px/1 PlexMono;transition:.16s}
-  .fbtns a.pri{background:var(--cyan);border-color:var(--cyan);color:#04121a}
-  .fbtns a:hover{border-color:var(--cyan);color:var(--cyan)}
-  .fbtns a.pri:hover{background:#5cf0d9;color:#04121a}
+    background:var(--surface);text-decoration:none;font:500 14px/1 PlexMono;transition:.16s}
+  .fbtns a.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .fbtns a:hover{border-color:var(--accent);color:var(--accent)}
+  .fbtns a.pri:hover{background:var(--accent);filter:brightness(1.12);color:var(--on-accent)}
   /* the licence notice was wrapping mid-phrase inside the 46ch paragraph width */
-  .foot-note{margin-top:40px;font:400 12.5px/1.7 PlexMono;color:var(--mute);
+  .foot-note{margin-top:40px;font:400 12.5px/1.7 PlexMono;color:var(--fg3);
     max-width:74ch;margin-left:auto;margin-right:auto}
 
   /* MOBILE HERO. Previously the canvas stayed inset:0 behind the copy, so on a phone
@@ -379,7 +402,7 @@
     .who{white-space:normal}
   }
   @media(prefers-reduced-motion:reduce){.pip{animation:none}}
-  :focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 </style>
 
 <header>
@@ -408,7 +431,7 @@
         line it actually runs on. Everything below is code you can open.</p>
       <div class="strip">
         <div class="met c"><div class="v" id="m1">26</div><div class="k">agents live</div></div>
-        <div class="met"><div class="v">81<span style="color:var(--mute)">/81</span></div><div class="k">tests green</div></div>
+        <div class="met"><div class="v">81<span style="color:var(--fg3)">/81</span></div><div class="k">tests green</div></div>
         <!-- was "3 public repos", which was simply false: there are 8 public repos on the
              account. "3 systems shipped" is what the three case studies below actually
              argue, it matches the OG image alt text, and unlike a repo count it cannot
@@ -425,7 +448,7 @@
   </div>
 </div>
 
-<section class="band band-work"><div class="wrap">
+<section class="band band-paper band-work"><div class="wrap">
   <div class="sec-h"><h2>Selected work</h2></div>
   <p class="sec-sub">Three systems I built, tested, documented, and still operate. Every number
     below says where it came from, so you can check it rather than trust it.</p>
@@ -498,7 +521,7 @@
   </div>
 </div></section>
 
-<section class="band band-lift"><div class="wrap">
+<section class="band band-caps"><div class="wrap">
   <div class="sec-h"><h2>What I actually do</h2></div>
   <p class="sec-sub">Only things I can demonstrate or talk through in a live screen share.</p>
   <div class="caps">
@@ -509,7 +532,7 @@
   </div>
 </div></section>
 
-<section class="band band-before"><div class="wrap">
+<section class="band band-paper2 band-before"><div class="wrap">
   <div class="sec-h"><h2>Before this</h2></div>
   <p class="sec-sub">Short and honest. The projects above are the strongest evidence I have.</p>
   <div class="exp">
@@ -548,6 +571,17 @@
 { "imports": { "three": "/vendor/three.module.min.js" } }
 </script>
 <script type="module">
+  /* The demo canvases used to be drawn with hardcoded dark-zone colours. They now sit
+     inside a LIGHT band, so they read their palette from the element they are drawn on -
+     the same semantic tokens the CSS uses. Move a canvas to another band and it follows. */
+  function zone(el){
+    const cs = getComputedStyle(el);
+    const v = n => cs.getPropertyValue(n).trim();
+    return {fg:v('--fg'), fg2:v('--fg2'), fg3:v('--fg3'), edge:v('--edge'),
+            hair:v('--hair'), surface:v('--surface'), bg:v('--bg'),
+            accent:v('--accent'), accent2:v('--accent2')};
+  }
+
 /* ============================================================
    HERO — real cortical mesh + one node per real scheduled agent
    ============================================================ */
@@ -761,7 +795,7 @@ if (THREE) {
   /* Depth fog tied to the page ground. Without it the far side of the cortex renders
      at the same value as the near side and the object reads as a flat cut-out - a
      large part of why this looked like a cheap render. */
-  scene.fog = new THREE.Fog(0x191b1c, 2.35, 5.20);
+  scene.fog = new THREE.Fog(0x0c1014, 2.35, 5.20);
   const cam = new THREE.PerspectiveCamera(30,1,.01,60);
   const pivot = new THREE.Group(); scene.add(pivot);
   const brain = new THREE.Mesh(geo,mat); pivot.add(brain);
@@ -784,10 +818,10 @@ if (THREE) {
   function scheduleClass(cron){
     const p = cron.split(/\s+/);
     const hr = p[1], dom = p[2], dow = p[4];
-    if (dom !== '*') return {k:'monthly', c:0x2ee6c6};
-    if (dow !== '*') return {k:'weekly',  c:0x2ee6c6};
-    if (hr.includes('*')) return {k:'hourly', c:0x2ee6c6};
-    return {k:'daily', c:0x2ee6c6};
+    if (dom !== '*') return {k:'monthly', c:0xf5a623};
+    if (dow !== '*') return {k:'weekly',  c:0xf5a623};
+    if (hr.includes('*')) return {k:'hourly', c:0xf5a623};
+    return {k:'daily', c:0xf5a623};
   }
 
   // Farthest-point sampling over a candidate subsample of the surface.
@@ -893,7 +927,7 @@ if (THREE) {
   const tractGeo = new LineSegmentsGeometry();
   tractGeo.setPositions(segs);
   const tractMat = new LineMaterial({
-    color: 0x2ee6c6, linewidth: 1.35, dashed: true,
+    color: 0xf5a623, linewidth: 1.35, dashed: true,
     dashSize: 0.02, gapSize: 0.0001, transparent: true, depthTest: true,
   });
   tractMat.resolution.set(innerWidth, innerHeight);   // required or lines vanish
@@ -963,7 +997,7 @@ if (THREE) {
     hoverIdx = hit ? hit.instanceId : -1;
     if (hoverIdx >= 0){
       const n = nodePos[hoverIdx];
-      label.innerHTML = n.name + '<span style="color:var(--mute)">  ' + n.cron + '</span>';
+      label.innerHTML = n.name + '<span style="color:var(--fg3)">  ' + n.cron + '</span>';
       label.style.left = (e.clientX - r.left) + 'px';
       label.style.top  = (e.clientY - r.top)  + 'px';
       label.style.opacity = 1;
@@ -1048,29 +1082,30 @@ if (THREE) {
        carried by mark LENGTH, not by a fourth colour. The amber/cyan pair in the
        BoomBox diagram below is kept, because there it means something specific -
        transient versus durable - rather than just labelling a category. */
-    if (p[2]!=='*') return {k:'monthly', c:'#2ee6c6', len:1.00};
-    if (p[4]!=='*') return {k:'weekly',  c:'#2ee6c6', len:0.82};
-    if (p[1].includes('*')) return {k:'hourly', c:'#2ee6c6', len:0.64};
-    return {k:'daily', c:'#2ee6c6', len:0.46};
+    if (p[2]!=='*') return {k:'monthly', len:1.00};
+    if (p[4]!=='*') return {k:'weekly', len:0.82};
+    if (p[1].includes('*')) return {k:'hourly', len:0.64};
+    return {k:'daily', len:0.46};
   };
   let marks=[];
 
   function draw(){
+    const Z = zone(c);   /* re-read each frame: the canvas follows its band */
     const w=c.clientWidth,h=c.clientHeight,d=Math.min(devicePixelRatio||1,2);
     c.width=w*d;c.height=h*d; ctx.setTransform(d,0,0,d,0,0);
     ctx.clearRect(0,0,w,h);
     const cx=w/2, cy=h/2, R=Math.min(w,h)*0.34;
     marks=[];
 
-    ctx.strokeStyle='#242932'; ctx.lineWidth=1;
+    ctx.strokeStyle=Z.hair; ctx.lineWidth=1;
     ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.stroke();
-    ctx.font='400 9.5px PlexMono,monospace'; ctx.fillStyle='#6b7581'; ctx.textAlign='center';
+    ctx.font='400 9.5px PlexMono,monospace'; ctx.fillStyle=Z.fg3; ctx.textAlign='center';
     for(let hh=0;hh<24;hh+=3){
       const ang=(hh/24)*Math.PI*2-Math.PI/2;
       ctx.beginPath();
       ctx.moveTo(cx+Math.cos(ang)*(R-4),cy+Math.sin(ang)*(R-4));
       ctx.lineTo(cx+Math.cos(ang)*R,cy+Math.sin(ang)*R);
-      ctx.strokeStyle='#2d333d'; ctx.stroke();
+      ctx.strokeStyle=Z.edge; ctx.stroke();
       if(hh%6===0) ctx.fillText(String(hh).padStart(2,'0'),
         cx+Math.cos(ang)*(R+15),cy+Math.sin(ang)*(R+15)+3);
     }
@@ -1090,7 +1125,7 @@ if (THREE) {
         const x1=cx+Math.cos(ang)*(R-IN), y1=cy+Math.sin(ang)*(R-IN);
         const x2=cx+Math.cos(ang)*(R+7),  y2=cy+Math.sin(ang)*(R+7);
         ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
-        ctx.strokeStyle=cl.c; ctx.lineWidth=2.2; ctx.globalAlpha=.92; ctx.stroke();
+        ctx.strokeStyle=Z.accent; ctx.lineWidth=2.2; ctx.globalAlpha=.92; ctx.stroke();
         ctx.globalAlpha=1;
         marks.push({x:(x1+x2)/2,y:(y1+y2)/2,name:a.n,cron:a.cron,cls:cl.k,
                     t:String(H2).padStart(2,'0')+':'+String(mi).padStart(2,'0')});
@@ -1099,20 +1134,20 @@ if (THREE) {
 
     /* the 06:40-07:00 cluster is the story this dial tells - annotate it */
     const ca=((6+50/60)/24)*Math.PI*2-Math.PI/2;
-    ctx.strokeStyle='#2ee6c6'; ctx.globalAlpha=.34; ctx.lineWidth=1;
+    ctx.strokeStyle=Z.accent; ctx.globalAlpha=.34; ctx.lineWidth=1;
     ctx.beginPath(); ctx.arc(cx,cy,R+13,ca-0.17,ca+0.17); ctx.stroke(); ctx.globalAlpha=1;
-    ctx.fillStyle='#2ee6c6'; ctx.font='400 9.5px PlexMono,monospace'; ctx.textAlign='left';
+    ctx.fillStyle=Z.accent; ctx.font='400 9.5px PlexMono,monospace'; ctx.textAlign='left';
     ctx.fillText('06:40-07:00', cx+Math.cos(ca)*(R+27)-8, cy+Math.sin(ca)*(R+27));
 
     const now=new Date(), na=((now.getHours()+now.getMinutes()/60)/24)*Math.PI*2-Math.PI/2;
-    ctx.strokeStyle='#eaf2f8'; ctx.lineWidth=1.2; ctx.globalAlpha=.8;
+    ctx.strokeStyle=Z.fg; ctx.lineWidth=1.2; ctx.globalAlpha=.8;
     ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(na)*(R-14),cy+Math.sin(na)*(R-14));
     ctx.stroke(); ctx.globalAlpha=1;
 
     ctx.textAlign='center';
-    ctx.fillStyle='#eaf2f8'; ctx.font='500 26px PlexMono,monospace';
+    ctx.fillStyle=Z.fg; ctx.font='500 26px PlexMono,monospace';
     ctx.fillText(String(AGENTS.length||26),cx,cy+2);
-    ctx.fillStyle='#6b7581'; ctx.font='400 9px PlexMono,monospace';
+    ctx.fillStyle=Z.fg3; ctx.font='400 9px PlexMono,monospace';
     ctx.fillText('SCHEDULED',cx,cy+16);
   }
 
@@ -1140,14 +1175,15 @@ if (THREE) {
   if(c){
     const ctx=c.getContext('2d');
     function draw(){
+      const Z = zone(c);   /* re-read each frame: the canvas follows its band */
       const w=c.clientWidth,h=c.clientHeight,d=Math.min(devicePixelRatio||1,2);
       c.width=w*d;c.height=h*d;ctx.setTransform(d,0,0,d,0,0); ctx.clearRect(0,0,w,h);
       const S=Math.min(w,h)*0.66, x0=(w-S)/2, y0=(h-S)/2, cell=S/10;
       for(let r=0;r<10;r++)for(let q=0;q<10;q++){
-        ctx.fillStyle='#15181d';
+        ctx.fillStyle=Z.surface;
         ctx.fillRect(x0+q*cell+1,y0+r*cell+1,cell-2,cell-2);
       }
-      ctx.strokeStyle='#2d333d'; ctx.lineWidth=1; ctx.strokeRect(x0,y0,S,S);
+      ctx.strokeStyle=Z.edge; ctx.lineWidth=1; ctx.strokeRect(x0,y0,S,S);
     }
     draw(); addEventListener('resize',draw);
   }
@@ -1171,16 +1207,17 @@ if (THREE) {
 (function(){
   const c=document.getElementById('arch'); if(!c) return;
   const ctx=c.getContext('2d'); let t=0, run=true;
+  const Z = zone(c);
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.addEventListener('visibilitychange',()=>{run=!document.hidden; if(run)loop();});
   if(!ctx.roundRect) ctx.roundRect=function(x,y,w,h){this.rect(x,y,w,h);return this;};
 
   function box(x,y,w,h,label,sub,col){
-    ctx.fillStyle='#15181d'; ctx.strokeStyle=col; ctx.lineWidth=1.2;
+    ctx.fillStyle=Z.surface; ctx.strokeStyle=col; ctx.lineWidth=1.2;
     ctx.beginPath(); ctx.roundRect(x,y,w,h,3); ctx.fill(); ctx.stroke();
     ctx.fillStyle=col; ctx.font='500 11.5px PlexMono,monospace'; ctx.textAlign='center';
     ctx.fillText(label,x+w/2,y+h/2-1);
-    if(sub){ ctx.fillStyle='#6b7581'; ctx.font='400 9.5px PlexMono,monospace';
+    if(sub){ ctx.fillStyle=Z.fg3; ctx.font='400 9.5px PlexMono,monospace';
              ctx.fillText(sub,x+w/2,y+h/2+13); }
   }
 
@@ -1192,31 +1229,31 @@ if (THREE) {
     const yTop=h*0.12, yMid=h*0.43, yBot=h*0.74, BH=40;
     const divide=(yMid+BH+yBot)/2;
 
-    ctx.strokeStyle='#2d333d'; ctx.setLineDash([3,4]); ctx.lineWidth=1;
+    ctx.strokeStyle=Z.edge; ctx.setLineDash([3,4]); ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(w*0.05,divide); ctx.lineTo(w*0.95,divide); ctx.stroke();
     ctx.setLineDash([]);
     ctx.textAlign='left'; ctx.font='400 9px PlexMono,monospace';
-    ctx.fillStyle='#ffb340'; ctx.fillText('TRANSIENT - dies with the session', w*0.05, divide-7);
-    ctx.fillStyle='#2ee6c6'; ctx.fillText('DURABLE - survives a restart',      w*0.05, divide+14);
+    ctx.fillStyle=Z.accent2; ctx.fillText('TRANSIENT - dies with the session', w*0.05, divide-7);
+    ctx.fillStyle=Z.accent; ctx.fillText('DURABLE - survives a restart',      w*0.05, divide+14);
 
-    ctx.strokeStyle='#2d333d'; ctx.lineWidth=1;
+    ctx.strokeStyle=Z.edge; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(cx,yTop+BH); ctx.lineTo(cx,yMid); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx,yMid+BH); ctx.lineTo(cx,yBot); ctx.stroke();
 
     if(!reduce){
       const p=(t%150)/150;
-      ctx.fillStyle='#ffb340';
+      ctx.fillStyle=Z.accent2;
       ctx.beginPath(); ctx.arc(cx, yTop+BH+(yMid-yTop-BH)*p, 3.2, 0, 7); ctx.fill();
       if(p>0.55){
         const q=(p-0.55)/0.45;
-        ctx.fillStyle='#2ee6c6';
+        ctx.fillStyle=Z.accent;
         ctx.beginPath(); ctx.arc(cx, yMid+BH+(yBot-yMid-BH)*q, 3.2, 0, 7); ctx.fill();
       }
     }
 
     box(bx,yTop,BW,BH,'clients','listening together','#9db2c6');
-    box(bx,yMid,BW,BH,'WebSocket + Redis','playback position','#ffb340');
-    box(bx,yBot,BW,BH,'Postgres','queue, users, rooms','#2ee6c6');
+    box(bx,yMid,BW,BH,'WebSocket + Redis','playback position',Z.accent2);
+    box(bx,yBot,BW,BH,'Postgres','queue, users, rooms',Z.accent);
 
     t++; requestAnimationFrame(loop);
   }
