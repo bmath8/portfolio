@@ -114,7 +114,13 @@
        carries a fact. --magenta and --violet are now unused; they were decoration. */
     --cyan:#2ee6c6; --amber:#ffb340;
     /* layout tokens - the page adapts instead of sitting in a fixed ribbon */
-    --maxw:min(1920px, 94vw);
+    /* TWO widths, not one. --maxw was min(1920px,94vw) and every content section used
+       it, so on a 2560px screen the project cards rendered 1616px wide and the whole
+       page read as horizontally stretched. Section BACKGROUNDS still span the full
+       viewport - that is what makes the page feel like it uses the screen - while the
+       content inside them is capped at a measure you can actually read. */
+    --maxw:min(1560px, 94vw);        /* hero: copy + brain side by side */
+    --maxw-read:min(1180px, 92vw);   /* prose and cards */
     --gutter:clamp(20px, 4vw, 64px);
   }
   *{box-sizing:border-box}
@@ -124,7 +130,7 @@
   a{color:inherit}
   /* 1240px on a 2527px monitor left ~640px dead on each side and the page read as a
      ribbon down the middle. One token, used everywhere, that grows with the screen. */
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
+  .wrap{max-width:var(--maxw-read);margin:0 auto;padding:0 var(--gutter)}
 
   /* ---------- contact header: ENDORSED, monogram left, buttons right ---------- */
   header{position:sticky;top:0;z-index:50;background:rgba(25,27,28,.88);
@@ -213,14 +219,31 @@
     font:400 14px PlexMono;text-align:center;padding:24px}
 
   /* ---------- content bands ---------- */
-  section{padding:88px 0;position:relative}
+  section{padding:0;position:relative}   /* .band > .wrap owns the rhythm now */
   /* the deep band fades in and out rather than starting and stopping */
   .band-deep{background:linear-gradient(to bottom,
     var(--void) 0%, var(--deep) 16%, var(--deep) 84%, var(--void) 100%)}
-  /* a thin cyan thread runs the length of the page, handing the eye downward */
-  .thread{position:absolute;left:50%;top:0;bottom:0;width:1px;pointer-events:none;z-index:0;
-    background:linear-gradient(to bottom,rgba(46,230,198,0),rgba(46,230,198,.22),rgba(46,230,198,0))}
-  @media(max-width:880px){.thread{display:none}}
+  /* REMOVED 2026-08-07. This was a 1px cyan line at left:50% running the full height
+     of the page - it read as an unexplained seam down the middle of the layout, which is
+     exactly what Brian reported. An earlier note already said "too subtle to see -
+     either raise it or cut it". Cut. */
+  /* Alternating full-bleed bands. Previously every dark section sat on --void and the
+     page was one flat grey from top to bottom with a single light island. Now each band
+     is a real step, and the light one is no longer the only relief. */
+  .band{position:relative}
+  /* A REAL light/dark rhythm, not four shades of the same grey. Brian: "the colors of
+     the whole background is mostly everything else is just dark gray ... should be
+     contrast and lighter and not just everything blending together."
+     In perceptual lightness the page now swings:
+        hero  L* 9.6  ->  work  20.7  ->  capabilities  94  ->  before  14.7  ->  foot 9.6
+     Cards inside a band always sit one step ABOVE it, so a card is never the same value
+     as the surface it lies on. */
+  .band-work{background:var(--panel);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)}
+  .band-work .proj{background:var(--raise)}
+  .band-work .demo{background:var(--panel)}
+  .band-before{background:var(--deep);border-top:1px solid var(--hair)}
+  .band-before .row{background:var(--panel)}
+  .band-foot{background:var(--void);border-top:1px solid var(--edge)}
   .sec-h{display:flex;align-items:baseline;gap:16px;margin:0 0 12px}
   .sec-h h2{font:800 clamp(26px,3vw,38px)/1.1 Bricolage;letter-spacing:-.02em;margin:0}
   .sec-sub{color:var(--mute);font-size:15px;max-width:56ch;margin:0 0 44px}
@@ -289,7 +312,7 @@
     /* was an inset bevel - a skeuomorphic device used nowhere else on the page, so the
      light band read as a different design from the dark cards. Flat rules instead,
      matching how every other surface is bounded. */
-    border-top:1px solid #d5dae1;border-bottom:1px solid #d5dae1}
+    border-top:1px solid #c3cad3;border-bottom:1px solid #c3cad3}
   .band-lift h2{color:var(--ink-on-lift)}
   .band-lift .sec-sub{color:var(--ink2-on-lift)}
   .caps{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;
@@ -307,13 +330,17 @@
   .row .r-meta{font:400 13px/1.5 PlexMono;color:var(--mute);margin-top:4px}
   .row p{margin:0;color:var(--ink2);font-size:15px}
 
-  /* SPECIFICITY BUG FIXED HERE. `section` and `footer` are element selectors, so
-     `.wrap{padding:0 32px}` outranked them and every `<section class="wrap">` and the
-     footer were rendering with ZERO vertical padding -- which is why Experience butted
-     straight into the closing CTA. Re-stated at class specificity. */
-  section.wrap{padding:88px 32px}
-  footer.wrap{padding:80px 32px 96px}
-  footer{padding:80px 0 96px;text-align:center}
+  /* SPECIFICITY, twice bitten. `section`/`footer` are element selectors so the
+     `.wrap` class rule outranks them - originally that gave every section ZERO
+     vertical padding and Experience butted into the CTA. The 2026-08-07 re-nest
+     (sections became full-bleed .band wrappers with .wrap inside) broke the
+     `section.wrap` fix too, because .wrap is no longer ON the section. Padding now
+     lives on .band > .wrap, which matches the actual structure, and the vertical
+     rhythm is a token so bands cannot drift apart. */
+  :root{--band-y:clamp(64px,7vw,112px)}
+  .band > .wrap{padding-top:var(--band-y);padding-bottom:var(--band-y)}
+  footer.band > .wrap{padding-bottom:calc(var(--band-y) + 24px)}
+  footer{text-align:center}
   footer h2{font:800 clamp(28px,3.6vw,46px)/1.1 Bricolage;letter-spacing:-.025em;margin:0 0 16px}
   footer p{color:var(--ink2);max-width:46ch;margin:0 auto 32px}
   .fbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
@@ -398,8 +425,7 @@
   </div>
 </div>
 
-<section class="wrap">
-  <span class="thread" aria-hidden="true"></span>
+<section class="band band-work"><div class="wrap">
   <div class="sec-h"><h2>Selected work</h2></div>
   <p class="sec-sub">Three systems I built, tested, documented, and still operate. Every number
     below says where it came from, so you can check it rather than trust it.</p>
@@ -470,9 +496,9 @@
         <span class="cap">why the split matters</span></div>
     </article>
   </div>
-</section>
+</div></section>
 
-<section class="band-lift"><div class="wrap">
+<section class="band band-lift"><div class="wrap">
   <div class="sec-h"><h2>What I actually do</h2></div>
   <p class="sec-sub">Only things I can demonstrate or talk through in a live screen share.</p>
   <div class="caps">
@@ -483,7 +509,7 @@
   </div>
 </div></section>
 
-<section class="wrap">
+<section class="band band-before"><div class="wrap">
   <div class="sec-h"><h2>Before this</h2></div>
   <p class="sec-sub">Short and honest. The projects above are the strongest evidence I have.</p>
   <div class="exp">
@@ -500,9 +526,9 @@
       <p>Led the appliances sales floor: advised customers through major purchases, resolved complaints and post-sale problems in person, supported the team day to day.</p>
     </div>
   </div>
-</section>
+</div></section>
 
-<footer class="wrap">
+<footer class="band band-foot"><div class="wrap">
   <h2>The machine is running. Come look at it.</h2>
   <p>Open to remote, hybrid, on-site or relocation, and available to start quickly.</p>
   <div class="fbtns">
@@ -673,7 +699,7 @@ if (THREE) {
     g.fillStyle=gr; g.beginPath(); g.arc(s/2,s/2,s/2,0,7); g.fill();
     const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
 
-  const mat = new THREE.MeshMatcapMaterial({matcap:mc});
+  const mat = new THREE.MeshMatcapMaterial({matcap:mc, fog:true});
   mat.onBeforeCompile = s => {
     s.vertexShader = s.vertexShader
       .replace('void main() {','attribute float aCurv;\nvarying float vCurv;\nvoid main() {')
@@ -701,12 +727,41 @@ if (THREE) {
         // purple-dominant reads as the exact AI-gradient tell we avoid.
         // cyan fresnel rim - separates the silhouette hard from the background
         // and puts the approved accent ON the object, not just in the UI
+        /* --------------------------------------------------------------------
+           Three things a bare matcap cannot do, which is why this read as a "low
+           definition 3D rendering" regardless of how many triangles the mesh has.
+
+           1. SCREEN-SPACE CREASE AO. fwidth(normal) is large exactly where the
+              normal turns fastest - i.e. in a sulcus - and it is measured per
+              PIXEL, so crease definition no longer depends on mesh density. This
+              is the single biggest legibility win available here.
+           2. A FORM LIGHT. A matcap is view-locked, so the object has no fixed
+              light and therefore no consistent sense of volume. A soft directional
+              term gives it one, kept gentle so the matcap still leads.
+           3. A NARROW SPECULAR, so the surface reads as damp tissue rather than
+              flat clay. Small and tight: broad highlights were erasing folds.
+           -------------------------------------------------------------------- */
+        'vec3 nv = normalize(normal);\n' +
+        'float crease = clamp(length(fwidth(nv)) * 5.2, 0.0, 1.0);\n' +
+        'gl_FragColor.rgb *= (1.0 - 0.62 * crease);\n' +
+        'vec3 Ldir = normalize(vec3(-0.35, 0.78, 0.52));\n' +
+        'float ndl = clamp(dot(nv, Ldir), 0.0, 1.0);\n' +
+        'gl_FragColor.rgb *= (0.78 + 0.34 * ndl);\n' +
+        'vec3 Vv = normalize(vViewPosition);\n' +
+        'float spec = pow(clamp(dot(reflect(-Ldir, nv), Vv), 0.0, 1.0), 42.0);\n' +
+        'gl_FragColor.rgb += vec3(0.85,0.90,0.94) * spec * 0.30 * (1.0 - crease);\n' +
         'gl_FragColor.rgb += vec3(0.72,0.68,0.62) * fres * 0.14;');
   };
 
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+  /* was capped at 1.5, which is what made a 2560px canvas look like a low-resolution
+     render. 2.0 doubles the sample count on the diagonal creases. */
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
   const scene = new THREE.Scene();
+  /* Depth fog tied to the page ground. Without it the far side of the cortex renders
+     at the same value as the near side and the object reads as a flat cut-out - a
+     large part of why this looked like a cheap render. */
+  scene.fog = new THREE.Fog(0x191b1c, 2.35, 5.20);
   const cam = new THREE.PerspectiveCamera(30,1,.01,60);
   const pivot = new THREE.Group(); scene.add(pivot);
   const brain = new THREE.Mesh(geo,mat); pivot.add(brain);
@@ -944,7 +999,12 @@ if (THREE) {
       // rejection. +/- 9 degrees over ~57s keeps it alive and always legible.
       /* v16: the +/-9deg sway read as STUCK. Continuous yaw, one revolution per
          ~40s, so it is unmistakably a 3D object being turned. */
-      rotY = BASE_YAW + Math.sin(el * 0.24) * 0.66;
+      /* A CONTINUOUS ORBIT, one revolution per ~46s. The +/-38 degree wobble it
+         replaces was the 'basic and boring' motion: it never showed a new face, so
+         the object never actually read as three-dimensional. The v3 mesh is a
+         complete brain including the cerebellum, so every angle is presentable -
+         which was not true of the old hemisphere-with-an-open-face mesh. */
+      rotY = BASE_YAW + el * (Math.PI * 2 / 46);
       pivot.rotation.y += ((rotY + mx*0.30) - pivot.rotation.y) * 0.045;
       tiltX += ((-my*0.16) - tiltX) * 0.045;
       pivot.rotation.x = BASE_PITCH + tiltX;
