@@ -108,19 +108,24 @@
        BoomBox diagram where it means 'transient' against cyan's 'durable' - i.e. it
        carries a fact. --magenta and --violet are now unused; they were decoration. */
     --cyan:#2ee6c6; --amber:#ffb340;
+    /* layout tokens - the page adapts instead of sitting in a fixed ribbon */
+    --maxw:min(1920px, 94vw);
+    --gutter:clamp(20px, 4vw, 64px);
   }
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--void);color:var(--ink);
     font:400 17px/1.6 PlexSans,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
   body{overflow-x:hidden}
   a{color:inherit}
-  .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+  /* 1240px on a 2527px monitor left ~640px dead on each side and the page read as a
+     ribbon down the middle. One token, used everywhere, that grows with the screen. */
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
 
   /* ---------- contact header: ENDORSED, monogram left, buttons right ---------- */
   header{position:sticky;top:0;z-index:50;background:rgba(10,11,11,.88);
     backdrop-filter:blur(14px);border-bottom:1px solid var(--edge)}
   .hbar{display:flex;align-items:center;justify-content:space-between;
-    max-width:1240px;margin:0 auto;padding:12px 32px;gap:20px}
+    max-width:var(--maxw);margin:0 auto;padding:12px var(--gutter);gap:20px}
   .mono-badge{display:flex;align-items:center;gap:12px;min-width:0}
   .mk{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:3px;
     background:var(--cyan);color:#04121a;font:800 15px/1 Bricolage;letter-spacing:.02em}
@@ -148,15 +153,21 @@
     pointer-events:none;background:linear-gradient(to bottom,rgba(10,11,11,0),var(--void))}
   /* v16: the cortex is its OWN ELEMENT on the right, not a full-bleed wash behind
      the copy. A real left edge gives it a boundary to be an object at. */
-  #stage{position:absolute;right:0;top:0;bottom:0;left:auto;width:53%;height:100%;
-    display:block;border-left:1px solid var(--edge)}
+  /* THE LAYOUT BUG, fixed 2026-08-07. #stage was position:absolute;right:0;width:53%
+     - positioned against the VIEWPORT - while .hero-grid is capped at a max-width and
+     centred. Two unrelated coordinate systems. At 2527px the grid spanned x643-1883
+     but the canvas spanned x1188-2527, so the brain was flung to the far edge with a
+     dead gap between it and the copy. It now lives INSIDE the grid's right column, so
+     it is positioned relative to the same box as the text at every width. */
+  #stage{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:auto}
   /* readability scrim: the copy must win over the mesh, always */
   /* v16: this full-bleed scrim is what made the brain 'blend'. Off. */
   .hero::after{content:'';display:none;position:absolute;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(100deg,var(--void) 24%,rgba(10,11,11,.88) 44%,rgba(10,11,11,0) 64%)}
   @media(max-width:940px){.hero::after{background:linear-gradient(180deg,rgba(10,11,11,.92),rgba(10,11,11,.62))}}
-  .hero-grid{position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;
-    padding:64px 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  .hero-grid{position:relative;z-index:2;width:100%;max-width:var(--maxw);margin:0 auto;
+    padding:64px var(--gutter);display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);
     gap:40px;align-items:center;pointer-events:none}
   .hero-copy{pointer-events:auto}
   .live{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:100px;
@@ -185,7 +196,7 @@
      the one number that is genuinely live. */
   .met .v{color:var(--ink)} .met.c .v{color:var(--cyan)}
 
-  .hero-right{pointer-events:none;position:relative;min-height:380px}
+  .hero-right{position:relative;min-height:clamp(380px,52vh,620px)}
   .nodelabel{position:absolute;z-index:6;transform:translate(-50%,-150%);pointer-events:none;
     font:500 12px/1 PlexMono;color:var(--cyan);background:rgba(10,11,11,.94);
     border:1px solid #2a5d55;padding:4px 8px;border-radius:3px;white-space:nowrap;
@@ -314,14 +325,16 @@
      centrepiece, still the first thing you see, but no longer fighting the text. */
   @media(max-width:940px){
     .hero{display:block;min-height:auto;overflow:visible}
-    /* v17: the desktop rule is width:53% + border-left. `inset:auto` does NOT reset
-       either, so both must be undone explicitly or the canvas is 53% wide on a phone. */
-    #stage{position:relative;inset:auto;width:100%;border-left:0;
-      height:42vh;min-height:250px;max-height:360px}
+    /* The canvas now lives inside .hero-right, which sets the height at this width,
+       so the canvas just fills it. (The old rule here fought a viewport-positioned
+       canvas that no longer exists.) */
+    #stage{position:absolute;inset:0;width:100%;height:100%}
     .hero::after{display:none}
     .hero::before{display:none}
-    .hero-grid{grid-template-columns:1fr;padding:12px 24px 60px}
-    .hero-right{display:none}
+    .hero-grid{grid-template-columns:1fr;padding:12px var(--gutter) 60px;gap:28px}
+    /* was display:none, which now would delete the canvas itself. Keep it, put it
+       ABOVE the copy, and give it a contained height. */
+    .hero-right{display:block;order:-1;min-height:0;height:min(42vh,340px)}
     #glfail{position:static;height:250px}
   }
   /* the contact bar stacks instead of colliding with the name on small screens */
@@ -351,8 +364,6 @@
 </header>
 
 <div class="hero">
-  <canvas id="stage" aria-label="A cortical surface carrying 26 nodes, one for each scheduled agent running on Brian's machine. Each node brightens at the time its job actually runs."></canvas>
-  <div id="glfail">26 scheduled agents are running on this machine right now.<br>81 tests green.</div>
   <div class="hero-grid">
     <div class="hero-copy">
       <div class="live"><span class="pip"></span><span id="nextrun">26 agents scheduled on real cron lines</span></div>
@@ -371,7 +382,11 @@
         <div class="met v_"><div class="v">0</div><div class="k">manual triggers</div></div>
       </div>
     </div>
-    <div class="hero-right"><div class="nodelabel" id="nlabel"></div></div>
+    <div class="hero-right">
+      <canvas id="stage" aria-label="A cortical surface carrying 26 nodes, one for each scheduled agent running on Brian's machine. Each node brightens at the time its job actually runs."></canvas>
+      <div id="glfail">26 scheduled agents are running on this machine right now.<br>81 tests green.</div>
+      <div class="nodelabel" id="nlabel"></div>
+    </div>
   </div>
 </div>
 
@@ -628,12 +643,16 @@ if (THREE) {
     /* v16: a BONE ramp, not a blue one. Object, rim glow and UI accent were all
        the same blue-cyan family, so they dissolved into each other. A warm object
        against cool UI cannot blend. No pure white at the top - that was the chrome. */
-    gr.addColorStop(0.00,'#fbf8f3');
-    gr.addColorStop(0.13,'#ece3d6');
-    gr.addColorStop(0.34,'#bcb0a0');
-    gr.addColorStop(0.58,'#837868');
-    gr.addColorStop(0.78,'#4a443b');
-    gr.addColorStop(1.00,'#1a1815');
+    /* The bone ramp read as GOLD - #bcb0a0 / #837868 / #4a443b are warm mid-tones and
+       on a black page that is brass, not tissue. Neutral grey with a faint cool cast,
+       and the top pulled down from near-white so the surface is MATTE: the blown
+       specular was itself erasing fold detail. */
+    gr.addColorStop(0.00,'#e4e8ea');
+    gr.addColorStop(0.13,'#c8ced3');
+    gr.addColorStop(0.34,'#9ba3aa');
+    gr.addColorStop(0.58,'#6b7278');
+    gr.addColorStop(0.78,'#3c4145');
+    gr.addColorStop(1.00,'#171a1c');
     g.fillStyle=gr; g.beginPath(); g.arc(s/2,s/2,s/2,0,7); g.fill();
     const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
 
@@ -652,10 +671,13 @@ if (THREE) {
       .replace('#include <dithering_fragment>',
         '#include <dithering_fragment>\n' +
         // cavity: sulci go dark, ridges go bright - a WIDER spread than before
-        'float cav = smoothstep(0.30, 0.70, vCurv);\n' +
+        /* WIDER, not narrower. A narrow window maps almost everything to full-bright or
+           full-dark, which is exactly what wiped the mid-tones where the fine folds
+           live. Widening it puts more of the surface in the readable middle. */
+        'float cav = smoothstep(0.12, 0.88, vCurv);\n' +
         // ceiling pulled back from 1.28: the ICBM152 surface is smoother, so more
         // of it sits in the bright band and 1.28 clipped large areas to white
-        'gl_FragColor.rgb *= mix(0.30, 1.10, cav);\n' +
+        'gl_FragColor.rgb *= mix(0.44, 1.00, cav);\n' +
         // two-tone: cool violet down in the folds, neutral-bright on the ridges
         // Violet is a HINT in the deepest folds, not a tint over the whole mesh.
         // At vec3(0.70,0.63,1.18) this turned the brain purple - overcooked, and
