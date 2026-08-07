@@ -83,13 +83,31 @@ def br(b, q=3):
     return len(brotli.compress(bytes(b), quality=q))
 
 
-raw = SRC.read_bytes()
-nV, nT = struct.unpack_from("<II", raw, 0)
-o = 8
-qp = np.frombuffer(raw, "<i2", nV * 3, o).reshape(nV, 3).astype(np.int64); o += nV * 3 * 2
-qn = np.frombuffer(raw, "i1", nV * 3, o).reshape(nV, 3); o += nV * 3
-idx = np.frombuffer(raw, "<u2", nT * 3, o).reshape(nT, 3).astype(np.int64)
-print(f"source {SRC.name}: nV={nV:,} nT={nT:,} bytes={len(raw):,}")
+if len(sys.argv) > 1 and sys.argv[1] == "--npy":
+    # Fresh output from build_mesh.py: float positions/normals + an index array.
+    stem = pathlib.Path(sys.argv[2])
+    DST = ROOT / "vendor" / "mesh" / (stem.name + ".bin")
+    P = np.load(stem.with_suffix(".pos.npy"))
+    N = np.load(stem.with_suffix(".nrm.npy"))
+    idx = np.load(stem.with_suffix(".idx.npy")).astype(np.int64)
+    nV, nT = len(P), len(idx)
+    if nV > 65535:
+        sys.exit(f"REFUSING: {nV:,} vertices exceeds the Uint16 index ceiling")
+    # same quantisation the loader expects: positions /32767, normals /127
+    qp = np.rint(np.clip(P, -1, 1) * 32767).astype(np.int64)
+    qn = np.rint(np.clip(N, -1, 1) * 127).astype(np.int8)
+    print(f"source {stem.name}.*.npy: nV={nV:,} nT={nT:,}")
+    err = np.abs(qp / 32767.0 - P).max()
+    print(f"  position quantisation error: {err:.2e} model units "
+          f"(~{err*170:.3f} mm on a 170 mm brain)")
+else:
+    raw = SRC.read_bytes()
+    nV, nT = struct.unpack_from("<II", raw, 0)
+    o = 8
+    qp = np.frombuffer(raw, "<i2", nV * 3, o).reshape(nV, 3).astype(np.int64); o += nV * 3 * 2
+    qn = np.frombuffer(raw, "i1", nV * 3, o).reshape(nV, 3); o += nV * 3
+    idx = np.frombuffer(raw, "<u2", nT * 3, o).reshape(nT, 3).astype(np.int64)
+    print(f"source {SRC.name}: nV={nV:,} nT={nT:,} bytes={len(raw):,}")
 
 # ---- positions: plane-split zigzag delta ----
 pos_stream = b"".join(varint(zig(np.diff(np.concatenate(([0], qp[:, k]))))) for k in range(3))
@@ -184,6 +202,8 @@ if fail:
 
 DST.write_bytes(out)
 print(f"\nwrote {DST.name}")
-print(f"  disk  {len(raw):>9,} -> {len(out):>9,}   ({100*(1-len(out)/len(raw)):.1f}% off)")
-print(f"  br3   {br(raw):>9,} -> {br(out):>9,}   ({100*(1-br(out)/br(raw)):.1f}% off)  <- q3 = the measured CDN setting")
-print(f"  br11  {br(raw,11):>9,} -> {br(out,11):>9,}")
+base = len(raw) if "raw" in dir() else 8 + nV*3*2 + nV*3 + nT*3*2
+print(f"  disk  {base:>9,} (unpacked) -> {len(out):>9,}   ({100*(1-len(out)/base):.1f}% off)")
+rawbytes = raw if "raw" in dir() else (MAGIC + struct.pack("<IIII",nV,nT,0,0) + qp.astype("<i2").tobytes() + qn.astype("i1").tobytes() + idx.astype("<u2").tobytes())
+print(f"  br3   {br(rawbytes):>9,} -> {br(out):>9,}   ({100*(1-br(out)/br(rawbytes)):.1f}% off)  <- q3 = the measured CDN setting")
+print(f"  br11  {br(rawbytes,11):>9,} -> {br(out,11):>9,}")
