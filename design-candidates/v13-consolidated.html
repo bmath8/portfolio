@@ -874,16 +874,18 @@ if (THREE) {
   /* Replace the dash discard with a Gaussian head. The resting tract stays
      dim and keeps describing the path; the pulse is the activity. */
   tractMat.onBeforeCompile = sh => {
-    sh.uniforms.uHead = { value: 0 };
+    sh.uniforms.uHead  = { value: 0 };
+    sh.uniforms.uIntro = { value: 0 };   // tracts fade in behind the node intro
     sh.fragmentShader = sh.fragmentShader
-      .replace('uniform float dashOffset;', 'uniform float dashOffset;\nuniform float uHead;')
+      .replace('uniform float dashOffset;',
+               'uniform float dashOffset;\nuniform float uHead;\nuniform float uIntro;')
       .replace(
         'if ( mod( vLineDistance + dashOffset, dashSize + gapSize ) > dashSize ) discard;',
         'float d = abs(fract(vLineDistance * 0.06 - uHead) - 0.5);\n' +
         'float pulse = exp(-d * d * 120.0);\n' +
         'diffuseColor.rgb += pulse * 1.9;\n' +
         // resting tract stays visible enough to describe the path it takes
-        'diffuseColor.a = 0.20 + pulse * 0.78;');
+        'diffuseColor.a = (0.20 + pulse * 0.78) * uIntro;');
     tractMat.userData.shader = sh;
   };
 
@@ -943,53 +945,117 @@ if (THREE) {
     hoverIdx = -1; label.style.opacity = 0; mx = my = 0;
   });
 
-  /* BASE_YAW / BASE_PITCH are the orientation the mesh was actually tuned to -- the
-     left-lateral three-quarter where the gyri read. They were being thrown away: rotY
-     started at 0 while pivot.rotation.y was set to -1.75, so within ~2 seconds the
-     brain eased 100 degrees round to a near-frontal view and then kept spinning. The
-     good orientation only ever existed on the first frame. */
-  const BASE_YAW = -1.75, BASE_PITCH = -0.10;
-  let t0=performance.now(), running=true, rotY=BASE_YAW, tiltX=0;
-  document.addEventListener('visibilitychange',()=>{running=!document.hidden; if(running)requestAnimationFrame(tick);});
-  function tick(){
-    if(!running) return;
-    const now=performance.now(), el=(now-t0)/1000;
+  /* =================================================================
+     THE MOTION, CONSOLIDATED - same treatment as the material.
 
-    /* drift + cursor parallax with weight. It eases toward the pointer and
-       carries momentum rather than snapping - float-and-bob is the thing to
-       avoid; this should feel like an object with mass. */
+     BASE_YAW / BASE_PITCH are the orientation the mesh was tuned to: the
+     left-lateral three-quarter where the gyri read.
+
+     Three defects fixed here, and the first is the SAME layering pattern
+     as the colour bug - a later addition quietly bypassing an earlier
+     one's contract:
+
+     1. prefers-reduced-motion was VIOLATED. `if(!reduce)` guarded the
+        rotation, and the uHead line guarded the signal - but the node
+        swell, added later in Phase 3, sat outside both guards and ran
+        unconditionally. Under reduced-motion all 26 nodes still pulsed
+        between 1x and 2.7x scale, forever. The guard now wraps the whole
+        animated state, and reduced-motion renders one settled frame.
+
+     2. The easing was FRAME-RATE DEPENDENT. `* 0.045` per frame is not
+        delta-normalised, so on a 120Hz display the brain eased toward the
+        pointer twice as fast as on 60Hz, and half as fast in a throttled
+        tab. "Weight and inertia, not float-and-bob" was the whole point,
+        and the weight changed with the monitor. Now a real time constant:
+        1 - exp(-dt/tau), tau chosen to match the old 60Hz feel exactly.
+
+     3. visibilitychange could run TWO RAF chains at once. It scheduled a
+        new frame on every visible event without checking whether one was
+        already queued; two chains both call render() and both reschedule.
+        Guarded with a frame id.
+
+     Plus Phase 3 item 7, specced and never built: the nodes now light in
+     CRON ORDER over the first few seconds, so the piece explains itself
+     before anyone scrolls. The tracts fade in behind them.
+     ================================================================= */
+  const BASE_YAW = -1.75, BASE_PITCH = -0.10;
+  const MOTION = {
+    dayPeriod:    14,     // seconds per simulated day
+    swayAmp:      0.16,   // rad, +/- ~9 degrees - never a full spin
+    swayPeriod:   57,     // seconds
+    parallaxYaw:  0.30, parallaxPitch: 0.16,
+    easeTau:      0.36,   // seconds; matches the old 0.045-per-frame at 60Hz
+    nodeSwell:    1.7, nodeSharp: 900,
+    hoverScale:   2.3,
+    introDur:     3.2,    // the intro: nodes light in cron order
+    introStagger: 0.85,   // how much of the intro is spent staggering
+    introRise:    0.18,   // how long one node takes to arrive
+  };
+
+  let t0=performance.now(), last=t0, running=true, rafId=0;
+  let tiltX=0, yaw=BASE_YAW;
+
+  document.addEventListener('visibilitychange',()=>{
+    running = !document.hidden;
+    // re-base the clock so a long hide does not teleport the day, and only
+    // ever keep ONE chain alive
+    if (running){ last = performance.now(); if(!rafId) rafId = requestAnimationFrame(tick); }
+  });
+
+  const smooth = x => { x = Math.min(1, Math.max(0, x)); return x*x*(3-2*x); };
+
+  function tick(){
+    rafId = 0;
+    if(!running) return;
+    const now = performance.now(), el = (now-t0)/1000;
+    // clamped so a hidden tab or a long frame cannot produce a jump
+    const dt = Math.min(0.05, Math.max(0, (now-last)/1000)); last = now;
+
+    /* Everything time-varying lives inside this guard now. Under
+       reduced-motion the brain holds its tuned orientation, the signal
+       rests, and the nodes sit at their settled size. */
     if(!reduce){
-      // A slow SWAY around the tuned orientation, not an unbounded spin. A full
-      // rotation guarantees the brain spends most of its time in a view that does not
-      // read as anatomy, and "a box with an animation that spins" is a documented
-      // rejection. +/- 9 degrees over ~57s keeps it alive and always legible.
-      rotY = BASE_YAW + Math.sin(el * 0.11) * 0.16;
-      pivot.rotation.y += ((rotY + mx*0.30) - pivot.rotation.y) * 0.045;
-      tiltX += ((-my*0.16) - tiltX) * 0.045;
+      const k = 1 - Math.exp(-dt / MOTION.easeTau);   // frame-rate independent
+      yaw = BASE_YAW + Math.sin(el * (2*Math.PI/MOTION.swayPeriod)) * MOTION.swayAmp;
+      pivot.rotation.y += ((yaw + mx*MOTION.parallaxYaw) - pivot.rotation.y) * k;
+      tiltX += ((-my*MOTION.parallaxPitch) - tiltX) * k;
       pivot.rotation.x = BASE_PITCH + tiltX;
     }
 
-    /* THE SIGNAL. uHead sweeps 0->1 over ~14s, which is one simulated day.
-       Because the tracts were built in real time-of-day order, the pulse
-       arrives at each node when that agent's turn in the day comes round. */
+    /* THE SIGNAL. uHead sweeps 0->1 over one simulated day. Because the
+       tracts were built in real time-of-day order, the pulse arrives at
+       each node when that agent's turn in the day comes round. */
+    const dayPos = reduce ? 0 : (el / MOTION.dayPeriod) % 1;
+    /* NOT clamped to 1. The last-ranked node needs the progress to reach
+       introStagger + introRise = 1.03 before its `born` term saturates; if
+       this saturated at 1.0 it would sit at 93% scale forever. */
+    const introP = reduce ? 2 : (el / MOTION.introDur);
     const shader = tractMat.userData.shader;
-    if (shader && !reduce) shader.uniforms.uHead.value = (el / 14) % 1;
+    if (shader){
+      shader.uniforms.uHead.value  = dayPos;
+      // tracts arrive after the nodes they connect
+      shader.uniforms.uIntro.value = reduce ? 1 : smooth((el - MOTION.introDur*0.55) / 1.6);
+    }
 
-    // a node swells as the signal reaches its place in the day
-    const dayPos = (el / 14) % 1;
-    AGENTS.forEach((a,i)=>{
+    for (let i=0;i<AGENTS.length;i++){
       const rank = RANK[i];   // precomputed; this was an O(n^2) findIndex per frame
+      // the intro: each node arrives at its own place in the cron order
+      const born = smooth((introP - rank*MOTION.introStagger) / MOTION.introRise);
       let d = Math.abs(dayPos - rank); d = Math.min(d, 1-d);
-      let s = 1 + Math.exp(-d*d*900) * 1.7;
-      if (i === hoverIdx) s = Math.max(s, 2.3);
-      dummy.position.copy(nodePos[i].p); dummy.scale.setScalar(s);
+      let s = 1 + (reduce ? 0 : Math.exp(-d*d*MOTION.nodeSharp) * MOTION.nodeSwell);
+      if (i === hoverIdx) s = Math.max(s, MOTION.hoverScale);
+      dummy.position.copy(nodePos[i].p); dummy.scale.setScalar(s * born);
       dummy.updateMatrix(); nodes.setMatrixAt(i,dummy.matrix);
-    });
+    }
     nodes.instanceMatrix.needsUpdate=true;
     renderer.render(scene,cam);
-    requestAnimationFrame(tick);
+
+    // reduced-motion settles: once the intro is seated there is nothing
+    // left to animate, so stop burning frames entirely.
+    if (reduce && el > 0.2) return;
+    rafId = requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick);
+  rafId = requestAnimationFrame(tick);
 }
 
 /* ============================================================

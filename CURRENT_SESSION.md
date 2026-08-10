@@ -65,13 +65,89 @@ Raising is worse than cutting, so it is cut. A page-length version would also ha
 ## Still genuinely unfinished in V6-PLAN — Brian's call, not defects
 
 - **Phase 3 item 6** — GSAP master timeline. A refactor of working code, no visible change.
-- **Phase 3 item 7** — staged cron-order intro on load ("the first three seconds explain the
-  piece"). The one with real visible payoff.
+- ~~**Phase 3 item 7** — staged cron-order intro.~~ **BUILT in v13**, see below.
 - **Phase 4 item 4** — Lenis scroll continuity. Vendored, never wired, and currently excluded
   from the deploy. Smooth-scroll hijacking is contentious and carries an accessibility cost.
 
 Everything else in the 5-phase plan is done and was confirmed **by rendering it**, not by
 reading a status line.
+
+---
+
+# 2026-08-10 (third pass) — `design-candidates/v13-consolidated.html`: the layering, removed
+
+Brian's actual complaint, in his words: *"we kept applying redesigns on top of each other never
+starting from scratch so all the animations colors and everything else was on top of each
+other."* He is right, and the layering is findable in the file. **v13 removes layers rather
+than adding one.** The page's structure, copy, type, camera, mesh and node placement are
+untouched — this is a consolidation, not a sixth redesign.
+
+## The colour bug that proves the pattern
+
+The near-monochrome blue was **retracted 2026-08-05**. The page palette was duly reworked onto
+neutral `#08090b` + accents. **The brain's material never was.** It still carried the exact
+rejected ramp — `#93bcda / #4a7c9b / #1a3450 / #04101d` — and the answer to "it doesn't pop"
+had been to bolt a **cyan fresnel ADD at 0.95** on top. So every pixel was:
+
+> blue matcap → × cavity → × violet mix → **+ cyan rim @0.95**
+
+Four colour operations from three sessions, each compensating for the one before, the rim
+strong enough to dominate the silhouette. That is why it read as a glassy teal object rather
+than a lit anatomical form, and why the accent nodes barely separated from the surface.
+
+**Fixed by rebuilding the base, not adding a fifth layer.** The ramp is now neutral, so the
+brain belongs to the palette by construction and the only saturated things in the hero are the
+*data*. Neutral form, coloured data. The rim drops **0.95 → 0.55**. Phase 1 was right that the
+wide light-to-dark **value** range was the fix — that is kept exactly; only the hue is corrected.
+Every shading value is a named constant in one `SHADE` object.
+
+## Colour had four sources of truth
+
+The schedule-class → accent map existed **four times**: CSS custom properties, `0x` ints for the
+hero nodes, `'#rrggbb'` strings for the dial, and loose literals in the BoomBox diagram. Same
+four colours, three syntaxes, four places to forget one. **CSS is now the only authority**;
+everything reads it through one shared `scheduleClass()`.
+
+## The same pattern in the motion — including a real accessibility bug
+
+**`prefers-reduced-motion` was VIOLATED on the live site.** `if(!reduce)` guarded the rotation
+and the signal, but the **node swell, added later in Phase 3, sat outside both guards** and ran
+unconditionally: all 26 nodes pulsed 1×–2.7× forever. A later layer bypassing an earlier
+layer's contract — the same shape as the colour bug. **Proven, not asserted:** two screenshots
+3.5s apart under `reduced_motion:"reduce"` — current `index.html` **differs**, v13 is
+**byte-identical**. v13 also stops scheduling frames entirely once settled.
+
+**The easing was frame-rate dependent.** `* 0.045` per frame is not delta-normalised, so the
+brain eased toward the pointer ~2× faster on a 120Hz display and half-speed in a throttled tab.
+*"Weight and inertia, not float-and-bob"* was the whole point, and the weight changed with the
+monitor. Now `1 - exp(-dt/tau)`, tau tuned to match the old 60Hz feel exactly.
+
+**`visibilitychange` could run two RAF chains at once** — it scheduled a frame on every visible
+event without checking for one already queued; both chains render and both reschedule. Guarded
+with a frame id, and the clock re-bases so a long hide does not teleport the day.
+
+## Phase 3 item 7 — the cron-order intro, finally built
+
+Nodes now arrive **in the order their cron lines actually fire**, over ~3.3s, with the tracts
+fading in behind them. The first seconds read out the day. Verified by slowing `introDur` to 30s
+in a throwaway copy and filmstripping it: nodes accumulate progressively, and the amber weekly
+agents (16:00–18:00) correctly arrive last.
+
+**One bug caught in that verification:** `intro` was clamped to 1 while the last-ranked node's
+`born` term needs `introStagger + introRise = 1.03` to saturate — so node 26 would have sat at
+**93% scale forever**. Progress is now deliberately unclamped.
+
+## Also removed — vestigial layers of the same kind
+- `dashSize`/`gapSize` on the tract material configured a dash discard that had **already been
+  replaced** by the Gaussian pulse. Configuration for a dead code path.
+- The loop recomputed each node's rank with `order.findIndex()` inside a `forEach` over 26
+  agents: **676 array scans per frame** to look up a constant. Precomputed into `RANK`.
+
+## Status
+Built as a **candidate**, not in place, per the plan's own rule. Both versions render with 0
+console errors and 0 page errors; the demos are identical through the shared palette.
+**`design-candidates/` is excluded from the Vercel deploy, so the PR preview does NOT show v13.**
+Folding it into `index.html` is Brian's call.
 
 ---
 
