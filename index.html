@@ -311,6 +311,17 @@
     .hero-right{display:none}
     #glfail{position:static;height:250px}
   }
+  /* Experience rows MUST stack before the description column collapses. The
+     240px role column is fixed, so on a 390px phone the arithmetic was
+     390 - 64 (.wrap) - 2 (.exp border) - 56 (.row padding) = 268 available,
+     minus 240 minus the 24px gap = a FOUR PIXEL description column. Every job
+     description rendered as a one-character-per-line sliver, which is what made
+     the mobile page 7,709px tall. Nothing else on the page stacks it: the hero
+     goes at 940, the project cards at 880, the contact bar at 620. Below 700px
+     the description would be under ~300px, so that is the breakpoint. */
+  @media(max-width:700px){
+    .row{grid-template-columns:1fr;gap:8px;padding:20px 22px}
+  }
   /* the contact bar stacks instead of colliding with the name on small screens */
   @media(max-width:620px){
     .hbar{flex-direction:column;align-items:stretch;gap:12px;padding:12px 22px}
