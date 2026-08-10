@@ -1,6 +1,72 @@
 # Current Session
 
-_Updated 2026-08-06 (second entry: the load-time work)._
+_Updated 2026-08-10 (application-readiness audit). Prior entry: 2026-08-06, the load-time work._
+
+---
+
+# 2026-08-10 — Application-readiness audit: docs corrected, one real blocker found
+
+**No site code changed.** `index.html` was audited and is accurate, internally consistent, and
+sendable: 26 agents and 81 tests agree with `agents.json` in every place they appear, no
+placeholders, no TODOs, the AGPL mesh is gone from the tree, and the ICBM152 licence notice is
+in the footer. The work this session was in the *documents around* the site, which had drifted
+badly enough to be actively misleading.
+
+## 🚩 The blocker (only Brian can clear it)
+
+**`resume.pdf` says "25 scheduled agents." The verified count is 26.** Confirmed by extracting
+the PDF's text. `agents.json` lists 26 entries, `hermes cron list` returned 26 on 2026-08-05,
+and the live site says 26 in four places. The resume is the single artifact still carrying the
+old number — and it is the one that goes to employers. Fix upstream in `evidence-bank.md`,
+rebuild, re-copy. **Do not hand-edit the PDF.**
+
+## What was verified (rather than assumed)
+
+- **`resume.pdf` is the AI/Full-Stack Developer lane, not Customer Ops.** `INVENTORY.md` claimed
+  it was a copy of `Brian_Mathew_Customer_Ops.pdf`; the extracted headline reads "AI Application
+  Developer · Full-Stack Developer · Junior Software Developer". The open "positioning call" in
+  `TASKS.md` was therefore already resolved developer-forward in both artifacts — a stale item
+  that would have sent a future session re-litigating a settled decision.
+- **The showcase mirrors shipped.** `bmath8/brian-os` and `bmath8/boombox` are public; every
+  case-study link on the live site resolves to public source. `TASKS.md` still listed this as
+  "awaiting per-repo go-ahead."
+- **The Tenor key is not publicly exposed.** Cloned the public `boombox` mirror and scanned
+  *every blob in its history* for `AIza…` and Tenor key patterns: zero hits. The mirror has
+  fresh history (2 commits) and reads the key from `process.env['NEXT_PUBLIC_TENOR_API_KEY']`.
+  Rotation is still worth doing — the key remains in the private `BoomBox-V.5` history — but it
+  is no longer a public-exposure emergency, which is how `TASKS.md` had it framed.
+- **Repo counts were wrong twice over.** 31 repos, 7 public — not "27, only 4 public"
+  (`INVENTORY.md`) and not "8 public" (the 2026-07-30 note). `jobfit` is private now.
+- **The site and the resume no longer feature the same three projects.** AI Job Hunter is off
+  the site but is still the resume's lead bullet — and it has no public mirror, so the resume's
+  strongest project is the one a recruiter cannot open.
+
+## The most dangerous thing found: `AGENTS.md` told agents to destroy the resume
+
+`AGENTS.md` still instructed: *"To change the resume: edit `resume/resume.html`, then re-render
+… `--print-to-pdf=resume.pdf`."* That path has been dead since the 2026-07-29 consolidation —
+following it would regenerate the superseded 5th competing resume system straight over the
+canonical copy, silently reverting whatever the evidence-bank build produced. Chromium is
+available in this container, so this was one plausible instruction-following step away from
+happening. Replaced with the correct upstream build path and an explicit "do not hand-edit."
+
+## Changed this session
+
+| File | Change |
+|---|---|
+| `AGENTS.md` | Killed the resume re-render instruction; documented the real upstream build path |
+| `TASKS.md` | Closed 3 stale items with evidence; added the 25→26 blocker and the `ai-job-hunter` mirror gap |
+| `INVENTORY.md` | Corrected the resume lane, repo counts/visibility, case-study set, and §5 status |
+| `cover-letter-template.md` | Split into two lanes — the existing letter was support-voiced while the resume being sent is developer-voiced |
+
+## The cover-letter mismatch
+
+The template was written entirely in Customer Ops/Support voice ("the same instinct that makes a
+good support engineer", "that's the loop I bring to support work"). Paired with the developer
+resume that actually ships from this repo, the letter argues for a different job than the resume
+does. Added **Lane A · Developer / AI Builder** as the default, kept the original as **Lane B**,
+and put a lane-selection step at the top of the checklist. Lane A cites 26 agents, and the voice
+notes now forbid claiming a live BoomBox deployment the site plainly says doesn't exist.
 
 ---
 

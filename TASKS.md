@@ -17,17 +17,28 @@ Portfolio supports the job search — it is not the resume source. Keep it accur
 - [x] **Corrected INVENTORY.md** — the "21 repos backing up the claim" line was false; there
       are 27 repos and only 4 are public.
 
+## Done 2026-08-10 (verified this session)
+- [x] **Public-safe showcase mirrors — SHIPPED.** `bmath8/brian-os` and `bmath8/boombox` are
+      public. Every case-study link on the live site resolves to public source.
+- [x] **Positioning call — RESOLVED developer-forward.** Both artifacts already moved: the site
+      leads "I build systems, then I keep them running" with three engineering case studies, and
+      `resume.pdf` is the AI/Full-Stack Developer lane, not Customer Ops. This item was stale.
+- [x] **Tenor key is not publicly exposed.** Scanned every blob in the public `boombox` mirror's
+      history: no hits. The mirror has fresh history (2 commits) and reads the key from
+      `process.env['NEXT_PUBLIC_TENOR_API_KEY']`. See the still-open rotation item below.
+
 ## Open — needs Brian
-- [ ] **Public-safe showcase mirrors.** All 3 featured case studies are private repos, so the
-      resume points at work nobody can open. Plan approved: clean mirrors with fresh history.
-      Secret scan is done (see below). Awaiting per-repo go-ahead.
-- [ ] **Revoke the leaked Tenor/Google API key** — it was hardcoded in
-      `boombox-v5 frontend/src/components/gif-picker.tsx` and remains in that repo's git
-      history (already gone from HEAD). Rotate it regardless of what goes public.
-- [ ] **Positioning call.** The site sells "product/IT/customer support," but the strongest
-      lane is AI Builder (96%) and the three case studies are engineering projects. Decide
-      whether to re-aim the site developer-forward. `resume.pdf` currently matches the existing
-      support framing.
+- [ ] 🚩 **BLOCKING BEFORE SENDING: `resume.pdf` says "25 scheduled agents." The verified count
+      is 26.** `agents.json` lists 26, `hermes cron list` returned 26 on 2026-08-05, and the live
+      site says 26 in four places. The resume is the one artifact still carrying the old number,
+      and it is the one that goes to employers. Fix upstream — correct
+      `C:\Brian\03_Career\evidence-bank.md`, re-run `build_strong_resumes.py` + `render_pdfs.py`,
+      then re-copy the built PDF over `resume.pdf` here. **Do not hand-edit the PDF.**
+- [ ] **Rotate the leaked Tenor/Google API key.** No longer urgent — it is not in any public repo
+      (verified above) — but it is still in the private `BoomBox-V.5` git history. Rotate it.
+- [ ] **`ai-job-hunter` has no public mirror** and is the lead bullet on `resume.pdf`. Either
+      mirror it the way `brian-os` and `boombox` were done, or accept that the resume's strongest
+      project is unopenable. Its 2026-07-29 secret scan came back clean, so a mirror is low-risk.
 - [ ] Real screenshots in each featured repo (`docs/screenshot.png`) — only Brian can take these.
 - [ ] Optional 4th case study: `pokemon-drop-intel` (already public, has a demo mode).
 
