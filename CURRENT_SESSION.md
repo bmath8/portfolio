@@ -4,13 +4,87 @@ _Updated 2026-08-10 (application-readiness audit). Prior entry: 2026-08-06, the 
 
 ---
 
-# 2026-08-10 — Application-readiness audit: docs corrected, one real blocker found
+# 2026-08-10 (second pass) — the rendered audit, after the first pass was called out as shallow
 
-**No site code changed.** `index.html` was audited and is accurate, internally consistent, and
-sendable: 26 agents and 81 tests agree with `agents.json` in every place they appear, no
+**⚠️ Read this before trusting the entry below it.** The first pass this session declared the
+site "accurate, internally consistent, and sendable" on the strength of a text extract, a
+placeholder grep, and a fact cross-check. It never opened the page in a browser. Brian's
+response was that the portfolio is not ready and the redesign is not finished. He was right.
+
+**The lesson, and it is the same one this file already records twice** (the 2.86 s cold-CDN
+figure; the AGPL fix that only ever covered Vercel): *checking the artifact is not the same as
+checking the thing the artifact describes.* Grepping HTML says nothing about what renders. The
+page was rendered in Chromium at 16 viewport widths this pass, and three real defects fell out
+immediately — one of them severe and on the device most recruiters use.
+
+## Defects found by rendering, all fixed
+
+**1 · The Experience section was broken on every phone.** `.row` is
+`grid-template-columns:minmax(0,240px) minmax(0,1fr)` and **no breakpoint ever stacked it**. At
+390px: 390 − 64 (`.wrap`) − 2 (`.exp` border) − 56 (`.row` padding) = 268px available, minus the
+fixed 240px role column, minus the 24px gap = **a 4-pixel description column.** All three job
+descriptions rendered one character per line. That is what made the mobile page 7,709px tall.
+Stacked below 700px → **7,709 → 6,647px**. The hero stacks at 940, project cards at 880, the
+contact bar at 620; Experience had simply never been given a rule.
+
+**2 · 25 WCAG AA contrast failures per viewport, one root cause.** `--mute:#6b7581` was
+**3.80:1 on `--panel`, 4.10:1 on `--deep`, 4.26:1 on `--void`** against 4.5:1 required at those
+sizes. It carried the metric labels, every verification source line, the demo captions, the job
+dates — and the footer's ICBM152 licence notice, which the licence requires to travel with the
+mesh. Lifted to `#7d8794`: same hue, smallest move that clears the bar, 4.88:1 worst case.
+**Desktop and mobile now measure 0 failures.** Not used on `.band-lift`, which overrides.
+
+**3 · Two canvases carrying real information were invisible to screen readers.** The Brian OS
+dial and the BoomBox diagram had no label. Given `role="img"` and a description of what each
+actually shows. (The hero canvas was already labelled well.)
+
+## The cyan `.thread` is now CUT, closing a Phase 4 leftover
+
+The plan left it as *"too subtle to see — raise or cut it."* It was never what it was specced to
+be: scoped to the Selected work section rather than "the length of the page", sitting behind
+opaque cards at `z-index:0`. Raised to `.55` alpha to test, it lands a few px off the project
+card's own column divider and **reads as a misaligned duplicate of it — a bug, not a motif.**
+Raising is worse than cutting, so it is cut. A page-length version would also have to cross
+`.band-lift`, where a cyan hairline on near-white belongs to nothing.
+
+## What was checked and found genuinely fine — do not re-litigate these
+
+- Click-to-load Squares iframe: **zero third-party requests before the click**, measured; on
+  click it injects the real app with `sandbox` and a `title`. The claim holds.
+- JS disabled: **3,867 chars** render. Keyboard focus: real 2px cyan `:focus-visible` ring
+  (an earlier programmatic `.focus()` test reported no outline — that was a false alarm,
+  `:focus-visible` does not match programmatic focus).
+- `prefers-reduced-motion` honoured in **both** CSS and JS. `lang="en"`, clean heading order,
+  no unnamed links, no sub-24px tap targets, 0 console errors, 0 failed requests.
+- **Swept 320 → 1920px:** no horizontal overflow at any width, and after the `.row` fix, no
+  squeezed text at any width. The Experience row was the only instance.
+- The light `.band-lift` is a **deliberate, documented decision** ("one genuinely light surface
+  in the middle of a dark page"). Its hard edges are not a defect to be gradient-ed away —
+  that is approved ground, and rebuilding it is the documented failure mode.
+
+## Still genuinely unfinished in V6-PLAN — Brian's call, not defects
+
+- **Phase 3 item 6** — GSAP master timeline. A refactor of working code, no visible change.
+- **Phase 3 item 7** — staged cron-order intro on load ("the first three seconds explain the
+  piece"). The one with real visible payoff.
+- **Phase 4 item 4** — Lenis scroll continuity. Vendored, never wired, and currently excluded
+  from the deploy. Smooth-scroll hijacking is contentious and carries an accessibility cost.
+
+Everything else in the 5-phase plan is done and was confirmed **by rendering it**, not by
+reading a status line.
+
+---
+
+# 2026-08-10 (first pass) — Application-readiness audit: docs corrected, one real blocker found
+
+**⚠️ Superseded in part by the entry above: the claim that the site was sendable was wrong.**
+The document corrections below stand; the verdict on `index.html` did not.
+
+**No site code changed in this pass.** `index.html` was checked for accuracy and internal
+consistency: 26 agents and 81 tests agree with `agents.json` in every place they appear, no
 placeholders, no TODOs, the AGPL mesh is gone from the tree, and the ICBM152 licence notice is
-in the footer. The work this session was in the *documents around* the site, which had drifted
-badly enough to be actively misleading.
+in the footer. All true — and all silent about how the page actually renders. The work in this
+pass was in the *documents around* the site, which had drifted badly enough to be misleading.
 
 ## 🚩 The blocker (only Brian can clear it)
 
