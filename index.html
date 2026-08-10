@@ -92,7 +92,12 @@
     --hair:#1a1e24;      /* quiet divider */
 
     /* text */
-    --ink:#f5f7fa; --ink2:#aab3bf; --mute:#6b7581;
+    /* --mute was #6b7581, which failed WCAG AA everywhere it was used: 3.80:1 on
+       --panel, 4.10:1 on --deep, 4.26:1 on --void, against a 4.5:1 requirement at
+       these sizes. #7d8794 is the same hue lifted just past the threshold -
+       4.88:1 on the worst case (--panel). Never used on .band-lift, which
+       overrides with --ink2-on-lift. */
+    --ink:#f5f7fa; --ink2:#aab3bf; --mute:#7d8794;
     --ink-on-lift:#12151a; --ink2-on-lift:#454c57;
 
     /* accents - one cool, one warm, so the page is not all one temperature */
@@ -181,10 +186,14 @@
   /* the deep band fades in and out rather than starting and stopping */
   .band-deep{background:linear-gradient(to bottom,
     var(--void) 0%, var(--deep) 16%, var(--deep) 84%, var(--void) 100%)}
-  /* a thin cyan thread runs the length of the page, handing the eye downward */
-  .thread{position:absolute;left:50%;top:0;bottom:0;width:1px;pointer-events:none;z-index:0;
-    background:linear-gradient(to bottom,rgba(46,230,198,0),rgba(46,230,198,.22),rgba(46,230,198,0))}
-  @media(max-width:880px){.thread{display:none}}
+  /* The cyan .thread (Phase 4, item 3) is deliberately CUT, not left dim.
+     It was only ever inside the Selected work section, not "the length of the
+     page" as specced, and it sat behind opaque cards at z-index 0. Raised to
+     .55 alpha to test, it lands a few px off the project card's own column
+     divider and reads as a misaligned duplicate of it - a bug, not a motif.
+     The plan's leftover said "raise or cut it"; raising is worse. Cut.
+     A page-length version would also have to cross .band-lift, where a cyan
+     hairline on near-white has nothing to do with the rest of the design. */
   .sec-h{display:flex;align-items:baseline;gap:16px;margin:0 0 10px}
   .sec-h h2{font:800 clamp(26px,3vw,38px)/1.1 Bricolage;letter-spacing:-.02em;margin:0}
   .sec-sub{color:var(--mute);font-size:15px;max-width:56ch;margin:0 0 44px}
@@ -354,7 +363,6 @@
 </div>
 
 <section class="wrap">
-  <span class="thread" aria-hidden="true"></span>
   <div class="sec-h"><h2>Selected work</h2></div>
   <p class="sec-sub">Three systems I built, tested, documented, and still operate. Every number
     below says where it came from, so you can check it rather than trust it.</p>
@@ -374,7 +382,7 @@
         </ul></div>
         <div class="links"><a href="https://github.com/bmath8/brian-os">Read the source →</a></div>
       </div>
-      <div class="demo"><canvas id="clock"></canvas>
+      <div class="demo"><canvas id="clock" role="img" aria-label="A 24-hour dial plotting when each of the 26 scheduled agents runs. Marks are coloured by schedule class - cyan daily, violet hourly, amber weekly, magenta monthly - and twelve of them fall between 06:40 and 07:00."></canvas>
         <div class="readout" id="clock-readout"></div>
         <span class="cap">24h — hover any mark to name the agent</span></div>
     </article>
@@ -421,7 +429,7 @@
         </ul></div>
         <div class="links"><a href="https://github.com/bmath8/boombox">Read the source →</a></div>
       </div>
-      <div class="demo"><canvas id="arch"></canvas>
+      <div class="demo"><canvas id="arch" role="img" aria-label="An architecture diagram of BoomBox: clients connect to a WebSocket and Redis Pub/Sub layer carrying transient state that dies with the session, above a labelled dividing line, with Postgres below it holding durable state that survives a restart."></canvas>
         <span class="cap">why the split matters</span></div>
     </article>
   </div>
@@ -928,7 +936,7 @@ if (THREE) {
 
     ctx.strokeStyle='#242932'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.stroke();
-    ctx.font='400 9.5px PlexMono,monospace'; ctx.fillStyle='#6b7581'; ctx.textAlign='center';
+    ctx.font='400 9.5px PlexMono,monospace'; ctx.fillStyle='#7d8794'; ctx.textAlign='center';
     for(let hh=0;hh<24;hh+=3){
       const ang=(hh/24)*Math.PI*2-Math.PI/2;
       ctx.beginPath();
@@ -973,7 +981,7 @@ if (THREE) {
     ctx.textAlign='center';
     ctx.fillStyle='#eaf2f8'; ctx.font='500 26px PlexMono,monospace';
     ctx.fillText(String(AGENTS.length||26),cx,cy+2);
-    ctx.fillStyle='#6b7581'; ctx.font='400 9px PlexMono,monospace';
+    ctx.fillStyle='#7d8794'; ctx.font='400 9px PlexMono,monospace';
     ctx.fillText('SCHEDULED',cx,cy+16);
   }
 
@@ -983,7 +991,7 @@ if (THREE) {
     for(const m of marks){ const dd=(m.x-mx)*(m.x-mx)+(m.y-my)*(m.y-my); if(dd<bd){bd=dd;best=m;} }
     if(best && bd<460){
       ro.innerHTML='<b>'+best.name+'</b><br>'+best.t+' &middot; '+best.cls+
-                   '<br><span style="color:#6b7581">'+best.cron+'</span>';
+                   '<br><span style="color:#7d8794">'+best.cron+'</span>';
       ro.classList.add('on');
     } else ro.classList.remove('on');
   });
@@ -1041,7 +1049,7 @@ if (THREE) {
     ctx.beginPath(); ctx.roundRect(x,y,w,h,3); ctx.fill(); ctx.stroke();
     ctx.fillStyle=col; ctx.font='500 11.5px PlexMono,monospace'; ctx.textAlign='center';
     ctx.fillText(label,x+w/2,y+h/2-1);
-    if(sub){ ctx.fillStyle='#6b7581'; ctx.font='400 9.5px PlexMono,monospace';
+    if(sub){ ctx.fillStyle='#7d8794'; ctx.font='400 9.5px PlexMono,monospace';
              ctx.fillText(sub,x+w/2,y+h/2+13); }
   }
 
