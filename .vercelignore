@@ -63,16 +63,16 @@ vendor/mesh/brain-mni.bin
 # by name so the two never both ship.
 vendor/mesh/brain-icbm152.bin
 
-# vendored but not used by the live page
-vendor/hdr/
-vendor/loaders/
-vendor/objects/
-vendor/shaders/
-vendor/postprocessing/
-vendor/postprocessing.module.js
-vendor/RoomEnvironment.js
+# Vendored but not used by the live page.
+#
+# The 2026-08-11 sweep DELETED the rest of what used to be listed here -- the
+# bloom/bokeh pipeline, the HDR lighting stack, MarchingCubes, the superseded
+# Line2 pair, and lenis -- 2.3 MB of libraries from approaches that had been
+# abandoned and, in the case of bloom, explicitly rejected. Their exclusion
+# lines went with them: an ignore rule for a file that does not exist is just
+# another thing a future session has to work out. See vendor/README.md.
+#
+# GSAP is kept because it became free at v3.13 and is the recommended way to do
+# the DOM choreography this page still hand-rolls. It is excluded until wired.
 vendor/gsap.min.js
-vendor/lenis.min.js
 vendor/ScrollTrigger.min.js
-vendor/lines/Line2.js
-vendor/lines/LineGeometry.js
