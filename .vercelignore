@@ -13,6 +13,10 @@ scripts/
 scratchpad/
 .superpowers/
 
+# Vendored agent skills (MIT, Meng To). Working context for the build, never
+# served: 85 SKILL.md playbooks, ~5.4 MB, of no use to a visitor.
+.claude/
+
 # ---------------------------------------------------------------------------
 # WHAT THE LIVE index.html ACTUALLY LOADS FROM vendor/  (updated 2026-08-06)
 #
