@@ -74,6 +74,36 @@ reading a status line.
 
 ---
 
+# 2026-08-11 — atmosphere: tried, measured, REVERTED. A negative result worth keeping.
+
+`RESEARCH-2026-08-11.md` ranked atmosphere as the **#1** way to close the gap to Kage — *"Kage
+does not out-engineer us, it out-places us."* I built it into v14: `FogExp2`, a gradient
+backdrop, 220 drifting motes. Then I swept fog density at 0.085 / 0.22 / 0.40 and looked.
+
+**It does not work on this subject, and the reason is structural.** `FogExp2` is
+distance-from-camera. Our whole subject sits inside **~2 units of depth at ~3.6 units out**, so
+fog dims the *entire* mesh near-uniformly rather than separating front from back. It is a global
+darkening. At 0.40 it visibly **undoes the widened value range Phase 1 correctly established** —
+the gyri go back to mush and the cyan rim dominates again, which is precisely the problem the
+v13 consolidation fixed. The backdrop is occluded by the subject. The motes are invisible at
+legible sizes, and when large enough to see they read as dead pixels — including in the
+pulled-back closing chapter, where they had the most room.
+
+**Kage's atmosphere works because its subject sits in a vast scene with enormous empty space.
+Ours fills the hero frame. There is no "away" for atmosphere to happen in.**
+
+Reverted in full — fog, backdrop and motes are all out of v14, verified by grep. The research
+doc's recommendation #1 is struck through in place with the measurements, so the next session
+does not spend the same afternoon on it.
+
+**The discipline point, which is the actual lesson of this whole project:** the reasoning was
+good, the prediction was mine, and it was wrong. Shipping it anyway because it *sounded* right
+is exactly how six redesigns stacked up. A change that cannot be shown to improve anything does
+not go in. Anything in this direction needs a **composition** change first — pulling the camera
+back far enough that there is space to fill — not a fog parameter.
+
+---
+
 # 2026-08-10 (third pass) — `design-candidates/v13-consolidated.html`: the layering, removed
 
 Brian's actual complaint, in his words: *"we kept applying redesigns on top of each other never
