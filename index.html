@@ -496,6 +496,43 @@
 { "imports": { "three": "/vendor/three.module.min.js" } }
 </script>
 <script type="module">
+/* ================================================================
+   ONE SOURCE OF TRUTH FOR COLOUR.
+
+   Before this, the schedule-class -> accent map existed FOUR times:
+   as CSS custom properties, as 0x hex ints for the hero nodes, as
+   '#rrggbb' strings for the clock demo, and again as loose literals
+   in the BoomBox diagram. Same four colours, three syntaxes, four
+   places to forget. That is how "redesigns stacked on top of each
+   other" happens in practice - not as one bad decision, but as a
+   value that was only ever half-updated.
+
+   CSS is now the single authority. Everything else reads from it.
+   Change --cyan once and the nodes, the tracts, the dial and the
+   diagram all follow.
+   ================================================================ */
+const CSSVAR = n => getComputedStyle(document.documentElement)
+                      .getPropertyValue(n).trim();
+const PALETTE = {
+  cyan:    CSSVAR('--cyan')    || '#2ee6c6',
+  magenta: CSSVAR('--magenta') || '#ff5c8a',
+  amber:   CSSVAR('--amber')   || '#ffb340',
+  violet:  CSSVAR('--violet')  || '#9b8cff',
+  mute:    CSSVAR('--mute')    || '#7d8794',
+  edge:    CSSVAR('--edge')    || '#242932',
+};
+const hex2int = h => parseInt(h.replace('#',''), 16);
+
+/* The one classifier. Cron -> schedule class -> accent. Both the hero
+   and the 24h dial call this; neither keeps its own copy. */
+function scheduleClass(cron){
+  const p = cron.split(/\s+/);
+  if (p[2] !== '*')          return {k:'monthly', hex:PALETTE.magenta};
+  if (p[4] !== '*')          return {k:'weekly',  hex:PALETTE.amber};
+  if (p[1].includes('*'))    return {k:'hourly',  hex:PALETTE.violet};
+  return                            {k:'daily',   hex:PALETTE.cyan};
+}
+
 /* ============================================================
    HERO — real cortical mesh + one node per real scheduled agent
    ============================================================ */
@@ -611,25 +648,63 @@ if (THREE) {
   geo.setAttribute('aCurv',    new THREE.BufferAttribute(curv,1));
   geo.setIndex(new THREE.BufferAttribute(idx,1));
 
-  /* ---------------------------------------------------------------
-     PHASE 1 - MAKE IT POP.
-     The old matcap spent most of its area in #33566f..#12283c, which is
-     within ~10% luminance of the #050a12 page. The mesh was the SAME VALUE
-     as its background, so it read as a silhouette instead of an object.
-     That is a value problem, not a colour problem - so the palette Brian
-     approved does not change. Only the range does.
-     --------------------------------------------------------------- */
+  /* =================================================================
+     THE BRAIN MATERIAL, REBUILT AS ONE MODEL INSTEAD OF FOUR LAYERS.
+
+     What was here: a saturated BLUE matcap ramp (#93bcda -> #4a7c9b ->
+     #1a3450 -> #04101d), then a cavity multiply, then a violet mix, then
+     a cyan fresnel ADD at 0.95 strength. Four colour operations added by
+     three different sessions, each one compensating for the last.
+
+     The bug that reveals the layering: the near-monochrome blue ramp was
+     RETRACTED on 2026-08-05 - "everything is blue and blends into
+     eachother ... no contrast, flow, clear distinct areas." The page
+     palette was duly reworked off blue onto neutral #08090b + accents.
+     THE BRAIN'S MATERIAL WAS NEVER REWORKED. It still carried the exact
+     ramp that had been rejected, and the response to "it doesn't pop"
+     was to bolt a cyan rim on top rather than to fix the base. At 0.95
+     that rim dominates the silhouette, which is why the mesh reads as a
+     glassy teal object rather than a lit anatomical form.
+
+     The fix is not a fifth layer. The ramp is rebuilt NEUTRAL, so the
+     brain belongs to the page's palette by construction, and the only
+     saturated things in the hero are the data: the accent-coloured
+     nodes and the travelling signal. Neutral form, coloured data.
+     Because the base no longer fights it, the rim comes down to 0.55
+     and goes back to being an edge accent rather than the whole hue.
+
+     Every value is a named constant. The next change to this material
+     is a parameter edit, not another layer.
+     ================================================================= */
+  const SHADE = {
+    // value range. Phase 1 was right that this was a VALUE problem - the
+    // wide light-to-dark ramp is kept exactly. Only the hue is corrected.
+    ramp: [
+      [0.00, '#ffffff'],   // specular highlight
+      [0.13, '#e9eef2'],   // was #dbf1ff - the blue is out of the highlight
+      [0.34, '#a9b4bd'],   // was #93bcda
+      [0.58, '#5e6873'],   // was #4a7c9b
+      [0.78, '#2c333b'],   // was #1a3450
+      [1.00, '#0a0d11'],   // terminator, sits in the --void family
+    ],
+    cavityLo: 0.24, cavityHi: 0.76,   // where sulci->ridge falls
+    cavityFloor: 0.32, cavityCeil: 1.06,
+    foldTint: [0.90, 0.88, 1.05],     // violet HINT in deepest folds only
+    rimPower: 2.4,
+    rimStrength: 0.55,                // was 0.95 against a blue base
+  };
+
   const mc=(()=>{ const s=256,c=document.createElement('canvas'); c.width=c.height=s;
     const g=c.getContext('2d');
     const gr=g.createRadialGradient(s*.34,s*.28,s*.02,s*.5,s*.5,s*.56);
-    gr.addColorStop(0.00,'#ffffff');   // real highlight - was #dff0fb
-    gr.addColorStop(0.13,'#dbf1ff');
-    gr.addColorStop(0.34,'#93bcda');
-    gr.addColorStop(0.58,'#4a7c9b');
-    gr.addColorStop(0.78,'#1a3450');
-    gr.addColorStop(1.00,'#04101d');   // deep terminator - real dark side
+    SHADE.ramp.forEach(([stop,col]) => gr.addColorStop(stop,col));
     g.fillStyle=gr; g.beginPath(); g.arc(s/2,s/2,s/2,0,7); g.fill();
     const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
+
+  // the rim reads as the cyan accent, taken from the same palette as everything else
+  const rimRGB = (()=>{ const c=new THREE.Color(PALETTE.cyan);
+    return `vec3(${c.r.toFixed(3)},${c.g.toFixed(3)},${c.b.toFixed(3)})`; })();
+  const f = n => n.toFixed(3);
 
   const mat = new THREE.MeshMatcapMaterial({matcap:mc});
   mat.onBeforeCompile = s => {
@@ -642,22 +717,13 @@ if (THREE) {
       // vViewPosition points surface -> camera, so 1-dot(n,v) peaks at the rim.
       .replace('#include <normal_fragment_maps>',
         '#include <normal_fragment_maps>\n' +
-        'float fres = pow(1.0 - clamp(abs(dot(normalize(normal), normalize(vViewPosition))),0.0,1.0), 2.4);')
+        `float fres = pow(1.0 - clamp(abs(dot(normalize(normal), normalize(vViewPosition))),0.0,1.0), ${f(SHADE.rimPower)});`)
       .replace('#include <dithering_fragment>',
         '#include <dithering_fragment>\n' +
-        // cavity: sulci go dark, ridges go bright - a WIDER spread than before
-        'float cav = smoothstep(0.24, 0.76, vCurv);\n' +
-        // ceiling pulled back from 1.28: the ICBM152 surface is smoother, so more
-        // of it sits in the bright band and 1.28 clipped large areas to white
-        'gl_FragColor.rgb *= mix(0.32, 1.06, cav);\n' +
-        // two-tone: cool violet down in the folds, neutral-bright on the ridges
-        // Violet is a HINT in the deepest folds, not a tint over the whole mesh.
-        // At vec3(0.70,0.63,1.18) this turned the brain purple - overcooked, and
-        // purple-dominant reads as the exact AI-gradient tell we avoid.
-        'gl_FragColor.rgb = mix(gl_FragColor.rgb * vec3(0.90,0.88,1.05), gl_FragColor.rgb, cav);\n' +
-        // cyan fresnel rim - separates the silhouette hard from the background
-        // and puts the approved accent ON the object, not just in the UI
-        'gl_FragColor.rgb += vec3(0.13,0.90,0.78) * fres * 0.95;');
+        `float cav = smoothstep(${f(SHADE.cavityLo)}, ${f(SHADE.cavityHi)}, vCurv);\n` +
+        `gl_FragColor.rgb *= mix(${f(SHADE.cavityFloor)}, ${f(SHADE.cavityCeil)}, cav);\n` +
+        `gl_FragColor.rgb = mix(gl_FragColor.rgb * vec3(${SHADE.foldTint.map(f).join(',')}), gl_FragColor.rgb, cav);\n` +
+        `gl_FragColor.rgb += ${rimRGB} * fres * ${f(SHADE.rimStrength)};`);
   };
 
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
@@ -682,14 +748,8 @@ if (THREE) {
           that occlusion is what proves the brain is solid
        4. coloured by schedule class, using the approved accents
      --------------------------------------------------------------- */
-  function scheduleClass(cron){
-    const p = cron.split(/\s+/);
-    const hr = p[1], dom = p[2], dow = p[4];
-    if (dom !== '*') return {k:'monthly', c:0xff5c8a};
-    if (dow !== '*') return {k:'weekly',  c:0xffb340};
-    if (hr.includes('*')) return {k:'hourly', c:0x9b8cff};
-    return {k:'daily', c:0x2ee6c6};
-  }
+  /* scheduleClass() lives at the top of this file now - one copy, shared
+     with the 24h dial, reading the accents from CSS. */
 
   // Farthest-point sampling over a candidate subsample of the surface.
   function farthestPoints(count){
@@ -731,7 +791,7 @@ if (THREE) {
       pos[v+2] + nrm[v+2]*0.030);
     const sc = scheduleClass(a.cron);
     nodePos.push({p, name:a.n, cron:a.cron, cls:sc.k});
-    col.setHex(sc.c); nodes.setColorAt(i, col);
+    col.setHex(hex2int(sc.hex)); nodes.setColorAt(i, col);
     dummy.position.copy(p); dummy.updateMatrix(); nodes.setMatrixAt(i,dummy.matrix);
   });
   if (nodes.instanceColor) nodes.instanceColor.needsUpdate = true;
@@ -765,6 +825,13 @@ if (THREE) {
   };
   const order = AGENTS.map((a,i)=>({i, t:timeOf(a.cron)})).sort((x,y)=>x.t-y.t);
 
+  /* Each agent's normalised place in the day. This never changes, but the
+     animation loop was recomputing it with order.findIndex() inside a
+     forEach over all 26 agents - 676 array scans every single frame, at
+     60fps, to look up a constant. Precompute once. */
+  const RANK = new Float32Array(AGENTS.length);
+  order.forEach((o,rank)=>{ RANK[o.i] = rank / Math.max(1, order.length-1); });
+
   /* a tract = a bezier from one node to the next, bulged off the surface
      so it reads as a pathway over the cortex rather than a chord through it */
   const SEG = 26;
@@ -793,25 +860,32 @@ if (THREE) {
 
   const tractGeo = new LineSegmentsGeometry();
   tractGeo.setPositions(segs);
+  /* `dashed` stays true only because LineMaterial gates the USE_DASH define
+     (and therefore vLineDistance, which the pulse reads) on it. dashSize and
+     gapSize are gone: the dash discard they configured was REPLACED by the
+     Gaussian below, so they were vestigial - configuration for a code path
+     that no longer exists. Another leftover layer. */
   const tractMat = new LineMaterial({
-    color: 0x2ee6c6, linewidth: 1.35, dashed: true,
-    dashSize: 0.02, gapSize: 0.0001, transparent: true, depthTest: true,
+    color: hex2int(PALETTE.cyan), linewidth: 1.35, dashed: true,
+    transparent: true, depthTest: true,
   });
   tractMat.resolution.set(innerWidth, innerHeight);   // required or lines vanish
 
   /* Replace the dash discard with a Gaussian head. The resting tract stays
      dim and keeps describing the path; the pulse is the activity. */
   tractMat.onBeforeCompile = sh => {
-    sh.uniforms.uHead = { value: 0 };
+    sh.uniforms.uHead  = { value: 0 };
+    sh.uniforms.uIntro = { value: 0 };   // tracts fade in behind the node intro
     sh.fragmentShader = sh.fragmentShader
-      .replace('uniform float dashOffset;', 'uniform float dashOffset;\nuniform float uHead;')
+      .replace('uniform float dashOffset;',
+               'uniform float dashOffset;\nuniform float uHead;\nuniform float uIntro;')
       .replace(
         'if ( mod( vLineDistance + dashOffset, dashSize + gapSize ) > dashSize ) discard;',
         'float d = abs(fract(vLineDistance * 0.06 - uHead) - 0.5);\n' +
         'float pulse = exp(-d * d * 120.0);\n' +
         'diffuseColor.rgb += pulse * 1.9;\n' +
         // resting tract stays visible enough to describe the path it takes
-        'diffuseColor.a = 0.20 + pulse * 0.78;');
+        'diffuseColor.a = (0.20 + pulse * 0.78) * uIntro;');
     tractMat.userData.shader = sh;
   };
 
@@ -871,53 +945,117 @@ if (THREE) {
     hoverIdx = -1; label.style.opacity = 0; mx = my = 0;
   });
 
-  /* BASE_YAW / BASE_PITCH are the orientation the mesh was actually tuned to -- the
-     left-lateral three-quarter where the gyri read. They were being thrown away: rotY
-     started at 0 while pivot.rotation.y was set to -1.75, so within ~2 seconds the
-     brain eased 100 degrees round to a near-frontal view and then kept spinning. The
-     good orientation only ever existed on the first frame. */
-  const BASE_YAW = -1.75, BASE_PITCH = -0.10;
-  let t0=performance.now(), running=true, rotY=BASE_YAW, tiltX=0;
-  document.addEventListener('visibilitychange',()=>{running=!document.hidden; if(running)requestAnimationFrame(tick);});
-  function tick(){
-    if(!running) return;
-    const now=performance.now(), el=(now-t0)/1000;
+  /* =================================================================
+     THE MOTION, CONSOLIDATED - same treatment as the material.
 
-    /* drift + cursor parallax with weight. It eases toward the pointer and
-       carries momentum rather than snapping - float-and-bob is the thing to
-       avoid; this should feel like an object with mass. */
+     BASE_YAW / BASE_PITCH are the orientation the mesh was tuned to: the
+     left-lateral three-quarter where the gyri read.
+
+     Three defects fixed here, and the first is the SAME layering pattern
+     as the colour bug - a later addition quietly bypassing an earlier
+     one's contract:
+
+     1. prefers-reduced-motion was VIOLATED. `if(!reduce)` guarded the
+        rotation, and the uHead line guarded the signal - but the node
+        swell, added later in Phase 3, sat outside both guards and ran
+        unconditionally. Under reduced-motion all 26 nodes still pulsed
+        between 1x and 2.7x scale, forever. The guard now wraps the whole
+        animated state, and reduced-motion renders one settled frame.
+
+     2. The easing was FRAME-RATE DEPENDENT. `* 0.045` per frame is not
+        delta-normalised, so on a 120Hz display the brain eased toward the
+        pointer twice as fast as on 60Hz, and half as fast in a throttled
+        tab. "Weight and inertia, not float-and-bob" was the whole point,
+        and the weight changed with the monitor. Now a real time constant:
+        1 - exp(-dt/tau), tau chosen to match the old 60Hz feel exactly.
+
+     3. visibilitychange could run TWO RAF chains at once. It scheduled a
+        new frame on every visible event without checking whether one was
+        already queued; two chains both call render() and both reschedule.
+        Guarded with a frame id.
+
+     Plus Phase 3 item 7, specced and never built: the nodes now light in
+     CRON ORDER over the first few seconds, so the piece explains itself
+     before anyone scrolls. The tracts fade in behind them.
+     ================================================================= */
+  const BASE_YAW = -1.75, BASE_PITCH = -0.10;
+  const MOTION = {
+    dayPeriod:    14,     // seconds per simulated day
+    swayAmp:      0.16,   // rad, +/- ~9 degrees - never a full spin
+    swayPeriod:   57,     // seconds
+    parallaxYaw:  0.30, parallaxPitch: 0.16,
+    easeTau:      0.36,   // seconds; matches the old 0.045-per-frame at 60Hz
+    nodeSwell:    1.7, nodeSharp: 900,
+    hoverScale:   2.3,
+    introDur:     3.2,    // the intro: nodes light in cron order
+    introStagger: 0.85,   // how much of the intro is spent staggering
+    introRise:    0.18,   // how long one node takes to arrive
+  };
+
+  let t0=performance.now(), last=t0, running=true, rafId=0;
+  let tiltX=0, yaw=BASE_YAW;
+
+  document.addEventListener('visibilitychange',()=>{
+    running = !document.hidden;
+    // re-base the clock so a long hide does not teleport the day, and only
+    // ever keep ONE chain alive
+    if (running){ last = performance.now(); if(!rafId) rafId = requestAnimationFrame(tick); }
+  });
+
+  const smooth = x => { x = Math.min(1, Math.max(0, x)); return x*x*(3-2*x); };
+
+  function tick(){
+    rafId = 0;
+    if(!running) return;
+    const now = performance.now(), el = (now-t0)/1000;
+    // clamped so a hidden tab or a long frame cannot produce a jump
+    const dt = Math.min(0.05, Math.max(0, (now-last)/1000)); last = now;
+
+    /* Everything time-varying lives inside this guard now. Under
+       reduced-motion the brain holds its tuned orientation, the signal
+       rests, and the nodes sit at their settled size. */
     if(!reduce){
-      // A slow SWAY around the tuned orientation, not an unbounded spin. A full
-      // rotation guarantees the brain spends most of its time in a view that does not
-      // read as anatomy, and "a box with an animation that spins" is a documented
-      // rejection. +/- 9 degrees over ~57s keeps it alive and always legible.
-      rotY = BASE_YAW + Math.sin(el * 0.11) * 0.16;
-      pivot.rotation.y += ((rotY + mx*0.30) - pivot.rotation.y) * 0.045;
-      tiltX += ((-my*0.16) - tiltX) * 0.045;
+      const k = 1 - Math.exp(-dt / MOTION.easeTau);   // frame-rate independent
+      yaw = BASE_YAW + Math.sin(el * (2*Math.PI/MOTION.swayPeriod)) * MOTION.swayAmp;
+      pivot.rotation.y += ((yaw + mx*MOTION.parallaxYaw) - pivot.rotation.y) * k;
+      tiltX += ((-my*MOTION.parallaxPitch) - tiltX) * k;
       pivot.rotation.x = BASE_PITCH + tiltX;
     }
 
-    /* THE SIGNAL. uHead sweeps 0->1 over ~14s, which is one simulated day.
-       Because the tracts were built in real time-of-day order, the pulse
-       arrives at each node when that agent's turn in the day comes round. */
+    /* THE SIGNAL. uHead sweeps 0->1 over one simulated day. Because the
+       tracts were built in real time-of-day order, the pulse arrives at
+       each node when that agent's turn in the day comes round. */
+    const dayPos = reduce ? 0 : (el / MOTION.dayPeriod) % 1;
+    /* NOT clamped to 1. The last-ranked node needs the progress to reach
+       introStagger + introRise = 1.03 before its `born` term saturates; if
+       this saturated at 1.0 it would sit at 93% scale forever. */
+    const introP = reduce ? 2 : (el / MOTION.introDur);
     const shader = tractMat.userData.shader;
-    if (shader && !reduce) shader.uniforms.uHead.value = (el / 14) % 1;
+    if (shader){
+      shader.uniforms.uHead.value  = dayPos;
+      // tracts arrive after the nodes they connect
+      shader.uniforms.uIntro.value = reduce ? 1 : smooth((el - MOTION.introDur*0.55) / 1.6);
+    }
 
-    // a node swells as the signal reaches its place in the day
-    const dayPos = (el / 14) % 1;
-    AGENTS.forEach((a,i)=>{
-      const rank = order.findIndex(o => o.i === i) / Math.max(1,order.length-1);
+    for (let i=0;i<AGENTS.length;i++){
+      const rank = RANK[i];   // precomputed; this was an O(n^2) findIndex per frame
+      // the intro: each node arrives at its own place in the cron order
+      const born = smooth((introP - rank*MOTION.introStagger) / MOTION.introRise);
       let d = Math.abs(dayPos - rank); d = Math.min(d, 1-d);
-      let s = 1 + Math.exp(-d*d*900) * 1.7;
-      if (i === hoverIdx) s = Math.max(s, 2.3);
-      dummy.position.copy(nodePos[i].p); dummy.scale.setScalar(s);
+      let s = 1 + (reduce ? 0 : Math.exp(-d*d*MOTION.nodeSharp) * MOTION.nodeSwell);
+      if (i === hoverIdx) s = Math.max(s, MOTION.hoverScale);
+      dummy.position.copy(nodePos[i].p); dummy.scale.setScalar(s * born);
       dummy.updateMatrix(); nodes.setMatrixAt(i,dummy.matrix);
-    });
+    }
     nodes.instanceMatrix.needsUpdate=true;
     renderer.render(scene,cam);
-    requestAnimationFrame(tick);
+
+    // reduced-motion settles: once the intro is seated there is nothing
+    // left to animate, so stop burning frames entirely.
+    if (reduce && el > 0.2) return;
+    rafId = requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick);
+  rafId = requestAnimationFrame(tick);
 }
 
 /* ============================================================
@@ -929,13 +1067,8 @@ if (THREE) {
   const c=document.getElementById('clock'); if(!c) return;
   const ctx=c.getContext('2d');
   const ro=document.getElementById('clock-readout');
-  const CLS = cron => {
-    const p=cron.split(/\s+/);
-    if (p[2]!=='*') return {k:'monthly', c:'#ff5c8a'};
-    if (p[4]!=='*') return {k:'weekly',  c:'#ffb340'};
-    if (p[1].includes('*')) return {k:'hourly', c:'#9b8cff'};
-    return {k:'daily', c:'#2ee6c6'};
-  };
+  // was a second, independent copy of the classifier. Now one shared function.
+  const CLS = cron => { const s = scheduleClass(cron); return {k:s.k, c:s.hex}; };
   let marks=[];
 
   function draw(){
@@ -945,9 +1078,9 @@ if (THREE) {
     const cx=w/2, cy=h/2, R=Math.min(w,h)*0.34;
     marks=[];
 
-    ctx.strokeStyle='#242932'; ctx.lineWidth=1;
+    ctx.strokeStyle=PALETTE.edge; ctx.lineWidth=1;
     ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.stroke();
-    ctx.font='400 9.5px PlexMono,monospace'; ctx.fillStyle='#7d8794'; ctx.textAlign='center';
+    ctx.font='400 9.5px PlexMono,monospace'; ctx.fillStyle=PALETTE.mute; ctx.textAlign='center';
     for(let hh=0;hh<24;hh+=3){
       const ang=(hh/24)*Math.PI*2-Math.PI/2;
       ctx.beginPath();
@@ -979,9 +1112,9 @@ if (THREE) {
 
     /* the 06:40-07:00 cluster is the story this dial tells - annotate it */
     const ca=((6+50/60)/24)*Math.PI*2-Math.PI/2;
-    ctx.strokeStyle='#2ee6c6'; ctx.globalAlpha=.34; ctx.lineWidth=1;
+    ctx.strokeStyle=PALETTE.cyan; ctx.globalAlpha=.34; ctx.lineWidth=1;
     ctx.beginPath(); ctx.arc(cx,cy,R+13,ca-0.17,ca+0.17); ctx.stroke(); ctx.globalAlpha=1;
-    ctx.fillStyle='#2ee6c6'; ctx.font='400 9.5px PlexMono,monospace'; ctx.textAlign='left';
+    ctx.fillStyle=PALETTE.cyan; ctx.font='400 9.5px PlexMono,monospace'; ctx.textAlign='left';
     ctx.fillText('06:40-07:00', cx+Math.cos(ca)*(R+27)-8, cy+Math.sin(ca)*(R+27));
 
     const now=new Date(), na=((now.getHours()+now.getMinutes()/60)/24)*Math.PI*2-Math.PI/2;
@@ -992,7 +1125,7 @@ if (THREE) {
     ctx.textAlign='center';
     ctx.fillStyle='#eaf2f8'; ctx.font='500 26px PlexMono,monospace';
     ctx.fillText(String(AGENTS.length||26),cx,cy+2);
-    ctx.fillStyle='#7d8794'; ctx.font='400 9px PlexMono,monospace';
+    ctx.fillStyle=PALETTE.mute; ctx.font='400 9px PlexMono,monospace';
     ctx.fillText('SCHEDULED',cx,cy+16);
   }
 
@@ -1002,7 +1135,7 @@ if (THREE) {
     for(const m of marks){ const dd=(m.x-mx)*(m.x-mx)+(m.y-my)*(m.y-my); if(dd<bd){bd=dd;best=m;} }
     if(best && bd<460){
       ro.innerHTML='<b>'+best.name+'</b><br>'+best.t+' &middot; '+best.cls+
-                   '<br><span style="color:#7d8794">'+best.cron+'</span>';
+                   '<br><span style="color:'+PALETTE.mute+'">'+best.cron+'</span>';
       ro.classList.add('on');
     } else ro.classList.remove('on');
   });
@@ -1060,7 +1193,7 @@ if (THREE) {
     ctx.beginPath(); ctx.roundRect(x,y,w,h,3); ctx.fill(); ctx.stroke();
     ctx.fillStyle=col; ctx.font='500 11.5px PlexMono,monospace'; ctx.textAlign='center';
     ctx.fillText(label,x+w/2,y+h/2-1);
-    if(sub){ ctx.fillStyle='#7d8794'; ctx.font='400 9.5px PlexMono,monospace';
+    if(sub){ ctx.fillStyle=PALETTE.mute; ctx.font='400 9.5px PlexMono,monospace';
              ctx.fillText(sub,x+w/2,y+h/2+13); }
   }
 
@@ -1076,8 +1209,8 @@ if (THREE) {
     ctx.beginPath(); ctx.moveTo(w*0.05,divide); ctx.lineTo(w*0.95,divide); ctx.stroke();
     ctx.setLineDash([]);
     ctx.textAlign='left'; ctx.font='400 9px PlexMono,monospace';
-    ctx.fillStyle='#ffb340'; ctx.fillText('TRANSIENT - dies with the session', w*0.05, divide-7);
-    ctx.fillStyle='#2ee6c6'; ctx.fillText('DURABLE - survives a restart',      w*0.05, divide+14);
+    ctx.fillStyle=PALETTE.amber; ctx.fillText('TRANSIENT - dies with the session', w*0.05, divide-7);
+    ctx.fillStyle=PALETTE.cyan; ctx.fillText('DURABLE - survives a restart',      w*0.05, divide+14);
 
     ctx.strokeStyle='#2d333d'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(cx,yTop+BH); ctx.lineTo(cx,yMid); ctx.stroke();
@@ -1085,18 +1218,18 @@ if (THREE) {
 
     if(!reduce){
       const p=(t%150)/150;
-      ctx.fillStyle='#ffb340';
+      ctx.fillStyle=PALETTE.amber;
       ctx.beginPath(); ctx.arc(cx, yTop+BH+(yMid-yTop-BH)*p, 3.2, 0, 7); ctx.fill();
       if(p>0.55){
         const q=(p-0.55)/0.45;
-        ctx.fillStyle='#2ee6c6';
+        ctx.fillStyle=PALETTE.cyan;
         ctx.beginPath(); ctx.arc(cx, yMid+BH+(yBot-yMid-BH)*q, 3.2, 0, 7); ctx.fill();
       }
     }
 
     box(bx,yTop,BW,BH,'clients','listening together','#9db2c6');
-    box(bx,yMid,BW,BH,'WebSocket + Redis','playback position','#ffb340');
-    box(bx,yBot,BW,BH,'Postgres','queue, users, rooms','#2ee6c6');
+    box(bx,yMid,BW,BH,'WebSocket + Redis','playback position',PALETTE.amber);
+    box(bx,yBot,BW,BH,'Postgres','queue, users, rooms',PALETTE.cyan);
 
     t++; requestAnimationFrame(loop);
   }

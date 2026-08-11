@@ -143,11 +143,29 @@ agents (16:00–18:00) correctly arrive last.
 - The loop recomputed each node's rank with `order.findIndex()` inside a `forEach` over 26
   agents: **676 array scans per frame** to look up a constant. Precomputed into `RANK`.
 
-## Status
-Built as a **candidate**, not in place, per the plan's own rule. Both versions render with 0
-console errors and 0 page errors; the demos are identical through the shared palette.
-**`design-candidates/` is excluded from the Vercel deploy, so the PR preview does NOT show v13.**
-Folding it into `index.html` is Brian's call.
+## Status — FOLDED INTO `index.html` (branch only, NOT deployed to production)
+
+Built as a candidate first, per the plan's rule, then folded in so it can be judged in a real
+browser on the **PR preview** rather than from screenshots. `design-candidates/v13-consolidated.html`
+is kept frozen as the record, exactly as `v12-ship.html` was — **`index.html` is the authority.**
+
+**This is on the branch, not `main`.** Pushing to `main` is what triggers the production deploy
+at bmath8.vercel.app, and that remains Brian's call.
+
+The fold changes **only the module script**. Verified byte-identical above line 495 — every line
+of CSS and markup is untouched.
+
+Re-verified after folding:
+
+| Check | Result |
+|---|---|
+| Contrast (desktop / mobile) | **0 / 0** failures |
+| Breakpoint sweep 320→1920px | no overflow, no squeezed text, heights unchanged |
+| **`prefers-reduced-motion`** | **STATIC — was `False` before the fold, now `True`** |
+| Console errors / page errors / failed requests | 0 / 0 / 0 |
+| JS disabled | 3,867 chars render |
+| Third-party requests before the Squares click | **0**, iframe still sandboxed + titled |
+| Page height | 4,019px desktop · 6,647px mobile (unchanged) |
 
 ---
 
