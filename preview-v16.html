@@ -264,22 +264,6 @@
     gap:40px;align-items:center;pointer-events:none}
   .hero-copy{pointer-events:auto}
 
-  /* ---------- THE NAMEPLATE ----------
-     Replaces the one-line hero. The name is the only large moment; the spec
-     block under it is small, monospaced and left-ruled, so the hero reads as
-     an instrument plate rather than a statement. Density carries it, not size.
-     Rules and label columns come from container-lines + framed-grid-layout. */
-  .plate{margin:22px 0 26px;border-top:1px solid var(--edge);max-width:52ch}
-  .plate>div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:18px;
-    padding:9px 0;border-bottom:1px solid var(--hair)}
-  .plate dt{font:500 var(--t-micro)/1.5 PlexMono;color:var(--mute);
-    text-transform:uppercase;letter-spacing:.12em;margin:0}
-  .plate dd{margin:0;font:400 14px/1.5 PlexSans;color:var(--ink2)}
-  .plate dd b{color:var(--ink);font-weight:600}
-  @media(max-width:620px){
-    .plate>div{grid-template-columns:1fr;gap:2px}
-    .plate dt{letter-spacing:.16em}
-  }
   .live{display:inline-flex;align-items:center;gap:9px;padding:6px 12px;border-radius:100px;
     border:1px solid var(--edge);background:rgba(8,9,11,.55);color:var(--ink2);
     font:500 13.5px/1 PlexMono;margin-bottom:26px}
@@ -512,36 +496,11 @@
   <div id="glfail">26 scheduled agents are running on this machine right now.<br>81 tests green.</div>
   <div class="hero-grid">
     <div class="hero-copy">
-      <!-- ============================================================
-           v16 - THE SLOGAN IS GONE.
-
-           "I build systems, then I keep them running." is the single most
-           copied hero pattern on the web and the default every AI reaches
-           for: one bold declarative line, centred weight, a coloured word.
-           Brian: "Hate the one line bold messaging. Everyone does that."
-
-           The technical-wireframe brief says the opposite of a slogan -
-           "heading and explanatory copy offset into a quiet corner",
-           "sparse information labels", "only one or two larger heading
-           moments". So the hero is now a NAMEPLATE: the name is the
-           heading, and everything under it is a spec block - the same
-           form as the plate on the side of an instrument. It states what
-           the machine is instead of asserting what its owner is like.
-
-           Every line is drawn from the page's existing verified facts;
-           nothing new is claimed.
-           ============================================================ -->
       <div class="live"><span class="pip"></span><span id="nextrun">26 agents scheduled on real cron lines</span></div>
-      <h1>Brian Mathew</h1>
-      <dl class="plate">
-        <div><dt>Builds</dt><dd>Python · TypeScript · React/Next · Flask/Node · Postgres · Docker</dd></div>
-        <div><dt>Operates</dt><dd>a 26-agent Windows fleet on real cron lines, local-LLM routed</dd></div>
-        <div><dt>Tests</dt><dd>pytest · Jest/RTL — <b>81/81 green</b>, run 2026-08-05</dd></div>
-        <div><dt>Shipped</dt><dd>3 systems, all three openable below</dd></div>
-        <div><dt>Based</dt><dd>New Jersey — remote, hybrid, on-site or relocation</dd></div>
-      </dl>
-      <p class="lede">The cortex is not decoration: <b>one node per scheduled agent</b>, each
-        firing on the cron line it actually runs on.</p>
+      <h1>I build systems,<br>then I <em>keep them running.</em></h1>
+      <p class="lede">Self-taught developer in New Jersey. That cortex is not decoration &mdash;
+        it carries <b>one node for every scheduled agent on my machine</b>, each firing on the cron
+        line it actually runs on. Everything below is code you can open.</p>
       <div class="strip">
         <div class="met c"><div class="v" id="m1">26</div><div class="k">agents live</div></div>
         <div class="met"><div class="v">81<span style="color:var(--mute)">/81</span></div><div class="k">tests green</div></div>
@@ -835,89 +794,43 @@ if (THREE) {
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
   geo.setAttribute('normal',   new THREE.BufferAttribute(nrm,3));
-  geo.setAttribute('aCurv',    new THREE.BufferAttribute(curv,1));
+  /* aCurv is gone with the cavity shading it fed - see the cortex block below */
   geo.setIndex(new THREE.BufferAttribute(idx,1));
 
   /* =================================================================
-     THE BRAIN MATERIAL, REBUILT AS ONE MODEL INSTEAD OF FOUR LAYERS.
+     THE CORTEX, REDESIGNED ONCE - not dimmed, not layered on.
 
-     What was here: a saturated BLUE matcap ramp (#93bcda -> #4a7c9b ->
-     #1a3450 -> #04101d), then a cavity multiply, then a violet mix, then
-     a cyan fresnel ADD at 0.95 strength. Four colour operations added by
-     three different sessions, each one compensating for the last.
+     Brian, twice: "It keeps using old designs on top of each other.
+     Still see prior designs." He was right, and v16's first attempt was
+     guilty of exactly that: it kept the entire matcap / cavity /
+     fold-tint / fresnel stack and multiplied the whole thing by 0.16,
+     then drew linework over it. That is a FIFTH pass on top of four,
+     not a redesign.
 
-     The bug that reveals the layering: the near-monochrome blue ramp was
-     RETRACTED on 2026-08-05 - "everything is blue and blends into
-     eachother ... no contrast, flow, clear distinct areas." The page
-     palette was duly reworked off blue onto neutral #08090b + accents.
-     THE BRAIN'S MATERIAL WAS NEVER REWORKED. It still carried the exact
-     ramp that had been rejected, and the response to "it doesn't pop"
-     was to bolt a cyan rim on top rather than to fix the base. At 0.95
-     that rim dominates the silhouette, which is why the mesh reads as a
-     glassy teal object rather than a lit anatomical form.
+     Everything that was here is now DELETED - the 6-stop matcap canvas
+     ramp, the curvature cavity multiply, the violet fold tint, the
+     fresnel rim, the two onBeforeCompile shader patches, and the
+     per-vertex curvature attribute that only existed to feed them.
 
-     The fix is not a fifth layer. The ramp is rebuilt NEUTRAL, so the
-     brain belongs to the page's palette by construction, and the only
-     saturated things in the hero are the data: the accent-coloured
-     nodes and the travelling signal. Neutral form, coloured data.
-     Because the base no longer fights it, the rim comes down to 0.55
-     and goes back to being an edge accent rather than the whole hue.
+     The object is now exactly TWO elements, and that is the whole design:
 
-     Every value is a named constant. The next change to this material
-     is a parameter edit, not another layer.
+       1. an UNLIT FLAT OCCLUDER. No shading model at all. Its only job
+          is to hide the linework on the far side of the form - which is
+          the single reason a wireframe reads as a solid object rather
+          than a ball of wool.
+
+       2. CONTOUR LINEWORK from a thresholded edge pass. On a cortical
+          surface, "where the surface turns sharply" IS the gyri and
+          sulci, so the anatomy draws itself.
+
+     If this needs to change, it changes by editing these two things.
+     There is nothing underneath them to inherit.
      ================================================================= */
-  const SHADE = {
-    // value range. Phase 1 was right that this was a VALUE problem - the
-    // wide light-to-dark ramp is kept exactly. Only the hue is corrected.
-    ramp: [
-      [0.00, '#ffffff'],   // specular highlight
-      [0.13, '#e9eef2'],   // was #dbf1ff - the blue is out of the highlight
-      [0.34, '#a9b4bd'],   // was #93bcda
-      [0.58, '#5e6873'],   // was #4a7c9b
-      [0.78, '#2c333b'],   // was #1a3450
-      [1.00, '#0a0d11'],   // terminator, sits in the --void family
-    ],
-    cavityLo: 0.24, cavityHi: 0.76,   // where sulci->ridge falls
-    cavityFloor: 0.32, cavityCeil: 1.06,
-    foldTint: [0.90, 0.88, 1.05],     // violet HINT in deepest folds only
-    rimPower: 2.4,
-    rimStrength: 0.30,                // was 0.95 against a blue base
-  };
-
-  const mc=(()=>{ const s=256,c=document.createElement('canvas'); c.width=c.height=s;
-    const g=c.getContext('2d');
-    const gr=g.createRadialGradient(s*.34,s*.28,s*.02,s*.5,s*.5,s*.56);
-    SHADE.ramp.forEach(([stop,col]) => gr.addColorStop(stop,col));
-    g.fillStyle=gr; g.beginPath(); g.arc(s/2,s/2,s/2,0,7); g.fill();
-    const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
-
-  // the rim reads as the cyan accent, taken from the same palette as everything else
-  /* The rim goes NEUTRAL in v16. It was the last cyan glow left on the
-     object, and the technical-wireframe brief is explicit: keep the palette
-     almost entirely neutral, and let emphasis come from brightness and line
-     weight rather than colour. A coloured halo on the silhouette is exactly
-     the "filled glossy render" signature the skill tells you to avoid. */
-  const rimRGB = 'vec3(0.86,0.89,0.93)';
-  const f = n => n.toFixed(3);
-
-  const mat = new THREE.MeshMatcapMaterial({matcap:mc});
-  mat.onBeforeCompile = s => {
-    s.vertexShader = s.vertexShader
-      .replace('void main() {','attribute float aCurv;\nvarying float vCurv;\nvoid main() {')
-      .replace('#include <begin_vertex>','#include <begin_vertex>\nvCurv = aCurv;');
-    s.fragmentShader = s.fragmentShader
-      .replace('void main() {','varying float vCurv;\nvoid main() {')
-      // `normal` and `vViewPosition` are both in scope after this include.
-      // vViewPosition points surface -> camera, so 1-dot(n,v) peaks at the rim.
-      .replace('#include <normal_fragment_maps>',
-        '#include <normal_fragment_maps>\n' +
-        `float fres = pow(1.0 - clamp(abs(dot(normalize(normal), normalize(vViewPosition))),0.0,1.0), ${f(SHADE.rimPower)});`)
-      .replace('#include <dithering_fragment>',
-        '#include <dithering_fragment>\n' +
-        `float cav = smoothstep(${f(SHADE.cavityLo)}, ${f(SHADE.cavityHi)}, vCurv);\n` +
-        `gl_FragColor.rgb *= mix(${f(SHADE.cavityFloor)}, ${f(SHADE.cavityCeil)}, cav);\n` +
-        `gl_FragColor.rgb = mix(gl_FragColor.rgb * vec3(${SHADE.foldTint.map(f).join(',')}), gl_FragColor.rgb, cav);\n` +
-        `gl_FragColor.rgb += ${rimRGB} * fres * ${f(SHADE.rimStrength)};`);
+  const CORTEX = {
+    occluder:  0x0b0d10,   // flat, unlit - reads as the void, but writes depth
+    line:      0xe6ebf1,
+    lineAlpha: 0.72,
+    threshold: 24,         // degrees; below this the surface is "flat" and gets no line
   };
 
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
@@ -925,50 +838,19 @@ if (THREE) {
   const scene = new THREE.Scene();
   const cam = new THREE.PerspectiveCamera(30,1,.01,60);
   const pivot = new THREE.Group(); scene.add(pivot);
-  /* =================================================================
-     v16 - THE CORTEX BECOMES A WIREFRAME DIAGNOSTIC OBJECT.
 
-     Straight out of the technical-wireframe-info-layout skill, which
-     names our exact problem in its Avoid list: "filled glossy 3D
-     renders that replace the wireframe diagnostic look." That is what
-     the matcap brain was. Every version of this hero has been a prettier
-     glossy render; none of them changed what KIND of object it is.
-
-     The skill's positive instruction is equally specific: build the
-     object from "outlined geometry, edges, ... modular parts", and let
-     emphasis come from "brightness, line weight and spatial placement
-     instead of strong color."
-
-     So: the surface is kept but pushed almost to black, purely as an
-     OCCLUDER - it is what makes the far-side linework disappear, which
-     is the only reason the form reads as solid. The visible object is
-     now EdgesGeometry linework on top of it.
-
-     EdgesGeometry with a threshold angle is the right tool rather than
-     a full wireframe: a full wireframe of 79,644 triangles is ~120k
-     segments of noise, while a thresholded edge pass keeps only where
-     the surface actually turns - which on a cortex is precisely the
-     gyri and sulci. The anatomy draws itself as contour lines.
-     ================================================================= */
-  const WIRE = { threshold: 24, lineOpacity: 0.70, surface: 0.16 };
-
-  // the surface survives only to occlude - darkened hard, and pushed back
-  // in depth so the edge pass sits cleanly on top instead of z-fighting it
-  mat.onBeforeCompile = (orig => s => {
-    orig(s);
-    s.fragmentShader = s.fragmentShader.replace(
-      '#include <dithering_fragment>',
-      `#include <dithering_fragment>\n  gl_FragColor.rgb *= ${WIRE.surface.toFixed(2)};`);
-  })(mat.onBeforeCompile);
+  const mat = new THREE.MeshBasicMaterial({ color: CORTEX.occluder });
   mat.polygonOffset = true; mat.polygonOffsetFactor = 1; mat.polygonOffsetUnits = 1;
+  const brain = new THREE.Mesh(geo, mat); pivot.add(brain);
+  // lateral view: ICBM voxel axes were remapped to (x, z, -y) when the mesh was
+  // built, so this orients it to a left-lateral three-quarter, frontal lobe left
+  pivot.rotation.set(-0.10, -1.75, 0.06);
 
-  const brain = new THREE.Mesh(geo,mat); pivot.add(brain);
-
-  const edgeGeo = new THREE.EdgesGeometry(geo, WIRE.threshold);
+  const edgeGeo = new THREE.EdgesGeometry(geo, CORTEX.threshold);
   const edges = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({
-    color:0xe4e9ef, transparent:true, opacity:WIRE.lineOpacity, depthWrite:false }));
+    color: CORTEX.line, transparent: true, opacity: CORTEX.lineAlpha, depthWrite: false }));
   pivot.add(edges);
-  console.info('[wireframe] edge segments:', edgeGeo.attributes.position.count/2);
+  console.info('[cortex] contour segments:', edgeGeo.attributes.position.count / 2);
   // lateral view: ICBM voxel axes were remapped to (x, z, -y) when the mesh was
   // built, so this orients it to a left-lateral three-quarter, frontal lobe left
   pivot.rotation.set(-0.10, -1.75, 0.06);
