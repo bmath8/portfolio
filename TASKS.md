@@ -63,6 +63,38 @@ sufficient.
 
 Re-test by re-running the three URLs above. Only all-404 closes this.
 
+## Post-merge check — MUST run against bmath8.vercel.app, not the preview
+
+`.vercelignore` was rewritten when `vendor/mesh/` and `vendor/lines/` were
+deleted and `vendor/number-flow.min.js` was added. History says this file is the
+one that silently breaks: on 2026-08-05 a pattern git accepted was NOT honoured
+by Vercel and `/vendor/fonts/IBMPlexSans-400.woff2` came back 404 on the live
+site, which fell back to system fonts without any error.
+
+Verified on the preview deploy 2026-08-12: `/vendor/number-flow.min.js` → **200**,
+`application/javascript`, brotli. That was the new risk and it is fine.
+
+NOT verified, and not verifiable from the preview: the preview has Vercel
+deployment protection on, so absent paths bounce to an SSO redirect instead of
+returning 404, which cannot be told apart from "served but protected."
+
+- [ ] After merging to `main`, run these against **`https://bmath8.vercel.app`**
+      and require the stated result:
+
+| path | required |
+|---|---|
+| `/vendor/fonts/IBMPlexSans-400.woff2` | 200 |
+| `/vendor/fonts/BricolageGrotesque-800.woff2` | 200 |
+| `/vendor/three.module.min.js` | 200 |
+| `/vendor/three.core.min.js` | 200 |
+| `/vendor/number-flow.min.js` | 200 |
+| `/agents.json` | 200 |
+| `/vendor/mesh/brain-icbm152-v2.bin` | **404** |
+| `/design-candidates/v17-instrument.html` | **404** |
+| `/vendor/gsap.min.js` | **404** |
+
+An ignore pattern that git accepts proves nothing about how the host treats it.
+
 ## Open — needs Brian
 - [x] ✅ **`resume.pdf` now says 26 — FIXED HERE 2026-08-12, applications are unblocked.**
       Patched surgically: the single text operator carrying the digit was edited, so every other
