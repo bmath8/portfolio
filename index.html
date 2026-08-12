@@ -102,6 +102,28 @@
 
     /* accents - one cool, one warm, so the page is not all one temperature */
     --cyan:#2ee6c6; --magenta:#ff5c8a; --amber:#ffb340; --violet:#9b8cff;
+
+    /* ---------- type scale ----------
+       Measured 2026-08-12: the stylesheet declared NINETEEN distinct font
+       sizes, eight of them inside a 3.5px span (10.5 / 11 / 11.5 / 12 / 12.5 /
+       13 / 13.5 / 14). Sizes half a pixel apart are not a decision anyone can
+       see; they are the same accretion as the stacked shaders and the dead
+       vendor libraries - each redesign reached for a new number instead of
+       reusing one.
+
+       The micro tier is collapsed to ONE token here. 10.5px was also simply
+       too small for a caption, so this is a legibility fix as well as a
+       tidy-up. The 13px and 14px sizes are deliberately NOT touched: those are
+       interactive controls, and resizing a tap target to save a line of CSS is
+       a bad trade.
+
+       RULE GOING FORWARD: add a token, not a number. If a new size is genuinely
+       needed it belongs here, once, with a name. */
+    --t-micro:11.5px;   /* captions, metric labels, hover tooltips, notes */
+
+    /* what the rest of the page uses, for reference - not yet tokenised
+       because each is a single call site: 13/14 controls, 15 body, 17 lede
+       base, 21 lede, 25 card title, and three display clamps. */
   }
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--void);color:var(--ink);
@@ -215,7 +237,7 @@
   .met{flex:1 1 118px;padding:14px 16px;border-right:1px solid var(--edge)}
   .met:last-child{border-right:0}
   .met .v{font:500 26px/1 PlexMono;letter-spacing:-.02em}
-  .met .k{font:400 11.5px/1.4 PlexMono;color:var(--mute);margin-top:6px;
+  .met .k{font:400 var(--t-micro)/1.4 PlexMono;color:var(--mute);margin-top:6px;
     text-transform:uppercase;letter-spacing:.07em}
   .met.c .v{color:var(--cyan)} .met.a .v{color:var(--amber)} .met.v_ .v{color:var(--violet)}
 
@@ -298,7 +320,7 @@
   .demo{background:var(--deep);border-left:1px solid var(--edge);min-height:290px;
     position:relative;display:grid;place-items:center}
   .demo canvas{display:block;width:100%;height:100%}
-  .demo .cap{position:absolute;left:14px;bottom:12px;font:400 11.5px/1 PlexMono;color:var(--mute);z-index:3}
+  .demo .cap{position:absolute;left:14px;bottom:12px;font:400 var(--t-micro)/1 PlexMono;color:var(--mute);z-index:3}
   /* click-to-load poster for the live Squares app */
   .demo-live{padding:0}
   .poster{position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;
@@ -311,11 +333,11 @@
   .poster:hover .play{background:#ff6ea3}
   .play svg{width:15px;height:15px}
   .poster-note{position:absolute;bottom:34px;left:0;right:0;z-index:2;text-align:center;
-    font:400 10.5px/1 PlexMono;color:var(--mute)}
+    font:400 var(--t-micro)/1.35 PlexMono;color:var(--mute)}
   .demo-live iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
   /* hover readout shared by the interactive demos */
   .readout{position:absolute;right:12px;top:12px;z-index:3;text-align:right;
-    font:400 11px/1.55 PlexMono;color:var(--ink2);pointer-events:none;
+    font:400 var(--t-micro)/1.55 PlexMono;color:var(--ink2);pointer-events:none;
     background:rgba(8,9,11,.9);border:1px solid var(--edge);border-radius:3px;
     padding:7px 10px;opacity:0;transition:opacity .15s}
   .readout.on{opacity:1}
