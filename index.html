@@ -237,6 +237,14 @@
      The plan's leftover said "raise or cut it"; raising is worse. Cut.
      A page-length version would also have to cross .band-lift, where a cyan
      hairline on near-white has nothing to do with the rest of the design. */
+  /* Heading word reveal. Only ever applies to spans the script creates, so
+     a JS-disabled page has nothing hidden to reveal. `will-change` is
+     deliberately absent: on a page already running a WebGL world, promoting
+     every word to its own layer costs more than the transition saves. */
+  .rw{display:inline-block;opacity:0;transform:translateY(18px);
+    transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1)}
+  .rw-in .rw{opacity:1;transform:none}
+
   .sec-h{display:flex;align-items:baseline;gap:16px;margin:0 0 10px}
   .sec-h h2{font:800 clamp(26px,3vw,38px)/1.1 Bricolage;letter-spacing:-.02em;margin:0}
   .sec-sub{color:var(--mute);font-size:15px;max-width:56ch;margin:0 0 44px}
@@ -1411,6 +1419,80 @@ if (THREE) {
     t++; requestAnimationFrame(loop);
   }
   loop();
+})();
+
+/* ============================================================
+   HEADING CHOREOGRAPHY - words rise as their section arrives.
+
+   Built with IntersectionObserver + CSS, NOT GSAP. GSAP is vendored
+   and now free, and the skill library recommends it - but it is
+   116 KB to do what one transition and one observer already do, on
+   a page whose whole architecture is zero-dependency. Adding a
+   library because a playbook names it is how the vendor folder got
+   to 5 MB. If a timeline ever needs orchestrating, revisit it then.
+
+   NO-JS SAFETY BY CONSTRUCTION: the base stylesheet hides nothing.
+   Headings are plain text in the HTML and fully visible; the hidden
+   state only ever applies to spans this script creates. So a page
+   with JS disabled cannot render a blank heading - the failure mode
+   a previous version actually shipped.
+
+   Under reduced motion the split does not happen at all: the text is
+   simply left alone, which is the final state, rendered immediately.
+   ============================================================ */
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+
+  const targets = document.querySelectorAll('h1, .sec-h h2, footer h2');
+
+  targets.forEach(h => {
+    // Split only TEXT nodes, so <em>, <br> and any inline markup survive
+    // intact. Never split a heading containing a link - none here do, and
+    // splitting one would break its accessible name.
+    if (h.querySelector('a')) return;
+    const walk = document.createTreeWalker(h, NodeFilter.SHOW_TEXT);
+    const texts = [];
+    while (walk.nextNode()) texts.push(walk.currentNode);
+
+    texts.forEach(node => {
+      if (!node.nodeValue.trim()) return;
+      const frag = document.createDocumentFragment();
+      node.nodeValue.split(/(\s+)/).forEach(tok => {
+        if (!tok.trim()) { frag.appendChild(document.createTextNode(tok)); return; }
+        const s = document.createElement('span');
+        s.className = 'rw';
+        s.textContent = tok;
+        frag.appendChild(s);
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+  });
+
+  const reveal = (el, stagger)=>{
+    el.querySelectorAll('.rw').forEach((w,i)=>{
+      w.style.transitionDelay = (stagger ? i*0.045 : 0)+'s';
+    });
+    el.classList.add('rw-in');
+  };
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      /* `isIntersecting` alone is NOT enough, and this was a real bug caught
+         in testing: jump the scroll position past a heading - an anchor link,
+         a restored scroll position, a fast flick - and the observer never
+         sees it intersect, so its words stay at opacity 0 FOREVER. An
+         invisible heading is far worse than an unanimated one. Anything
+         already above the viewport is revealed immediately, without the
+         stagger, because its entrance has already been missed. */
+      const passed = e.boundingClientRect.top < 0;
+      if (!e.isIntersecting && !passed) return;
+      reveal(e.target, e.isIntersecting);
+      io.unobserve(e.target);        // reveal once, never replay
+    });
+  }, {threshold:0.25, rootMargin:'0px 0px -8% 0px'});
+
+  targets.forEach(h => { if (h.querySelector('.rw')) io.observe(h); });
 })();
 </script>
 </html>
