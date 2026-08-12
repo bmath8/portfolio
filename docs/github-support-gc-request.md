@@ -1,7 +1,17 @@
 # GitHub Support request — garbage-collect unreachable objects
 
-**Status: NOT YET SENT.** Re-verified 2026-08-12: both SHAs below still return **HTTP 200**.
-Only Brian can file this — it needs the account that owns the repo.
+**Status: NOT YET SENT.** Only Brian can file this — it needs the account that owns the repo.
+
+Independently confirmed on Brian's machine, 2026-08-12, which is the measurement that matters
+because it runs outside this project's network:
+
+```
+200  cd2746e   <- blob still served
+200  24e1549   <- blob still served
+404  main      <- control passes, current tip is clean
+```
+
+The rewrite is holding — `main` is clean. The two unreachable commits are what GC has to clear.
 
 Support: https://support.github.com/contact → "Repository management".
 
@@ -46,11 +56,17 @@ with "Missing an argument for parameter 'SessionVariable'". Call `curl.exe` expl
 
 ```powershell
 @("cd2746e","24e1549","main") | ForEach-Object {
-  $u = "https://raw.githubusercontent.com/bmath8/portfolio/$_/vendor/mesh/brain-mni.bin"
-  try   { "$((Invoke-WebRequest $u -Method Head -UseBasicParsing).StatusCode)  $_" }
-  catch { "$($_.Exception.Response.StatusCode.value__)  $_" }
+  $sha = $_                                    # see note below - do not use $_ in the catch
+  $u = "https://raw.githubusercontent.com/bmath8/portfolio/$sha/vendor/mesh/brain-mni.bin"
+  try   { "$((Invoke-WebRequest $u -Method Head -UseBasicParsing).StatusCode)  $sha" }
+  catch { "$($_.Exception.Response.StatusCode.value__)  $sha" }
 }
 ```
+
+> **Why `$sha` and not `$_`:** inside `catch`, PowerShell rebinds `$_` to the *error record*, so
+> using it there prints the exception message instead of the commit. Right now only one URL 404s
+> so it barely shows — but **after Support runs GC all three will 404**, and the whole point of
+> the test is knowing which SHA each line refers to. Capture the loop variable first.
 
 ### bash / macOS / Linux
 
