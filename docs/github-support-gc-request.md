@@ -34,13 +34,31 @@ Support: https://support.github.com/contact → "Repository management".
 
 ## How to confirm it worked
 
-Re-run these. **All three must be 404** — the third already is, and is the control showing the
-current tip is clean.
+**All three must return 404.** The third already does — it is the control proving the current
+tip is clean, so if it ever returns anything else the test itself is wrong.
+
+### Windows PowerShell — use this one
+
+⚠️ **`curl` in Windows PowerShell 5.1 is an alias for `Invoke-WebRequest`, not curl.** The bash
+flags below get parsed as PowerShell parameters (`-s` becomes `-SessionVariable`) and it fails
+with "Missing an argument for parameter 'SessionVariable'". Call `curl.exe` explicitly, and use
+`NUL` rather than `/dev/null`:
+
+```powershell
+@("cd2746e","24e1549","main") | ForEach-Object {
+  $u = "https://raw.githubusercontent.com/bmath8/portfolio/$_/vendor/mesh/brain-mni.bin"
+  try   { "$((Invoke-WebRequest $u -Method Head -UseBasicParsing).StatusCode)  $_" }
+  catch { "$($_.Exception.Response.StatusCode.value__)  $_" }
+}
+```
+
+### bash / macOS / Linux
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" https://raw.githubusercontent.com/bmath8/portfolio/cd2746e/vendor/mesh/brain-mni.bin
-curl -s -o /dev/null -w "%{http_code}\n" https://raw.githubusercontent.com/bmath8/portfolio/24e1549/vendor/mesh/brain-mni.bin
-curl -s -o /dev/null -w "%{http_code}\n" https://raw.githubusercontent.com/bmath8/portfolio/main/vendor/mesh/brain-mni.bin
+for r in cd2746e 24e1549 main; do
+  curl -s -o /dev/null -w "%{http_code}  $r\n" \
+    "https://raw.githubusercontent.com/bmath8/portfolio/$r/vendor/mesh/brain-mni.bin"
+done
 ```
 
 ## Why the rewrite alone was not enough
