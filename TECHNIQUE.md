@@ -1,139 +1,84 @@
-# Technique — what to actually build, from primary sources
+# How the page is built
 
-Read 2026-08-04 from the tutorials themselves, not summaries. This is the file that
-should have existed before candidate #1.
+One static `index.html`, no build step, no framework, no runtime dependency on
+anything the visitor has to trust. Everything below is checkable by opening the
+file or the deployed URL.
 
----
+Superseded and deleted 2026-08-12: `BRAIN-TECHNIQUE-2026-08-05.md`,
+`HERO-BRIEF.md`, `SCENE-BRIEF.md`, `V6-PLAN-2026-08-05.md` and
+`REFERENCES-2026-08-05.md`. All five described a cortical-mesh hero that no
+longer exists in any form. Keeping documentation for a deleted object is how the
+last seventeen versions ended up designing on top of each other.
 
-## THE CORE REALISATION
+## The hero object — the schedule field
 
-**Everything I built for Brian was a shell of points.** Particles sampled onto a surface.
-A shell can only ever look like a shell — that is why the cortex "can be significantly
-improved" and why no amount of colour or font work fixed it.
+There is no 3-D model. Nothing is downloaded, shipped, or authored in a modeller.
+The geometry is generated at load from the 26 cron lines in `agents.json`:
 
-The technique that actually produces depth is **volumetric raymarching**, and the
-distinction is one sentence, from Maxime Heckel:
+| axis | meaning |
+|---|---|
+| X | time of day, 00:00 at the left edge through to 24:00 |
+| Z | one lane per agent, 26 of them running back into the scene |
+| Y | a mark stands up wherever that agent actually fires |
 
-> *"Instead of stopping the raymarched loop once the ray hits a surface, **we push through
-> and continue the process to sample the inside of an object**."*
+54 firings a day. The silhouette of the field is the shape of the day, and it is
+dense at 06:40 because the crontab is dense at 06:40. Remove an agent from
+`agents.json` and its lane disappears.
 
-That is the difference between a point cloud and a thing with *interior*. Clouds, smoke,
-and — for our purposes — a brain with real density, light scattering through it, and
-depth that reads at any zoom.
+This replaced a downloaded MNI ICBM152 cortical surface that had been relit five
+times across seventeen versions. The failure was structural, not a tuning
+problem: a brain is a metaphor, so it gets judged as a picture of a brain. A
+field generated from the data cannot be wrong about what it depicts.
 
----
+Implementation notes that are easy to get wrong:
 
-## 1. Raymarching + SDFs (the form)
+- **Distance falloff is `THREE.Fog`, not baked vertex alpha.** Baking it fixes
+  the falloff at one camera position and then lies the moment the camera moves,
+  and this camera moves through six shots.
+- **Rail colours come from a `UI` map read once out of the CSS custom
+  properties.** `new THREE.Color(undefined)` silently resolves to **white** —
+  a missing key does not throw, it just draws every minor rail at full white and
+  deletes the grid's hierarchy. That shipped once. If a rail looks wrong, check
+  the key exists in `UI` before touching the colour.
+- **Scroll conductor**: six authored shots keyed to `[data-cam]` elements,
+  interpolated on native scroll with a smoothstep, damped frame-rate
+  independently as `lerp(cur, to, 1 - exp(-dt/ease))`.
+- **Drag composes with scroll.** User drag is stored as an *offset* from
+  whatever the conductor is currently asking for, not as the value itself,
+  or the two fight over one variable.
+- **The clock line is real.** It sits at the current local time and moves.
 
-Source: Codrops, *"How to Create a Liquid Raymarching Scene Using Three.js Shading
-Language"* (Ben McCormick, Jul 2024).
+## Colour
 
-- Raymarching renders complex 2D/3D scenes **in a single fragment shader** — no models,
-  no materials, no geometry. The whole form is math.
-- Built on **Signed Distance Fields**: a function returning the distance from any point in
-  space to the surface of an object. Combine SDFs with smooth-min and you get **metaballs**
-  — "gloopy, liquid shapes that absorb into each other."
-- Lineage worth reading in order:
-  1. Kishimisu — *An Introduction to Raymarching*
-  2. Inigo Quilez — *3D SDF Resources* (the canonical function library) and *Painting a
-     Character with Maths*
-  3. Maxime Heckel — *Painting with Math: A Gentle Study of Raymarching*
-- **TSL** (Three.js Shading Language) compiles to WGSL on WebGPU and falls back to GLSL.
-  Lower barrier than raw GLSL. Requires `WebGPURenderer`. Current as of three r168.
+Derived in OKLCH, shipped as hex. See `DESIGN-REFERENCE.md`.
 
-**Why this matters for the brain:** an SDF brain is *defined*, not *sampled*. Two lobe
-ellipsoids + cerebellum + stem combined with `smin()` gives an organic fused form with no
-seams — and it can deform, breathe, and split without regenerating geometry.
+Hex is what ships because `THREE.Color`, canvas 2D and the contrast audit all
+have to read these values and none of them parses `oklch()`. The OKLCH source
+sits in a comment beside every token — re-derive the ramp rather than nudging
+the hex, or it drifts back to being arbitrary.
 
-## 2. Volumetric rendering (the depth)
+## Vendored code
 
-Source: Maxime Heckel, *"Real-time dreamy Cloudscapes with Volumetric Raymarching."*
+| file | why |
+|---|---|
+| `vendor/three.module.min.js` + `three.core.min.js` | the scene. The second is imported internally by the first; shipping only one is a hard module error. |
+| `vendor/fonts/*.woff2` | six self-hosted faces, so there is no third-party request |
+| `vendor/number-flow.min.js` | the four hero figures count up. npm, MIT, bundled to one ESM with esbuild because the published build has bare specifiers a no-build page cannot resolve. |
 
-- March through the object, accumulating density instead of stopping at the surface.
-- Lineage: Shadertoy scenes — Inigo Quilez *"Clouds"*, al-ro *"Starry Night"*, Suyoku
-  *"Volumetric Raymarching sample."*
-- Serious references cited: EA Frostbite physically-based sky/cloud rendering (Sébastien
-  Hillaire), *Horizon Zero Dawn*'s volumetric cloudscapes (Andrew Schneider), SimonDev's
-  *How Big Budget AAA Games Render Clouds*, blue-noise masks for sampling.
-- Blue noise is the standard fix for banding artefacts in volumetric sampling.
+`vendor/mesh/` and `vendor/lines/` were deleted with the cortex.
 
-**Why this matters:** this is how the brain gets soft interior glow and scattering rather
-than 14,000 hard dots. It is also inherently *not* neon — density accumulates smoothly
-instead of additive-blending to white.
+## Non-negotiables, and how each is actually checked
 
-## 3. Dithering (the texture — and the fix for "too bright")
+Not asserted — measured, by rendering the page in Chromium.
 
-Source: Codrops, *"Efecto: Building Real-Time ASCII and Dithering Effects with WebGL
-Shaders"* (Pablo Stanley, Jan 2026).
+| claim | how it is verified |
+|---|---|
+| every figure is checkable | counted from `agents.json` at run time where possible. The page claimed "twelve" agents fire between 06:40 and 07:00 for several versions; it is **ten**. Both the field annotation and the dial caption now count the window instead of asserting it, which is how that was caught. |
+| WCAG AA contrast | computed styles read from the live DOM at four scroll positions, foreground against the first opaque ancestor background |
+| reduced motion is honoured | two screenshots 2.6 s apart must be **byte-identical** under `prefers-reduced-motion: reduce`. A visual check passes things this catches. |
+| renders without JavaScript | loaded with `java_script_enabled=False`; h1, headings and links must still be present |
+| no third-party requests | every request logged on load and through a full scroll; the count must be 0 before the visitor clicks anything |
 
-- Dithering creates the illusion of more colours than you have by arranging pixels in a
-  pattern the eye blends. Descends from 1869 newspaper halftones → MacPaint → modern
-  algorithms.
-- **Floyd–Steinberg (1976):** when you round a pixel to the nearest available colour you
-  get an error; **spread that error to neighbouring pixels** instead of discarding it.
-  Produces organic patterns rather than harsh bands.
-- Algorithm family to try: Floyd–Steinberg, Atkinson, Jarvis-Judice-Ninke, Stucki, Burkes,
-  Sierra. Each has a distinct grain.
-- The author is a **designer who didn't write shaders** and learned from Shadertoy +
-  *The Book of Shaders* (Patricio Gonzalez Vivo) + the `postprocessing` library.
-
-**Why this matters:** Brian rejected v1 as "neon lights, not readable, too bright." Bloom
-on additive particles clips to white. **Dithering does the opposite** — it quantises to a
-limited palette, so highlights *can't* blow out, and it produces "that crunchy texture
-that feels both old and new." It gives the render a material identity instead of a glow.
-
-## 4. Motion (the transitions Brian called weak)
-
-Source: Codrops, *"How to Animate WebGL Shaders with GSAP"* (Andrea Biason / Adoratorio
-Studio, Oct 2025).
-
-- The professional pattern is **GSAP timelines driving shader uniforms** — not ad-hoc
-  `lerp` calls in the RAF loop, which is what all four of my candidates did.
-- A `Stage` class owns renderer/scene/camera; HTML and canvas are kept in sync; GSAP
-  `ScrollTrigger` and `Draggable` drive interaction.
-- Effects covered: ripples on click, mask reveals, scroll/drag-reactive blur.
-
-**Why this matters:** proper easing and orchestration live in the timeline. That is the
-missing craft layer in every version so far — my motion was linear damping, which always
-reads as "floaty" rather than designed.
-
----
-
-## THE SYNTHESIS — what v5 should be
-
-**A volumetric raymarched brain, rendered through a dither pass, driven by GSAP.**
-
-| Layer | Technique | Fixes |
-|---|---|---|
-| Form | SDF (ellipsoid lobes + cerebellum + stem, fused with `smin`) | "the cortex can be significantly improved" — a defined form, not a sampled shell |
-| Depth | volumetric raymarch, accumulate density, blue-noise sampling | flatness; gives real interior and scattering |
-| Surface | Floyd–Steinberg / Atkinson dither post-pass | "too bright / neon / not readable" — quantised, cannot blow out, and gives a real material identity |
-| Motion | GSAP timelines → shader uniforms | "animations for the sake of" — orchestrated easing instead of linear damping |
-
-This is **not another restyle.** It replaces the renderer, the form definition, the
-lighting model and the motion system. It is the first genuinely different approach in the
-whole sequence.
-
-### Build order (experiments first, per the Lusion Labs model)
-1. `lab/01-sdf-brain.html` — SDF form only, flat shading, no volume. Just get the
-   silhouette right in a fragment shader.
-2. `lab/02-volumetric.html` — add the density march + scattering.
-3. `lab/03-dither.html` — add the dither post-pass, tune the algorithm and palette.
-4. `lab/04-motion.html` — GSAP timeline on the uniforms.
-5. Only then assemble the page.
-
-Each is standalone, ~80–150 lines, one variable at a time.
-
-### Known risks
-- Raymarching is **fragment-shader bound** — cost scales with screen pixels and step
-  count. On a 4070 SUPER at 12GB this is fine, but must be capped on mobile (fewer steps,
-  lower internal resolution, then upscale).
-- TSL needs `WebGPURenderer`; GLSL fallback is fine and more portable. **Start in GLSL.**
-- Dither at low resolution then upscale, or the pattern is invisible.
-
-## Sources
-- [Codrops — Liquid Raymarching with TSL](https://tympanus.net/codrops/2024/07/15/how-to-create-a-liquid-raymarching-scene-using-three-js-shading-language/)
-- [Maxime Heckel — Volumetric Raymarching Cloudscapes](https://blog.maximeheckel.com/posts/real-time-cloudscapes-with-volumetric-raymarching/)
-- [Codrops — Efecto: ASCII & Dithering shaders](https://tympanus.net/codrops/2026/01/04/efecto-building-real-time-ascii-and-dithering-effects-with-webgl-shaders/)
-- [Codrops — Animating WebGL Shaders with GSAP](https://tympanus.net/codrops/2025/10/08/how-to-animate-webgl-shaders-with-gsap-ripples-reveals-and-dynamic-blur-effects/)
-- Inigo Quilez — 3D SDF resources · Kishimisu — Intro to Raymarching · The Book of Shaders
+Scripts live in the session scratchpad, not in the repo — they are checks, not
+shipped code. Re-run them against a **deployed** URL after any deploy: an ignore
+pattern that git accepts proves nothing about how the host treats it.

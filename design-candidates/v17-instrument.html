@@ -4,38 +4,23 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Brian Mathew — I build systems, then I keep them running</title>
 <meta name="description" content="Self-taught developer in New Jersey. A 26-agent Windows fleet on real cron lines, 81 passing tests, and three systems you can open.">
-<link rel="canonical" href="https://bmath8.vercel.app/" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://bmath8.vercel.app/" />
-<meta property="og:title" content="Brian Mathew - I build systems, then I keep them running" />
-<meta property="og:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
-<meta property="og:image" content="https://bmath8.vercel.app/og.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="Brian Mathew - I build systems, then I keep them running. 26 agents live, 81 tests green, 3 systems shipped." />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Brian Mathew - I build systems, then I keep them running" />
-<meta name="twitter:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
-<meta name="twitter:image" content="https://bmath8.vercel.app/og.png" />
-<meta name="theme-color" content="#06070a" />
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.svg">
 <link rel="stylesheet" href="/vendor/fonts.css">
 
 <!-- ============================================================================
      v17 — WRITTEN FROM SCRATCH, not edited from v16.
 
-     Sixteen versions of decisions had accumulated in one stylesheet, and every
-     "fix" was another edit on that pile — which is why every version looked
-     like the last one. So this file inherits NO design: palette, type scale,
-     layout system, structural vocabulary and the 3-D scene are written once,
-     here. Only MACHINERY is carried over — the cron parsing and the demo
-     canvases. That code works and is not design.
+     Sixteen versions of decisions had accumulated in one stylesheet: a matcap
+     tuned for a palette that had been retracted, three surfaces inside half a
+     percent of each other, nineteen font sizes, cyan doing fourteen different
+     jobs, and a 3-D object that had been re-lit five times without anyone ever
+     changing what kind of object it was. Every "fix" was an edit on that pile,
+     which is exactly why every version looked like the last one.
 
-     The 3-D subject was a downloaded cortical mesh for seventeen versions. It
-     is gone. A brain was a METAPHOR, so it could be judged as a picture of a
-     brain, and it kept losing. What is here now is generated from the cron
-     lines themselves: nothing is modelled, so there is nothing to get wrong
-     about what it is a picture of. See THE SCHEDULE FIELD below.
+     So this file inherits NO design. The palette, type scale, layout system,
+     structural vocabulary and the entire 3-D scene are written once, here.
+     What is carried over verbatim is only MACHINERY — the BRN2 mesh decoder,
+     the cron parsing, and the demo canvases. That code works and is not design.
 
      The design system is taken from the vendored skills rather than invented:
        framed-grid-layout   visible section boundaries, L-corner brackets,
@@ -44,15 +29,8 @@
        number-details       01/02/03 markers, mono, low contrast, architectural
        corner-diagonals     chamfered corners as a repeated motif, replacing
                             the uniform border-radius the page rejected
-       technical-wireframe  emphasis from brightness, line weight and
-                            placement rather than from colour
-       background-grid-webgl  the perspective ground plane, distance fade,
-                            slow drift and damped pointer parallax
-
-     And, from designengineer.tools:
-       OKLCH Color Picker   the palette, derived rather than picked
-       Easing Functions     named motion curves instead of bare durations
-       NumberFlow           the four hero figures, vendored from npm
+       technical-wireframe  monochrome; emphasis from brightness, line weight
+                            and placement rather than from colour
 
      NON-NEGOTIABLES, unchanged: every figure is checkable and says where it
      came from; zero third-party requests until the visitor asks; the page
@@ -60,52 +38,33 @@
      ============================================================================ -->
 <style>
 :root{
-  /* ================================================================
-     PALETTE, DERIVED IN OKLCH (OKLCH Color Picker / Color.review, from
-     designengineer.tools). Authored as oklch() and shipped as hex,
-     because THREE.Color, canvas 2D and the contrast audit all have to
-     read these and none of them parses oklch().
+  /* ---- SURFACE. Five steps, each a real jump. The old set was 0.004 /
+     0.006 / 0.009 luminance — indistinguishable, which is what "dark on dark"
+     meant. These are spaced so a border is not the only thing separating a
+     card from the page. ---- */
+  --s0:#06070a;      /* page */
+  --s1:#0d1015;      /* band */
+  --s2:#151920;      /* panel */
+  --s3:#1e232b;      /* raised / hover */
+  --s4:#2a313b;      /* chip */
 
-     Why it matters here: OKLCH lightness is perceptually uniform, so a
-     five-step surface ramp steps by equal PERCEIVED amounts instead of
-     equal hex arithmetic. The old ramp spanned 0.004-0.009 relative
-     luminance across its first three steps - which is what "dark on
-     dark" was, measurably.
+  /* ---- RULE. One border colour for the whole page, per framed-grid-layout. ---- */
+  --rule:#39424e;
+  --rule-q:#1b2028;  /* quiet divider */
+  --bracket:#5b6672; /* L-corner marks */
 
-     The source values are in the comments. Re-derive the ramp rather
-     than nudging the hex, or it drifts back to being arbitrary.
-     ================================================================ */
-  --s0:#060709;       /* oklch(13% 0.006 255)  page   */
-  --s1:#0f1215;       /* oklch(18% 0.008 255)  band   */
-  --s2:#1a1d21;       /* oklch(23% 0.009 255)  panel  */
-  --s3:#282c31;       /* oklch(29% 0.011 255)  raised */
-  --s4:#393e44;       /* oklch(36% 0.013 255)  chip   */
+  /* ---- TEXT. All three clear AA on every surface above. ---- */
+  --tx0:#f3f6f9;
+  --tx1:#b7c0cb;
+  --tx2:#8d97a3;
 
-  --rule:#4d535b;     /* oklch(44% 0.016 255) */
-  --rule-q:#212429;   /* oklch(26% 0.010 255) */
-  --bracket:#757e89;  /* oklch(59% 0.020 255) */
-
-  /* every pairing measured: worst text-on-surface is tx2 on s4 at 4.51 */
-  --tx0:#f4f5f7;      /* oklch(97% 0.003 255) */
-  --tx1:#c3c8ce;      /* oklch(83% 0.011 255) */
-  --tx2:#959ca5;      /* oklch(73% 0.015 255) */
-
-  /* DATA. The only hues in the document, and each means one thing: a
-     cron schedule class. They share ONE lightness and ONE chroma and
-     differ only in hue, so none of them shouts over the others -
-     measured at 8.91, 9.10, 9.27 and 9.88 against the band. In HSL a
-     yellow and a blue at the same "lightness" are nowhere near equally
-     bright; this is the entire reason to author in OKLCH. */
-  --d-daily:#62d09f;    /* oklch(78% 0.125 162) */
-  --d-hourly:#a5afff;   /* oklch(78% 0.125 278) */
-  --d-weekly:#e5ac53;   /* oklch(78% 0.125  76) */
-  --d-monthly:#fc95a2;  /* oklch(78% 0.125  12) */
-
-  /* MOTION. Named curves (Easing Functions, designengineer.tools) in
-     place of the bare `.15s` that was on every transition. */
-  --e-out:cubic-bezier(.22,1,.36,1);
-  --e-in-out:cubic-bezier(.65,0,.35,1);
-  --e-quick:cubic-bezier(.25,.46,.45,.94);
+  /* ---- DATA. The ONLY hues in the document, and each means one thing: a
+     cron schedule class. Desaturated deliberately — neon on near-black is the
+     tell. Nothing in the UI may use these. ---- */
+  --d-daily:#5cc9b4;
+  --d-hourly:#9a92e8;
+  --d-weekly:#dda65c;
+  --d-monthly:#dd7d9c;
 
   /* ---- TYPE. Seven steps, named. Not nineteen. ---- */
   --t-display:clamp(38px,5.2vw,68px);
@@ -179,7 +138,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(6,7,10,.86);
 nav{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
 nav a{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;
   border:1px solid var(--rule);color:var(--tx1);text-decoration:none;
-  font:400 var(--t-meta)/1 'IBM Plex Mono',monospace;transition:.18s var(--e-quick);
+  font:400 var(--t-meta)/1 'IBM Plex Mono',monospace;transition:.15s;
   clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
 nav a:hover{background:var(--s3);color:var(--tx0);border-color:var(--bracket)}
 nav a.cta{background:var(--tx0);color:var(--s0);border-color:var(--tx0)}
@@ -191,7 +150,7 @@ nav a.cta:hover{background:var(--tx1);color:var(--s0)}
 #stage{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
 
 /* SCRIM. The copy column owns the left of the viewport; the object owns
-   the right. Without this the field ran through the lead paragraph. It
+   the right. Without this the cortex ran through the lead paragraph. It
    is a gradient, not a box, so there is no visible edge - the subject
    dissolves into the reading ground instead of being cut off by it. */
 .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -203,15 +162,15 @@ nav a.cta:hover{background:var(--tx1);color:var(--s0)}
 
 /* CALLOUTS. technical-wireframe-info-layout: a labelled object beats a
    decorative one. Three real agents, named, with the connector routed
-   back to the point in the field they actually describe. */
+   back to the node that is actually theirs on the cortex. */
 #callouts{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:0;
-  transition:opacity .45s var(--e-out)}
+  transition:opacity .4s ease}
 #callouts svg{position:absolute;inset:0;width:100%;height:100%}
 .co{position:absolute;transform:translateY(-50%);padding:6px 10px;
   border:1px solid var(--rule);background:rgba(6,7,10,.92);white-space:nowrap;
   font:400 var(--t-micro)/1.5 'IBM Plex Mono',monospace;color:var(--tx1);
   clip-path:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px);
-  transition:opacity .3s var(--e-out)}
+  transition:opacity .25s ease}
 .co b{color:var(--tx0);font-weight:500}
 .co i{font-style:normal;display:block;color:var(--tx2)}
 @media(max-width:1100px){#callouts{display:none}}
@@ -233,30 +192,6 @@ h1 em{font-style:normal;color:var(--tx0)}
 @media(prefers-reduced-motion:no-preference){
   .pip{animation:bl 2.6s ease-in-out infinite}
   @keyframes bl{0%,100%{opacity:1}50%{opacity:.35}}
-}
-
-/* LEGEND. The four hues are the only colour in the document and each
-   means one thing. Without this they read as decoration - which is
-   exactly how they read before it existed. */
-.legend{display:flex;flex-wrap:wrap;gap:0;margin-top:-1px;
-  border:1px solid var(--rule);border-top:0;background:var(--s1)}
-.legend .lg{display:flex;align-items:center;gap:8px;padding:10px 14px;
-  border-right:1px solid var(--rule-q);
-  font:400 var(--t-micro)/1 'IBM Plex Mono',monospace;color:var(--tx2);
-  text-transform:uppercase;letter-spacing:.11em}
-.legend .lg:last-child{border-right:0}
-.legend .sw{width:8px;height:8px;border-radius:50%;flex:none}
-/* the caption always takes its own row: letting it share one with the
-   four swatches wrapped them into a ragged second line */
-.legend .hd{flex:0 0 100%;color:var(--tx1);letter-spacing:.06em;
-  text-transform:none;border-right:0;border-bottom:1px solid var(--rule-q)}
-/* four across wraps to 3 + a lonely 1 on a phone; 2x2 is the honest shape */
-@media(max-width:560px){
-  .legend{display:grid;grid-template-columns:1fr 1fr}
-  .legend .hd{grid-column:1/-1}
-  .legend .lg:nth-child(2),.legend .lg:nth-child(4){border-right:1px solid var(--rule-q)}
-  .legend .lg:nth-child(3),.legend .lg:nth-child(5){border-right:0}
-  .legend .lg:nth-child(2),.legend .lg:nth-child(3){border-bottom:1px solid var(--rule-q)}
 }
 
 /* metric strip: mono figures, right-ruled cells */
@@ -295,7 +230,7 @@ h1 em{font-style:normal;color:var(--tx0)}
 .verify .src{color:var(--tx2)}
 .links{display:flex;gap:10px;flex-wrap:wrap}
 .links a{padding:9px 14px;border:1px solid var(--rule);text-decoration:none;
-  font:400 var(--t-meta)/1 'IBM Plex Mono',monospace;color:var(--tx1);transition:.18s var(--e-quick);
+  font:400 var(--t-meta)/1 'IBM Plex Mono',monospace;color:var(--tx1);transition:.15s;
   clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
 .links a:hover{background:var(--s3);color:var(--tx0);border-color:var(--bracket)}
 .demo{position:relative;background:var(--s0);border-left:1px solid var(--rule);
@@ -304,7 +239,7 @@ h1 em{font-style:normal;color:var(--tx0)}
 .cap{position:absolute;left:16px;bottom:12px;z-index:3;
   font:400 var(--t-micro)/1.4 'IBM Plex Mono',monospace;color:var(--tx2)}
 .readout{position:absolute;right:16px;top:16px;z-index:3;padding:9px 12px;
-  border:1px solid var(--rule);background:rgba(6,7,10,.92);opacity:0;transition:.18s var(--e-quick);
+  border:1px solid var(--rule);background:rgba(6,7,10,.92);opacity:0;transition:.15s;
   font:400 var(--t-micro)/1.5 'IBM Plex Mono',monospace;color:var(--tx1);max-width:220px}
 .readout.on{opacity:1}
 .readout b{color:var(--tx0);font-weight:500}
@@ -340,7 +275,7 @@ h1 em{font-style:normal;color:var(--tx0)}
 @media(max-width:700px){.row{grid-template-columns:1fr;gap:8px}}
 
 /* ============ CONTACT ============ */
-/* the one frame that is not opaque: the conductor brings the field back
+/* the one frame that is not opaque: the conductor brings the cortex back
    to centre for the close, and a solid panel would simply delete it */
 .frame.glass{background:rgba(13,16,21,.62);backdrop-filter:blur(6px)}
 .cta-box{text-align:center;padding:52px 26px}
@@ -348,7 +283,7 @@ h1 em{font-style:normal;color:var(--tx0)}
 .cta-box p{color:var(--tx1);margin:0 0 26px}
 .fbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .fbtns a{padding:11px 17px;border:1px solid var(--rule);text-decoration:none;
-  font:400 var(--t-meta)/1 'IBM Plex Mono',monospace;color:var(--tx1);transition:.18s var(--e-quick);
+  font:400 var(--t-meta)/1 'IBM Plex Mono',monospace;color:var(--tx1);transition:.15s;
   clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
 .fbtns a:hover{background:var(--s3);color:var(--tx0);border-color:var(--bracket)}
 .fbtns a.pri{background:var(--tx0);color:var(--s0);border-color:var(--tx0)}
@@ -361,7 +296,7 @@ footer{padding:30px 0 60px}
 .nodelabel{position:absolute;transform:translate(-50%,-160%);padding:7px 10px;
   border:1px solid var(--rule);background:rgba(6,7,10,.94);
   font:400 var(--t-micro)/1.5 'IBM Plex Mono',monospace;color:var(--tx0);
-  opacity:0;transition:.14s var(--e-quick);pointer-events:none;white-space:nowrap;z-index:4}
+  opacity:0;transition:.12s;pointer-events:none;white-space:nowrap;z-index:4}
 
 :focus-visible{outline:2px solid var(--tx0);outline-offset:3px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
@@ -371,7 +306,7 @@ footer{padding:30px 0 60px}
 <div class="veil" aria-hidden="true"></div>
 <div id="callouts" aria-hidden="true"><svg><g id="co-lines" fill="none"
   stroke="var(--bracket)" stroke-width="1"></g></svg></div>
-<canvas id="stage" aria-label="A field of Brian's 26 scheduled agents. Time of day runs left to right across a full 24 hours, each agent has its own lane running back into the scene, and a mark stands up wherever that agent actually fires. A live clock line marks the current time. Drag to turn it; hover any mark to name the agent and read its cron line."></canvas>
+<canvas id="stage" aria-label="A cortical surface carrying 26 nodes, one for each scheduled agent running on Brian's machine. Each node brightens at the time its job actually runs, and the object turns with the pointer."></canvas>
 
 <div class="page">
 <header>
@@ -396,22 +331,14 @@ footer{padding:30px 0 60px}
     <div class="hero-copy">
       <div class="live"><span class="pip"></span><span id="nextrun">26 agents scheduled on real cron lines</span></div>
       <h1>I build systems,<br>then I <em>keep them running.</em></h1>
-      <p class="lede">Self-taught developer in New Jersey. That field is not decoration — it is
-        <b>my actual crontab, drawn to scale</b>: a full day left to right, one lane per agent,
-        a mark standing up wherever it fires. That wall at 06:40 is ten agents starting
-        inside twenty minutes. Drag it. Everything below is code you can open.</p>
+      <p class="lede">Self-taught developer in New Jersey. That cortex is not decoration —
+        it carries <b>one node for every scheduled agent on my machine</b>, each firing on the
+        cron line it actually runs on. Drag it. Everything below is code you can open.</p>
       <div class="strip">
-        <div class="met"><div class="v" id="m1" data-num="26">26</div><div class="k">agents live</div></div>
-        <div class="met"><div class="v" data-num="81">81<small>/81</small></div><div class="k">tests green</div></div>
-        <div class="met"><div class="v" data-num="3">3</div><div class="k">systems shipped</div></div>
-        <div class="met"><div class="v" data-num="0">0</div><div class="k">manual triggers</div></div>
-      </div>
-      <div class="legend">
-        <span class="lg hd">Mark colour = how often that agent runs</span>
-        <span class="lg"><i class="sw" style="background:var(--d-daily)"></i>daily</span>
-        <span class="lg"><i class="sw" style="background:var(--d-hourly)"></i>hourly</span>
-        <span class="lg"><i class="sw" style="background:var(--d-weekly)"></i>weekly</span>
-        <span class="lg"><i class="sw" style="background:var(--d-monthly)"></i>monthly</span>
+        <div class="met"><div class="v" id="m1">26</div><div class="k">agents live</div></div>
+        <div class="met"><div class="v">81<small>/81</small></div><div class="k">tests green</div></div>
+        <div class="met"><div class="v">3</div><div class="k">systems shipped</div></div>
+        <div class="met"><div class="v">0</div><div class="k">manual triggers</div></div>
       </div>
     </div>
     <div class="hero-right"><div class="nodelabel" id="nlabel"></div></div>
@@ -438,7 +365,7 @@ footer{padding:30px 0 60px}
           </ul></div>
           <div class="links"><a href="https://github.com/bmath8/brian-os">Read the source →</a></div>
         </div>
-        <div class="demo"><canvas id="clock" role="img" aria-label="A 24-hour dial plotting when each of the 26 scheduled agents runs, coloured by schedule class, with ten falling between 06:40 and 07:00."></canvas>
+        <div class="demo"><canvas id="clock" role="img" aria-label="A 24-hour dial plotting when each of the 26 scheduled agents runs, coloured by schedule class, with twelve falling between 06:40 and 07:00."></canvas>
           <div class="readout" id="clock-readout"></div>
           <span class="cap">24h — hover any mark to name the agent</span></div>
       </article>
@@ -536,49 +463,24 @@ footer{padding:30px 0 60px}
 <footer class="wrap" data-cam="5">
   <p class="foot-note">Every number on this page is checkable, and says where it came from.<br>
     No third-party requests · no generated images · renders with JavaScript disabled.<br>
-    The field is generated from the cron lines in agents.json — no 3-D model is
-    downloaded, shipped, or drawn from anywhere. Remove an agent and its lane disappears.</p>
+    Cortical surface built from the MNI ICBM152 2009c template. Copyright &copy; 1993&ndash;2004
+    Louis Collins, McConnell Brain Imaging Centre, Montreal Neurological Institute,
+    McGill University. Used by permission of its licence.</p>
 </footer>
 </div>
 
-<script type="module" src="/vendor/number-flow.min.js"></script>
 <script type="importmap">
 { "imports": { "three": "/vendor/three.module.min.js" } }
 </script>
 <script type="module">
-const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const AGENTS = await fetch('/agents.json').then(r=>r.json()).catch(()=>[]);
-/* NumberFlow (designengineer.tools -> Components) counts the hero
-   figures up instead of swapping the text.
-
-   PROGRESSIVE, deliberately. The first attempt replaced each figure with
-   an empty <number-flow> and the four numbers the page is an argument
-   about vanished when the upgrade did not fire. The number is now real
-   text in the HTML; this only UPGRADES it once the element is genuinely
-   defined, and only when motion is welcome. No module, no upgrade, the
-   figure is still printed. */
-const m1El = document.getElementById('m1');
-if (m1El) m1El.firstChild.nodeValue = String(AGENTS.length || 26);
-
-if (!reduceMotion) customElements.whenDefined('number-flow').then(()=>{
-  document.querySelectorAll('.v[data-num]').forEach(host=>{
-    const target = +host.dataset.num;
-    const small  = host.querySelector('small');
-    const nf = document.createElement('number-flow');
-    nf.value = 0;
-    host.textContent = '';
-    host.append(nf);
-    if (small) host.append(small);
-    requestAnimationFrame(()=>{ nf.value = target; });
-  });
-}).catch(()=>{});
+document.getElementById('m1').textContent = AGENTS.length || 26;
 
 const CSS = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const CLASSCOL = {daily:CSS('--d-daily'), hourly:CSS('--d-hourly'),
                   weekly:CSS('--d-weekly'), monthly:CSS('--d-monthly')};
 const UI = {rule:CSS('--rule'), ruleQ:CSS('--rule-q'), tx0:CSS('--tx0'),
-            tx1:CSS('--tx1'), tx2:CSS('--tx2'), bracket:CSS('--bracket'),
-            s4:CSS('--s4'), s3:CSS('--s3')};
+            tx1:CSS('--tx1'), tx2:CSS('--tx2'), bracket:CSS('--bracket')};
 
 /* ONE classifier. minute hour dom month dow */
 function scheduleClass(cron){
@@ -615,191 +517,199 @@ let THREE;
 try { THREE = await import('three'); } catch(e){ document.getElementById('glfail').style.display='grid'; }
 
 if (THREE) {
-  /* ==================================================================
-     THE SCHEDULE FIELD — what replaced the brain.
+  /* BRN2 wire format (2026-08-06). Rebuild with scratchpad/pack_mesh_v2.py, which
+     refuses to write unless 11 round-trip checks pass, including a negative control.
 
-     The cortex is gone: mesh, decoder, node seating, callout picker, and
-     the two .bin files. It was a METAPHOR, and it had the failure mode
-     every metaphor object has — it could be judged as a picture of a
-     brain, and it kept losing. Seventeen versions of relighting a
-     downloaded MRI surface never fixed the actual problem, which was
-     that a brain is not what this page is about.
+     The CDN was measured compressing this asset at brotli q3 -- weak -- so the win
+     came from handing it low-entropy bytes rather than from a stronger compressor:
+     836,324 -> 662,624 on disk, and 748,625 -> 469,248 on the wire (37.3% off).
+     Positions are plane-split zigzag-delta varints; indices are per-triangle deltas
+     after a winding-preserving rotation and sort; normals were left alone because
+     delta-encoding them cost 22KB on disk to save 4KB on the wire.
 
-     designengineer.tools lists Blender, Houdini, Spline, Womp and Bezi
-     under 3D. Those are AUTHORING tools — the honest reading of that
-     category is "model it in a real tool instead of downloading one."
-     None of them run in this container. So the object is not modelled
-     at all: its geometry is GENERATED from Brian's 26 cron lines. There
-     is nothing to author because the data is the shape.
+     Vertex order is UNCHANGED on purpose -- the agent nodes are seated by
+     farthest-point sampling over a strided walk of the vertex array, so permuting
+     vertices (what a normal vertex-cache optimiser does) would silently move every
+     node on the cortex. It also compressed slightly worse.
 
-       X   time of day, 00:00 at the left edge to 24:00 at the right
-       Z   one lane per agent, 26 of them, front to back
-       Y   a mark stands up wherever that agent actually fires
+     Indices stay Uint16: 39,828 vertices. Above 65,535 this needs Uint32, and the
+     packer's "indices fit uint16" check is what will catch it.
 
-     So the silhouette of the field IS the shape of his day: the dense
-     wall at 06:40–07:00 is ten agents starting inside twenty minutes
-     of each other, and it is dense on screen because it is dense in the
-     crontab. That figure is not typed into the page: the annotation
-     counts the firings in the window at run time, which is how the
-     "twelve" this file used to claim was caught. Nothing here is decorative and nothing is
-     invented — remove an agent and a lane disappears.
-
-     Structure from background-grid-webgl: perspective ground plane,
-     elevated camera, thin lines fading into distance by fog, slow
-     drift, damped pointer parallax, sparse haze. Annotations from
-     technical-wireframe-info-layout.
-     ================================================================== */
-  const FIELD = {
-    /* 18 wide x 26 lanes at 0.42 puts the lanes close enough to read as
-       one surface. At 26 x 0.62 the same 54 marks were scattered through
-       a volume big enough for several hundred and read as floating tabs. */
-    span:18, pitch:0.42, markH:0.34, markW:0.075, markD:0.13,
-    drag:0.0042, ease:0.11, sway:0.05, swayPeriod:74,
+     PROVENANCE GAP, verified 2026-08-06: earlier notes said to regenerate the mesh
+     with scratchpad/build_mesh.py. That file does not exist -- not on disk, and
+     never in git history. brain-icbm152.bin is the only surviving source for this
+     geometry, which is why .vercelignore keeps it on disk while excluding it from
+     the deploy. */
+  const buf = await (await fetch('/vendor/mesh/brain-icbm152-v2.bin')).arrayBuffer();
+  const u8 = new Uint8Array(buf), dv = new DataView(buf);
+  if (dv.getUint32(0,false) !== 0x42524e32) throw new Error('brain mesh: bad magic, expected BRN2');
+  const nV = dv.getUint32(4,true), nT = dv.getUint32(8,true), pLen = dv.getUint32(12,true);
+  let o = 20;
+  /* LEB128 into `out`; returns the offset just past the last value read. */
+  const rd = (out,n,p)=>{
+    for (let k=0;k<n;k++){
+      let v=0, s=0, b;
+      do { b=u8[p++]; v |= (b & 0x7f) << s; s += 7; } while (b & 0x80);
+      out[k]=v;
+    }
+    return p;
   };
-  const N = AGENTS.length || 26;
-  const xAt = t => (t/24 - 0.5) * FIELD.span;
-  const zAt = i => (i - (N-1)/2) * FIELD.pitch;
-  const DEPTH = N * FIELD.pitch;
+  const vtmp = new Int32Array(Math.max(nV,nT));
+  const qp = new Int16Array(nV*3);
+  for (let k=0;k<3;k++){                       /* three planes, each a delta chain */
+    o = rd(vtmp,nV,o);
+    let run=0;
+    for (let i=0;i<nV;i++){ const z=vtmp[i]; run += (z>>>1) ^ -(z & 1); qp[i*3+k]=run; }
+  }
+  o = 20 + pLen;
+  const qn = new Int8Array(buf,o,nV*3); o += nV*3;
+  const idx = new Uint16Array(nT*3);
+  o = rd(vtmp,nT,o);
+  let run=0;
+  for (let t=0;t<nT;t++){ run += vtmp[t]; idx[t*3]=run; }
+  o = rd(vtmp,nT,o);
+  for (let t=0;t<nT;t++){ const z=vtmp[t]; idx[t*3+1]=idx[t*3] + (((z>>>1) ^ -(z & 1))|0); }
+  o = rd(vtmp,nT,o);
+  for (let t=0;t<nT;t++){ const z=vtmp[t]; idx[t*3+2]=idx[t*3] + (((z>>>1) ^ -(z & 1))|0); }
+  const pos = new Float32Array(nV*3), nrm = new Float32Array(nV*3);
+  for (let i=0;i<nV*3;i++){ pos[i]=qp[i]/32767; nrm[i]=qn[i]/127; }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('normal',   new THREE.BufferAttribute(nrm,3));
+  geo.setIndex(new THREE.BufferAttribute(idx,1));
+
+  /* ==================================================================
+     THE SCENE — written once, here.
+
+     The old scene had ZERO lights and painted the surface #0b0d10
+     against an #08090b page: a 0.3% luminance difference. That is why
+     it read as black-on-black with floating scratches. Before that it
+     had four stacked colour passes faking light that was never there.
+
+     This is a lit object. Three directional lights and one weak
+     ambient, and that is the whole shading model — the folds read
+     because they are lit, which is what every previous pass was trying
+     to fake. Contour lines are kept but SUBORDINATE: they sharpen what
+     the lighting already describes rather than being asked to describe
+     the form alone, which they cannot do.
+     ================================================================== */
+  const CORTEX = {
+    /* Matte, not metal. At roughness .55 / metalness .05 the key blew a
+       white specular across the temporal lobe and the surface read as
+       chromed plastic. A cortical surface is dry tissue: it should hold
+       a wide, soft value range with no hot highlight anywhere. */
+    base:0x9aa3ad, roughness:0.78, metalness:0.0,
+    line:0xf4f8fc, lineAlpha:0.14, threshold:34,
+    drag:0.0055, ease:0.11, sway:0.09, swayPeriod:64,
+  };
 
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
-
   const scene = new THREE.Scene();
-  /* Fog is what does the distance fade the grid skill asks for. Doing it
-     with per-vertex alpha instead would bake the falloff at one camera
-     position and then lie as soon as the camera moved. */
-  scene.fog = new THREE.Fog(0x060709, 14, 46);
-  const cam = new THREE.PerspectiveCamera(34,1,.1,120);
+  const cam = new THREE.PerspectiveCamera(30,1,.01,60);
   const pivot = new THREE.Group(); scene.add(pivot);
 
-  const C = n => new THREE.Color(UI[n] || CLASSCOL[n]);
+  /* key describes the folds, fill keeps the shadow side off black, rim
+     separates the silhouette from the page. Three lights, no shader
+     patches - which is what the four stacked colour passes were faking. */
+  const key  = new THREE.DirectionalLight(0xffffff,2.05); key.position.set(-2.6,2.4,2.8);
+  const fill = new THREE.DirectionalLight(0xb9cadd,0.62); fill.position.set(3.0,-0.9,1.5);
+  const rim  = new THREE.DirectionalLight(0xdfe9f4,1.35); rim.position.set(1.5,0.9,-3.2);
+  scene.add(key,fill,rim,new THREE.AmbientLight(0xffffff,0.22));
 
-  /* ---- hour rails: 25 lines across the lanes, one per hour boundary.
-     00 / 06 / 12 / 18 / 24 carry more weight, which is the only
-     hierarchy the grid needs. ---- */
-  const railPts=[], railCol=[], z0=-DEPTH/2-0.4, z1=DEPTH/2+0.4;
-  /* --rule-q is oklch(26%), within a whisker of the page: rails drawn in
-     it were invisible. Minors take --s4, majors --rule, fog does the rest. */
-  const cQuiet=new THREE.Color(UI.s4), cRule=C('rule');
-  for(let h=0; h<=24; h++){
-    const x=xAt(h), major=(h%6===0), c=major?cRule:cQuiet;
-    railPts.push(x,0,z0, x,0,z1);
-    railCol.push(c.r,c.g,c.b, c.r,c.g,c.b);
-  }
-  /* ---- lane rails: one per agent, running the full day ---- */
-  for(let i=0;i<N;i++){
-    const z=zAt(i);
-    railPts.push(xAt(0),0,z, xAt(24),0,z);
-    railCol.push(cQuiet.r,cQuiet.g,cQuiet.b, cQuiet.r,cQuiet.g,cQuiet.b);
-  }
-  const railGeo=new THREE.BufferGeometry();
-  railGeo.setAttribute('position',new THREE.Float32BufferAttribute(railPts,3));
-  railGeo.setAttribute('color',   new THREE.Float32BufferAttribute(railCol,3));
-  pivot.add(new THREE.LineSegments(railGeo,
-    new THREE.LineBasicMaterial({vertexColors:true, transparent:true, opacity:0.9,
-      fog:true})));
+  const mat = new THREE.MeshStandardMaterial({color:CORTEX.base,
+    roughness:CORTEX.roughness, metalness:CORTEX.metalness});
+  mat.polygonOffset=true; mat.polygonOffsetFactor=1; mat.polygonOffsetUnits=1;
+  pivot.add(new THREE.Mesh(geo,mat));
+  pivot.rotation.set(-0.10,-1.75,0.06);
 
-  /* ---- the marks. One per actual firing, standing on its agent's lane
-     at the time it actually runs. ---- */
-  function hoursOf(hr){
-    if(hr==='*') return [...Array(24).keys()];
-    const m=String(hr).match(/^\*\/(\d+)$/);
-    if(m){ const n=Math.max(1,+m[1]), o=[]; for(let h=0;h<24;h+=n) o.push(h); return o; }
-    return String(hr).split(',').map(Number).filter(h=>!isNaN(h)&&h>=0&&h<24);
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo,CORTEX.threshold),
+    new THREE.LineBasicMaterial({color:CORTEX.line,transparent:true,
+      opacity:CORTEX.lineAlpha,depthWrite:false}));
+  pivot.add(edges);
+
+  /* ---- nodes: one per real agent, coloured by real schedule class.
+     scheduleClass/CLASSCOL live at module scope - the dial uses them too. ---- */
+  function farthestPoints(count){
+    const CAND=1400, step=Math.max(1,Math.floor(nV/CAND)), cand=[];
+    for(let i=0;i<nV;i+=step) cand.push(i);
+    const picked=[cand[0]], d2=new Float32Array(cand.length).fill(Infinity);
+    while(picked.length<count && picked.length<cand.length){
+      const l=picked[picked.length-1]*3; let bi=-1,bd=-1;
+      for(let j=0;j<cand.length;j++){
+        const v=cand[j]*3, dx=pos[v]-pos[l],dy=pos[v+1]-pos[l+1],dz=pos[v+2]-pos[l+2];
+        const dd=dx*dx+dy*dy+dz*dz;
+        if(dd<d2[j]) d2[j]=dd;
+        if(d2[j]>bd){bd=d2[j];bi=j;}
+      }
+      picked.push(cand[bi]);
+    }
+    return picked;
   }
-  const fires=[];
+  const nodeGeo=new THREE.SphereGeometry(.0135,14,14);
+  const nodes=new THREE.InstancedMesh(nodeGeo,
+    new THREE.MeshBasicMaterial(),Math.max(AGENTS.length,1));
+  nodes.instanceColor=new THREE.InstancedBufferAttribute(
+    new Float32Array(Math.max(AGENTS.length,1)*3),3);
+  const dummy=new THREE.Object3D(), nodePos=[], seats=farthestPoints(AGENTS.length||26);
+  const col=new THREE.Color();
   AGENTS.forEach((a,i)=>{
-    const p=String(a.cron).split(/\s+/);
-    const mi=parseInt(p[0])||0, cls=scheduleClass(a.cron);
-    hoursOf(p[1]).forEach(h=>{
-      fires.push({i, t:h+mi/60, cls, name:a.n, cron:a.cron,
-                  hhmm:String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0')});
-    });
+    const v=seats[i%seats.length]*3;
+    const p=new THREE.Vector3(pos[v]+nrm[v]*0.03,pos[v+1]+nrm[v+1]*0.03,pos[v+2]+nrm[v+2]*0.03);
+    const cls=scheduleClass(a.cron);
+    const n=new THREE.Vector3(nrm[v],nrm[v+1],nrm[v+2]);
+    nodePos.push({p,n,name:a.n,cron:a.cron,cls});
+    col.set(CLASSCOL[cls]); nodes.setColorAt(i,col);
+    dummy.position.copy(p); dummy.updateMatrix(); nodes.setMatrixAt(i,dummy.matrix);
   });
-
-  const markGeo=new THREE.BoxGeometry(FIELD.markW,FIELD.markH,FIELD.markD);
-  markGeo.translate(0,FIELD.markH/2,0);                 // stand on the plane
-  const marks=new THREE.InstancedMesh(markGeo,
-    new THREE.MeshBasicMaterial({fog:true}), Math.max(fires.length,1));
-  marks.instanceColor=new THREE.InstancedBufferAttribute(
-    new Float32Array(Math.max(fires.length,1)*3),3);
-  const dummy=new THREE.Object3D(), col=new THREE.Color();
-  fires.forEach((f,k)=>{
-    dummy.position.set(xAt(f.t),0,zAt(f.i));
-    dummy.scale.set(1,1,1); dummy.updateMatrix();
-    marks.setMatrixAt(k,dummy.matrix);
-    col.set(CLASSCOL[f.cls]); marks.setColorAt(k,col);
-  });
-  if(marks.instanceColor) marks.instanceColor.needsUpdate=true;
-  pivot.add(marks);
-  console.info('[field]', AGENTS.length, 'agents,', fires.length, 'firings/day');
-
-  /* ---- the NOW line. Real clock time, not an animation. It is the one
-     element that makes the field a live instrument rather than a chart:
-     come back in an hour and it has moved. ---- */
-  const nowGeo=new THREE.BufferGeometry();
-  nowGeo.setAttribute('position',new THREE.Float32BufferAttribute(
-    [0,0,z0, 0,0,z1, 0,0,z0, 0,FIELD.markH*2.1,z0, 0,0,z1, 0,FIELD.markH*2.1,z1],3));
-  const nowLine=new THREE.LineSegments(nowGeo,
-    new THREE.LineBasicMaterial({color:0xffffff, transparent:true, opacity:0.85, fog:false}));
-  pivot.add(nowLine);
-  function placeNow(){
-    const d=new Date();
-    nowLine.position.x = xAt(d.getHours()+d.getMinutes()/60);
-  }
-  placeNow(); setInterval(placeNow, 30000);
-
-  /* ---- haze: sparse points, low opacity, so the space above the plane
-     is not a vacuum. Kept well under the grid in weight. ---- */
-  const HN=420, hp=new Float32Array(HN*3);
-  for(let k=0;k<HN;k++){
-    hp[k*3]  =(Math.random()-0.5)*FIELD.span*1.5;
-    hp[k*3+1]= Math.random()*6.5 - 0.5;
-    hp[k*3+2]=(Math.random()-0.5)*(DEPTH+10);
-  }
-  const hazeGeo=new THREE.BufferGeometry();
-  hazeGeo.setAttribute('position',new THREE.Float32BufferAttribute(hp,3));
-  const haze=new THREE.Points(hazeGeo,new THREE.PointsMaterial({
-    color:0x9aa6b4, size:0.035, transparent:true, opacity:0.34,
-    depthWrite:false, blending:THREE.AdditiveBlending, fog:true}));
-  pivot.add(haze);
+  if(nodes.instanceColor) nodes.instanceColor.needsUpdate=true;
+  pivot.add(nodes);
 
   /* ==================================================================
-     THE CONDUCTOR — six shots on native scroll, as before, but now
-     travelling a field instead of orbiting an object.
+     THE CONDUCTOR — six authored shots, driven by native scroll.
+
+     Previously the camera was set once in layout() and never moved
+     again. Every framed section below the hero is opaque, so a fixed
+     object at a fixed screen position showed only as a sliver in the
+     right margin for the whole page: present, purposeless, and read as
+     a stray blob. It is now STAGED —
+
+       0  hero      three-quarter lateral, right of the copy, full value
+       1  work      pulls back and swings to a superior view, recedes
+       2  work      further back, quiet
+       3  capsules  drifts, still quiet
+       4  contact   returns to centre, in front of a translucent panel
+       5  footer    settles back out
+
+     `dim` is the canvas opacity for that shot, which is what stops it
+     competing with type it is sitting behind.
      ================================================================== */
   const SHOTS = [
-    /* Distances are set so shot 0 frames the FULL 18-unit day with
-       margin: at fov 34 and a 16:10 frame the horizontal half-angle is
-       ~26 deg, so 21 units back sees ~10 either side of centre. The
-       first attempt sat at 13 and the day ran off both edges, which
-       deleted the only claim the object makes. */
-    /* 0 hero      elevated three-quarter: the whole 24 hours at once    */
-    {px:-2.2,py: 5.1,pz:17.2, lx: 0.5,ly:0.55,lz:0, fov:34, dim:1.00, yaw: 0.06,pitch:0},
-    /* 1 work      drops toward the plane, swings into the morning       */
-    {px:-7.4,py: 3.2,pz:13.0, lx:-3.4,ly:0.30,lz:0, fov:31, dim:0.36, yaw: 0.20,pitch:0},
-    /* 2 work      low, skimming along the lanes                         */
-    {px:-1.0,py: 1.5,pz: 9.0, lx: 2.6,ly:0.25,lz:0, fov:29, dim:0.22, yaw: 0.34,pitch:0},
-    /* 3 capsules  lifts back out over the evening                       */
-    {px: 5.6,py: 4.4,pz:14.5, lx: 1.2,ly:0.20,lz:0, fov:32, dim:0.26, yaw: 0.14,pitch:0},
-    /* 4 contact   square on, the whole day, behind the glass panel      */
-    {px: 0.0,py: 6.2,pz:19.0, lx: 0.0,ly:0.45,lz:0, fov:34, dim:0.66, yaw:-0.04,pitch:0},
-    /* 5 footer    settles back out                                      */
-    {px: 0.0,py: 9.4,pz:26.0, lx: 0.0,ly:0.10,lz:0, fov:34, dim:0.34, yaw:-0.08,pitch:0},
+    {px:-1.26,py: 0.02,pz:3.92, lx:-0.28,ly:-0.02, fov:30, dim:1.00, yaw:-1.75,pitch:-0.10},
+    {px:-0.55,py: 0.75,pz:4.70, lx:-0.06,ly: 0.00, fov:27, dim:0.34, yaw:-2.45,pitch:-0.40},
+    {px: 0.55,py: 0.30,pz:5.60, lx: 0.04,ly: 0.00, fov:26, dim:0.20, yaw:-3.25,pitch:-0.12},
+    {px: 0.20,py:-0.35,pz:5.10, lx: 0.00,ly: 0.00, fov:27, dim:0.24, yaw:-4.05,pitch: 0.10},
+    {px: 0.00,py: 0.00,pz:4.10, lx: 0.00,ly: 0.00, fov:30, dim:0.74, yaw:-4.85,pitch:-0.04},
+    {px: 0.00,py: 0.10,pz:4.60, lx: 0.00,ly: 0.00, fov:30, dim:0.34, yaw:-5.25,pitch:-0.04},
   ];
   const camEls=[...document.querySelectorAll('[data-cam]')]
     .sort((a,b)=>(+a.dataset.cam)-(+b.dataset.cam));
   let anchors=[];
   const smooth = t => t*t*(3-2*t);
+
   function measure(){
-    anchors = camEls.map(el=>{ const r=el.getBoundingClientRect();
-      return r.top + scrollY + r.height*0.5; });
+    anchors = camEls.map(el=>{
+      const r=el.getBoundingClientRect();
+      return r.top + scrollY + r.height*0.5;
+    });
   }
+
+  /* narrow viewports get the object as a quiet ground only - there is no
+     room to stage it beside a single column */
   let wide = innerWidth>940;
   const shot = {...SHOTS[0]};
+
   function conduct(){
     if(!anchors.length) return;
     const y = scrollY + innerHeight*0.45;
@@ -808,9 +718,10 @@ if (THREE) {
     const a=anchors[i], b=anchors[i+1];
     const t = smooth(Math.min(1,Math.max(0,(y-a)/((b-a)||1))));
     const A=SHOTS[Math.min(i,SHOTS.length-1)], B=SHOTS[Math.min(i+1,SHOTS.length-1)];
-    for(const k of ['px','py','pz','lx','ly','lz','fov','dim','yaw','pitch'])
+    for(const k of ['px','py','pz','lx','ly','fov','dim','yaw','pitch'])
       shot[k] = A[k] + (B[k]-A[k])*t;
   }
+
   function layout(){
     const w=innerWidth,h=innerHeight;
     wide = w>940;
@@ -818,23 +729,26 @@ if (THREE) {
     measure(); conduct();
   }
   layout();
-  addEventListener('resize',()=>{ layout(); });
+  addEventListener('resize',()=>{ layout(); pickCallouts(); });
   addEventListener('scroll',()=>{ conduct(); if(!rafId) rafId=requestAnimationFrame(tick); },
     {passive:true});
 
-  /* ---- INTERACTION. Drag turns the field; hovering a mark names the
-     agent whose firing it is and prints its actual cron line. ---- */
+  /* ---- INTERACTION: the object is DRAGGABLE. The previous version only
+     had a 0.14-unit parallax nudge, which is why it "stayed turned to the
+     side and the cursor didn't control it". ---- */
   const label=document.getElementById('nlabel');
   const ray=new THREE.Raycaster(); const ndc=new THREE.Vector2(-10,-10);
   let hoverIdx=-1, dragging=false, lastX=0, lastY=0;
-  let uYaw=0, uPitch=0, yaw=0, pitch=0;
+  /* user drag is stored as an OFFSET from whatever the conductor is
+     currently asking for, so the two compose rather than overwrite */
+  let uYaw=0, uPitch=0, yaw=-1.75, pitch=-0.10;
 
   const onMove = e => {
     const r=canvas.getBoundingClientRect();
     if(dragging){
-      uYaw   += (e.clientX-lastX)*FIELD.drag;
-      uPitch += (e.clientY-lastY)*FIELD.drag*0.5;
-      uPitch = Math.max(-0.45,Math.min(0.45,uPitch));
+      uYaw   += (e.clientX-lastX)*CORTEX.drag;
+      uPitch += (e.clientY-lastY)*CORTEX.drag*0.6;
+      uPitch = Math.max(-0.8,Math.min(0.8,uPitch));
       lastX=e.clientX; lastY=e.clientY;
       if(!rafId) rafId=requestAnimationFrame(tick);
       return;
@@ -842,13 +756,13 @@ if (THREE) {
     ndc.x=((e.clientX-r.left)/r.width)*2-1;
     ndc.y=-((e.clientY-r.top)/r.height)*2+1;
     ray.setFromCamera(ndc,cam);
-    const hit=ray.intersectObject(marks,false)[0];
-    hoverIdx = hit ? hit.instanceId : -1;
-    if(hoverIdx>=0 && fires[hoverIdx]){
-      const f=fires[hoverIdx];
-      label.innerHTML = f.name+' <span style="color:var(--tx2)">'+f.hhmm+' · '+f.cron+'</span>';
+    const hit=ray.intersectObject(nodes,false)[0];
+    hoverIdx=hit?hit.instanceId:-1;
+    if(hoverIdx>=0){
+      const n=nodePos[hoverIdx];
+      label.innerHTML=n.name+'  <span style="color:var(--tx2)">'+n.cron+'</span>';
       label.style.left=(e.clientX-r.left)+'px';
-      label.style.top =(e.clientY-r.top)+'px';
+      label.style.top=(e.clientY-r.top)+'px';
       label.style.opacity=1; canvas.style.cursor='crosshair';
     } else { label.style.opacity=0; canvas.style.cursor=dragging?'grabbing':'grab'; }
   };
@@ -858,49 +772,99 @@ if (THREE) {
   addEventListener('pointerup',()=>{dragging=false;canvas.style.cursor='grab';});
   canvas.style.cursor='grab';
 
-  /* ---- ANNOTATIONS. Two, and both are claims about the data rather
-     than labels on a shape: where the clock is, and where the day
-     bunches up. Each is projected from a real world point every frame
-     and routed back to it with an elbow. ---- */
+  /* ---- three named agents, one per schedule class where possible, each
+     with its connector routed back to the node that is actually its own.
+     A callout hides itself when its node turns to the far side of the
+     cortex, so a line never points through the object. ---- */
   const coHost=document.getElementById('callouts'), coLines=document.getElementById('co-lines');
-  const CLUSTER_T = 6+50/60;
-  const clusterCount = fires.filter(f=>f.t>=6.6 && f.t<=7.05).length;
-  const ANN = [
-    {at:()=>new THREE.Vector3(nowLine.position.x, FIELD.markH*2.1, 0),
-     html:()=>{ const d=new Date();
-       return '<b>now</b><i>'+String(d.getHours()).padStart(2,'0')+':'+
-              String(d.getMinutes()).padStart(2,'0')+' · live clock</i>'; }},
-    {at:()=>new THREE.Vector3(xAt(CLUSTER_T), FIELD.markH*1.5, 0),
-     html:()=>'<b>06:40 — 07:00</b><i>'+clusterCount+' firings in twenty minutes</i>'},
-  ];
-  const anns = ANN.map((a,k)=>{
+  const coEls = [0,1,2].map(k=>{
     const d=document.createElement('div'); d.className='co'; coHost.appendChild(d);
     const l=document.createElementNS('http://www.w3.org/2000/svg','polyline');
     coLines.appendChild(l);
-    return {...a, d, l, k};
+    return {idx:-1,d,l,slot:k};
   });
-  const _w=new THREE.Vector3();
-  function drawAnn(vis){
+
+  /* Which three nodes get named is a GEOMETRY question, not a schedule
+     question: simulate the hero shot, keep the nodes that genuinely face
+     that camera on the right of the frame, and take one from each
+     vertical third so the connectors cannot cross. Re-run on resize,
+     because the aspect ratio changes who is on screen. */
+  const _m=new THREE.Matrix4(), _e=new THREE.Euler(), _v=new THREE.Vector3(),
+        _n=new THREE.Vector3(), _d=new THREE.Vector3();
+  function pickCallouts(){
+    const S=SHOTS[0], W=innerWidth, H=innerHeight;
+    const tc=new THREE.PerspectiveCamera(S.fov, W/H, .01, 60);
+    tc.position.set(S.px,S.py,S.pz); tc.lookAt(S.lx,S.ly,0); tc.updateMatrixWorld();
+    _e.set(S.pitch,S.yaw,0.06,'XYZ'); _m.makeRotationFromEuler(_e);
+    const cand=[];
+    nodePos.forEach((nd,i)=>{
+      _v.copy(nd.p).applyMatrix4(_m);
+      _n.copy(nd.n).applyMatrix4(_m).normalize();
+      _d.copy(_v).sub(tc.position).normalize();
+      if(_n.dot(_d) > -0.35) return;                 // pointing away from us
+      const p=_v.clone().project(tc);
+      if(p.z>=1) return;
+      const sx=(p.x*0.5+0.5)*W, sy=(-p.y*0.5+0.5)*H;
+      if(sx < W*0.52 || sx > W*0.86) return;         // right of the copy, off the rail
+      if(sy < H*0.16 || sy > H*0.88) return;
+      cand.push({i,sy});
+    });
+    coEls.forEach(c=>{ c.idx=-1; c.d.style.opacity=0; c.l.style.opacity=0; });
+    if(!cand.length) return;
+    [0,1,2].forEach(k=>{
+      const want = H*(0.26 + k*0.24);
+      const taken = new Set(coEls.filter(e=>e.idx>=0).map(e=>nodePos[e.idx].cls));
+      let best=null,bd=1e9;
+      for(const c of cand){
+        if(coEls.some(e=>e.idx===c.i)) continue;
+        /* a soft nudge toward three different schedule classes, so the
+           labels also read as a legend for the node colours - position
+           still wins if the alternative is far out of its band */
+        const dd=Math.abs(c.sy-want) + (taken.has(nodePos[c.i].cls) ? H*0.09 : 0);
+        if(dd<bd){bd=dd;best=c;}
+      }
+      if(!best) return;
+      const nd=nodePos[best.i];
+      coEls[k].idx=best.i;
+      coEls[k].d.innerHTML='<b>'+nd.name+'</b><i>'+nd.cron+' &middot; '+nd.cls+'</i>';
+    });
+  }
+  const wv=new THREE.Vector3(), wn=new THREE.Vector3();
+  function drawCallouts(vis){
     coHost.style.opacity = vis;
     if(vis<0.02) return;
-    const W=innerWidth,H=innerHeight, railR=Math.min(W-22, W*0.5+620);
-    anns.forEach((c,k)=>{
-      _w.copy(c.at()).applyMatrix4(pivot.matrixWorld);
-      const p=_w.clone().project(cam);
+    const W=innerWidth,H=innerHeight;
+    /* labels hang from the right container rail by their OWN right edge -
+       anchoring their left edge there pushed every pill off screen */
+    const railR = Math.min(W-22, W*0.5 + 620);
+    coEls.forEach((c,k)=>{
+      if(c.idx<0){ c.d.style.opacity=0; c.l.style.opacity=0; return; }
+      const n=nodePos[c.idx];
+      wv.copy(n.p).applyMatrix4(pivot.matrixWorld);
+      wn.copy(n.n).transformDirection(pivot.matrixWorld);
+      const toCam=wv.clone().sub(cam.position).normalize();
+      const facing = wn.dot(toCam) < -0.12;          // node points back at us
+      const p=wv.clone().project(cam);
       const sx=(p.x*0.5+0.5)*W, sy=(-p.y*0.5+0.5)*H;
-      const on = p.z<1 && sx>W*0.24 && sx<railR-140 && sy>H*0.08 && sy<H*0.92;
-      c.d.style.opacity=on?1:0; c.l.style.opacity=on?0.8:0;
+      /* only nodes already on the right of the frame get a label, so a
+         connector never has to cross the whole cortex to reach one */
+      const on = facing && p.z<1 && sx>W*0.30 && sx<railR-120
+                 && sy>H*0.06 && sy<H*0.94;
+      c.d.style.opacity = on?1:0;
+      c.l.style.opacity = on?0.8:0;
       if(!on) return;
-      c.d.innerHTML=c.html();
-      const ly=Math.round(H*(0.30+k*0.20));
-      const pw=c.d.offsetWidth||210, px=railR-pw;
-      c.d.style.left=px+'px'; c.d.style.top=ly+'px';
-      const elbow=Math.max(sx+20, px-46);
+      const ly = Math.round(H*(0.28+k*0.19));
+      const pw = c.d.offsetWidth || 190;
+      const px = railR - pw;
+      c.d.style.left = px+'px';
+      c.d.style.top  = ly+'px';
+      const elbow = Math.max(sx+22, px-46);
       c.l.setAttribute('points',
-        `${sx+4},${sy} ${elbow},${sy} ${elbow},${ly} ${px-6},${ly}`);
+        `${sx+6},${sy} ${elbow},${sy} ${elbow},${ly} ${px-6},${ly}`);
     });
   }
 
+  pickCallouts();
   const camNow={...SHOTS[0]};
   let t0=performance.now(),last=t0,running=true,rafId=0;
   document.addEventListener('visibilitychange',()=>{running=!document.hidden;
@@ -910,39 +874,33 @@ if (THREE) {
     rafId=0; if(!running) return;
     const now=performance.now(), el=(now-t0)/1000;
     const dt=Math.min(0.05,Math.max(0,(now-last)/1000)); last=now;
-
-    const k = reduce ? 1 : 1-Math.exp(-dt/FIELD.ease);
+    /* one damping constant, frame-rate independent, for every channel */
+    const k = reduce ? 1 : 1-Math.exp(-dt/CORTEX.ease);
     const drift = reduce ? 0
-      : Math.sin(el*(2*Math.PI/FIELD.swayPeriod))*FIELD.sway;
-    yaw   += ((shot.yaw   + uYaw + drift) - yaw  )*k;
-    pitch += ((shot.pitch + uPitch)       - pitch)*k;
+      : Math.sin(el*(2*Math.PI/CORTEX.swayPeriod))*CORTEX.sway;
+    yaw   += ((shot.yaw   + uYaw   + drift) - yaw  )*k;
+    pitch += ((shot.pitch + uPitch)          - pitch)*k;
     pivot.rotation.y=yaw; pivot.rotation.x=pitch;
 
-    for(const p of ['px','py','pz','lx','ly','lz','fov','dim'])
-      camNow[p] += (shot[p]-camNow[p])*k;
-    /* one column has no room to stage a field beside anything: pull back
-       and drop it to a ground texture rather than cropping it */
-    const nar = wide ? 0 : 1;
-    cam.position.set(camNow.px*(1-nar*0.6), camNow.py+nar*2.4, camNow.pz+nar*7.0);
-    cam.lookAt(camNow.lx*(1-nar), camNow.ly, camNow.lz);
-    cam.fov=camNow.fov; cam.updateProjectionMatrix();
-    canvas.style.opacity = (wide ? camNow.dim : camNow.dim*0.42).toFixed(3);
+    camNow.px += (shot.px-camNow.px)*k; camNow.py += (shot.py-camNow.py)*k;
+    camNow.pz += (shot.pz-camNow.pz)*k; camNow.lx += (shot.lx-camNow.lx)*k;
+    camNow.ly += (shot.ly-camNow.ly)*k; camNow.fov+= (shot.fov-camNow.fov)*k;
+    camNow.dim+= (shot.dim-camNow.dim)*k;
+    const nar = wide ? 0 : 1;                 // single column: no staging room
+    cam.position.set(camNow.px*(1-nar) + nar*(-0.55), camNow.py, camNow.pz + nar*0.9);
+    cam.lookAt(camNow.lx*(1-nar) - nar*0.14, camNow.ly, 0);
+    cam.fov = camNow.fov + nar*4; cam.updateProjectionMatrix();
+    canvas.style.opacity = wide ? camNow.dim.toFixed(3) : (camNow.dim*0.55).toFixed(3);
 
-    /* the hovered firing swells; everything else sits at rest */
-    for(let i=0;i<fires.length;i++){
-      const f=fires[i], s=(i===hoverIdx)?2.4:1;
-      dummy.position.set(xAt(f.t),0,zAt(f.i));
-      dummy.scale.set(s,i===hoverIdx?1.35:1,s);
-      dummy.updateMatrix(); marks.setMatrixAt(i,dummy.matrix);
+    for(let i=0;i<AGENTS.length;i++){
+      const s = i===hoverIdx ? 2.4 : 1;
+      dummy.position.copy(nodePos[i].p); dummy.scale.setScalar(s);
+      dummy.updateMatrix(); nodes.setMatrixAt(i,dummy.matrix);
     }
-    marks.instanceMatrix.needsUpdate=true;
-
-    if(!reduce) haze.rotation.y = el*0.006;
-
+    nodes.instanceMatrix.needsUpdate=true;
     pivot.updateMatrixWorld();
     renderer.render(scene,cam);
-    drawAnn(wide ? Math.max(0,(camNow.dim-0.72)/0.28) : 0);
-
+    drawCallouts(wide ? Math.max(0,(camNow.dim-0.72)/0.28) : 0);
     if(reduce && el>0.6 && !dragging) return;
     rafId=requestAnimationFrame(tick);
   }
@@ -959,13 +917,6 @@ if (THREE) {
   const ctx=c.getContext('2d');
   const ro=document.getElementById('clock-readout');
   let marks=[];
-  /* counted, not asserted - see the note on the field annotation */
-  const clusterN = AGENTS.reduce((n,a)=>{
-    const p=String(a.cron).split(/\s+/), mi=parseInt(p[0])||0;
-    if(p[1].includes('*')) return n;
-    return n + p[1].split(',').map(Number)
-      .filter(h=>{const t=h+mi/60; return t>=6.6 && t<=7.05;}).length;
-  },0);
 
   function draw(){
     const w=c.clientWidth,h=c.clientHeight,d=Math.min(devicePixelRatio||1,2);
@@ -1011,7 +962,7 @@ if (THREE) {
     ctx.strokeStyle=UI.bracket; ctx.globalAlpha=.7; ctx.lineWidth=1;
     ctx.beginPath(); ctx.arc(cx,cy,R+13,ca-0.17,ca+0.17); ctx.stroke(); ctx.globalAlpha=1;
     ctx.fillStyle=UI.tx1; ctx.font='400 9.5px "IBM Plex Mono",monospace'; ctx.textAlign='left';
-    ctx.fillText('06:40-07:00 \u00b7 '+clusterN, cx+Math.cos(ca)*(R+27)-8, cy+Math.sin(ca)*(R+27));
+    ctx.fillText('06:40-07:00', cx+Math.cos(ca)*(R+27)-8, cy+Math.sin(ca)*(R+27));
 
     const now=new Date(), na=((now.getHours()+now.getMinutes()/60)/24)*Math.PI*2-Math.PI/2;
     ctx.strokeStyle=UI.tx0; ctx.lineWidth=1.2; ctx.globalAlpha=.8;

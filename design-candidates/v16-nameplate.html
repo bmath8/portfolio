@@ -1,0 +1,1562 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — I build systems, then I keep them running</title>
+<link rel="canonical" href="https://bmath8.vercel.app/" />
+<meta name="description" content="Brian Mathew builds and operates working software: a 26-agent Windows automation fleet with 81 passing tests, a real-time collaborative music prototype, and a live squares app that ran a real event. New Jersey - open to work." />
+
+<!-- Open Graph / link preview. Without these the link unfurls as a bare URL in
+     LinkedIn, email and DMs -- which is where most of these links get pasted. -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://bmath8.vercel.app/" />
+<meta property="og:title" content="Brian Mathew - I build systems, then I keep them running" />
+<meta property="og:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
+<meta property="og:image" content="https://bmath8.vercel.app/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Brian Mathew - I build systems, then I keep them running. 26 agents live, 81 tests green, 3 systems shipped." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Brian Mathew - I build systems, then I keep them running" />
+<meta name="twitter:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
+<meta name="twitter:image" content="https://bmath8.vercel.app/og.png" />
+<!-- theme-color follows the page: this build is dark, the old one was paper -->
+<meta name="theme-color" content="#08090b" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<!--
+  CONCEPT A — "LIVE INSTRUMENT"          2026-08-05
+
+  WHAT IS ACTUALLY NEW HERE, in one sentence:
+  the hero is a live readout of a real operating system rendered as working anatomy -
+  26 nodes, one per real scheduled agent, each sitting on the cortical surface and
+  firing on its actual cron time.
+
+  This is NOT seeded from priors. It is seeded from:
+   - lab/03-real-mesh-opaque.html, which PROVED this morning that the real opaque mesh
+     reads as anatomy (26 candidates had assumed it couldn't)
+   - everest.suraj.work: canvas behind, ALL editorial text in DOM in front, a live metric
+     strip in the hero, quality that degrades explicitly
+   - wc26.bogachev.fr: the object is DERIVED from real data, not decorated to imply it
+   - Brian's own Claude Design palette (built 2026-07-20, never used until now)
+   - the ENDORSED register: contact top-right, live demos, verification blocks,
+     Selected Work -> Capabilities -> Experience -> Contact
+
+  DELIBERATELY ABSENT (every one is a documented rejection):
+  no bloom · no additive blending · no transparency on the mesh · no scroll-driven 3D ·
+  no morphing · no cream/serif/terracotta · no numbered sections · no hairline-rule
+  dividers · no glassmorphism · no cards with uniform 16px radius · no generated images
+
+  LICENSE: SHIPPABLE. Uses vendor/mesh/brain-icbm152.bin, generated from the MNI
+  ICBM152 2009c template, whose licence grants use "for any purpose and without
+  fee" provided the copyright notice travels with it. The notice is in the page
+  footer and in vendor/mesh/README-LICENSE.md. The old AGPL brain-mni.bin is gone.
+-->
+<style>
+  @font-face{font-family:Bricolage;src:url(/vendor/fonts/BricolageGrotesque-800.woff2) format('woff2');font-weight:800;font-display:swap}
+  @font-face{font-family:Bricolage;src:url(/vendor/fonts/BricolageGrotesque-600.woff2) format('woff2');font-weight:600;font-display:swap}
+  @font-face{font-family:PlexSans;src:url(/vendor/fonts/IBMPlexSans-400.woff2) format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:PlexSans;src:url(/vendor/fonts/IBMPlexSans-600.woff2) format('woff2');font-weight:600;font-display:swap}
+  @font-face{font-family:PlexMono;src:url(/vendor/fonts/IBMPlexMono-400.woff2) format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:PlexMono;src:url(/vendor/fonts/IBMPlexMono-500.woff2) format('woff2');font-weight:500;font-display:swap}
+
+  /* ================================================================
+     PALETTE v9. Brian, 2026-08-05: "everything is blue and blends into
+     eachother. There is no contrast, flow, clear distinct areas and borders."
+
+     WHY THE OLD ONE FAILED: it was a single hue at five lightnesses.
+     #050a12 -> #0a1420 -> #0e1c2b -> #1b2f44 are all the same blue, and the
+     jumps between them are tiny. Nothing could separate from anything else,
+     so every surface dissolved into its neighbour.
+
+     WHAT CHANGED, three things:
+     1. THE BASE IS NEUTRAL NOW, not blue. Near-black greys carry a faint cool
+        cast but no dominant hue - which is what lets an accent actually read as
+        an accent instead of one more blue.
+     2. REAL VALUE STEPS between surfaces. Each level is a visible jump, not a
+        nudge, so a card is obviously a card sitting on a page.
+     3. BORDERS ARE VISIBLE. --edge is light enough to see. The old #1b2f44 was
+        barely distinguishable from the panel it was supposed to bound.
+     Plus --lift: one genuinely LIGHT surface, because he asked for "contrasts
+     with light" and previously endorsed a light/dark rhythm.
+     ================================================================ */
+  /* ================================================================
+     v15 - PLATE AND PAPER.  The palette rebuilt from the retraction,
+     not tweaked around it.
+
+     Brian, 2026-08-05: "everything is blue and blends into eachother.
+     There is no contrast, flow, clear distinct areas and borders. It
+     can have that dark theme but has to have contrasts with light,
+     accents, differences."
+
+     What happened instead: the blue near-black was swapped for a
+     NEUTRAL near-black and cyan was kept as the brand colour. That
+     restates the complaint rather than answering it. The value
+     structure being shipped was --void 0.004, --deep 0.006, --panel
+     0.009 - three surfaces inside half a percent of each other, plus
+     one light band, plus cyan on everything. That is the single most
+     generic output there is, and he named it as such.
+
+     TWO RULES NOW GOVERN THE WHOLE PAGE:
+
+       1. COLOUR MEANS DATA.  Hue is reserved entirely for the four
+          cron schedule classes and the project accents. Nothing in the
+          UI - no button, no link, no heading, no focus ring - is
+          coloured to look nice. Cyan is demoted from brand colour to
+          one data class among four.
+
+       2. VALUE MEANS HIERARCHY.  The accent is INVERSION, not a hue:
+          solid ink on paper, solid paper on ink. This is what kills
+          the cyan-on-black tell, because the tell was never the cyan
+          itself - it was cyan doing every job on the page.
+
+     The page is now predominantly PAPER, with the instrument living in
+     deep PLATE zones. The fixed 3-D world shows through the plate
+     zones and is covered by opaque paper in the evidence zones, so the
+     machine appears where it belongs and the receipts sit on paper.
+     Hero -> plate, work -> paper, capabilities -> plate, experience ->
+     paper, contact -> plate. Every transition is a real value jump
+     rather than a half-percent one.
+     ================================================================ */
+  :root{
+    /* surfaces - each step is a real, visible jump */
+    --void:#08090b;
+    --deep:#0d0f13;
+    --panel:#15181d;
+    --raise:#1d2128;
+    --lift:#eef1f5;
+
+    /* lines - real rules, visible on paper */
+    --edge:#2d333d;
+    --hair:#1a1e24;
+
+    /* text */
+    /* --mute was #6b7581, which failed WCAG AA everywhere it was used: 3.80:1 on
+       --panel, 4.10:1 on --deep, 4.26:1 on --void, against a 4.5:1 requirement at
+       these sizes. #7d8794 is the same hue lifted just past the threshold -
+       4.88:1 on the worst case (--panel). Never used on .band-lift, which
+       overrides with --ink2-on-lift. */
+    --ink:#f5f7fa; --ink2:#aab3bf; --mute:#7d8794;
+    --ink-on-lift:#12151a; --ink2-on-lift:#454c57;
+
+    /* ---------- DATA COLOUR ----------
+       The only hues on the page, and they mean something: the four cron
+       schedule classes. Each has a PRINTED value for paper and a LIT
+       value for the plate - same hue, re-tuned for its ground, because
+       neon on paper is mud and printer's ink on black is invisible.
+       The UI never uses these. */
+    --daily:#0b6f60;   --daily-lit:#2ee6c6;
+    --hourly:#4338ca;  --hourly-lit:#9b8cff;
+    --weekly:#96530a;  --weekly-lit:#ffb340;
+    --monthly:#b0165a; --monthly-lit:#ff5c8a;
+
+    /* legacy accent names -> printed values, so existing rules pick up
+       the paper-safe versions automatically */
+    --cyan:var(--daily-lit); --magenta:var(--monthly-lit);
+    --amber:var(--weekly-lit); --violet:var(--hourly-lit);
+
+    /* ---------- type scale ----------
+       Measured 2026-08-12: the stylesheet declared NINETEEN distinct font
+       sizes, eight of them inside a 3.5px span (10.5 / 11 / 11.5 / 12 / 12.5 /
+       13 / 13.5 / 14). Sizes half a pixel apart are not a decision anyone can
+       see; they are the same accretion as the stacked shaders and the dead
+       vendor libraries - each redesign reached for a new number instead of
+       reusing one.
+
+       The micro tier is collapsed to ONE token here. 10.5px was also simply
+       too small for a caption, so this is a legibility fix as well as a
+       tidy-up. The 13px and 14px sizes are deliberately NOT touched: those are
+       interactive controls, and resizing a tap target to save a line of CSS is
+       a bad trade.
+
+       RULE GOING FORWARD: add a token, not a number. If a new size is genuinely
+       needed it belongs here, once, with a name. */
+    --t-micro:11.5px;   /* captions, metric labels, hover tooltips, notes */
+
+    /* what the rest of the page uses, for reference - not yet tokenised
+       because each is a single call site: 13/14 controls, 15 body, 17 lede
+       base, 21 lede, 25 card title, and three display clamps. */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--void);color:var(--ink);
+    font:400 17px/1.6 PlexSans,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+
+  /* ---------- contact header: ENDORSED, monogram left, buttons right ---------- */
+  header{position:sticky;top:0;z-index:50;background:rgba(8,9,11,.88);
+    backdrop-filter:blur(14px);border-bottom:1px solid var(--edge)}
+  .hbar{display:flex;align-items:center;justify-content:space-between;
+    max-width:1240px;margin:0 auto;padding:13px 32px;gap:20px}
+  .mono-badge{display:flex;align-items:center;gap:13px;min-width:0}
+  .mk{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:3px;
+    background:var(--ink);color:var(--void);font:800 15px/1 Bricolage;letter-spacing:.02em}
+  .who{font:600 15px/1.25 PlexSans;white-space:nowrap}
+  .who small{display:block;font:400 12.5px/1.3 PlexMono;color:var(--mute)}
+  nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  nav a{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:3px;
+    border:1px solid var(--edge);background:var(--panel);color:var(--ink2);
+    font:500 13.5px/1 PlexMono;text-decoration:none;transition:.16s}
+  nav a:hover{border-color:var(--ink);color:var(--ink);background:var(--raise)}
+  nav a.cta{background:var(--ink);border-color:var(--ink);color:var(--void);font-weight:500}
+  nav a.cta:hover{background:#5cf0d9;color:#04121a}
+  nav svg{width:14px;height:14px;flex:none}
+  nav a b{font-weight:500}
+  @media(max-width:900px){nav a b{display:none}nav a{padding:9px 11px}}
+
+  /* ---------- hero: brain is the CENTREPIECE, not a corner box ---------- */
+  /* PHASE 4 - FLOW. Brian: "I want each part to flow into each other."
+     Every section previously ended on a hard 1px border, which is what made the
+     page read as stacked blocks. Borders are replaced by long gradient seams so
+     each band dissolves into the next. */
+  /* ================================================================
+     THE WORLD LAYER.  v14: the canvas stops being a box inside the hero
+     and becomes one persistent world behind the whole document, with
+     scroll conducting the camera through authored chapters.
+
+     Layer stack, deliberately explicit (the Kage lesson - depth comes
+     from compositing, not from more polygons):
+        0   #stage      the live world, fixed, full viewport
+        1   #vignette   frame passes: CSS not WebGL, so they cost a
+        2   #grain      composite instead of a render target
+       10   .page       all reading content, scrolls normally
+       50   header      fixed furniture
+
+     THE FRAME PASSES SIT BELOW THE READING, NOT ABOVE IT. Kage puts them
+     on top (vignette 55, grain 60) because that page is uniformly dark,
+     so a full-frame darkening can never hurt it. Ours has a genuinely
+     light band in the middle: a dark radial vignette laid over #eef1f5
+     turns it grey at the edges and reads as dirt on the screen, and film
+     grain over near-white reads as compression artefacts. Copying the
+     z-indices would have imported a bug from a page that cannot have it.
+     The passes treat the WORLD; the reading is not part of the frame.
+     ================================================================ */
+  #stage{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+  .page{position:relative;z-index:10}
+  #vignette,#grain{position:fixed;inset:0;pointer-events:none}
+  #vignette{z-index:1;background:radial-gradient(ellipse 78% 68% at 50% 46%,
+    rgba(0,0,0,0) 42%, rgba(0,0,0,.34) 78%, rgba(0,0,0,.62) 100%)}
+  /* grain is one tiny tiling SVG turbulence, not an image request */
+  #grain{z-index:2;opacity:.07;mix-blend-mode:overlay;background-repeat:repeat;
+    background-size:180px 180px;
+    background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}
+  @media(prefers-reduced-motion:reduce){#grain{display:none}}
+
+  /* Every reading band gets its own scrim so type stays legible over a live
+     scene. The scrim belongs to the section, not to the canvas, so the world
+     is never dimmed globally - each chapter decides how much it needs. */
+  section.wrap,footer.wrap{position:relative}
+  section.wrap::before,footer.wrap::before{content:'';position:absolute;
+    left:0;right:0;top:-120px;bottom:-120px;
+    z-index:-1;pointer-events:none;background:linear-gradient(180deg,
+      rgba(8,9,11,0) 0%, rgba(8,9,11,.88) 14%, rgba(8,9,11,.92) 86%, rgba(8,9,11,0) 100%)}
+
+  .hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:center;
+    overflow:hidden}
+  .hero::before{content:'';position:absolute;left:0;right:0;bottom:0;height:190px;z-index:3;
+    pointer-events:none;background:linear-gradient(to bottom,rgba(8,9,11,0),var(--void))}
+  /* readability scrim: the copy must win over the mesh, always */
+  .hero::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(100deg,var(--void) 24%,rgba(8,9,11,.88) 44%,rgba(8,9,11,0) 64%)}
+  @media(max-width:940px){.hero::after{background:linear-gradient(180deg,rgba(8,9,11,.92),rgba(8,9,11,.62))}}
+  .hero-grid{position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;
+    padding:64px 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:40px;align-items:center;pointer-events:none}
+  .hero-copy{pointer-events:auto}
+
+  .live{display:inline-flex;align-items:center;gap:9px;padding:6px 12px;border-radius:100px;
+    border:1px solid var(--edge);background:rgba(8,9,11,.55);color:var(--ink2);
+    font:500 13.5px/1 PlexMono;margin-bottom:26px}
+  .pip{width:7px;height:7px;border-radius:50%;background:var(--cyan);
+    box-shadow:0 0 0 0 rgba(46,230,198,.7);animation:pip 2.4s infinite}
+  @keyframes pip{70%{box-shadow:0 0 0 9px rgba(46,230,198,0)}100%{box-shadow:0 0 0 0 rgba(46,230,198,0)}}
+  h1{font:800 clamp(40px,5.4vw,74px)/1.02 Bricolage;letter-spacing:-.03em;margin:0 0 22px}
+  h1 em{font-style:normal;color:var(--ink)}
+  /* Type scale tightened to five real steps - 12 / 13.5 / 15 / 17 / 21 - roughly
+     a 1.25 ratio. It previously ran 12/12.5/13/15/15.5/16/17/19, which is eight
+     sizes inside seven pixels and reads as no hierarchy at all. */
+  .lede{font-size:21px;line-height:1.58;color:var(--ink2);max-width:33em;margin:0 0 32px}
+  .lede b{color:var(--ink);font-weight:600}
+
+  /* live metric strip - everest.suraj.work pattern, real numbers */
+  .strip{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--edge);border-radius:4px;
+    background:var(--panel);overflow:hidden;max-width:560px}
+  .met{flex:1 1 118px;padding:14px 16px;border-right:1px solid var(--edge)}
+  .met:last-child{border-right:0}
+  .met .v{font:500 26px/1 PlexMono;letter-spacing:-.02em}
+  .met .k{font:400 var(--t-micro)/1.4 PlexMono;color:var(--mute);margin-top:6px;
+    text-transform:uppercase;letter-spacing:.07em}
+  .met.c .v{color:var(--cyan)} .met.a .v{color:var(--amber)} .met.v_ .v{color:var(--violet)}
+
+  .hero-right{pointer-events:none;position:relative;min-height:380px}
+  .nodelabel{position:absolute;z-index:6;transform:translate(-50%,-150%);pointer-events:none;
+    font:500 12px/1 PlexMono;color:var(--cyan);background:rgba(8,9,11,.94);
+    border:1px solid #2a5d55;padding:5px 8px;border-radius:3px;white-space:nowrap;
+    opacity:0;transition:opacity .18s}
+  #glfail{position:absolute;inset:0;display:none;place-items:center;color:var(--mute);
+    font:400 14px PlexMono;text-align:center;padding:24px}
+
+  /* ---------- content bands ---------- */
+  section{padding:88px 0;position:relative}
+  /* The cyan .thread (Phase 4, item 3) is deliberately CUT, not left dim.
+     It was only ever inside the Selected work section, not "the length of the
+     page" as specced, and it sat behind opaque cards at z-index 0. Raised to
+     .55 alpha to test, it lands a few px off the project card's own column
+     divider and reads as a misaligned duplicate of it - a bug, not a motif.
+     The plan's leftover said "raise or cut it"; raising is worse. Cut.
+     A page-length version would also have to cross .band-lift, where a cyan
+     hairline on near-white has nothing to do with the rest of the design. */
+  /* Heading word reveal. Only ever applies to spans the script creates, so
+     a JS-disabled page has nothing hidden to reveal. `will-change` is
+     deliberately absent: on a page already running a WebGL world, promoting
+     every word to its own layer costs more than the transition saves. */
+  .rw{display:inline-block;opacity:0;transform:translateY(18px);
+    transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1)}
+  .rw-in .rw{opacity:1;transform:none}
+
+  .sec-h{display:flex;align-items:baseline;gap:16px;margin:0 0 10px}
+  .sec-h h2{font:800 clamp(26px,3vw,38px)/1.1 Bricolage;letter-spacing:-.02em;margin:0}
+  .sec-sub{color:var(--mute);font-size:15px;max-width:56ch;margin:0 0 44px}
+
+  /* v14: the cards let the world through.
+     Full-width panels in a 26px stack sealed the viewport shut through the
+     whole of Selected Work, so the camera travelled behind a wall and the
+     three middle chapters were invisible. Screenshotted and confirmed before
+     changing anything.
+     Two changes, both compositional rather than decorative: the cards are
+     narrowed to 88% and alternated left/right, so there is a real margin for
+     the world to read in and the lateral camera moves have somewhere to go;
+     and the stack gap goes 26 -> 76px, so the scene is visible BETWEEN them.
+     The card interiors are untouched - same evidence, same density, same
+     verification lines. This buys depth with layout, not with opacity: the
+     panels stay fully opaque, because the numbers on them have to stay
+     legible and a translucent evidence card is a worse trade than a margin. */
+  .work{display:grid;gap:76px}
+  .proj{border:1px solid var(--edge);border-radius:6px;background:var(--panel);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    overflow:hidden;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+    width:88%}
+  .proj:nth-child(even){justify-self:end}
+  @media(max-width:880px){.work{gap:40px}.proj{width:100%}}
+  .proj-body{padding:30px 32px}
+  .proj h3{font:800 25px/1.15 Bricolage;letter-spacing:-.02em;margin:0 0 4px}
+  /* Each project owns an accent, but NOT as a 3px bar down the left edge -
+     that side-tab is one of the most recognisable AI-UI tells there is, and
+     it was flagged as such. The colour now lives in a solid chip and a tinted
+     frame, so the whole card carries its identity instead of wearing a slab. */
+  .tag{font:500 11.5px/1 PlexMono;text-transform:uppercase;letter-spacing:.09em;
+    display:inline-block;margin-bottom:16px;padding:6px 10px;border-radius:3px;
+    color:#08090b}
+  .p1 .tag{background:var(--cyan)}
+  .p2 .tag{background:var(--magenta)}
+  .p3 .tag{background:var(--amber)}
+  .p1{border-color:#1e4a45}
+  .p2{border-color:#4a2531}
+  .p3{border-color:#463820}
+  .proj p{color:var(--ink2);font-size:15px;margin:0 0 18px}
+  /* verification block - ENDORSED: every claim says where it came from */
+  .verify{border-top:1px solid var(--edge);padding-top:15px;margin-top:4px}
+  .verify li{list-style:none;display:flex;gap:10px;align-items:flex-start;
+    font:400 13.5px/1.55 PlexMono;color:var(--ink2);margin-bottom:7px}
+  .verify ul{margin:0;padding:0}
+  .verify .ck{color:var(--ink2);flex:none}
+  .verify .src{color:var(--mute)}
+  .links{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+  .links a{padding:8px 14px;border:1px solid var(--edge);border-radius:3px;
+    font:500 13px/1 PlexMono;text-decoration:none;color:var(--ink);transition:.16s}
+  .links a:hover{border-color:currentColor;color:inherit;background:rgba(255,255,255,.06)}
+  .demo{background:var(--deep);border-left:1px solid var(--edge);min-height:290px;
+    position:relative;display:grid;place-items:center}
+  .demo canvas{display:block;width:100%;height:100%}
+  .demo .cap{position:absolute;left:14px;bottom:12px;font:400 var(--t-micro)/1 PlexMono;color:var(--mute);z-index:3}
+  /* click-to-load poster for the live Squares app */
+  .demo-live{padding:0}
+  .poster{position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;
+    background:var(--void);display:grid;place-items:center;color:var(--ink)}
+  .poster canvas{position:absolute;inset:0;opacity:.5;transition:opacity .25s}
+  .poster:hover canvas{opacity:.72}
+  .play{position:relative;z-index:2;display:inline-flex;align-items:center;gap:9px;
+    padding:11px 18px;border-radius:3px;background:var(--magenta);color:#2a0512;
+    font:500 13.5px/1 PlexMono;transition:.16s}
+  .poster:hover .play{background:#ff6ea3}
+  .play svg{width:15px;height:15px}
+  .poster-note{position:absolute;bottom:34px;left:0;right:0;z-index:2;text-align:center;
+    font:400 var(--t-micro)/1.35 PlexMono;color:var(--mute)}
+  .demo-live iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+  /* hover readout shared by the interactive demos */
+  .readout{position:absolute;right:12px;top:12px;z-index:3;text-align:right;
+    font:400 var(--t-micro)/1.55 PlexMono;color:var(--ink2);pointer-events:none;
+    background:rgba(8,9,11,.9);border:1px solid var(--edge);border-radius:3px;
+    padding:7px 10px;opacity:0;transition:opacity .15s}
+  .readout.on{opacity:1}
+  .readout b{color:var(--cyan);font-weight:500}
+  @media(max-width:880px){.proj{grid-template-columns:1fr}.demo{border-left:0;border-top:1px solid var(--edge)}}
+
+  /* THE LIGHT BAND. Brian asked for "contrasts with light", and he endorsed a
+     light/dark rhythm back in v3. One genuinely light surface in the middle of
+     a dark page does more for contrast than any amount of tuning within the
+     darks - and it gives the eye a place to rest before Experience. */
+  .band-lift{background:var(--lift);color:var(--ink-on-lift);position:relative;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(0,0,0,.16)}
+  .band-lift h2{color:var(--ink-on-lift)}
+  /* restored after the v15 revert dropped it: --mute is tuned for the dark
+     ground and measures only 3.22:1 on this light band */
+  .band-lift .sec-sub{color:var(--ink2-on-lift)}
+  .caps{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;
+    background:#cfd6de;border:1px solid #cfd6de;border-radius:6px;overflow:hidden}
+  .cap-cell{background:#f7f9fb;padding:24px 26px}
+  .cap-cell h4{font:600 13px/1 PlexMono;color:#0a6f60;margin:0 0 11px;
+    text-transform:uppercase;letter-spacing:.08em}
+  .cap-cell p{margin:0;font-size:15px;color:var(--ink2-on-lift);line-height:1.55}
+
+  .exp{display:grid;gap:0;border:1px solid var(--edge);border-radius:5px;overflow:hidden}
+  .row{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:24px;
+    padding:24px 28px;background:var(--panel);border-bottom:1px solid var(--edge)}
+  .row:last-child{border-bottom:0}
+  .row .r-role{font:600 16px/1.35 PlexSans}
+  .row .r-meta{font:400 13px/1.5 PlexMono;color:var(--mute);margin-top:5px}
+  .row p{margin:0;color:var(--ink2);font-size:15px}
+
+  /* SPECIFICITY BUG FIXED HERE. `section` and `footer` are element selectors, so
+     `.wrap{padding:0 32px}` outranked them and every `<section class="wrap">` and the
+     footer were rendering with ZERO vertical padding -- which is why Experience butted
+     straight into the closing CTA. Re-stated at class specificity. */
+  section.wrap{padding:88px 32px}
+  footer.wrap{padding:80px 32px 96px}
+  footer{padding:80px 0 96px;text-align:center}
+  footer h2{font:800 clamp(28px,3.6vw,46px)/1.1 Bricolage;letter-spacing:-.025em;margin:0 0 16px}
+  footer p{color:var(--ink2);max-width:46ch;margin:0 auto 30px}
+  .fbtns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+  .fbtns a{padding:13px 22px;border-radius:3px;border:1px solid var(--edge);
+    background:var(--panel);text-decoration:none;font:500 14px/1 PlexMono;transition:.16s}
+  .fbtns a.pri{background:var(--ink);border-color:var(--ink);color:var(--void)}
+  .fbtns a:hover{border-color:currentColor;background:rgba(255,255,255,.08)}
+  .fbtns a.pri:hover{background:#5cf0d9;color:#04121a}
+  /* the licence notice was wrapping mid-phrase inside the 46ch paragraph width */
+  .foot-note{margin-top:40px;font:400 12.5px/1.7 PlexMono;color:var(--mute);
+    max-width:74ch;margin-left:auto;margin-right:auto}
+
+  /* MOBILE HERO. Previously the canvas stayed inset:0 behind the copy, so on a phone
+     the cortex became a washed-out wallpaper under the headline -- which is the exact
+     thing that was rejected once already ("having the brain in the background").
+     On narrow screens it becomes a contained exhibit ABOVE the copy instead: still the
+     centrepiece, still the first thing you see, but no longer fighting the text. */
+  @media(max-width:940px){
+    /* v14: the canvas stays a fixed world on phones too - it is no longer a
+       contained exhibit, because the camera now travels and a boxed exhibit
+       cannot travel. Legibility is handled by the per-section scrims plus a
+       stronger hero scrim, and the rig carries mobile camera overrides. */
+    .hero{display:block;min-height:88vh;overflow:visible}
+    .hero-grid{grid-template-columns:1fr;padding:10px 22px 60px}
+    .hero-right{display:none}
+    #glfail{position:static;height:250px}
+  }
+  /* Experience rows MUST stack before the description column collapses. The
+     240px role column is fixed, so on a 390px phone the arithmetic was
+     390 - 64 (.wrap) - 2 (.exp border) - 56 (.row padding) = 268 available,
+     minus 240 minus the 24px gap = a FOUR PIXEL description column. Every job
+     description rendered as a one-character-per-line sliver, which is what made
+     the mobile page 7,709px tall. Nothing else on the page stacks it: the hero
+     goes at 940, the project cards at 880, the contact bar at 620. Below 700px
+     the description would be under ~300px, so that is the breakpoint. */
+  @media(max-width:700px){
+    .row{grid-template-columns:1fr;gap:8px;padding:20px 22px}
+  }
+  /* the contact bar stacks instead of colliding with the name on small screens */
+  @media(max-width:620px){
+    .hbar{flex-direction:column;align-items:stretch;gap:12px;padding:12px 22px}
+    nav{justify-content:flex-start}
+    .who{white-space:normal}
+  }
+  @media(prefers-reduced-motion:reduce){.pip{animation:none}}
+  :focus-visible{outline:2px solid currentColor;outline-offset:3px}
+</style>
+
+<header>
+  <div class="hbar">
+    <div class="mono-badge">
+      <div class="mk">BM</div>
+      <div class="who">Brian Mathew<small>New Jersey · open to work</small></div>
+    </div>
+    <nav>
+      <a href="mailto:mathew.brian@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><b>Email</b></a>
+      <a href="tel:+16098151685"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><b>Phone</b></a>
+      <a href="https://github.com/bmath8"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A12 12 0 0 0 8.2 23.9c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C16.9 4.7 18 5 18 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg><b>GitHub</b></a>
+      <a href="https://linkedin.com/in/brian-mathew-66235556"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.5 4.7 5.8V21h-4v-5.5c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9V21H9z"/></svg><b>LinkedIn</b></a>
+      <a class="cta" href="/resume.pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg><b>Résumé</b></a>
+    </nav>
+  </div>
+</header>
+
+<!-- The world: one persistent canvas behind the entire document. Scroll
+     conducts the camera through it; it is never re-created per section. -->
+<canvas id="stage" aria-label="A cortical surface carrying 26 nodes, one for each scheduled agent running on Brian's machine. Each node brightens at the time its job actually runs, and the camera travels across it as the page scrolls."></canvas>
+
+<div class="page">
+<div class="hero" data-cam="0">
+  <div id="glfail">26 scheduled agents are running on this machine right now.<br>81 tests green.</div>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="live"><span class="pip"></span><span id="nextrun">26 agents scheduled on real cron lines</span></div>
+      <h1>I build systems,<br>then I <em>keep them running.</em></h1>
+      <p class="lede">Self-taught developer in New Jersey. That cortex is not decoration &mdash;
+        it carries <b>one node for every scheduled agent on my machine</b>, each firing on the cron
+        line it actually runs on. Everything below is code you can open.</p>
+      <div class="strip">
+        <div class="met c"><div class="v" id="m1">26</div><div class="k">agents live</div></div>
+        <div class="met"><div class="v">81<span style="color:var(--mute)">/81</span></div><div class="k">tests green</div></div>
+        <!-- was "3 public repos", which was simply false: there are 8 public repos on the
+             account. "3 systems shipped" is what the three case studies below actually
+             argue, it matches the OG image alt text, and unlike a repo count it cannot
+             rot the next time a repo is published or made private. -->
+        <div class="met a"><div class="v">3</div><div class="k">systems shipped</div></div>
+        <div class="met v_"><div class="v">0</div><div class="k">manual triggers</div></div>
+      </div>
+    </div>
+    <div class="hero-right"><div class="nodelabel" id="nlabel"></div></div>
+  </div>
+</div>
+
+<section class="wrap">
+  <div class="sec-h"><h2>Selected work</h2></div>
+  <p class="sec-sub">Three systems I built, tested, documented, and still operate. Every number
+    below says where it came from, so you can check it rather than trust it.</p>
+
+  <div class="work">
+    <article class="proj p1" data-cam="1">
+      <div class="proj-body">
+        <span class="tag">Brian OS · running now</span>
+        <h3>A 26-agent fleet that runs my day</h3>
+        <p>Native-Windows AI agent fleet in Python. Local LLM routing through Ollama, Telegram
+          control, structured shared state, self-healing health checks — and draft-only
+          guardrails, so nothing sends, spends, deploys or deletes without my approval.</p>
+        <div class="verify"><ul>
+          <li><span class="ck">✓</span><span>26 scheduled agents <span class="src">— count from <code>hermes cron list</code>, 2026-08-05</span></span></li>
+          <li><span class="ck">✓</span><span>81/81 tests passing <span class="src">— live <code>pytest</code> run, 31s, 2026-08-05</span></span></li>
+          <li><span class="ck">✓</span><span>Recovered a silent process-guardian failure <span class="src">— traced, fixed, prevention check written</span></span></li>
+        </ul></div>
+        <div class="links"><a href="https://github.com/bmath8/brian-os">Read the source →</a></div>
+      </div>
+      <div class="demo"><canvas id="clock" role="img" aria-label="A 24-hour dial plotting when each of the 26 scheduled agents runs. Marks are coloured by schedule class - cyan daily, violet hourly, amber weekly, magenta monthly - and twelve of them fall between 06:40 and 07:00."></canvas>
+        <div class="readout" id="clock-readout"></div>
+        <span class="cap">24h — hover any mark to name the agent</span></div>
+    </article>
+
+    <article class="proj p2" data-cam="2">
+      <div class="proj-body">
+        <span class="tag">Super Bowl LX Squares · live</span>
+        <h3>A real-time app that ran a real event</h3>
+        <p>100-square grid, randomized draw, live score-driven winner resolution, chat, host
+          controls and a security write-lock. It ran in front of a real audience on game day,
+          with no second chance to get it right.</p>
+        <div class="verify"><ul>
+          <li><span class="ck">✓</span><span>Publicly usable right now <span class="src">— no login, open it and click</span></span></li>
+          <li><span class="ck">✓</span><span>React + Firebase Realtime DB <span class="src">— source public</span></span></li>
+        </ul></div>
+        <div class="links">
+          <a href="https://fam-super-bowl-squares-2026.vercel.app">Open the live app →</a>
+          <a href="https://github.com/bmath8/fam-super-bowl-squares-2026">Source</a>
+        </div>
+      </div>
+      <!-- PHASE 5: the real app, click-to-load. Nothing third-party is requested
+           until the visitor asks for it, so the page still loads at zero external
+           requests - but one click puts the actual game-day app in front of them. -->
+      <div class="demo demo-live" id="squares-demo">
+        <button class="poster" id="squares-load" aria-label="Load the live Super Bowl Squares app">
+          <canvas id="grid" aria-hidden="true"></canvas>
+          <span class="play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>Load the live app</span>
+          <span class="poster-note">loads fam-super-bowl-squares-2026.vercel.app in this frame</span>
+        </button>
+        <span class="cap">the real app — click to interact</span>
+      </div>
+    </article>
+
+    <article class="proj p3" data-cam="3">
+      <div class="proj-body">
+        <span class="tag">BoomBox · prototype</span>
+        <h3>Durable state, separated from transient state</h3>
+        <p>Real-time social music app on Next.js and TypeScript. The interesting decision is the
+          split: Postgres holds what must survive a restart, WebSockets and Redis Pub/Sub carry
+          what must not outlive the session.</p>
+        <div class="verify"><ul>
+          <li><span class="ck">✓</span><span>Jest/RTL tests + Docker Compose <span class="src">— in the repo</span></span></li>
+          <li><span class="ck">✓</span><span>No live deployment <span class="src">— stated plainly; it is a prototype</span></span></li>
+        </ul></div>
+        <div class="links"><a href="https://github.com/bmath8/boombox">Read the source →</a></div>
+      </div>
+      <div class="demo"><canvas id="arch" role="img" aria-label="An architecture diagram of BoomBox: clients connect to a WebSocket and Redis Pub/Sub layer carrying transient state that dies with the session, above a labelled dividing line, with Postgres below it holding durable state that survives a restart."></canvas>
+        <span class="cap">why the split matters</span></div>
+    </article>
+  </div>
+</section>
+
+<section class="band-lift" data-cam="4"><div class="wrap">
+  <div class="sec-h"><h2>What I actually do</h2></div>
+  <p class="sec-sub">Only things I can demonstrate or talk through in a live screen share.</p>
+  <div class="caps">
+    <div class="cap-cell"><h4>Build</h4><p>Python and TypeScript. React/Next.js front ends, Flask and Node back ends, Postgres and Supabase, Docker.</p></div>
+    <div class="cap-cell"><h4>Operate</h4><p>Windows administration, PowerShell, scheduled jobs, log analysis, health monitoring, self-healing watchdogs.</p></div>
+    <div class="cap-cell"><h4>Test</h4><p>pytest and Jest/RTL. I write the suite, run it, and fix what it catches before shipping.</p></div>
+    <div class="cap-cell"><h4>Support</h4><p>Years of customer-facing work. Diagnose the real problem, explain it plainly, own it to a verified fix.</p></div>
+  </div>
+</div></section>
+
+<section class="wrap">
+  <div class="sec-h"><h2>Before this</h2></div>
+  <p class="sec-sub">Short and honest. The projects above are the strongest evidence I have.</p>
+  <div class="exp">
+    <div class="row">
+      <div><div class="r-role">Independent Software Developer</div><div class="r-meta">2025 — Present</div></div>
+      <p>Building and operating the three systems above, end to end: design, implementation, tests, documentation, and the running of them afterwards.</p>
+    </div>
+    <div class="row">
+      <div><div class="r-role">Driver, Independent Contractor</div><div class="r-meta">Uber · New Jersey · 2022</div></div>
+      <p>About a year of customer-facing work — navigation, scheduling, safety and time-sensitive problems, handled independently and calmly.</p>
+    </div>
+    <div class="row">
+      <div><div class="r-role">Appliances Department Lead</div><div class="r-meta">Best Buy</div></div>
+      <p>Led the appliances sales floor: advised customers through major purchases, resolved complaints and post-sale problems in person, supported the team day to day.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap" data-cam="5">
+  <h2>The machine is running. Come look at it.</h2>
+  <p>Open to remote, hybrid, on-site or relocation, and available to start quickly.</p>
+  <div class="fbtns">
+    <a class="pri" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+    <a href="tel:+16098151685">(609) 815-1685</a>
+    <a href="https://github.com/bmath8">github.com/bmath8</a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+  </div>
+  <p class="foot-note">Every number on this page is checkable, and says where it came from.<br>
+    No third-party requests · no generated images · renders with JavaScript disabled.<br>
+    <span style="opacity:.72">Cortical surface built from the MNI ICBM152 2009c template.
+    Copyright &copy; 1993&ndash;2004 Louis Collins, McConnell Brain Imaging Centre,
+    Montreal Neurological Institute, McGill University. Used by permission of its licence.</span></p>
+</footer>
+</div><!-- /.page -->
+
+<!-- Full-frame passes. CSS, not WebGL: they cost a composite instead of a
+     render target, and they are most of what reads as "cinematic". -->
+<div id="vignette" aria-hidden="true"></div>
+<div id="grain" aria-hidden="true"></div>
+
+<script type="importmap">
+{ "imports": { "three": "/vendor/three.module.min.js" } }
+</script>
+<script type="module">
+/* ================================================================
+   ONE SOURCE OF TRUTH FOR COLOUR.
+
+   Before this, the schedule-class -> accent map existed FOUR times:
+   as CSS custom properties, as 0x hex ints for the hero nodes, as
+   '#rrggbb' strings for the clock demo, and again as loose literals
+   in the BoomBox diagram. Same four colours, three syntaxes, four
+   places to forget. That is how "redesigns stacked on top of each
+   other" happens in practice - not as one bad decision, but as a
+   value that was only ever half-updated.
+
+   CSS is now the single authority. Everything else reads from it.
+   Change --cyan once and the nodes, the tracts, the dial and the
+   diagram all follow.
+   ================================================================ */
+const CSSVAR = n => getComputedStyle(document.documentElement)
+                      .getPropertyValue(n).trim();
+const PALETTE = {
+  cyan:    CSSVAR('--cyan')    || '#2ee6c6',
+  magenta: CSSVAR('--magenta') || '#ff5c8a',
+  amber:   CSSVAR('--amber')   || '#ffb340',
+  violet:  CSSVAR('--violet')  || '#9b8cff',
+  mute:    CSSVAR('--mute')    || '#7d8794',
+  edge:    CSSVAR('--edge')    || '#242932',
+};
+const hex2int = h => parseInt(h.replace('#',''), 16);
+
+/* The one classifier. Cron -> schedule class -> accent. Both the hero
+   and the 24h dial call this; neither keeps its own copy. */
+function scheduleClass(cron){
+  const p = cron.split(/\s+/);
+  if (p[2] !== '*')          return {k:'monthly', hex:PALETTE.magenta};
+  if (p[4] !== '*')          return {k:'weekly',  hex:PALETTE.amber};
+  if (p[1].includes('*'))    return {k:'hourly',  hex:PALETTE.violet};
+  return                            {k:'daily',   hex:PALETTE.cyan};
+}
+
+/* ============================================================
+   HERO — real cortical mesh + one node per real scheduled agent
+   ============================================================ */
+const AGENTS = await fetch('/agents.json').then(r=>r.json()).catch(()=>[]);
+document.getElementById('m1').textContent = AGENTS.length || 26;
+
+/* next real run, computed from the real cron lines */
+function nextRun(){
+  const now = new Date(); let best = null;
+  for (const a of AGENTS){
+    const [mi,hr] = a.cron.split(/\s+/);
+    const mins = mi.includes('*') ? [now.getMinutes()] : mi.split(',').map(Number);
+    const hrs  = hr.includes('*') ? [...Array(24).keys()] : hr.split(',').map(Number);
+    for (const h of hrs) for (const m of mins){
+      const d = new Date(now); d.setHours(h,m,0,0);
+      if (d <= now) d.setDate(d.getDate()+1);
+      if (!best || d < best.d) best = {d, n:a.n};
+    }
+  }
+  if (!best) return;
+  const hh = String(best.d.getHours()).padStart(2,'0'), mm = String(best.d.getMinutes()).padStart(2,'0');
+  document.getElementById('nextrun').textContent =
+    `${AGENTS.length} agents scheduled · next: ${best.n} at ${hh}:${mm}`;
+}
+nextRun(); setInterval(nextRun, 30000);
+
+const canvas = document.getElementById('stage');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let THREE;
+try { THREE = await import('three'); } catch(e){ document.getElementById('glfail').style.display='grid'; }
+
+if (THREE) {
+  /* BRN2 wire format (2026-08-06). Rebuild with scratchpad/pack_mesh_v2.py, which
+     refuses to write unless 11 round-trip checks pass, including a negative control.
+
+     The CDN was measured compressing this asset at brotli q3 -- weak -- so the win
+     came from handing it low-entropy bytes rather than from a stronger compressor:
+     836,324 -> 662,624 on disk, and 748,625 -> 469,248 on the wire (37.3% off).
+     Positions are plane-split zigzag-delta varints; indices are per-triangle deltas
+     after a winding-preserving rotation and sort; normals were left alone because
+     delta-encoding them cost 22KB on disk to save 4KB on the wire.
+
+     Vertex order is UNCHANGED on purpose -- the agent nodes are seated by
+     farthest-point sampling over a strided walk of the vertex array, so permuting
+     vertices (what a normal vertex-cache optimiser does) would silently move every
+     node on the cortex. It also compressed slightly worse.
+
+     Indices stay Uint16: 39,828 vertices. Above 65,535 this needs Uint32, and the
+     packer's "indices fit uint16" check is what will catch it.
+
+     PROVENANCE GAP, verified 2026-08-06: earlier notes said to regenerate the mesh
+     with scratchpad/build_mesh.py. That file does not exist -- not on disk, and
+     never in git history. brain-icbm152.bin is the only surviving source for this
+     geometry, which is why .vercelignore keeps it on disk while excluding it from
+     the deploy. Regenerating from the MNI ICBM152 2009c volume would mean rewriting
+     that script (threshold combined GM+WM probability maps, marching cubes,
+     Taubin smoothing). */
+  const buf = await (await fetch('/vendor/mesh/brain-icbm152-v2.bin')).arrayBuffer();
+  const u8 = new Uint8Array(buf), dv = new DataView(buf);
+  if (dv.getUint32(0,false) !== 0x42524e32) throw new Error('brain mesh: bad magic, expected BRN2');
+  const nV = dv.getUint32(4,true), nT = dv.getUint32(8,true), pLen = dv.getUint32(12,true);
+  let o = 20;
+  /* LEB128 into `out`; returns the offset just past the last value read. */
+  const rd = (out,n,p)=>{
+    for (let k=0;k<n;k++){
+      let v=0, s=0, b;
+      do { b=u8[p++]; v |= (b & 0x7f) << s; s += 7; } while (b & 0x80);
+      out[k]=v;
+    }
+    return p;
+  };
+  const vtmp = new Int32Array(Math.max(nV,nT));
+  const qp = new Int16Array(nV*3);
+  for (let k=0;k<3;k++){                       /* three planes, each a delta chain */
+    o = rd(vtmp,nV,o);
+    let run=0;
+    for (let i=0;i<nV;i++){ const z=vtmp[i]; run += (z>>>1) ^ -(z & 1); qp[i*3+k]=run; }
+  }
+  o = 20 + pLen;
+  const qn = new Int8Array(buf,o,nV*3); o += nV*3;
+  const idx = new Uint16Array(nT*3);
+  o = rd(vtmp,nT,o);
+  let run=0;
+  for (let t=0;t<nT;t++){ run += vtmp[t]; idx[t*3]=run; }
+  o = rd(vtmp,nT,o);
+  for (let t=0;t<nT;t++){ const z=vtmp[t]; idx[t*3+1]=idx[t*3] + (((z>>>1) ^ -(z & 1))|0); }
+  o = rd(vtmp,nT,o);
+  for (let t=0;t<nT;t++){ const z=vtmp[t]; idx[t*3+2]=idx[t*3] + (((z>>>1) ^ -(z & 1))|0); }
+  const pos = new Float32Array(nV*3), nrm = new Float32Array(nV*3);
+  for (let i=0;i<nV*3;i++){ pos[i]=qp[i]/32767; nrm[i]=qn[i]/127; }
+
+  /* curvature -> sulci read as grooves, not noise (proved in lab 03) */
+  const curv = new Float32Array(nV), deg = new Float32Array(nV);
+  const acc = (a,b)=>{
+    let dx=pos[b*3]-pos[a*3], dy=pos[b*3+1]-pos[a*3+1], dz=pos[b*3+2]-pos[a*3+2];
+    const L=Math.hypot(dx,dy,dz)||1e-9; dx/=L; dy/=L; dz/=L;
+    curv[a]+=dx*nrm[a*3]+dy*nrm[a*3+1]+dz*nrm[a*3+2]; deg[a]++;
+  };
+  for (let t=0;t<nT;t++){ const a=idx[t*3],b=idx[t*3+1],c=idx[t*3+2];
+    acc(a,b);acc(b,c);acc(c,a);acc(b,a);acc(c,b);acc(a,c); }
+  for(let i=0;i<nV;i++) curv[i]/=deg[i]||1;
+  /* Normalise on PERCENTILES, not min/max. Min/max is hostage to a handful of
+     outlier vertices, and the two meshes have very different curvature
+     statistics -- on the ICBM152 surface it pushed most of the mesh to the top
+     of the range and the shading blew out to white. 3rd/97th is robust. */
+  const sorted = Float32Array.from(curv).sort();
+  const lo = sorted[Math.floor(nV*0.03)], hi = sorted[Math.floor(nV*0.97)];
+  for(let i=0;i<nV;i++) curv[i]=Math.min(1,Math.max(0,(curv[i]-lo)/((hi-lo)||1)));
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('normal',   new THREE.BufferAttribute(nrm,3));
+  /* aCurv is gone with the cavity shading it fed - see the cortex block below */
+  geo.setIndex(new THREE.BufferAttribute(idx,1));
+
+  /* =================================================================
+     THE CORTEX, REDESIGNED ONCE - not dimmed, not layered on.
+
+     Brian, twice: "It keeps using old designs on top of each other.
+     Still see prior designs." He was right, and v16's first attempt was
+     guilty of exactly that: it kept the entire matcap / cavity /
+     fold-tint / fresnel stack and multiplied the whole thing by 0.16,
+     then drew linework over it. That is a FIFTH pass on top of four,
+     not a redesign.
+
+     Everything that was here is now DELETED - the 6-stop matcap canvas
+     ramp, the curvature cavity multiply, the violet fold tint, the
+     fresnel rim, the two onBeforeCompile shader patches, and the
+     per-vertex curvature attribute that only existed to feed them.
+
+     The object is now exactly TWO elements, and that is the whole design:
+
+       1. an UNLIT FLAT OCCLUDER. No shading model at all. Its only job
+          is to hide the linework on the far side of the form - which is
+          the single reason a wireframe reads as a solid object rather
+          than a ball of wool.
+
+       2. CONTOUR LINEWORK from a thresholded edge pass. On a cortical
+          surface, "where the surface turns sharply" IS the gyri and
+          sulci, so the anatomy draws itself.
+
+     If this needs to change, it changes by editing these two things.
+     There is nothing underneath them to inherit.
+     ================================================================= */
+  const CORTEX = {
+    /* A REAL surface value. The previous pass used #0b0d10 against an
+       #08090b page - a 0.3% luminance difference - in a scene with ZERO
+       lights. That is why it read as black-on-black with floating
+       scratches: there was no object, only fragments. */
+    base:      0x8d949c,
+    roughness: 0.58,
+    metalness: 0.04,
+    /* Contour lines are kept but subordinate: they sharpen the folds the
+       lighting already describes, instead of being asked to describe the
+       form on their own, which they cannot do. */
+    line:      0xf2f6fa,
+    lineAlpha: 0.20,
+    threshold: 32,
+  };
+
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+  const scene = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(30,1,.01,60);
+  const pivot = new THREE.Group(); scene.add(pivot);
+
+  /* THREE LIGHTS, and that is the entire shading model. No matcap, no
+     cavity multiply, no fold tint, no fresnel patch - the folds read
+     because they are actually lit, which is what the four stacked passes
+     were all trying to fake. */
+  const keyLight  = new THREE.DirectionalLight(0xffffff, 2.5);
+  keyLight.position.set(-2.4, 2.2, 2.6);
+  const fillLight = new THREE.DirectionalLight(0xbfd0e2, 0.75);
+  fillLight.position.set(2.8, -0.6, 1.4);
+  const rimLight  = new THREE.DirectionalLight(0xffffff, 1.5);
+  rimLight.position.set(1.2, 0.8, -3.0);     // separates the silhouette from the page
+  scene.add(keyLight, fillLight, rimLight, new THREE.AmbientLight(0xffffff, 0.16));
+
+  const mat = new THREE.MeshStandardMaterial({
+    color: CORTEX.base, roughness: CORTEX.roughness, metalness: CORTEX.metalness,
+    flatShading: false });
+  mat.polygonOffset = true; mat.polygonOffsetFactor = 1; mat.polygonOffsetUnits = 1;
+  const brain = new THREE.Mesh(geo, mat); pivot.add(brain);
+  // lateral view: ICBM voxel axes were remapped to (x, z, -y) when the mesh was
+  // built, so this orients it to a left-lateral three-quarter, frontal lobe left
+  pivot.rotation.set(-0.10, -1.75, 0.06);
+
+  const edgeGeo = new THREE.EdgesGeometry(geo, CORTEX.threshold);
+  const edges = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({
+    color: CORTEX.line, transparent: true, opacity: CORTEX.lineAlpha, depthWrite: false }));
+  pivot.add(edges);
+  console.info('[cortex] contour segments:', edgeGeo.attributes.position.count / 2);
+  // lateral view: ICBM voxel axes were remapped to (x, z, -y) when the mesh was
+  // built, so this orients it to a left-lateral three-quarter, frontal lobe left
+  pivot.rotation.set(-0.10, -1.75, 0.06);
+
+  /* ---------------------------------------------------------------
+     PHASE 2 - MAKE THE NODES ACTUALLY READ.
+     They were invisible: placed by scaling the position vector, which
+     buries them in sulci, and hashed by name, which clustered several
+     into the same region. This is the whole concept - one node per real
+     agent - so it has to be legible.
+       1. lift along the VERTEX NORMAL, so they sit ON the cortex
+       2. farthest-point sampling, so all 26 are spatially separated
+       3. depth-tested against the mesh, so back-facing ones vanish -
+          that occlusion is what proves the brain is solid
+       4. coloured by schedule class, using the approved accents
+     --------------------------------------------------------------- */
+  /* scheduleClass() lives at the top of this file now - one copy, shared
+     with the 24h dial, reading the accents from CSS. */
+
+  // Farthest-point sampling over a candidate subsample of the surface.
+  function farthestPoints(count){
+    const CAND = 1400, step = Math.max(1, Math.floor(nV/CAND));
+    const cand = [];
+    for (let i=0;i<nV;i+=step) cand.push(i);
+    const picked = [cand[0]];
+    const d2 = new Float32Array(cand.length).fill(Infinity);
+    while (picked.length < count && picked.length < cand.length){
+      const l = picked[picked.length-1]*3;
+      let bi=-1, bd=-1;
+      for (let j=0;j<cand.length;j++){
+        const v = cand[j]*3;
+        const dx=pos[v]-pos[l], dy=pos[v+1]-pos[l+1], dz=pos[v+2]-pos[l+2];
+        const dd = dx*dx+dy*dy+dz*dz;
+        if (dd < d2[j]) d2[j] = dd;
+        if (d2[j] > bd){ bd = d2[j]; bi = j; }
+      }
+      picked.push(cand[bi]);
+    }
+    return picked;
+  }
+
+  const nodeGeo = new THREE.SphereGeometry(.017,14,14);
+  const nodeMat = new THREE.MeshBasicMaterial({vertexColors:false, color:0xffffff});
+  const nodes = new THREE.InstancedMesh(nodeGeo,nodeMat,Math.max(AGENTS.length,1));
+  nodes.instanceColor = new THREE.InstancedBufferAttribute(
+    new Float32Array(Math.max(AGENTS.length,1)*3), 3);
+  const dummy = new THREE.Object3D(), nodePos = [];
+  const seats = farthestPoints(AGENTS.length || 26);
+  const col = new THREE.Color();
+  AGENTS.forEach((a,i)=>{
+    const v = seats[i % seats.length]*3;
+    // lift ALONG THE NORMAL - this is the fix. Scaling the position vector
+    // pushed nodes sideways into folds; the normal pushes them straight out.
+    const p = new THREE.Vector3(
+      pos[v]   + nrm[v]  *0.030,
+      pos[v+1] + nrm[v+1]*0.030,
+      pos[v+2] + nrm[v+2]*0.030);
+    const sc = scheduleClass(a.cron);
+    nodePos.push({p, name:a.n, cron:a.cron, cls:sc.k});
+    col.setHex(hex2int(sc.hex)); nodes.setColorAt(i, col);
+    dummy.position.copy(p); dummy.updateMatrix(); nodes.setMatrixAt(i,dummy.matrix);
+  });
+  if (nodes.instanceColor) nodes.instanceColor.needsUpdate = true;
+  pivot.add(nodes);
+
+  /* ===============================================================
+     PHASE 3 - THE DAY, TRAVELLING.
+     Brian: "turn that into an amazing 3D animation and interaction
+     that just takes this to another level."
+
+     The concept in one sentence: the hero shows a day passing through
+     his machine. Agents are ordered by the time they ACTUALLY run, and
+     a signal travels the chain in that order, so the 06:40-07:00 stack
+     is a visible burst because twelve agents genuinely wake in those
+     twenty minutes. The motion means something - which is the standing
+     objection to "animations for the sake of."
+
+     LineSegmentsGeometry extends InstancedBufferGeometry, so the whole
+     tract bundle is ONE instanced draw call no matter how many segments.
+     =============================================================== */
+  const { LineSegments2 }        = await import('/vendor/lines/LineSegments2.js');
+  const { LineSegmentsGeometry } = await import('/vendor/lines/LineSegmentsGeometry.js');
+  const { LineMaterial }         = await import('/vendor/lines/LineMaterial.js');
+
+  /* order the nodes by real time-of-day */
+  const timeOf = cron => {
+    const p = cron.split(/\s+/);
+    const mi = parseInt(p[0]) || 0;
+    const hr = p[1].includes('*') ? 0 : (parseInt(p[1]) || 0);
+    return hr + mi/60;
+  };
+  const order = AGENTS.map((a,i)=>({i, t:timeOf(a.cron)})).sort((x,y)=>x.t-y.t);
+
+  /* Each agent's normalised place in the day. This never changes, but the
+     animation loop was recomputing it with order.findIndex() inside a
+     forEach over all 26 agents - 676 array scans every single frame, at
+     60fps, to look up a constant. Precompute once. */
+  const RANK = new Float32Array(AGENTS.length);
+  order.forEach((o,rank)=>{ RANK[o.i] = rank / Math.max(1, order.length-1); });
+
+  /* a tract = a bezier from one node to the next, bulged off the surface
+     so it reads as a pathway over the cortex rather than a chord through it */
+  const SEG = 26;
+  const segs = [];
+  const tmp = new THREE.Vector3(), mid = new THREE.Vector3();
+  for (let k=0; k<order.length-1; k++){
+    const A = nodePos[order[k].i].p, B = nodePos[order[k+1].i].p;
+    mid.copy(A).add(B).multiplyScalar(0.5);
+    // Hug the surface. An unclamped lift proportional to distance sends the
+    // long hops (consecutive agents that sit on opposite sides of the brain)
+    // swinging way out into space, where they read as stray lines rather than
+    // as tracts. Cap it.
+    const lift = 1 + Math.min(0.085, 0.055 * A.distanceTo(B));
+    mid.normalize().multiplyScalar(((A.length()+B.length())/2) * lift);
+    let prev = null;
+    for (let s=0; s<=SEG; s++){
+      const u = s/SEG, iu = 1-u;
+      tmp.set(
+        iu*iu*A.x + 2*iu*u*mid.x + u*u*B.x,
+        iu*iu*A.y + 2*iu*u*mid.y + u*u*B.y,
+        iu*iu*A.z + 2*iu*u*mid.z + u*u*B.z);
+      if (prev) segs.push(prev.x,prev.y,prev.z, tmp.x,tmp.y,tmp.z);
+      prev = tmp.clone();
+    }
+  }
+
+  const tractGeo = new LineSegmentsGeometry();
+  tractGeo.setPositions(segs);
+  /* `dashed` stays true only because LineMaterial gates the USE_DASH define
+     (and therefore vLineDistance, which the pulse reads) on it. dashSize and
+     gapSize are gone: the dash discard they configured was REPLACED by the
+     Gaussian below, so they were vestigial - configuration for a code path
+     that no longer exists. Another leftover layer. */
+  const tractMat = new LineMaterial({
+    color: 0xd7dde4, linewidth: 1.1, dashed: true,   /* neutral: emphasis is brightness, not hue */
+    transparent: true, depthTest: true,
+  });
+  tractMat.resolution.set(innerWidth, innerHeight);   // required or lines vanish
+
+  /* Replace the dash discard with a Gaussian head. The resting tract stays
+     dim and keeps describing the path; the pulse is the activity. */
+  tractMat.onBeforeCompile = sh => {
+    sh.uniforms.uHead  = { value: 0 };
+    sh.uniforms.uIntro = { value: 0 };   // tracts fade in behind the node intro
+    sh.fragmentShader = sh.fragmentShader
+      .replace('uniform float dashOffset;',
+               'uniform float dashOffset;\nuniform float uHead;\nuniform float uIntro;')
+      .replace(
+        'if ( mod( vLineDistance + dashOffset, dashSize + gapSize ) > dashSize ) discard;',
+        'float d = abs(fract(vLineDistance * 0.06 - uHead) - 0.5);\n' +
+        'float pulse = exp(-d * d * 120.0);\n' +
+        'diffuseColor.rgb += pulse * 1.15;\n' +
+        // resting tract stays visible enough to describe the path it takes
+        'diffuseColor.a = (0.13 + pulse * 0.62) * uIntro;');
+    tractMat.userData.shader = sh;
+  };
+
+  const tracts = new LineSegments2(tractGeo, tractMat);
+  tracts.computeLineDistances();     // required for vLineDistance
+  pivot.add(tracts);
+
+  /* =================================================================
+     THE CHAPTER RIG.  v14 - the change this whole redesign rests on.
+
+     Before: two hard-coded camera positions chosen by viewport width. The
+     object sat in a box beside the copy and never moved. Every "redesign"
+     re-lit that one static shot, which is why six of them stacked up
+     without the page ever feeling different.
+
+     Now: six authored shots - position, look-at and focal length each -
+     interpolated along two Catmull-Rom splines and sampled by scroll.
+     Each chapter is a COMPOSED SHOT, not a scene swap, and the world is
+     never rebuilt. Technique studied from Meng To's Kage (MIT skills
+     library, vendored in .claude/skills); the shots, subject and numbers
+     are ours.
+
+     Scroll drives the CAMERA ONLY. The signal and the sway keep their own
+     clock - that separation is what was rejected before under the name
+     "scroll-driven animation", and it stays rejected.
+     ================================================================= */
+  const SHOTS = [
+    /* 0 hero      the cortex whole, the tuned lateral three-quarter    */
+    { p:[-1.58, 0.04, 3.62], t:[-0.46,-0.06, 0.00], fov:30 },
+    /* 1 Brian OS  push in toward the 06:40-07:00 cluster               */
+    { p:[-1.02, 0.30, 2.36], t:[-0.18, 0.02, 0.02], fov:32 },
+    /* 2 Squares   pull back and away; this chapter is not the machine  */
+    { p:[-2.28,-0.34, 4.10], t:[-0.30,-0.02, 0.00], fov:34 },
+    /* 3 BoomBox   low and close, tracts reading as pathways            */
+    { p:[-0.72,-0.62, 2.62], t:[-0.10, 0.10,-0.06], fov:33 },
+    /* 4 light band  rise clear of the object - the exhale              */
+    { p:[-0.30, 1.36, 4.35], t:[-0.10,-0.10, 0.00], fov:31 },
+    /* 5 contact   the whole form again, further back, quiet            */
+    { p:[-1.30, 0.16, 4.70], t:[-0.32,-0.04, 0.00], fov:30 },
+  ];
+  const curveP = new THREE.CatmullRomCurve3(
+    SHOTS.map(s=>new THREE.Vector3(...s.p)), false, 'catmullrom', .42);
+  const curveT = new THREE.CatmullRomCurve3(
+    SHOTS.map(s=>new THREE.Vector3(...s.t)), false, 'catmullrom', .42);
+  const _cp = new THREE.Vector3(), _ct = new THREE.Vector3(), _cd = new THREE.Vector3();
+
+  /* Shots are composed for a wide frame. On a tall one the same numbers crop
+     the form, so the rig steps back along its OWN view axis and opens the
+     focal length rather than letting the sides fall away. One rule instead of
+     a second set of mobile numbers to keep in sync. */
+  function aspectFix(){ return clamp((1.62 - (innerWidth/innerHeight)) / 1.05, 0, 1); }
+  function clamp(v,a,b){ return v<a?a:v>b?b:v; }
+
+  function applyCamera(prog){
+    const N = SHOTS.length - 1;
+    const u = clamp(prog / N, 0, 1);
+    curveP.getPoint(u, _cp); curveT.getPoint(u, _ct);
+    // `fr` not `f` - `f` is already the toFixed helper the shader strings use
+    const i = clamp(Math.floor(prog), 0, N-1), fr = clamp(prog - i, 0, 1);
+    let fov = SHOTS[i].fov + (SHOTS[i+1].fov - SHOTS[i].fov) * fr;
+
+    const nf = aspectFix();
+    if (nf > 0){
+      _cd.subVectors(_cp,_ct).normalize();
+      _cp.addScaledVector(_cd, nf * 1.85);
+      _cp.y += nf * 0.10;
+      fov *= 1 + nf * 0.40;
+    }
+
+    // pointer parallax rides on top of the shot, and eases off after the hero
+    const par = 1 - clamp(prog/1.6, 0, 1) * .55;
+    _cp.x += mx * 0.14 * par; _cp.y += my * 0.08 * par;
+
+    cam.position.copy(_cp);
+    cam.lookAt(_ct);
+    if (Math.abs(cam.fov - fov) > 1e-4){ cam.fov = fov; cam.updateProjectionMatrix(); }
+  }
+
+  function layout(){
+    const w = innerWidth, h = innerHeight;
+    renderer.setSize(w,h,false);
+    cam.aspect = w/h;
+    cam.updateProjectionMatrix();
+    tractMat.resolution.set(w,h);
+  }
+  layout();
+  addEventListener('resize', ()=>{ layout(); measure(); });
+
+  /* ---- scroll conductor: native scroll, normalised, reversible ----
+     Adapted from references/scroll-conductor.js in the vendored MIT skills
+     library. Anchors are the mid-point of each [data-cam] element, clamped
+     and forced monotonic so a short section can never invert the ordering. */
+  const SECS = [].slice.call(document.querySelectorAll('[data-cam]'));
+  let anchors = [], maxScroll = 1;
+  function measure(){
+    maxScroll = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    anchors = SECS.map((el,i)=>{
+      if (i===0) return 0;
+      if (i===SECS.length-1) return maxScroll;
+      const r = el.getBoundingClientRect();
+      return clamp(r.top + scrollY + r.height*.5 - innerHeight*.5, 0, maxScroll);
+    });
+    for (let i=1;i<anchors.length;i++) anchors[i] = Math.max(anchors[i], anchors[i-1]+1);
+  }
+  function progressFor(y){
+    if (!anchors.length) return 0;
+    if (y <= anchors[0]) return 0;
+    for (let i=0;i<anchors.length-1;i++)
+      if (y <= anchors[i+1]) return i + (y-anchors[i])/(anchors[i+1]-anchors[i]);
+    return anchors.length-1;
+  }
+  measure();
+  addEventListener('load', measure);
+  let progTarget = 0, progSmooth = 0;
+
+  /* ---------------- INTERACTION ----------------
+     Hover a node and it names the real agent and its real cron line.
+     This is what turns a pretty object into something a recruiter can
+     interrogate - the claim becomes checkable in the hero itself. */
+  const label = document.getElementById('nlabel');
+  const ray = new THREE.Raycaster();
+  ray.params.Mesh = ray.params.Mesh || {};
+  const ndc = new THREE.Vector2(-10,-10);
+  let hoverIdx = -1, mx = 0, my = 0;   // mx/my also drive the parallax
+
+  canvas.parentElement.addEventListener('pointermove', e => {
+    const r = canvas.getBoundingClientRect();
+    ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+    ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    mx = ndc.x; my = ndc.y;
+    ray.setFromCamera(ndc, cam);
+    const hit = ray.intersectObject(nodes, false)[0];
+    hoverIdx = hit ? hit.instanceId : -1;
+    if (hoverIdx >= 0){
+      const n = nodePos[hoverIdx];
+      label.innerHTML = n.name + '<span style="color:var(--mute)">  ' + n.cron + '</span>';
+      label.style.left = (e.clientX - r.left) + 'px';
+      label.style.top  = (e.clientY - r.top)  + 'px';
+      label.style.opacity = 1;
+      canvas.style.cursor = 'crosshair';
+    } else {
+      label.style.opacity = 0;
+      canvas.style.cursor = 'default';
+    }
+  });
+  canvas.parentElement.addEventListener('pointerleave', () => {
+    hoverIdx = -1; label.style.opacity = 0; mx = my = 0;
+  });
+
+  /* =================================================================
+     THE MOTION, CONSOLIDATED - same treatment as the material.
+
+     BASE_YAW / BASE_PITCH are the orientation the mesh was tuned to: the
+     left-lateral three-quarter where the gyri read.
+
+     Three defects fixed here, and the first is the SAME layering pattern
+     as the colour bug - a later addition quietly bypassing an earlier
+     one's contract:
+
+     1. prefers-reduced-motion was VIOLATED. `if(!reduce)` guarded the
+        rotation, and the uHead line guarded the signal - but the node
+        swell, added later in Phase 3, sat outside both guards and ran
+        unconditionally. Under reduced-motion all 26 nodes still pulsed
+        between 1x and 2.7x scale, forever. The guard now wraps the whole
+        animated state, and reduced-motion renders one settled frame.
+
+     2. The easing was FRAME-RATE DEPENDENT. `* 0.045` per frame is not
+        delta-normalised, so on a 120Hz display the brain eased toward the
+        pointer twice as fast as on 60Hz, and half as fast in a throttled
+        tab. "Weight and inertia, not float-and-bob" was the whole point,
+        and the weight changed with the monitor. Now a real time constant:
+        1 - exp(-dt/tau), tau chosen to match the old 60Hz feel exactly.
+
+     3. visibilitychange could run TWO RAF chains at once. It scheduled a
+        new frame on every visible event without checking whether one was
+        already queued; two chains both call render() and both reschedule.
+        Guarded with a frame id.
+
+     Plus Phase 3 item 7, specced and never built: the nodes now light in
+     CRON ORDER over the first few seconds, so the piece explains itself
+     before anyone scrolls. The tracts fade in behind them.
+     ================================================================= */
+  const BASE_YAW = -1.75, BASE_PITCH = -0.10;
+  const MOTION = {
+    dayPeriod:    14,     // seconds per simulated day
+    swayAmp:      0.16,   // rad, +/- ~9 degrees - never a full spin
+    swayPeriod:   57,     // seconds
+    parallaxYaw:  0.30, parallaxPitch: 0.16,
+    easeTau:      0.36,   // seconds; matches the old 0.045-per-frame at 60Hz
+    nodeSwell:    1.7, nodeSharp: 900,
+    hoverScale:   2.3,
+    scrollLambda: 5.2,    // how hard the camera chases the scroll anchor
+    introDur:     3.2,    // the intro: nodes light in cron order
+    introStagger: 0.85,   // how much of the intro is spent staggering
+    introRise:    0.18,   // how long one node takes to arrive
+  };
+
+  let t0=performance.now(), last=t0, running=true, rafId=0;
+  let tiltX=0, yaw=BASE_YAW;
+
+  document.addEventListener('visibilitychange',()=>{
+    running = !document.hidden;
+    // re-base the clock so a long hide does not teleport the day, and only
+    // ever keep ONE chain alive
+    if (running){ last = performance.now(); if(!rafId) rafId = requestAnimationFrame(tick); }
+  });
+
+  const smooth = x => { x = Math.min(1, Math.max(0, x)); return x*x*(3-2*x); };
+
+  function tick(){
+    rafId = 0;
+    if(!running) return;
+    const now = performance.now(), el = (now-t0)/1000;
+    // clamped so a hidden tab or a long frame cannot produce a jump
+    const dt = Math.min(0.05, Math.max(0, (now-last)/1000)); last = now;
+
+    /* Everything time-varying lives inside this guard now. Under
+       reduced-motion the brain holds its tuned orientation, the signal
+       rests, and the nodes sit at their settled size. */
+    /* the camera is conducted by scroll; the OBJECT keeps its own clock.
+       Under reduced motion the shot is taken exactly, with no smoothing and
+       no sway - the reader still gets the composed frame for their chapter. */
+    progTarget = progressFor(scrollY);
+    if (reduce){
+      progSmooth = progTarget;
+    } else {
+      progSmooth += (progTarget - progSmooth) * (1 - Math.exp(-MOTION.scrollLambda * dt));
+    }
+    applyCamera(progSmooth);
+
+    if(!reduce){
+      const k = 1 - Math.exp(-dt / MOTION.easeTau);   // frame-rate independent
+      yaw = BASE_YAW + Math.sin(el * (2*Math.PI/MOTION.swayPeriod)) * MOTION.swayAmp;
+      pivot.rotation.y += ((yaw + mx*MOTION.parallaxYaw) - pivot.rotation.y) * k;
+      tiltX += ((-my*MOTION.parallaxPitch) - tiltX) * k;
+      pivot.rotation.x = BASE_PITCH + tiltX;
+    }
+
+    /* THE SIGNAL. uHead sweeps 0->1 over one simulated day. Because the
+       tracts were built in real time-of-day order, the pulse arrives at
+       each node when that agent's turn in the day comes round. */
+    const dayPos = reduce ? 0 : (el / MOTION.dayPeriod) % 1;
+    /* NOT clamped to 1. The last-ranked node needs the progress to reach
+       introStagger + introRise = 1.03 before its `born` term saturates; if
+       this saturated at 1.0 it would sit at 93% scale forever. */
+    const introP = reduce ? 2 : (el / MOTION.introDur);
+    const shader = tractMat.userData.shader;
+    if (shader){
+      shader.uniforms.uHead.value  = dayPos;
+      // tracts arrive after the nodes they connect
+      shader.uniforms.uIntro.value = reduce ? 1 : smooth((el - MOTION.introDur*0.55) / 1.6);
+    }
+
+    for (let i=0;i<AGENTS.length;i++){
+      const rank = RANK[i];   // precomputed; this was an O(n^2) findIndex per frame
+      // the intro: each node arrives at its own place in the cron order
+      const born = smooth((introP - rank*MOTION.introStagger) / MOTION.introRise);
+      let d = Math.abs(dayPos - rank); d = Math.min(d, 1-d);
+      let s = 1 + (reduce ? 0 : Math.exp(-d*d*MOTION.nodeSharp) * MOTION.nodeSwell);
+      if (i === hoverIdx) s = Math.max(s, MOTION.hoverScale);
+      dummy.position.copy(nodePos[i].p); dummy.scale.setScalar(s * born);
+      dummy.updateMatrix(); nodes.setMatrixAt(i,dummy.matrix);
+    }
+    nodes.instanceMatrix.needsUpdate=true;
+    renderer.render(scene,cam);
+
+    /* Reduced motion still has to answer the scroll - the camera is how the
+       page is composed, not decoration - but it must not run a loop. So the
+       loop stops, and scrolling requests exactly one frame, which takes the
+       chapter's shot directly with no smoothing. */
+    if (reduce && el > 0.2) return;
+    rafId = requestAnimationFrame(tick);
+  }
+  rafId = requestAnimationFrame(tick);
+
+  const requestFrame = ()=>{ if(!rafId && running) rafId = requestAnimationFrame(tick); };
+  addEventListener('scroll', ()=>{ if (reduce) requestFrame(); }, {passive:true});
+}
+
+/* ============================================================
+   DEMO 1 - Brian OS: the day, interactive.
+   Same real data as the hero, a different view of it. Hover any mark
+   to name the agent and read its actual cron line.
+   ============================================================ */
+(function(){
+  const c=document.getElementById('clock'); if(!c) return;
+  const ctx=c.getContext('2d');
+  const ro=document.getElementById('clock-readout');
+  // was a second, independent copy of the classifier. Now one shared function.
+  const CLS = cron => { const s = scheduleClass(cron); return {k:s.k, c:s.hex}; };
+  let marks=[];
+
+  function draw(){
+    const w=c.clientWidth,h=c.clientHeight,d=Math.min(devicePixelRatio||1,2);
+    c.width=w*d;c.height=h*d; ctx.setTransform(d,0,0,d,0,0);
+    ctx.clearRect(0,0,w,h);
+    const cx=w/2, cy=h/2, R=Math.min(w,h)*0.34;
+    marks=[];
+
+    ctx.strokeStyle=PALETTE.edge; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.stroke();
+    ctx.font='400 9.5px PlexMono,monospace'; ctx.fillStyle=PALETTE.mute; ctx.textAlign='center';
+    for(let hh=0;hh<24;hh+=3){
+      const ang=(hh/24)*Math.PI*2-Math.PI/2;
+      ctx.beginPath();
+      ctx.moveTo(cx+Math.cos(ang)*(R-4),cy+Math.sin(ang)*(R-4));
+      ctx.lineTo(cx+Math.cos(ang)*R,cy+Math.sin(ang)*R);
+      ctx.strokeStyle='#2d333d'; ctx.stroke();
+      if(hh%6===0) ctx.fillText(String(hh).padStart(2,'0'),
+        cx+Math.cos(ang)*(R+15),cy+Math.sin(ang)*(R+15)+3);
+    }
+
+    AGENTS.forEach(a=>{
+      const p=a.cron.split(/\s+/); const mi=parseInt(p[0])||0;
+      const hrRaw=p[1]; const every=hrRaw.includes('*');
+      const hours = every
+        ? (hrRaw==='*' ? [0,3,6,9,12,15,18,21] : [0,4,8,12,16,20])
+        : hrRaw.split(',').map(Number);
+      const cl=CLS(a.cron);
+      hours.forEach(H2=>{
+        const ang=((H2+mi/60)/24)*Math.PI*2-Math.PI/2;
+        const x1=cx+Math.cos(ang)*(R-11), y1=cy+Math.sin(ang)*(R-11);
+        const x2=cx+Math.cos(ang)*(R+7),  y2=cy+Math.sin(ang)*(R+7);
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+        ctx.strokeStyle=cl.c; ctx.lineWidth=2.2; ctx.globalAlpha=.92; ctx.stroke();
+        ctx.globalAlpha=1;
+        marks.push({x:(x1+x2)/2,y:(y1+y2)/2,name:a.n,cron:a.cron,cls:cl.k,
+                    t:String(H2).padStart(2,'0')+':'+String(mi).padStart(2,'0')});
+      });
+    });
+
+    /* the 06:40-07:00 cluster is the story this dial tells - annotate it */
+    const ca=((6+50/60)/24)*Math.PI*2-Math.PI/2;
+    ctx.strokeStyle=PALETTE.cyan; ctx.globalAlpha=.34; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(cx,cy,R+13,ca-0.17,ca+0.17); ctx.stroke(); ctx.globalAlpha=1;
+    ctx.fillStyle=PALETTE.cyan; ctx.font='400 9.5px PlexMono,monospace'; ctx.textAlign='left';
+    ctx.fillText('06:40-07:00', cx+Math.cos(ca)*(R+27)-8, cy+Math.sin(ca)*(R+27));
+
+    const now=new Date(), na=((now.getHours()+now.getMinutes()/60)/24)*Math.PI*2-Math.PI/2;
+    ctx.strokeStyle='#eaf2f8'; ctx.lineWidth=1.2; ctx.globalAlpha=.8;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(na)*(R-14),cy+Math.sin(na)*(R-14));
+    ctx.stroke(); ctx.globalAlpha=1;
+
+    ctx.textAlign='center';
+    ctx.fillStyle='#eaf2f8'; ctx.font='500 26px PlexMono,monospace';
+    ctx.fillText(String(AGENTS.length||26),cx,cy+2);
+    ctx.fillStyle=PALETTE.mute; ctx.font='400 9px PlexMono,monospace';
+    ctx.fillText('SCHEDULED',cx,cy+16);
+  }
+
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
+    let best=null,bd=1e9;
+    for(const m of marks){ const dd=(m.x-mx)*(m.x-mx)+(m.y-my)*(m.y-my); if(dd<bd){bd=dd;best=m;} }
+    if(best && bd<460){
+      ro.innerHTML='<b>'+best.name+'</b><br>'+best.t+' &middot; '+best.cls+
+                   '<br><span style="color:'+PALETTE.mute+'">'+best.cron+'</span>';
+      ro.classList.add('on');
+    } else ro.classList.remove('on');
+  });
+  c.addEventListener('mouseleave',()=>ro.classList.remove('on'));
+
+  draw(); addEventListener('resize',draw); setInterval(draw,30000);
+})();
+
+/* ============================================================
+   DEMO 2 - Squares: poster frame, then the REAL app on click.
+   Zero third-party requests until the visitor asks for one.
+   ============================================================ */
+(function(){
+  const c=document.getElementById('grid');
+  if(c){
+    const ctx=c.getContext('2d');
+    function draw(){
+      const w=c.clientWidth,h=c.clientHeight,d=Math.min(devicePixelRatio||1,2);
+      c.width=w*d;c.height=h*d;ctx.setTransform(d,0,0,d,0,0); ctx.clearRect(0,0,w,h);
+      const S=Math.min(w,h)*0.66, x0=(w-S)/2, y0=(h-S)/2, cell=S/10;
+      for(let r=0;r<10;r++)for(let q=0;q<10;q++){
+        ctx.fillStyle='#15181d';
+        ctx.fillRect(x0+q*cell+1,y0+r*cell+1,cell-2,cell-2);
+      }
+      ctx.strokeStyle='#2d333d'; ctx.lineWidth=1; ctx.strokeRect(x0,y0,S,S);
+    }
+    draw(); addEventListener('resize',draw);
+  }
+  const btn=document.getElementById('squares-load');
+  if(btn) btn.addEventListener('click',()=>{
+    const host=document.getElementById('squares-demo');
+    const f=document.createElement('iframe');
+    f.src='https://fam-super-bowl-squares-2026.vercel.app';
+    f.loading='lazy'; f.title='Super Bowl LX Squares - live app';
+    f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms');
+    btn.remove(); host.appendChild(f);
+    host.querySelector('.cap').textContent='live app - running in this frame';
+  });
+})();
+
+/* ============================================================
+   DEMO 3 - BoomBox: the durable / transient split, explained.
+   This is the actual interesting decision in the project, so the
+   diagram draws the DIVIDING LINE rather than three anonymous boxes.
+   ============================================================ */
+(function(){
+  const c=document.getElementById('arch'); if(!c) return;
+  const ctx=c.getContext('2d'); let t=0, run=true;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.addEventListener('visibilitychange',()=>{run=!document.hidden; if(run)loop();});
+  if(!ctx.roundRect) ctx.roundRect=function(x,y,w,h){this.rect(x,y,w,h);return this;};
+
+  function box(x,y,w,h,label,sub,col){
+    ctx.fillStyle='#15181d'; ctx.strokeStyle=col; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.roundRect(x,y,w,h,3); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=col; ctx.font='500 11.5px PlexMono,monospace'; ctx.textAlign='center';
+    ctx.fillText(label,x+w/2,y+h/2-1);
+    if(sub){ ctx.fillStyle=PALETTE.mute; ctx.font='400 9.5px PlexMono,monospace';
+             ctx.fillText(sub,x+w/2,y+h/2+13); }
+  }
+
+  function loop(){
+    if(!run) return;
+    const w=c.clientWidth,h=c.clientHeight,d=Math.min(devicePixelRatio||1,2);
+    c.width=w*d;c.height=h*d;ctx.setTransform(d,0,0,d,0,0); ctx.clearRect(0,0,w,h);
+    const BW=Math.min(w*0.62,196), cx=w/2, bx=cx-BW/2;
+    const yTop=h*0.12, yMid=h*0.43, yBot=h*0.74, BH=40;
+    const divide=(yMid+BH+yBot)/2;
+
+    ctx.strokeStyle='#2d333d'; ctx.setLineDash([3,4]); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(w*0.05,divide); ctx.lineTo(w*0.95,divide); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.textAlign='left'; ctx.font='400 9px PlexMono,monospace';
+    ctx.fillStyle=PALETTE.amber; ctx.fillText('TRANSIENT - dies with the session', w*0.05, divide-7);
+    ctx.fillStyle=PALETTE.cyan; ctx.fillText('DURABLE - survives a restart',      w*0.05, divide+14);
+
+    ctx.strokeStyle='#2d333d'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(cx,yTop+BH); ctx.lineTo(cx,yMid); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx,yMid+BH); ctx.lineTo(cx,yBot); ctx.stroke();
+
+    if(!reduce){
+      const p=(t%150)/150;
+      ctx.fillStyle=PALETTE.amber;
+      ctx.beginPath(); ctx.arc(cx, yTop+BH+(yMid-yTop-BH)*p, 3.2, 0, 7); ctx.fill();
+      if(p>0.55){
+        const q=(p-0.55)/0.45;
+        ctx.fillStyle=PALETTE.cyan;
+        ctx.beginPath(); ctx.arc(cx, yMid+BH+(yBot-yMid-BH)*q, 3.2, 0, 7); ctx.fill();
+      }
+    }
+
+    box(bx,yTop,BW,BH,'clients','listening together','#9db2c6');
+    box(bx,yMid,BW,BH,'WebSocket + Redis','playback position',PALETTE.amber);
+    box(bx,yBot,BW,BH,'Postgres','queue, users, rooms',PALETTE.cyan);
+
+    t++; requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ============================================================
+   HEADING CHOREOGRAPHY - words rise as their section arrives.
+
+   Built with IntersectionObserver + CSS, NOT GSAP. GSAP is vendored
+   and now free, and the skill library recommends it - but it is
+   116 KB to do what one transition and one observer already do, on
+   a page whose whole architecture is zero-dependency. Adding a
+   library because a playbook names it is how the vendor folder got
+   to 5 MB. If a timeline ever needs orchestrating, revisit it then.
+
+   NO-JS SAFETY BY CONSTRUCTION: the base stylesheet hides nothing.
+   Headings are plain text in the HTML and fully visible; the hidden
+   state only ever applies to spans this script creates. So a page
+   with JS disabled cannot render a blank heading - the failure mode
+   a previous version actually shipped.
+
+   Under reduced motion the split does not happen at all: the text is
+   simply left alone, which is the final state, rendered immediately.
+   ============================================================ */
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+
+  const targets = document.querySelectorAll('h1, .sec-h h2, footer h2');
+
+  targets.forEach(h => {
+    // Split only TEXT nodes, so <em>, <br> and any inline markup survive
+    // intact. Never split a heading containing a link - none here do, and
+    // splitting one would break its accessible name.
+    if (h.querySelector('a')) return;
+    const walk = document.createTreeWalker(h, NodeFilter.SHOW_TEXT);
+    const texts = [];
+    while (walk.nextNode()) texts.push(walk.currentNode);
+
+    texts.forEach(node => {
+      if (!node.nodeValue.trim()) return;
+      const frag = document.createDocumentFragment();
+      node.nodeValue.split(/(\s+)/).forEach(tok => {
+        if (!tok.trim()) { frag.appendChild(document.createTextNode(tok)); return; }
+        const s = document.createElement('span');
+        s.className = 'rw';
+        s.textContent = tok;
+        frag.appendChild(s);
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+  });
+
+  const reveal = (el, stagger)=>{
+    el.querySelectorAll('.rw').forEach((w,i)=>{
+      w.style.transitionDelay = (stagger ? i*0.045 : 0)+'s';
+    });
+    el.classList.add('rw-in');
+  };
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      /* `isIntersecting` alone is NOT enough, and this was a real bug caught
+         in testing: jump the scroll position past a heading - an anchor link,
+         a restored scroll position, a fast flick - and the observer never
+         sees it intersect, so its words stay at opacity 0 FOREVER. An
+         invisible heading is far worse than an unanimated one. Anything
+         already above the viewport is revealed immediately, without the
+         stagger, because its entrance has already been missed. */
+      const passed = e.boundingClientRect.top < 0;
+      if (!e.isIntersecting && !passed) return;
+      reveal(e.target, e.isIntersecting);
+      io.unobserve(e.target);        // reveal once, never replay
+    });
+  }, {threshold:0.25, rootMargin:'0px 0px -8% 0px'});
+
+  targets.forEach(h => { if (h.querySelector('.rw')) io.observe(h); });
+})();
+</script>
+</html>

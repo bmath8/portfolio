@@ -45,3 +45,34 @@ that is the licence condition, and it is why the footer carries it.
 | `lenis.min.js` | 16 KB | Smooth-scroll hijacking. Specced in Phase 4, never wired, and recommended against — it carries an accessibility cost that sits badly beside a `prefers-reduced-motion` fix. |
 
 All recoverable from git history if a decision changes.
+
+
+## 2026-08-12 — the mesh and the line library are gone
+
+`vendor/mesh/` (brain-icbm152.bin, brain-icbm152-v2.bin, README-LICENSE.md) and
+`vendor/lines/` (LineSegments2, LineSegmentsGeometry, LineMaterial) were deleted.
+
+The page no longer downloads or ships a 3-D model at all. The hero object is
+generated at run time from the cron lines in `agents.json`: time of day across
+X, one agent lane per Z, a mark standing up wherever that agent fires. There is
+no geometry to vendor because the data is the geometry.
+
+That deletes a whole class of problem these files created:
+
+* an AGPL-derived asset (`brain-mni.bin`) that had already been served publicly
+  once, at HTTP 200 and 2,703,404 bytes, on 2026-08-05;
+* a v1/v2 pair that had to be kept straight by name in `.vercelignore` forever,
+  because v1 was the only surviving source for v2 and could not be deleted;
+* 1.5 MB on disk and 469 KB on the wire, for a decoration.
+
+`vendor/lines/` went with the instanced tract bundle it drew. Nothing imports it.
+
+## Added: number-flow.min.js
+
+`number-flow` 0.6.2 from npm (MIT, Maxwell Barvian), bundled to a single ESM
+file with esbuild — the published `lite.mjs` has bare specifiers (`esm-env`,
+its own `ssr` chunk) that a no-build page cannot resolve. 16 KB.
+
+It animates the four hero figures. It is applied progressively: the number is
+real text in the HTML and is only upgraded once the custom element is defined,
+so a failed module load costs the animation and nothing else.

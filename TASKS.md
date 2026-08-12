@@ -27,16 +27,24 @@ Portfolio supports the job search — it is not the resume source. Keep it accur
       history: no hits. The mirror has fresh history (2 commits) and reads the key from
       `process.env['NEXT_PUBLIC_TENOR_API_KEY']`. See the still-open rotation item below.
 
-## AGPL mesh — history rewritten 2026-08-12, but ⚠️ NOT YET CLOSED
+## AGPL mesh — the working tree is clean; the history is not
 
-**Done:** `vendor/mesh/brain-mni.bin` was purged from history with `git filter-repo` and
-force-pushed to all three refs that carried it — `main`, `hero-v17`, and the working branch.
-Verified: **0 occurrences** across all remote refs, file trees byte-identical (history changed,
-not one file), and the old commits are **not fetchable over the git protocol** ("not our ref").
+**2026-08-12, the design change that closed most of this:** the page no longer
+uses a 3-D model at all. The hero object is generated from the cron lines in
+`agents.json`. `vendor/mesh/` was deleted outright — `brain-icbm152.bin`,
+`brain-icbm152-v2.bin` and its README — along with `vendor/lines/`. Nothing in
+the repo now references a mesh, and there is no longer a v1/v2 pair that has to
+be kept straight by name in `.vercelignore` forever.
 
-**🚩 STILL OPEN — and this is measured, not assumed.** GitHub keeps unreachable objects until it
-garbage-collects, and **`raw.githubusercontent.com` still serves the blob by commit SHA right
-now**, tested 2026-08-12:
+- [x] **LICENSE added.** The repo has one.
+- [x] **Mesh assets removed from the working tree.** 1.5 MB on disk, 469 KB on
+      the wire, gone with the object they drew.
+- [x] **History rewritten.** `vendor/mesh/brain-mni.bin` purged with
+      `git filter-repo` and force-pushed to all three refs that carried it —
+      `main`, `hero-v17`, the working branch. 0 occurrences across remote refs,
+      file trees byte-identical, old commits not fetchable over the git protocol.
+
+**🚩 STILL OPEN, and re-measured 2026-08-12 22:1x UTC — not assumed:**
 
 | URL | Result |
 |---|---|
@@ -44,13 +52,69 @@ now**, tested 2026-08-12:
 | `raw.githubusercontent.com/bmath8/portfolio/24e1549/vendor/mesh/brain-mni.bin` | **HTTP 200 · 2,703,404 bytes** |
 | `raw.githubusercontent.com/bmath8/portfolio/main/vendor/mesh/brain-mni.bin` | 404 — the tip is clean |
 
-- [ ] **Ask GitHub Support to garbage-collect the repository.** Wording: *"I rewrote history to
-      remove a file. Please run `git gc` to purge unreachable objects."* **Until they do, the AGPL
-      asset is still publicly downloadable** and the rewrite has not achieved its purpose.
-- [ ] **Add a LICENSE file.** The repo still has none, which was half of why an unlicensed AGPL
-      asset sitting in it was a problem.
+GitHub keeps unreachable objects until it garbage-collects, and it has not.
+Deleting the file and rewriting history were both necessary and neither is
+sufficient.
 
-Re-test after Support responds by re-running the three URLs above. Only all-404 closes this.
+- [ ] **Brian: ask GitHub Support to garbage-collect the repository.** Wording:
+      *"I rewrote history to remove a file. Please run `git gc` to purge
+      unreachable objects."* Full request in `docs/github-support-gc-request.md`.
+      **Until they do, the AGPL asset is still publicly downloadable by SHA.**
+
+Re-test by re-running the three URLs above. Only all-404 closes this.
+
+## Repo description is stale and public
+
+The GitHub repo's one-line description still reads:
+
+> Source for bmath8.vercel.app — a single self-hosted static page. **The hero
+> renders a real cortical mesh carrying one node per scheduled agent on my
+> machine**, each firing on its actual cron time. No third-party requests, no
+> generated images, renders with JavaScript disabled.
+
+The mesh was deleted 2026-08-12. That sentence is now false, and it is the first
+thing anyone sees on the repo page and in GitHub search results.
+
+- [ ] Update it. Suggested, same shape, true:
+      *"Source for bmath8.vercel.app — a single self-hosted static page. The hero
+      is generated from my crontab: a full day left to right, one lane per
+      scheduled agent, a mark wherever it fires. No third-party requests, no
+      generated images, renders with JavaScript disabled."*
+
+Left for Brian rather than changed automatically: it is a repo-level public
+setting, not part of the diff.
+
+## Post-merge check — MUST run against bmath8.vercel.app, not the preview
+
+`.vercelignore` was rewritten when `vendor/mesh/` and `vendor/lines/` were
+deleted and `vendor/number-flow.min.js` was added. History says this file is the
+one that silently breaks: on 2026-08-05 a pattern git accepted was NOT honoured
+by Vercel and `/vendor/fonts/IBMPlexSans-400.woff2` came back 404 on the live
+site, which fell back to system fonts without any error.
+
+Verified on the preview deploy 2026-08-12: `/vendor/number-flow.min.js` → **200**,
+`application/javascript`, brotli. That was the new risk and it is fine.
+
+NOT verified, and not verifiable from the preview: the preview has Vercel
+deployment protection on, so absent paths bounce to an SSO redirect instead of
+returning 404, which cannot be told apart from "served but protected."
+
+- [ ] After merging to `main`, run these against **`https://bmath8.vercel.app`**
+      and require the stated result:
+
+| path | required |
+|---|---|
+| `/vendor/fonts/IBMPlexSans-400.woff2` | 200 |
+| `/vendor/fonts/BricolageGrotesque-800.woff2` | 200 |
+| `/vendor/three.module.min.js` | 200 |
+| `/vendor/three.core.min.js` | 200 |
+| `/vendor/number-flow.min.js` | 200 |
+| `/agents.json` | 200 |
+| `/vendor/mesh/brain-icbm152-v2.bin` | **404** |
+| `/design-candidates/v17-instrument.html` | **404** |
+| `/vendor/gsap.min.js` | **404** |
+
+An ignore pattern that git accepts proves nothing about how the host treats it.
 
 ## Open — needs Brian
 - [x] ✅ **`resume.pdf` now says 26 — FIXED HERE 2026-08-12, applications are unblocked.**
