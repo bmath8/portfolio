@@ -27,6 +27,31 @@ Portfolio supports the job search — it is not the resume source. Keep it accur
       history: no hits. The mirror has fresh history (2 commits) and reads the key from
       `process.env['NEXT_PUBLIC_TENOR_API_KEY']`. See the still-open rotation item below.
 
+## AGPL mesh — history rewritten 2026-08-12, but ⚠️ NOT YET CLOSED
+
+**Done:** `vendor/mesh/brain-mni.bin` was purged from history with `git filter-repo` and
+force-pushed to all three refs that carried it — `main`, `hero-v17`, and the working branch.
+Verified: **0 occurrences** across all remote refs, file trees byte-identical (history changed,
+not one file), and the old commits are **not fetchable over the git protocol** ("not our ref").
+
+**🚩 STILL OPEN — and this is measured, not assumed.** GitHub keeps unreachable objects until it
+garbage-collects, and **`raw.githubusercontent.com` still serves the blob by commit SHA right
+now**, tested 2026-08-12:
+
+| URL | Result |
+|---|---|
+| `raw.githubusercontent.com/bmath8/portfolio/cd2746e/vendor/mesh/brain-mni.bin` | **HTTP 200 · 2,703,404 bytes** |
+| `raw.githubusercontent.com/bmath8/portfolio/24e1549/vendor/mesh/brain-mni.bin` | **HTTP 200 · 2,703,404 bytes** |
+| `raw.githubusercontent.com/bmath8/portfolio/main/vendor/mesh/brain-mni.bin` | 404 — the tip is clean |
+
+- [ ] **Ask GitHub Support to garbage-collect the repository.** Wording: *"I rewrote history to
+      remove a file. Please run `git gc` to purge unreachable objects."* **Until they do, the AGPL
+      asset is still publicly downloadable** and the rewrite has not achieved its purpose.
+- [ ] **Add a LICENSE file.** The repo still has none, which was half of why an unlicensed AGPL
+      asset sitting in it was a problem.
+
+Re-test after Support responds by re-running the three URLs above. Only all-404 closes this.
+
 ## Open — needs Brian
 - [ ] 🚩 **BLOCKING BEFORE SENDING: `resume.pdf` says "25 scheduled agents." The verified count
       is 26.** `agents.json` lists 26, `hermes cron list` returned 26 on 2026-08-05, and the live
