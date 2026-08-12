@@ -1,6 +1,270 @@
 # Current Session
 
-_Updated 2026-08-06 (second entry: the load-time work)._
+_Updated 2026-08-10 (application-readiness audit). Prior entry: 2026-08-06, the load-time work._
+
+---
+
+# 2026-08-10 (second pass) — the rendered audit, after the first pass was called out as shallow
+
+**⚠️ Read this before trusting the entry below it.** The first pass this session declared the
+site "accurate, internally consistent, and sendable" on the strength of a text extract, a
+placeholder grep, and a fact cross-check. It never opened the page in a browser. Brian's
+response was that the portfolio is not ready and the redesign is not finished. He was right.
+
+**The lesson, and it is the same one this file already records twice** (the 2.86 s cold-CDN
+figure; the AGPL fix that only ever covered Vercel): *checking the artifact is not the same as
+checking the thing the artifact describes.* Grepping HTML says nothing about what renders. The
+page was rendered in Chromium at 16 viewport widths this pass, and three real defects fell out
+immediately — one of them severe and on the device most recruiters use.
+
+## Defects found by rendering, all fixed
+
+**1 · The Experience section was broken on every phone.** `.row` is
+`grid-template-columns:minmax(0,240px) minmax(0,1fr)` and **no breakpoint ever stacked it**. At
+390px: 390 − 64 (`.wrap`) − 2 (`.exp` border) − 56 (`.row` padding) = 268px available, minus the
+fixed 240px role column, minus the 24px gap = **a 4-pixel description column.** All three job
+descriptions rendered one character per line. That is what made the mobile page 7,709px tall.
+Stacked below 700px → **7,709 → 6,647px**. The hero stacks at 940, project cards at 880, the
+contact bar at 620; Experience had simply never been given a rule.
+
+**2 · 25 WCAG AA contrast failures per viewport, one root cause.** `--mute:#6b7581` was
+**3.80:1 on `--panel`, 4.10:1 on `--deep`, 4.26:1 on `--void`** against 4.5:1 required at those
+sizes. It carried the metric labels, every verification source line, the demo captions, the job
+dates — and the footer's ICBM152 licence notice, which the licence requires to travel with the
+mesh. Lifted to `#7d8794`: same hue, smallest move that clears the bar, 4.88:1 worst case.
+**Desktop and mobile now measure 0 failures.** Not used on `.band-lift`, which overrides.
+
+**3 · Two canvases carrying real information were invisible to screen readers.** The Brian OS
+dial and the BoomBox diagram had no label. Given `role="img"` and a description of what each
+actually shows. (The hero canvas was already labelled well.)
+
+## The cyan `.thread` is now CUT, closing a Phase 4 leftover
+
+The plan left it as *"too subtle to see — raise or cut it."* It was never what it was specced to
+be: scoped to the Selected work section rather than "the length of the page", sitting behind
+opaque cards at `z-index:0`. Raised to `.55` alpha to test, it lands a few px off the project
+card's own column divider and **reads as a misaligned duplicate of it — a bug, not a motif.**
+Raising is worse than cutting, so it is cut. A page-length version would also have to cross
+`.band-lift`, where a cyan hairline on near-white belongs to nothing.
+
+## What was checked and found genuinely fine — do not re-litigate these
+
+- Click-to-load Squares iframe: **zero third-party requests before the click**, measured; on
+  click it injects the real app with `sandbox` and a `title`. The claim holds.
+- JS disabled: **3,867 chars** render. Keyboard focus: real 2px cyan `:focus-visible` ring
+  (an earlier programmatic `.focus()` test reported no outline — that was a false alarm,
+  `:focus-visible` does not match programmatic focus).
+- `prefers-reduced-motion` honoured in **both** CSS and JS. `lang="en"`, clean heading order,
+  no unnamed links, no sub-24px tap targets, 0 console errors, 0 failed requests.
+- **Swept 320 → 1920px:** no horizontal overflow at any width, and after the `.row` fix, no
+  squeezed text at any width. The Experience row was the only instance.
+- The light `.band-lift` is a **deliberate, documented decision** ("one genuinely light surface
+  in the middle of a dark page"). Its hard edges are not a defect to be gradient-ed away —
+  that is approved ground, and rebuilding it is the documented failure mode.
+
+## Still genuinely unfinished in V6-PLAN — Brian's call, not defects
+
+- **Phase 3 item 6** — GSAP master timeline. A refactor of working code, no visible change.
+- ~~**Phase 3 item 7** — staged cron-order intro.~~ **BUILT in v13**, see below.
+- **Phase 4 item 4** — Lenis scroll continuity. Vendored, never wired, and currently excluded
+  from the deploy. Smooth-scroll hijacking is contentious and carries an accessibility cost.
+
+Everything else in the 5-phase plan is done and was confirmed **by rendering it**, not by
+reading a status line.
+
+---
+
+# 2026-08-11 — atmosphere: tried, measured, REVERTED. A negative result worth keeping.
+
+`RESEARCH-2026-08-11.md` ranked atmosphere as the **#1** way to close the gap to Kage — *"Kage
+does not out-engineer us, it out-places us."* I built it into v14: `FogExp2`, a gradient
+backdrop, 220 drifting motes. Then I swept fog density at 0.085 / 0.22 / 0.40 and looked.
+
+**It does not work on this subject, and the reason is structural.** `FogExp2` is
+distance-from-camera. Our whole subject sits inside **~2 units of depth at ~3.6 units out**, so
+fog dims the *entire* mesh near-uniformly rather than separating front from back. It is a global
+darkening. At 0.40 it visibly **undoes the widened value range Phase 1 correctly established** —
+the gyri go back to mush and the cyan rim dominates again, which is precisely the problem the
+v13 consolidation fixed. The backdrop is occluded by the subject. The motes are invisible at
+legible sizes, and when large enough to see they read as dead pixels — including in the
+pulled-back closing chapter, where they had the most room.
+
+**Kage's atmosphere works because its subject sits in a vast scene with enormous empty space.
+Ours fills the hero frame. There is no "away" for atmosphere to happen in.**
+
+Reverted in full — fog, backdrop and motes are all out of v14, verified by grep. The research
+doc's recommendation #1 is struck through in place with the measurements, so the next session
+does not spend the same afternoon on it.
+
+**The discipline point, which is the actual lesson of this whole project:** the reasoning was
+good, the prediction was mine, and it was wrong. Shipping it anyway because it *sounded* right
+is exactly how six redesigns stacked up. A change that cannot be shown to improve anything does
+not go in. Anything in this direction needs a **composition** change first — pulling the camera
+back far enough that there is space to fill — not a fog parameter.
+
+---
+
+# 2026-08-10 (third pass) — `design-candidates/v13-consolidated.html`: the layering, removed
+
+Brian's actual complaint, in his words: *"we kept applying redesigns on top of each other never
+starting from scratch so all the animations colors and everything else was on top of each
+other."* He is right, and the layering is findable in the file. **v13 removes layers rather
+than adding one.** The page's structure, copy, type, camera, mesh and node placement are
+untouched — this is a consolidation, not a sixth redesign.
+
+## The colour bug that proves the pattern
+
+The near-monochrome blue was **retracted 2026-08-05**. The page palette was duly reworked onto
+neutral `#08090b` + accents. **The brain's material never was.** It still carried the exact
+rejected ramp — `#93bcda / #4a7c9b / #1a3450 / #04101d` — and the answer to "it doesn't pop"
+had been to bolt a **cyan fresnel ADD at 0.95** on top. So every pixel was:
+
+> blue matcap → × cavity → × violet mix → **+ cyan rim @0.95**
+
+Four colour operations from three sessions, each compensating for the one before, the rim
+strong enough to dominate the silhouette. That is why it read as a glassy teal object rather
+than a lit anatomical form, and why the accent nodes barely separated from the surface.
+
+**Fixed by rebuilding the base, not adding a fifth layer.** The ramp is now neutral, so the
+brain belongs to the palette by construction and the only saturated things in the hero are the
+*data*. Neutral form, coloured data. The rim drops **0.95 → 0.55**. Phase 1 was right that the
+wide light-to-dark **value** range was the fix — that is kept exactly; only the hue is corrected.
+Every shading value is a named constant in one `SHADE` object.
+
+## Colour had four sources of truth
+
+The schedule-class → accent map existed **four times**: CSS custom properties, `0x` ints for the
+hero nodes, `'#rrggbb'` strings for the dial, and loose literals in the BoomBox diagram. Same
+four colours, three syntaxes, four places to forget one. **CSS is now the only authority**;
+everything reads it through one shared `scheduleClass()`.
+
+## The same pattern in the motion — including a real accessibility bug
+
+**`prefers-reduced-motion` was VIOLATED on the live site.** `if(!reduce)` guarded the rotation
+and the signal, but the **node swell, added later in Phase 3, sat outside both guards** and ran
+unconditionally: all 26 nodes pulsed 1×–2.7× forever. A later layer bypassing an earlier
+layer's contract — the same shape as the colour bug. **Proven, not asserted:** two screenshots
+3.5s apart under `reduced_motion:"reduce"` — current `index.html` **differs**, v13 is
+**byte-identical**. v13 also stops scheduling frames entirely once settled.
+
+**The easing was frame-rate dependent.** `* 0.045` per frame is not delta-normalised, so the
+brain eased toward the pointer ~2× faster on a 120Hz display and half-speed in a throttled tab.
+*"Weight and inertia, not float-and-bob"* was the whole point, and the weight changed with the
+monitor. Now `1 - exp(-dt/tau)`, tau tuned to match the old 60Hz feel exactly.
+
+**`visibilitychange` could run two RAF chains at once** — it scheduled a frame on every visible
+event without checking for one already queued; both chains render and both reschedule. Guarded
+with a frame id, and the clock re-bases so a long hide does not teleport the day.
+
+## Phase 3 item 7 — the cron-order intro, finally built
+
+Nodes now arrive **in the order their cron lines actually fire**, over ~3.3s, with the tracts
+fading in behind them. The first seconds read out the day. Verified by slowing `introDur` to 30s
+in a throwaway copy and filmstripping it: nodes accumulate progressively, and the amber weekly
+agents (16:00–18:00) correctly arrive last.
+
+**One bug caught in that verification:** `intro` was clamped to 1 while the last-ranked node's
+`born` term needs `introStagger + introRise = 1.03` to saturate — so node 26 would have sat at
+**93% scale forever**. Progress is now deliberately unclamped.
+
+## Also removed — vestigial layers of the same kind
+- `dashSize`/`gapSize` on the tract material configured a dash discard that had **already been
+  replaced** by the Gaussian pulse. Configuration for a dead code path.
+- The loop recomputed each node's rank with `order.findIndex()` inside a `forEach` over 26
+  agents: **676 array scans per frame** to look up a constant. Precomputed into `RANK`.
+
+## Status — FOLDED INTO `index.html` (branch only, NOT deployed to production)
+
+Built as a candidate first, per the plan's rule, then folded in so it can be judged in a real
+browser on the **PR preview** rather than from screenshots. `design-candidates/v13-consolidated.html`
+is kept frozen as the record, exactly as `v12-ship.html` was — **`index.html` is the authority.**
+
+**This is on the branch, not `main`.** Pushing to `main` is what triggers the production deploy
+at bmath8.vercel.app, and that remains Brian's call.
+
+The fold changes **only the module script**. Verified byte-identical above line 495 — every line
+of CSS and markup is untouched.
+
+Re-verified after folding:
+
+| Check | Result |
+|---|---|
+| Contrast (desktop / mobile) | **0 / 0** failures |
+| Breakpoint sweep 320→1920px | no overflow, no squeezed text, heights unchanged |
+| **`prefers-reduced-motion`** | **STATIC — was `False` before the fold, now `True`** |
+| Console errors / page errors / failed requests | 0 / 0 / 0 |
+| JS disabled | 3,867 chars render |
+| Third-party requests before the Squares click | **0**, iframe still sandboxed + titled |
+| Page height | 4,019px desktop · 6,647px mobile (unchanged) |
+
+---
+
+# 2026-08-10 (first pass) — Application-readiness audit: docs corrected, one real blocker found
+
+**⚠️ Superseded in part by the entry above: the claim that the site was sendable was wrong.**
+The document corrections below stand; the verdict on `index.html` did not.
+
+**No site code changed in this pass.** `index.html` was checked for accuracy and internal
+consistency: 26 agents and 81 tests agree with `agents.json` in every place they appear, no
+placeholders, no TODOs, the AGPL mesh is gone from the tree, and the ICBM152 licence notice is
+in the footer. All true — and all silent about how the page actually renders. The work in this
+pass was in the *documents around* the site, which had drifted badly enough to be misleading.
+
+## 🚩 The blocker (only Brian can clear it)
+
+**`resume.pdf` says "25 scheduled agents." The verified count is 26.** Confirmed by extracting
+the PDF's text. `agents.json` lists 26 entries, `hermes cron list` returned 26 on 2026-08-05,
+and the live site says 26 in four places. The resume is the single artifact still carrying the
+old number — and it is the one that goes to employers. Fix upstream in `evidence-bank.md`,
+rebuild, re-copy. **Do not hand-edit the PDF.**
+
+## What was verified (rather than assumed)
+
+- **`resume.pdf` is the AI/Full-Stack Developer lane, not Customer Ops.** `INVENTORY.md` claimed
+  it was a copy of `Brian_Mathew_Customer_Ops.pdf`; the extracted headline reads "AI Application
+  Developer · Full-Stack Developer · Junior Software Developer". The open "positioning call" in
+  `TASKS.md` was therefore already resolved developer-forward in both artifacts — a stale item
+  that would have sent a future session re-litigating a settled decision.
+- **The showcase mirrors shipped.** `bmath8/brian-os` and `bmath8/boombox` are public; every
+  case-study link on the live site resolves to public source. `TASKS.md` still listed this as
+  "awaiting per-repo go-ahead."
+- **The Tenor key is not publicly exposed.** Cloned the public `boombox` mirror and scanned
+  *every blob in its history* for `AIza…` and Tenor key patterns: zero hits. The mirror has
+  fresh history (2 commits) and reads the key from `process.env['NEXT_PUBLIC_TENOR_API_KEY']`.
+  Rotation is still worth doing — the key remains in the private `BoomBox-V.5` history — but it
+  is no longer a public-exposure emergency, which is how `TASKS.md` had it framed.
+- **Repo counts were wrong twice over.** 31 repos, 7 public — not "27, only 4 public"
+  (`INVENTORY.md`) and not "8 public" (the 2026-07-30 note). `jobfit` is private now.
+- **The site and the resume no longer feature the same three projects.** AI Job Hunter is off
+  the site but is still the resume's lead bullet — and it has no public mirror, so the resume's
+  strongest project is the one a recruiter cannot open.
+
+## The most dangerous thing found: `AGENTS.md` told agents to destroy the resume
+
+`AGENTS.md` still instructed: *"To change the resume: edit `resume/resume.html`, then re-render
+… `--print-to-pdf=resume.pdf`."* That path has been dead since the 2026-07-29 consolidation —
+following it would regenerate the superseded 5th competing resume system straight over the
+canonical copy, silently reverting whatever the evidence-bank build produced. Chromium is
+available in this container, so this was one plausible instruction-following step away from
+happening. Replaced with the correct upstream build path and an explicit "do not hand-edit."
+
+## Changed this session
+
+| File | Change |
+|---|---|
+| `AGENTS.md` | Killed the resume re-render instruction; documented the real upstream build path |
+| `TASKS.md` | Closed 3 stale items with evidence; added the 25→26 blocker and the `ai-job-hunter` mirror gap |
+| `INVENTORY.md` | Corrected the resume lane, repo counts/visibility, case-study set, and §5 status |
+| `cover-letter-template.md` | Split into two lanes — the existing letter was support-voiced while the resume being sent is developer-voiced |
+
+## The cover-letter mismatch
+
+The template was written entirely in Customer Ops/Support voice ("the same instinct that makes a
+good support engineer", "that's the loop I bring to support work"). Paired with the developer
+resume that actually ships from this repo, the letter argues for a different job than the resume
+does. Added **Lane A · Developer / AI Builder** as the default, kept the original as **Lane B**,
+and put a lane-selection step at the top of the checklist. Lane A cites 26 agents, and the voice
+notes now forbid claiming a live BoomBox deployment the site plainly says doesn't exist.
 
 ---
 
