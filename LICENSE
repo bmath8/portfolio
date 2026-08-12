@@ -1,0 +1,51 @@
+Copyright (c) 2026 Brian Mathew. All rights reserved.
+
+This repository is the source of a personal portfolio at bmath8.vercel.app.
+
+The original work here — the page design, layout, copy, imagery, procedural
+shading and animation code, and the project write-ups — is not licensed for
+reuse or redistribution. You may read it, and you are welcome to learn from it.
+You may not republish it, in whole or in substantial part, as your own site.
+
+This is deliberate rather than an oversight. A portfolio is an identity
+document: its value depends on it belonging to one person. Permissive terms
+would invite exactly the wholesale copying that would undermine it. If you want
+to use something here, ask.
+
+--------------------------------------------------------------------------------
+THIRD-PARTY COMPONENTS
+
+These are covered by their own licences, which travel with them and are NOT
+superseded by the notice above.
+
+1. Cortical surface mesh — vendor/mesh/*.bin
+   Derived from the MNI ICBM152 2009c template.
+   Copyright (C) 1993-2004 Louis Collins, McConnell Brain Imaging Centre,
+   Montreal Neurological Institute, McGill University.
+   Permission granted to use, copy, modify and distribute for any purpose and
+   without fee, provided the copyright notice appears in all copies. That
+   notice is reproduced in the page footer and in vendor/mesh/README-LICENSE.md,
+   and MUST remain there.
+
+2. three.js and its line extras — vendor/three.*.min.js, vendor/lines/*
+   MIT Licence. Copyright (c) 2010-2026 three.js authors.
+
+3. GSAP and ScrollTrigger — vendor/gsap.min.js, vendor/ScrollTrigger.min.js
+   Standard "no charge" GSAP licence; free for this use since v3.13.
+
+4. IBM Plex Sans / IBM Plex Mono — vendor/fonts/
+   SIL Open Font License 1.1. Copyright (c) 2017 IBM Corp.
+
+5. Bricolage Grotesque — vendor/fonts/
+   SIL Open Font License 1.1.
+
+6. Agent skills — .claude/skills/
+   MIT Licence. Copyright (c) 2026 Meng To. Full text in
+   .claude/skills/LICENSE-MengTo-Skills. Vendored as working context and
+   excluded from the deployed site.
+
+--------------------------------------------------------------------------------
+Why this file exists: the repository previously carried an AGPL-3.0 asset with
+no licence file of its own, which made the terms of the whole repository
+ambiguous. That asset was purged from history on 2026-08-12. This file records
+what governs what, so the ambiguity cannot return.

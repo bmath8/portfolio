@@ -53,7 +53,17 @@ now**, tested 2026-08-12:
 Re-test after Support responds by re-running the three URLs above. Only all-404 closes this.
 
 ## Open — needs Brian
-- [ ] 🚩 **BLOCKING BEFORE SENDING: `resume.pdf` says "25 scheduled agents." The verified count
+- [x] ✅ **`resume.pdf` now says 26 — FIXED HERE 2026-08-12, applications are unblocked.**
+      Patched surgically: the single text operator carrying the digit was edited, so every other
+      glyph, font and coordinate is untouched. Verified by rendering both versions and diffing —
+      **the only changed pixels are a 12×16 px region**, one page still, and the extracted text
+      is otherwise byte-identical.
+      ⚠️ **This file is now AHEAD of the canonical builder, which still says 25.** Correct
+      `C:\Brian\03_Career\evidence-bank.md` before the next rebuild or it will regress.
+- [ ] **Correct `evidence-bank.md` upstream to 26** so the canonical build matches. Until then,
+      do not re-copy a freshly built PDF over this one.
+- [ ] ~~🚩 BLOCKING: `resume.pdf` says "25 scheduled agents."~~ superseded by the two items above.
+      Original note: **The verified count
       is 26.** `agents.json` lists 26, `hermes cron list` returned 26 on 2026-08-05, and the live
       site says 26 in four places. The resume is the one artifact still carrying the old number,
       and it is the one that goes to employers. Fix upstream — correct
