@@ -18,61 +18,35 @@ scratchpad/
 .claude/
 
 # ---------------------------------------------------------------------------
-# WHAT THE LIVE index.html ACTUALLY LOADS FROM vendor/  (updated 2026-08-06)
+# WHAT THE LIVE index.html ACTUALLY LOADS FROM vendor/  (updated 2026-08-12)
 #
-# The page changed. It is no longer the static 2026-07-30 re-skin that pulled
-# one stylesheet; it now renders a real cortical mesh with instanced tract
-# lines, so it needs FOUR things from vendor/ that used to be excluded:
+#   vendor/fonts/*.woff2          six self-hosted faces
+#   vendor/three.module.min.js    + vendor/three.core.min.js, which it imports
+#                                 internally -- shipping only the first gives a
+#                                 hard module error
+#   vendor/number-flow.min.js     the four hero figures (npm, bundled to one ESM)
 #
-#   vendor/fonts/*.woff2                  six self-hosted faces
-#   vendor/three.module.min.js            + vendor/three.core.min.js, which it
-#                                         imports internally -- shipping only
-#                                         the first gives a hard module error
-#   vendor/lines/LineSegments2.js         the tract bundle: one instanced draw
-#   vendor/lines/LineSegmentsGeometry.js  call regardless of segment count
-#   vendor/lines/LineMaterial.js
-#   vendor/mesh/brain-icbm152-v2.bin      663 KB, 39,828 verts (BRN2 format)
+# vendor/mesh/ is GONE. The page no longer downloads or ships a 3-D model at
+# all: the hero object is generated from the cron lines in agents.json. That
+# deletes the whole class of problem those files created -- an AGPL asset that
+# had already been served publicly once, a v1/v2 pair that had to be kept
+# straight by name, and 1.5 MB on disk for a decoration.
 #
-# Two rules learned the hard way, both still in force:
+# vendor/lines/* went with the tract bundle it drew; nothing imports it.
 #
-#   1. DO NOT use `vendor/*` + `!vendor/fonts/`. That pattern is correct under
-#      git's matcher (verified) but Vercel did NOT honour the directory
-#      re-include: deployed 2026-08-05, /vendor/fonts/IBMPlexSans-400.woff2
-#      came back 404 and the live site silently fell back to system fonts.
-#      Every exclusion below is therefore EXPLICIT, with no negation to get wrong.
+# ONE RULE, learned the hard way and still in force: DO NOT use `vendor/*` plus
+# a `!vendor/fonts/` re-include. That pattern is correct under git's matcher
+# (verified) but Vercel did NOT honour the directory re-include: deployed
+# 2026-08-05, /vendor/fonts/IBMPlexSans-400.woff2 came back 404 and the live
+# site silently fell back to system fonts. Every exclusion here is therefore
+# EXPLICIT, with no negation to get wrong.
 #
-#   2. vendor/mesh/brain-mni.bin is derived from aces/brainbrowser and is
-#      AGPL-3.0. It was served publicly once already (HTTP 200, 2,703,404
-#      bytes, 2026-08-05). It is superseded by brain-icbm152.bin and nothing
-#      references it. It is excluded BY NAME below -- do not remove that line,
-#      and do not switch this file to a directory-level allow that would let it
-#      back in. Deleting the file outright is the better fix and is pending.
-#
-# Keep this list in sync with the page. After ANY deploy, verify against the
-# deployed URL, not against git: an ignore pattern that git accepts proves
-# nothing about how the host treats it.
+# After ANY deploy, verify against the deployed URL, not against git: an ignore
+# pattern that git accepts proves nothing about how the host treats it.
 # ---------------------------------------------------------------------------
 
-# AGPL asset -- superseded, must never ship
-vendor/mesh/brain-mni.bin
-
-# v1 of the shippable mesh. Superseded 2026-08-06 by brain-icbm152-v2.bin (BRN2:
-# same geometry, 836,324 -> 662,624 on disk, 748,625 -> 469,248 on the wire).
-# Kept on disk ONLY because scratchpad/pack_mesh_v2.py reads it to build v2 --
-# it is the sole surviving source for this mesh, so do not delete it. Excluded
-# by name so the two never both ship.
-vendor/mesh/brain-icbm152.bin
-
-# Vendored but not used by the live page.
-#
-# The 2026-08-11 sweep DELETED the rest of what used to be listed here -- the
-# bloom/bokeh pipeline, the HDR lighting stack, MarchingCubes, the superseded
-# Line2 pair, and lenis -- 2.3 MB of libraries from approaches that had been
-# abandoned and, in the case of bloom, explicitly rejected. Their exclusion
-# lines went with them: an ignore rule for a file that does not exist is just
-# another thing a future session has to work out. See vendor/README.md.
-#
-# GSAP is kept because it became free at v3.13 and is the recommended way to do
-# the DOM choreography this page still hand-rolls. It is excluded until wired.
+# Vendored but not used by the live page. GSAP is kept because it became free at
+# v3.13 and is the recommended way to do the DOM choreography this page still
+# hand-rolls. Excluded until wired.
 vendor/gsap.min.js
 vendor/ScrollTrigger.min.js
