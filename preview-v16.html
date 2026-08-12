@@ -263,6 +263,23 @@
     padding:64px 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
     gap:40px;align-items:center;pointer-events:none}
   .hero-copy{pointer-events:auto}
+
+  /* ---------- THE NAMEPLATE ----------
+     Replaces the one-line hero. The name is the only large moment; the spec
+     block under it is small, monospaced and left-ruled, so the hero reads as
+     an instrument plate rather than a statement. Density carries it, not size.
+     Rules and label columns come from container-lines + framed-grid-layout. */
+  .plate{margin:22px 0 26px;border-top:1px solid var(--edge);max-width:52ch}
+  .plate>div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:18px;
+    padding:9px 0;border-bottom:1px solid var(--hair)}
+  .plate dt{font:500 var(--t-micro)/1.5 PlexMono;color:var(--mute);
+    text-transform:uppercase;letter-spacing:.12em;margin:0}
+  .plate dd{margin:0;font:400 14px/1.5 PlexSans;color:var(--ink2)}
+  .plate dd b{color:var(--ink);font-weight:600}
+  @media(max-width:620px){
+    .plate>div{grid-template-columns:1fr;gap:2px}
+    .plate dt{letter-spacing:.16em}
+  }
   .live{display:inline-flex;align-items:center;gap:9px;padding:6px 12px;border-radius:100px;
     border:1px solid var(--edge);background:rgba(8,9,11,.55);color:var(--ink2);
     font:500 13.5px/1 PlexMono;margin-bottom:26px}
@@ -495,11 +512,36 @@
   <div id="glfail">26 scheduled agents are running on this machine right now.<br>81 tests green.</div>
   <div class="hero-grid">
     <div class="hero-copy">
+      <!-- ============================================================
+           v16 - THE SLOGAN IS GONE.
+
+           "I build systems, then I keep them running." is the single most
+           copied hero pattern on the web and the default every AI reaches
+           for: one bold declarative line, centred weight, a coloured word.
+           Brian: "Hate the one line bold messaging. Everyone does that."
+
+           The technical-wireframe brief says the opposite of a slogan -
+           "heading and explanatory copy offset into a quiet corner",
+           "sparse information labels", "only one or two larger heading
+           moments". So the hero is now a NAMEPLATE: the name is the
+           heading, and everything under it is a spec block - the same
+           form as the plate on the side of an instrument. It states what
+           the machine is instead of asserting what its owner is like.
+
+           Every line is drawn from the page's existing verified facts;
+           nothing new is claimed.
+           ============================================================ -->
       <div class="live"><span class="pip"></span><span id="nextrun">26 agents scheduled on real cron lines</span></div>
-      <h1>I build systems,<br>then I <em>keep them running.</em></h1>
-      <p class="lede">Self-taught developer in New Jersey. That cortex is not decoration —
-        it carries <b>one node for every scheduled agent on my machine</b>, each firing on the cron
-        line it actually runs on. Everything below is code you can open.</p>
+      <h1>Brian Mathew</h1>
+      <dl class="plate">
+        <div><dt>Builds</dt><dd>Python · TypeScript · React/Next · Flask/Node · Postgres · Docker</dd></div>
+        <div><dt>Operates</dt><dd>a 26-agent Windows fleet on real cron lines, local-LLM routed</dd></div>
+        <div><dt>Tests</dt><dd>pytest · Jest/RTL — <b>81/81 green</b>, run 2026-08-05</dd></div>
+        <div><dt>Shipped</dt><dd>3 systems, all three openable below</dd></div>
+        <div><dt>Based</dt><dd>New Jersey — remote, hybrid, on-site or relocation</dd></div>
+      </dl>
+      <p class="lede">The cortex is not decoration: <b>one node per scheduled agent</b>, each
+        firing on the cron line it actually runs on.</p>
       <div class="strip">
         <div class="met c"><div class="v" id="m1">26</div><div class="k">agents live</div></div>
         <div class="met"><div class="v">81<span style="color:var(--mute)">/81</span></div><div class="k">tests green</div></div>
@@ -839,7 +881,7 @@ if (THREE) {
     cavityFloor: 0.32, cavityCeil: 1.06,
     foldTint: [0.90, 0.88, 1.05],     // violet HINT in deepest folds only
     rimPower: 2.4,
-    rimStrength: 0.55,                // was 0.95 against a blue base
+    rimStrength: 0.30,                // was 0.95 against a blue base
   };
 
   const mc=(()=>{ const s=256,c=document.createElement('canvas'); c.width=c.height=s;
@@ -850,8 +892,12 @@ if (THREE) {
     const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
 
   // the rim reads as the cyan accent, taken from the same palette as everything else
-  const rimRGB = (()=>{ const c=new THREE.Color(PALETTE.cyan);
-    return `vec3(${c.r.toFixed(3)},${c.g.toFixed(3)},${c.b.toFixed(3)})`; })();
+  /* The rim goes NEUTRAL in v16. It was the last cyan glow left on the
+     object, and the technical-wireframe brief is explicit: keep the palette
+     almost entirely neutral, and let emphasis come from brightness and line
+     weight rather than colour. A coloured halo on the silhouette is exactly
+     the "filled glossy render" signature the skill tells you to avoid. */
+  const rimRGB = 'vec3(0.86,0.89,0.93)';
   const f = n => n.toFixed(3);
 
   const mat = new THREE.MeshMatcapMaterial({matcap:mc});
@@ -879,7 +925,50 @@ if (THREE) {
   const scene = new THREE.Scene();
   const cam = new THREE.PerspectiveCamera(30,1,.01,60);
   const pivot = new THREE.Group(); scene.add(pivot);
+  /* =================================================================
+     v16 - THE CORTEX BECOMES A WIREFRAME DIAGNOSTIC OBJECT.
+
+     Straight out of the technical-wireframe-info-layout skill, which
+     names our exact problem in its Avoid list: "filled glossy 3D
+     renders that replace the wireframe diagnostic look." That is what
+     the matcap brain was. Every version of this hero has been a prettier
+     glossy render; none of them changed what KIND of object it is.
+
+     The skill's positive instruction is equally specific: build the
+     object from "outlined geometry, edges, ... modular parts", and let
+     emphasis come from "brightness, line weight and spatial placement
+     instead of strong color."
+
+     So: the surface is kept but pushed almost to black, purely as an
+     OCCLUDER - it is what makes the far-side linework disappear, which
+     is the only reason the form reads as solid. The visible object is
+     now EdgesGeometry linework on top of it.
+
+     EdgesGeometry with a threshold angle is the right tool rather than
+     a full wireframe: a full wireframe of 79,644 triangles is ~120k
+     segments of noise, while a thresholded edge pass keeps only where
+     the surface actually turns - which on a cortex is precisely the
+     gyri and sulci. The anatomy draws itself as contour lines.
+     ================================================================= */
+  const WIRE = { threshold: 24, lineOpacity: 0.70, surface: 0.16 };
+
+  // the surface survives only to occlude - darkened hard, and pushed back
+  // in depth so the edge pass sits cleanly on top instead of z-fighting it
+  mat.onBeforeCompile = (orig => s => {
+    orig(s);
+    s.fragmentShader = s.fragmentShader.replace(
+      '#include <dithering_fragment>',
+      `#include <dithering_fragment>\n  gl_FragColor.rgb *= ${WIRE.surface.toFixed(2)};`);
+  })(mat.onBeforeCompile);
+  mat.polygonOffset = true; mat.polygonOffsetFactor = 1; mat.polygonOffsetUnits = 1;
+
   const brain = new THREE.Mesh(geo,mat); pivot.add(brain);
+
+  const edgeGeo = new THREE.EdgesGeometry(geo, WIRE.threshold);
+  const edges = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({
+    color:0xe4e9ef, transparent:true, opacity:WIRE.lineOpacity, depthWrite:false }));
+  pivot.add(edges);
+  console.info('[wireframe] edge segments:', edgeGeo.attributes.position.count/2);
   // lateral view: ICBM voxel axes were remapped to (x, z, -y) when the mesh was
   // built, so this orients it to a left-lateral three-quarter, frontal lobe left
   pivot.rotation.set(-0.10, -1.75, 0.06);
@@ -1014,7 +1103,7 @@ if (THREE) {
      Gaussian below, so they were vestigial - configuration for a code path
      that no longer exists. Another leftover layer. */
   const tractMat = new LineMaterial({
-    color: hex2int(PALETTE.cyan), linewidth: 1.35, dashed: true,
+    color: 0xd7dde4, linewidth: 1.1, dashed: true,   /* neutral: emphasis is brightness, not hue */
     transparent: true, depthTest: true,
   });
   tractMat.resolution.set(innerWidth, innerHeight);   // required or lines vanish
@@ -1031,9 +1120,9 @@ if (THREE) {
         'if ( mod( vLineDistance + dashOffset, dashSize + gapSize ) > dashSize ) discard;',
         'float d = abs(fract(vLineDistance * 0.06 - uHead) - 0.5);\n' +
         'float pulse = exp(-d * d * 120.0);\n' +
-        'diffuseColor.rgb += pulse * 1.9;\n' +
+        'diffuseColor.rgb += pulse * 1.15;\n' +
         // resting tract stays visible enough to describe the path it takes
-        'diffuseColor.a = (0.20 + pulse * 0.78) * uIntro;');
+        'diffuseColor.a = (0.13 + pulse * 0.62) * uIntro;');
     tractMat.userData.shader = sh;
   };
 
