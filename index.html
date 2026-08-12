@@ -208,6 +208,30 @@ h1 em{font-style:normal;color:var(--tx0)}
   @keyframes bl{0%,100%{opacity:1}50%{opacity:.35}}
 }
 
+/* LEGEND. The four hues are the only colour in the document and each
+   means one thing. Without this they read as decoration - which is
+   exactly how they read before it existed. */
+.legend{display:flex;flex-wrap:wrap;gap:0;margin-top:-1px;
+  border:1px solid var(--rule);border-top:0;background:var(--s1)}
+.legend .lg{display:flex;align-items:center;gap:8px;padding:10px 14px;
+  border-right:1px solid var(--rule-q);
+  font:400 var(--t-micro)/1 'IBM Plex Mono',monospace;color:var(--tx2);
+  text-transform:uppercase;letter-spacing:.11em}
+.legend .lg:last-child{border-right:0}
+.legend .sw{width:8px;height:8px;border-radius:50%;flex:none}
+/* the caption always takes its own row: letting it share one with the
+   four swatches wrapped them into a ragged second line */
+.legend .hd{flex:0 0 100%;color:var(--tx1);letter-spacing:.06em;
+  text-transform:none;border-right:0;border-bottom:1px solid var(--rule-q)}
+/* four across wraps to 3 + a lonely 1 on a phone; 2x2 is the honest shape */
+@media(max-width:560px){
+  .legend{display:grid;grid-template-columns:1fr 1fr}
+  .legend .hd{grid-column:1/-1}
+  .legend .lg:nth-child(2),.legend .lg:nth-child(4){border-right:1px solid var(--rule-q)}
+  .legend .lg:nth-child(3),.legend .lg:nth-child(5){border-right:0}
+  .legend .lg:nth-child(2),.legend .lg:nth-child(3){border-bottom:1px solid var(--rule-q)}
+}
+
 /* metric strip: mono figures, right-ruled cells */
 .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
   border:1px solid var(--rule);background:var(--s1)}
@@ -353,6 +377,13 @@ footer{padding:30px 0 60px}
         <div class="met"><div class="v">81<small>/81</small></div><div class="k">tests green</div></div>
         <div class="met"><div class="v">3</div><div class="k">systems shipped</div></div>
         <div class="met"><div class="v">0</div><div class="k">manual triggers</div></div>
+      </div>
+      <div class="legend">
+        <span class="lg hd">Node colour = how often that agent runs</span>
+        <span class="lg"><i class="sw" style="background:var(--d-daily)"></i>daily</span>
+        <span class="lg"><i class="sw" style="background:var(--d-hourly)"></i>hourly</span>
+        <span class="lg"><i class="sw" style="background:var(--d-weekly)"></i>weekly</span>
+        <span class="lg"><i class="sw" style="background:var(--d-monthly)"></i>monthly</span>
       </div>
     </div>
     <div class="hero-right"><div class="nodelabel" id="nlabel"></div></div>
@@ -588,9 +619,39 @@ if (THREE) {
   const pos = new Float32Array(nV*3), nrm = new Float32Array(nV*3);
   for (let i=0;i<nV*3;i++){ pos[i]=qp[i]/32767; nrm[i]=qn[i]/127; }
 
+  /* ---- CAVITY. A lit smooth surface only shows a fold where the fold
+     turns toward or away from a light; creases do not self-shadow, which
+     is why the cortex read as a blank shell. Discrete mean curvature at
+     each vertex - the average of how far its neighbours lean along its
+     own normal - gives a concavity term, and that term darkens the
+     albedo. It is a baked AO map computed at load instead of shipped as
+     a texture, and it is the ONLY thing the curvature feeds. ---- */
+  const curv = new Float32Array(nV), deg = new Float32Array(nV);
+  const acc = (a,b)=>{
+    let dx=pos[b*3]-pos[a*3], dy=pos[b*3+1]-pos[a*3+1], dz=pos[b*3+2]-pos[a*3+2];
+    const L=Math.hypot(dx,dy,dz)||1e-9; dx/=L; dy/=L; dz/=L;
+    curv[a]+=dx*nrm[a*3]+dy*nrm[a*3+1]+dz*nrm[a*3+2]; deg[a]++;
+  };
+  for (let t=0;t<nT;t++){ const a=idx[t*3],b=idx[t*3+1],c=idx[t*3+2];
+    acc(a,b);acc(b,c);acc(c,a);acc(b,a);acc(c,b);acc(a,c); }
+  for(let i=0;i<nV;i++) curv[i]/=deg[i]||1;
+  /* Normalise on PERCENTILES, not min/max: min/max is hostage to a
+     handful of outlier vertices and blew the shading out to white on
+     this mesh when it was tried. 3rd/97th is robust. */
+  const srt = Float32Array.from(curv).sort();
+  const lo = srt[Math.floor(nV*0.03)], hi = srt[Math.floor(nV*0.97)];
+  const AO_FLOOR = 0.40;                 // how dark the deepest sulcus gets
+  const vcol = new Float32Array(nV*3);
+  for(let i=0;i<nV;i++){
+    const c = Math.min(1,Math.max(0,(curv[i]-lo)/((hi-lo)||1)));
+    const k = AO_FLOOR + (1-AO_FLOOR)*c;
+    vcol[i*3]=k; vcol[i*3+1]=k; vcol[i*3+2]=k;
+  }
+
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
   geo.setAttribute('normal',   new THREE.BufferAttribute(nrm,3));
+  geo.setAttribute('color',    new THREE.BufferAttribute(vcol,3));
   geo.setIndex(new THREE.BufferAttribute(idx,1));
 
   /* ==================================================================
@@ -609,17 +670,29 @@ if (THREE) {
      the form alone, which they cannot do.
      ================================================================== */
   const CORTEX = {
-    /* Matte, not metal. At roughness .55 / metalness .05 the key blew a
-       white specular across the temporal lobe and the surface read as
-       chromed plastic. A cortical surface is dry tissue: it should hold
-       a wide, soft value range with no hot highlight anywhere. */
-    base:0x9aa3ad, roughness:0.78, metalness:0.0,
-    line:0xf4f8fc, lineAlpha:0.14, threshold:34,
+    /* Soft ceramic, per the webgl-3d-object skill's material bands
+       (metalness 0-.15, roughness .38-.62). The previous .78 was outside
+       that band in the direction that destroys form: the diffuse falloff
+       goes so wide that only overall value survives, which is half of
+       why it read as a silver blank. The other half was the missing
+       tone mapping, fixed on the renderer below.
+
+       The albedo is warm, not neutral. A neutral grey under a white key
+       on a near-black page has nowhere to go but metal. */
+    base:0xbdb7b0, roughness:0.52, metalness:0.0,
+    line:0xf2f7fc, lineAlpha:0.11, threshold:22,
     drag:0.0055, ease:0.11, sway:0.09, swayPeriod:64,
   };
 
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.6));
+  /* Colour management, which the scene simply did not have. Without it
+     linear values go straight to the screen: highlights clip with no
+     shoulder and the whole object slides toward a flat bright sheen.
+     This is the single biggest reason it looked like brushed metal. */
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.14;
   const scene = new THREE.Scene();
   const cam = new THREE.PerspectiveCamera(30,1,.01,60);
   const pivot = new THREE.Group(); scene.add(pivot);
@@ -627,13 +700,18 @@ if (THREE) {
   /* key describes the folds, fill keeps the shadow side off black, rim
      separates the silhouette from the page. Three lights, no shader
      patches - which is what the four stacked colour passes were faking. */
-  const key  = new THREE.DirectionalLight(0xffffff,2.05); key.position.set(-2.6,2.4,2.8);
-  const fill = new THREE.DirectionalLight(0xb9cadd,0.62); fill.position.set(3.0,-0.9,1.5);
-  const rim  = new THREE.DirectionalLight(0xdfe9f4,1.35); rim.position.set(1.5,0.9,-3.2);
-  scene.add(key,fill,rim,new THREE.AmbientLight(0xffffff,0.22));
+  /* key + hemisphere fill + rim, the skill's lighting default. The flat
+     ambient is replaced by a hemisphere so the underside picks up a
+     different, cooler colour than the top instead of everything lifting
+     by the same amount - a uniform lift is what flattens a form. */
+  const key  = new THREE.DirectionalLight(0xffffff,2.45); key.position.set(-2.6,2.4,2.8);
+  const fill = new THREE.DirectionalLight(0xa8bdd4,0.50); fill.position.set(3.0,-0.9,1.5);
+  const rim  = new THREE.DirectionalLight(0xd6e4f2,0.80); rim.position.set(1.5,0.9,-3.2);
+  scene.add(key,fill,rim,new THREE.HemisphereLight(0xe4ecf4,0x0d1014,0.40));
 
   const mat = new THREE.MeshStandardMaterial({color:CORTEX.base,
-    roughness:CORTEX.roughness, metalness:CORTEX.metalness});
+    roughness:CORTEX.roughness, metalness:CORTEX.metalness,
+    vertexColors:true});      // the cavity term, multiplied into albedo
   mat.polygonOffset=true; mat.polygonOffsetFactor=1; mat.polygonOffsetUnits=1;
   pivot.add(new THREE.Mesh(geo,mat));
   pivot.rotation.set(-0.10,-1.75,0.06);
