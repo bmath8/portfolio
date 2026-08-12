@@ -63,6 +63,27 @@ sufficient.
 
 Re-test by re-running the three URLs above. Only all-404 closes this.
 
+## Repo description is stale and public
+
+The GitHub repo's one-line description still reads:
+
+> Source for bmath8.vercel.app — a single self-hosted static page. **The hero
+> renders a real cortical mesh carrying one node per scheduled agent on my
+> machine**, each firing on its actual cron time. No third-party requests, no
+> generated images, renders with JavaScript disabled.
+
+The mesh was deleted 2026-08-12. That sentence is now false, and it is the first
+thing anyone sees on the repo page and in GitHub search results.
+
+- [ ] Update it. Suggested, same shape, true:
+      *"Source for bmath8.vercel.app — a single self-hosted static page. The hero
+      is generated from my crontab: a full day left to right, one lane per
+      scheduled agent, a mark wherever it fires. No third-party requests, no
+      generated images, renders with JavaScript disabled."*
+
+Left for Brian rather than changed automatically: it is a repo-level public
+setting, not part of the diff.
+
 ## Post-merge check — MUST run against bmath8.vercel.app, not the preview
 
 `.vercelignore` was rewritten when `vendor/mesh/` and `vendor/lines/` were
