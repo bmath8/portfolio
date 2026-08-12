@@ -1,3 +1,16 @@
+> **⚠️ SUPERSEDED IN PART, 2026-08-12.** This file is a session log, kept for the
+> reasoning trail. Anything in it about the cortical-mesh hero — the matcap, the
+> curvature shading, the tract bundle, the V6 phase plan — describes an object
+> that no longer exists. The mesh was deleted and the hero is now generated from
+> the cron lines in `agents.json`.
+>
+> The four docs it cross-references (`V6-PLAN-2026-08-05.md`,
+> `BRAIN-TECHNIQUE-2026-08-05.md`, `REFERENCES-2026-08-05.md`, `HERO-BRIEF.md`,
+> `SCENE-BRIEF.md`) were deleted with it.
+>
+> **Current state of record: `TECHNIQUE.md` and `DESIGN-REFERENCE.md`. Open work:
+> `TASKS.md`.**
+
 # Current Session
 
 _Updated 2026-08-10 (application-readiness audit). Prior entry: 2026-08-06, the load-time work._
