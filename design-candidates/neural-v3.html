@@ -351,6 +351,25 @@ a[href^="http"]::after{ content:" (" attr(href) ")"; font-size:.8em; color:#555 
 h1{ font-size:26pt !important; } h2{ font-size:15pt !important; } h3{ font-size:12pt !important; }
 body{ font-size:10.5pt; }
 </style>
+
+<style id="brain-loader-css">
+/* placeholder while the library is in flight, and a graceful empty state when
+   the brain is deliberately not loaded (reduced motion, or no WebGL) */
+.brainbox.brain-loading::after{
+  content:"initialising cortex\2026";
+  position:absolute; left:50%; top:48%; transform:translate(-50%,-50%);
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.16em; color:var(--faint);
+  animation:bl 1.6s ease-in-out infinite;
+}
+@keyframes bl{ 50%{ opacity:.35 } }
+.brainbox.brain-off .tag{ display:none; }
+.brainbox.brain-off::after{
+  content:"26 scheduled agents \00B7 the fleet is listed in full below";
+  display:block; text-align:center; padding:3.5rem 1rem;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; color:var(--dim);
+  border:1px dashed var(--line); border-radius:16px;
+}
+</style>
 </head>
 <body>
 <a class="skip" href="#work">Skip to the work</a>
@@ -536,7 +555,6 @@ body{ font-size:10.5pt; }
   </div>
 </footer>
 
-<script src="/vendor/three.min.js"></script>
 <script>
 document.documentElement.classList.add('js');document.body.classList.add('js');
 const EASE=t=>1-Math.pow(1-t,3);
@@ -583,7 +601,7 @@ function glowTexture(inner){
   return new THREE.CanvasTexture(c);
 }
 
-(function(){
+function initBrain(){
   const canvas=document.getElementById('brain');
   let renderer;try{renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true})}catch(e){canvas.style.display='none';return}
   const scene=new THREE.Scene();
@@ -647,11 +665,14 @@ function glowTexture(inner){
     g.setAttribute('color',new THREE.BufferAttribute(col,3));
     return new THREE.Points(g,new THREE.PointsMaterial({size,map:tex,vertexColors:true,transparent:true,opacity:op,depthWrite:false,blending:THREE.AdditiveBlending}));
   }
-  root.add(buildCloud(4200,cortexPoint,0.05,0.75));
-  root.add(buildCloud(900,cerebellumPoint,0.045,0.7));
-  root.add(buildCloud(220,stemPoint,0.045,0.65));
+  // a phone does not need six thousand points to read as a brain
+  const DENSITY = (innerWidth < 820 || devicePixelRatio < 1.5) ? 0.45 : 1;
+  const q = n => Math.round(n * DENSITY);
+  root.add(buildCloud(q(4200),cortexPoint,0.05,0.75));
+  root.add(buildCloud(q(900),cerebellumPoint,0.045,0.7));
+  root.add(buildCloud(q(220),stemPoint,0.045,0.65));
   // faint outer halo shell
-  const halo=buildCloud(700,()=>cortexPoint().multiplyScalar(1.07),0.09,0.1);root.add(halo);
+  const halo=buildCloud(q(700),()=>cortexPoint().multiplyScalar(1.07),0.09,0.1);root.add(halo);
 
   /* agent nodes */
   const aVecs=[];
@@ -739,7 +760,7 @@ function glowTexture(inner){
     renderer.render(scene,camera);
     requestAnimationFrame(loop);
   })();
-})();
+}
 
 /* ============ fleet routing viz v3 ============ */
 (function(){
@@ -952,6 +973,47 @@ function loadSquares(){
   el('apNext').addEventListener('click',()=>show(cur+1));
   el('apPrev').addEventListener('click',()=>show(cur-1));
   addEventListener('keydown',e=>{ if(e.key==='Escape') hide(); });
+})();
+</script>
+
+<script id="brain-loader">
+(function(){
+  const canvas=document.getElementById('brain'); if(!canvas) return;
+  const box=canvas.parentElement;
+
+  function webgl(){
+    try{ return !!document.createElement('canvas').getContext('webgl'); }catch(e){ return false; }
+  }
+  // reduced motion or no WebGL: never fetch the library at all
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches || !webgl()){
+    canvas.style.display='none';
+    box.classList.add('brain-off');
+    return;
+  }
+
+  let started=false;
+  function start(){
+    if(started) return; started=true;
+    const s=document.createElement('script');
+    s.src='/vendor/three.min.js';
+    s.onload=function(){
+      box.classList.remove('brain-loading');
+      try{ initBrain(); }catch(e){ canvas.style.display='none'; box.classList.add('brain-off'); }
+    };
+    s.onerror=function(){ canvas.style.display='none'; box.classList.add('brain-off'); };
+    document.head.appendChild(s);
+  }
+
+  box.classList.add('brain-loading');
+  // fetch as soon as the canvas is anywhere near the viewport
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ io.disconnect(); start(); } });
+    },{rootMargin:'300px'});
+    io.observe(canvas);
+  } else { start(); }
+  // and never later than first idle, so it is ready before anyone scrolls to it
+  (window.requestIdleCallback||function(f){setTimeout(f,1200)})(start);
 })();
 </script>
 </body>
