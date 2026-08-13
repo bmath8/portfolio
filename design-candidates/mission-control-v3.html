@@ -771,7 +771,7 @@ body{ font-size:10.5pt; }
   <div class="colophon wrap">
     Every number on this page is checkable, and says where it came from.<br>
     No third-party requests — fonts and Three.js are self-hosted. The live demo loads only when you click it · no generated images · core content renders with JavaScript disabled.<br>
-    Prefer the cortex? <a href="/neural.html" style="color:var(--green)">View the neural edition →</a>
+    Prefer the cortex? <a href="/neural" style="color:var(--green)">View the neural edition →</a>
   </div>
 </footer>
 
@@ -1138,7 +1138,7 @@ addEventListener('resize',wr);wr();
     }
     if(e.key==='g'){ pending=true; timer=setTimeout(()=>pending=false,900); return; }
     if(e.key==='e'){ location.href='mailto:mathew.brian@gmail.com'; }
-    if(e.key==='n'){ location.href='/neural.html'; }
+    if(e.key==='n'){ location.href='/neural'; }
   });
   help.addEventListener('click',()=>help.classList.remove('on'));
 
