@@ -251,7 +251,36 @@ a:focus-visible,button:focus-visible{ outline-offset:4px; }
   .statusbar nav a,.links a,.foot .row a,.btn{ min-height:44px; display:inline-flex; align-items:center; }
 }
 </style>
-<style id="sr">.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}</style></head>
+<style id="sr">.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}</style>
+<style id="t2n">
+/* --- hero proportions: the brain read small against the headline and left a
+       dead gutter between the columns at wide viewports -------------------- */
+@media(min-width:1100px){
+  /* the text column must still hold "A cortex" on one line, or the headline
+     orphans a single letter; the brain gains size from the negative margin
+     instead of from stealing column width */
+  .hero{ grid-template-columns:.95fr 1.05fr; gap:1rem; }
+  #brain{ height:680px; }
+  h1{ font-size:clamp(2.7rem,4.4vw,4.2rem); }
+  .brainbox{ margin-right:-6%; }
+}
+@media(min-width:1500px){
+  #brain{ height:740px; }
+  .brainbox{ margin-right:-10%; }
+  h1{ font-size:4.4rem; }
+}
+h1{ text-wrap:balance; }
+/* the callout sat oddly far from the object it labels */
+.brainbox .callout{ top:4%; }
+/* card rhythm: alternate which side the visual sits on, so three cards in a
+   row stop reading as one repeated template */
+@media(min-width:900px){
+  .card:nth-child(even) .inner{ grid-template-columns:1fr 1fr; }
+  .card:nth-child(even) .inner > div:first-child{ order:2; }
+  .card:nth-child(even) .inner > .vis{ order:1; }
+}
+</style>
+</head>
 <body>
 <a class="skip" href="#work">Skip to the work</a>
 <div class="aurora"></div>
@@ -437,10 +466,20 @@ addEventListener('scroll',revealInView,{passive:true});addEventListener('resize'
 
 const so=new IntersectionObserver(es=>es.forEach(e=>{
   if(!e.isIntersecting)return;so.unobserve(e.target);
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   e.target.querySelectorAll('b[data-n]').forEach(b=>{
+    // the markup already holds the true value, so it is correct with JS off.
+    // animate only as an enhancement, and guarantee we land back on the truth.
+    const truth=b.dataset.final||(b.dataset.final=b.textContent);
+    const settle=()=>{b.textContent=truth};
+    if(document.hidden||matchMedia('(prefers-reduced-motion: reduce)').matches){settle();return}
     const n=+b.dataset.n,suf=b.dataset.suffix||'';const t0=performance.now();
-    (function f(t){const p=Math.min((t-t0)/1200,1);b.textContent=Math.round(EASE(p)*n)+suf;if(p<1)requestAnimationFrame(f)})(t0);
+    setTimeout(settle,2000);                       // safety net, never strand on 0
+    document.addEventListener('visibilitychange',settle,{once:true});
+    (function f(t){
+      const p=Math.min((t-t0)/1200,1);
+      b.textContent=p<1?(Math.round(EASE(p)*n)+suf):truth;
+      if(p<1)requestAnimationFrame(f);
+    })(t0);
   });
 }),{threshold:.4});
 so.observe(document.getElementById('orbs'));
