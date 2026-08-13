@@ -101,3 +101,65 @@ Both pages: no console errors, zero external resource requests, correct fonts ap
 (Archivo/IBM Plex Mono and Syne/DM Sans/DM Mono), three.js r128 loaded from `/vendor/`, the
 3D cortex rendering. `/`, `/neural.html`, `/og.png`, `/resume.pdf`, `/favicon.svg`
 and every vendored font return 200.
+
+---
+
+# v7.2 - Design audit follow-through (2026-08-12)
+
+A measured audit of both live pages found one credibility bug, a set of
+accessibility failures, and a pacing problem. Fixed in three tiers.
+
+## Tier 1 - correctness and accessibility
+
+**The metrics read 0 without JavaScript.** The footer claimed "core content
+renders with JavaScript disabled" while every metric was hardcoded to `0` in
+the markup and only filled in by the count-up. With JS off the page reported
+0 agents, 0 tests, 0 systems - understating itself to nothing while claiming
+otherwise. Real values now live in the HTML; the animation is an enhancement
+that always settles back on them, with a safety timeout and a visibilitychange
+handler so a hidden tab can never strand a number mid-count.
+
+**Contrast.** `--faint` measured 2.95:1 on Mission Control and 2.77:1 on
+Neural, both below AA - and it was the colour carrying the source line under
+every metric. The receipts the page is built on were its least readable text.
+Now 6.2:1, with caption sizes floored (the smallest was 9.28px).
+
+**Focus.** Neither page defined a single focus style. Added `:focus-visible`
+rings in each palette, plus a skip link and a `<main>` landmark, and fixed an
+h2 to h4 heading jump.
+
+**Motion.** `prefers-reduced-motion` only stopped CSS reveals; every canvas
+and ticker kept running. Now all of them honour it, and pause on a hidden tab.
+
+## Tier 2 - composition
+
+Mission Control put 840px of fleet instrument between the metrics and the first
+project, so the work began 1,721px down. A compact live strip now carries the
+proof under the metrics and the full instrument moved below the work: first
+project at 1,165px, about 560px sooner. The hero fills the viewport properly,
+the radar stopped reallocating its canvas 60 times a second, and the log grew
+to 20 entries with a random start.
+
+Neural's brain gained roughly 100px and bleeds past its column, taking size from
+the margin rather than the text column - which has to stay wide enough to hold
+"A cortex" on one line. Project cards alternate sides so three cards stop
+reading as one template.
+
+## Tier 3 - craft
+
+- **Proof drawers**: every Mission Control metric opens to show the command
+  behind it and that command's output.
+- **Clickable agent nodes**: Neural's 26 nodes each open a panel with the cron
+  line, purpose, write scope and guardrail, walkable with prev/next and reachable
+  by keyboard.
+- **Keyboard navigation** on Mission Control (`g`+section, `?` for help).
+- A left progress rail, and a single scramble-resolve load moment.
+- Font preloading, schema.org Person JSON-LD, a print stylesheet, and a dedicated
+  OG card for the Neural edition.
+
+## Known follow-up
+
+three.min.js (589 KB) still loads on the critical path for Neural. Deferring it
+behind an intersection check would help mobile, but it needs the brain module
+restructured rather than a one-line change, so it is deliberately not in this
+pass.
