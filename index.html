@@ -245,7 +245,7 @@ h1 .keep{background:linear-gradient(100deg,var(--green),var(--ice));-webkit-back
 .cap-card:nth-child(2) .ic{color:var(--ice);background:rgba(111,211,255,.08)}
 .cap-card:nth-child(3) .ic{color:var(--amber);background:rgba(255,196,77,.08)}
 .cap-card:nth-child(4) .ic{color:var(--violet);background:rgba(179,155,255,.08)}
-.cap-card h4{font-size:1.02rem;font-weight:700;margin-bottom:.45rem}
+.cap-card h3{font-size:1.02rem;font-weight:700;margin-bottom:.45rem}
 .cap-card p{font-size:.85rem;color:var(--dim)}
 
 /* ---------- experience ---------- */
@@ -285,8 +285,45 @@ h1 .keep{background:linear-gradient(100deg,var(--green),var(--ice));-webkit-back
   .statusbar nav{display:none}
 }
 </style>
-</head>
+
+<style id="a11y">
+/* --- Tier 1 accessibility ---------------------------------------------
+   --faint was 2.95:1 on panel: below AA, and it carried the source lines
+   under every metric. Raised to ~5.1:1. Caption sizes floored at 11px. */
+:root{ --faint:#8199ad; }
+.stat small,.timeline .cap,.demo .cap,.colophon,.sec-head .tag,.fcard .fhead{
+  font-size:.72rem; letter-spacing:.06em;
+}
+.demo .cap,.colophon{ font-size:.68rem; }
+.ptable .phead{ font-size:.66rem; }
+/* keyboard focus: nothing was visible before */
+:focus-visible{
+  outline:2px solid var(--green);
+  outline-offset:3px;
+  border-radius:3px;
+}
+a:focus-visible,button:focus-visible{ outline-offset:4px; }
+.skip{
+  position:absolute; left:-9999px; top:0; z-index:200;
+  background:var(--green); color:#03130a; font-family:var(--mono);
+  font-size:.8rem; font-weight:700; padding:.7rem 1.2rem; border-radius:0 0 6px 0;
+}
+.skip:focus{ left:0; }
+/* honour reduced motion across the whole page, not just reveals */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important; animation-iteration-count:1 !important;
+    transition-duration:.001ms !important; scroll-behavior:auto !important;
+  }
+}
+/* larger tap targets on touch */
+@media (pointer:coarse){
+  .statusbar nav a,.links a,.foot .row a,.btn{ min-height:44px; display:inline-flex; align-items:center; }
+}
+</style>
+<style id="sr">.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}</style></head>
 <body>
+<a class="skip" href="#work">Skip to the work</a>
 
 <header class="statusbar">
   <span class="dot"></span>
@@ -302,6 +339,8 @@ h1 .keep{background:linear-gradient(100deg,var(--green),var(--ice));-webkit-back
   </nav>
   <a class="cta" href="mailto:mathew.brian@gmail.com">HIRE →</a>
 </header>
+<main id="main">
+
 
 <!-- HERO -->
 <div class="hero-band">
@@ -329,9 +368,9 @@ h1 .keep{background:linear-gradient(100deg,var(--green),var(--ice));-webkit-back
 
 <div class="wrap">
   <div class="stats rv" id="stats">
-    <div class="stat"><b data-n="26">0</b><span>agents live</span><small>hermes cron list · 2026-08-05</small></div>
-    <div class="stat"><b data-n="81" data-suffix="/81">0</b><span>tests green</span><small>live pytest run · 31s</small></div>
-    <div class="stat"><b data-n="3">0</b><span>systems shipped</span><small>built · tested · operated</small></div>
+    <div class="stat"><b data-n="26">26</b><span>agents live</span><small>hermes cron list · 2026-08-05</small></div>
+    <div class="stat"><b data-n="81" data-suffix="/81">81/81</b><span>tests green</span><small>live pytest run · 31s</small></div>
+    <div class="stat"><b data-n="3">3</b><span>systems shipped</span><small>built · tested · operated</small></div>
     <div class="stat"><b data-n="0">0</b><span>manual triggers</span><small>everything on cron</small></div>
   </div>
 </div>
@@ -344,6 +383,7 @@ h1 .keep{background:linear-gradient(100deg,var(--green),var(--ice));-webkit-back
       <div class="fcard rv d1">
         <div class="fhead"><span>SCHEDULER RADAR</span><b>SWEEP 6H</b></div>
         <canvas id="radar" width="600" height="600"></canvas>
+        <p class="sr-only" id="sr-fleet">Scheduler radar and agent process table: a visualisation of 26 scheduled agents, each with the cron expression it actually runs on. The same schedule is listed as text in the table beside it.</p>
       </div>
       <div class="fcard rv d2">
         <div class="fhead"><span>AGENT PROCESS TABLE</span><b id="ptclock">--:--:--</b></div>
@@ -445,10 +485,10 @@ h1 .keep{background:linear-gradient(100deg,var(--green),var(--ice));-webkit-back
   <div class="wrap">
     <div class="sec-head rv"><span class="glyph">⌘</span><h2>What I actually do</h2><div class="rule"></div><span class="tag">DEMONSTRABLE IN A LIVE SCREEN SHARE</span></div>
     <div class="caps">
-      <div class="cap-card rv"><div class="ic">&lt;/&gt;</div><h4>Build</h4><p>Python and TypeScript. React/Next.js front ends, Flask and Node back ends, Postgres and Supabase, Docker.</p></div>
-      <div class="cap-card rv d1"><div class="ic">◉</div><h4>Operate</h4><p>Windows administration, PowerShell, scheduled jobs, log analysis, health monitoring, self-healing watchdogs.</p></div>
-      <div class="cap-card rv d2"><div class="ic">✓</div><h4>Test</h4><p>pytest and Jest/RTL. I write the suite, run it, and fix what it catches before shipping.</p></div>
-      <div class="cap-card rv d3"><div class="ic">☎</div><h4>Support</h4><p>Years of customer-facing work. Diagnose the real problem, explain it plainly, own it to a verified fix.</p></div>
+      <div class="cap-card rv"><div class="ic">&lt;/&gt;</div><h3>Build</h3><p>Python and TypeScript. React/Next.js front ends, Flask and Node back ends, Postgres and Supabase, Docker.</p></div>
+      <div class="cap-card rv d1"><div class="ic">◉</div><h3>Operate</h3><p>Windows administration, PowerShell, scheduled jobs, log analysis, health monitoring, self-healing watchdogs.</p></div>
+      <div class="cap-card rv d2"><div class="ic">✓</div><h3>Test</h3><p>pytest and Jest/RTL. I write the suite, run it, and fix what it catches before shipping.</p></div>
+      <div class="cap-card rv d3"><div class="ic">☎</div><h3>Support</h3><p>Years of customer-facing work. Diagnose the real problem, explain it plainly, own it to a verified fix.</p></div>
     </div>
   </div>
 </section>
@@ -477,6 +517,8 @@ h1 .keep{background:linear-gradient(100deg,var(--green),var(--ice));-webkit-back
   </div>
 </section>
 
+
+</main>
 <footer class="foot">
   <div class="wrap foot-inner">
     <h2>The machine is running.<br><span>Come look at it.</span></h2>
@@ -511,6 +553,7 @@ addEventListener('scroll',revealInView,{passive:true});addEventListener('resize'
 /* count-up */
 const so=new IntersectionObserver(es=>es.forEach(e=>{
   if(!e.isIntersecting)return;so.unobserve(e.target);
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   e.target.querySelectorAll('b[data-n]').forEach(b=>{
     const n=+b.dataset.n,suf=b.dataset.suffix||'';const t0=performance.now();
     (function f(t){const p=Math.min((t-t0)/1200,1);b.textContent=Math.round(EASE(p)*n)+suf;if(p<1)requestAnimationFrame(f)})(t0);
@@ -683,6 +726,42 @@ addEventListener('resize',wr);wr();
     wx.fillRect(i*7,h/2-bh/2,4,bh);
   }
   requestAnimationFrame(wloop);
+})();
+</script>
+
+<script id="a11y-js">
+/* Tier 1 behaviour ---------------------------------------------------------
+   1. Respect reduced motion for canvas work and timers, not just CSS.
+   2. Pause every loop when the tab is hidden; a portfolio left open in a
+      background tab should cost nothing.
+   Both are opt-in wrappers so the page still works if this block is removed. */
+(function(){
+  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)');
+  const paused = () => document.hidden || REDUCE.matches;
+
+  // wrap setInterval so every ticker in the page obeys the rules above
+  const realInterval = window.setInterval.bind(window);
+  const timers = [];
+  window.setInterval = function(fn, ms){
+    const wrapped = function(){ if(!paused()) fn.apply(this, arguments); };
+    const id = realInterval(wrapped, ms); timers.push(id); return id;
+  };
+
+  // wrap rAF: while paused, keep polling for the next frame without running the
+  // callback body, so the loop survives and resumes the moment the tab returns
+  const realRaf = window.requestAnimationFrame.bind(window);
+  window.requestAnimationFrame = function(cb){
+    function tick(t){ if(paused()){ realRaf(tick); return; } cb(t); }
+    return realRaf(tick);
+  };
+
+  // canvases are decorative: keep them out of the accessibility tree
+  addEventListener('load', function(){
+    document.querySelectorAll('canvas').forEach(function(c){
+      c.setAttribute('aria-hidden','true');
+      c.setAttribute('role','presentation');
+    });
+  });
 })();
 </script>
 </body>

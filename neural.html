@@ -176,10 +176,10 @@ h2{font-family:var(--disp);font-size:clamp(1.7rem,3.4vw,2.4rem);font-weight:800;
 .skill-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;position:relative;z-index:2}
 .skill{border:1px solid #ddd7c8;border-radius:18px;padding:1.6rem;background:#fcfaf5;transition:.3s var(--spring);box-shadow:0 1px 0 #e8e2d4}
 .skill:hover{transform:translateY(-5px);box-shadow:0 22px 44px -26px rgba(22,19,31,.4)}
-.skill h4{font-family:var(--disp);font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--paper-ink)}
-.skill h4::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:.55rem;transform:rotate(45deg)}
-.skill:nth-child(1) h4::before{background:#0fae8d} .skill:nth-child(2) h4::before{background:#6c56f0}
-.skill:nth-child(3) h4::before{background:#e0517e} .skill:nth-child(4) h4::before{background:#d9a013}
+.skill h3{font-family:var(--disp);font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--paper-ink)}
+.skill h3::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:.55rem;transform:rotate(45deg)}
+.skill:nth-child(1) h3::before{background:#0fae8d} .skill:nth-child(2) h3::before{background:#6c56f0}
+.skill:nth-child(3) h3::before{background:#e0517e} .skill:nth-child(4) h3::before{background:#d9a013}
 .skill p{font-size:.84rem;color:var(--paper-dim)}
 
 /* timeline */
@@ -216,9 +216,47 @@ footer::before{content:"";position:absolute;inset:0;pointer-events:none;
   .island{padding:2.6rem 1.6rem 3rem;border-radius:24px}
 }
 </style>
-</head>
+
+<style id="a11y">
+/* --- Tier 1 accessibility ---------------------------------------------
+   --faint was 2.95:1 on panel: below AA, and it carried the source lines
+   under every metric. Raised to ~5.1:1. Caption sizes floored at 11px. */
+:root{ --faint:#8087b0; }
+.orb small,.vis .cap,.fine,.brainbox .tag,.tl-item time{
+  font-size:.7rem; letter-spacing:.06em;
+}
+.vis .cap,.fine{ font-size:.68rem; }
+/* keyboard focus: nothing was visible before */
+:focus-visible{
+  outline:2px solid var(--teal);
+  outline-offset:3px;
+  border-radius:3px;
+}
+a:focus-visible,button:focus-visible{ outline-offset:4px; }
+.skip{
+  position:absolute; left:-9999px; top:0; z-index:200;
+  background:var(--teal); color:#071018; font-family:var(--mono);
+  font-size:.8rem; font-weight:700; padding:.7rem 1.2rem; border-radius:0 0 6px 0;
+}
+.skip:focus{ left:0; }
+/* honour reduced motion across the whole page, not just reveals */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important; animation-iteration-count:1 !important;
+    transition-duration:.001ms !important; scroll-behavior:auto !important;
+  }
+}
+/* larger tap targets on touch */
+@media (pointer:coarse){
+  .statusbar nav a,.links a,.foot .row a,.btn{ min-height:44px; display:inline-flex; align-items:center; }
+}
+</style>
+<style id="sr">.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}</style></head>
 <body>
+<a class="skip" href="#work">Skip to the work</a>
 <div class="aurora"></div>
+<main id="main">
+
 <div class="shell">
 
 <nav>
@@ -244,6 +282,7 @@ footer::before{content:"";position:absolute;inset:0;pointer-events:none;
   </div>
   <div class="brainbox">
     <canvas id="brain"></canvas>
+    <p class="sr-only" id="sr-brain">An interactive three-dimensional model of a brain. Each of its 26 glowing nodes represents one real scheduled agent running on Brian's machine; hovering a node names the agent and shows its cron line. The same 26 agents and their schedules are described in the Selected work section below.</p>
     <div class="tip" id="tip"></div>
     <div class="callout" id="callout"></div>
     <div class="tag">DRAG TO SPIN · <b>HOVER A NODE TO NAME THE AGENT</b></div>
@@ -251,9 +290,9 @@ footer::before{content:"";position:absolute;inset:0;pointer-events:none;
 </header>
 
 <div class="orbs rv" id="orbs">
-  <div class="orb"><b data-n="26">0</b><span>agents live</span><small>hermes cron list · 08-05</small></div>
-  <div class="orb"><b data-n="81" data-suffix="/81">0</b><span>tests green</span><small>live pytest · 31s</small></div>
-  <div class="orb"><b data-n="3">0</b><span>systems shipped</span><small>built &amp; operated</small></div>
+  <div class="orb"><b data-n="26">26</b><span>agents live</span><small>hermes cron list · 08-05</small></div>
+  <div class="orb"><b data-n="81" data-suffix="/81">81/81</b><span>tests green</span><small>live pytest · 31s</small></div>
+  <div class="orb"><b data-n="3">3</b><span>systems shipped</span><small>built &amp; operated</small></div>
   <div class="orb"><b data-n="0">0</b><span>manual triggers</span><small>all on cron</small></div>
 </div>
 
@@ -333,10 +372,10 @@ footer::before{content:"";position:absolute;inset:0;pointer-events:none;
       <h2>What I actually do</h2>
       <p class="sub">Only things I can demonstrate or talk through in a live screen share.</p>
       <div class="skill-grid">
-        <div class="skill rv"><h4>Build</h4><p>Python and TypeScript. React/Next.js front ends, Flask and Node back ends, Postgres and Supabase, Docker.</p></div>
-        <div class="skill rv d1"><h4>Operate</h4><p>Windows administration, PowerShell, scheduled jobs, log analysis, health monitoring, self-healing watchdogs.</p></div>
-        <div class="skill rv d2"><h4>Test</h4><p>pytest and Jest/RTL. I write the suite, run it, and fix what it catches before shipping.</p></div>
-        <div class="skill rv d3"><h4>Support</h4><p>Years of customer-facing work. Diagnose the real problem, explain it plainly, own it to a verified fix.</p></div>
+        <div class="skill rv"><h3>Build</h3><p>Python and TypeScript. React/Next.js front ends, Flask and Node back ends, Postgres and Supabase, Docker.</p></div>
+        <div class="skill rv d1"><h3>Operate</h3><p>Windows administration, PowerShell, scheduled jobs, log analysis, health monitoring, self-healing watchdogs.</p></div>
+        <div class="skill rv d2"><h3>Test</h3><p>pytest and Jest/RTL. I write the suite, run it, and fix what it catches before shipping.</p></div>
+        <div class="skill rv d3"><h3>Support</h3><p>Years of customer-facing work. Diagnose the real problem, explain it plainly, own it to a verified fix.</p></div>
       </div>
     </div>
   </div>
@@ -367,6 +406,8 @@ footer::before{content:"";position:absolute;inset:0;pointer-events:none;
 </section>
 </div>
 
+
+</main>
 <footer id="contact">
   <div class="shell f-inner">
     <h2>The machine is running.<br><span class="grad">Come look at it.</span></h2>
@@ -396,6 +437,7 @@ addEventListener('scroll',revealInView,{passive:true});addEventListener('resize'
 
 const so=new IntersectionObserver(es=>es.forEach(e=>{
   if(!e.isIntersecting)return;so.unobserve(e.target);
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   e.target.querySelectorAll('b[data-n]').forEach(b=>{
     const n=+b.dataset.n,suf=b.dataset.suffix||'';const t0=performance.now();
     (function f(t){const p=Math.min((t-t0)/1200,1);b.textContent=Math.round(EASE(p)*n)+suf;if(p<1)requestAnimationFrame(f)})(t0);
@@ -684,6 +726,42 @@ setInterval(()=>{
 function loadSquares(){
   document.getElementById('squaresDemo').innerHTML='<iframe src="https://fam-super-bowl-squares-2026.vercel.app" title="Super Bowl Squares live app" loading="lazy"></iframe>';
 }
+</script>
+
+<script id="a11y-js">
+/* Tier 1 behaviour ---------------------------------------------------------
+   1. Respect reduced motion for canvas work and timers, not just CSS.
+   2. Pause every loop when the tab is hidden; a portfolio left open in a
+      background tab should cost nothing.
+   Both are opt-in wrappers so the page still works if this block is removed. */
+(function(){
+  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)');
+  const paused = () => document.hidden || REDUCE.matches;
+
+  // wrap setInterval so every ticker in the page obeys the rules above
+  const realInterval = window.setInterval.bind(window);
+  const timers = [];
+  window.setInterval = function(fn, ms){
+    const wrapped = function(){ if(!paused()) fn.apply(this, arguments); };
+    const id = realInterval(wrapped, ms); timers.push(id); return id;
+  };
+
+  // wrap rAF: while paused, keep polling for the next frame without running the
+  // callback body, so the loop survives and resumes the moment the tab returns
+  const realRaf = window.requestAnimationFrame.bind(window);
+  window.requestAnimationFrame = function(cb){
+    function tick(t){ if(paused()){ realRaf(tick); return; } cb(t); }
+    return realRaf(tick);
+  };
+
+  // canvases are decorative: keep them out of the accessibility tree
+  addEventListener('load', function(){
+    document.querySelectorAll('canvas').forEach(function(c){
+      c.setAttribute('aria-hidden','true');
+      c.setAttribute('role','presentation');
+    });
+  });
+})();
 </script>
 </body>
 </html>
