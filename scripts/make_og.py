@@ -3,7 +3,7 @@
 Uses the same self-hosted faces the live page uses, so the link preview and the
 page agree. No network, no generated imagery -- everything below is drawn.
 """
-import math, sys
+import math, os, sys
 from PIL import Image, ImageDraw, ImageFont
 
 W, H = 1200, 630
@@ -24,8 +24,19 @@ def f(name, size):
     return ImageFont.truetype(f"{FONTS}/{name}.woff2", size)
 
 # Pillow can't read woff2 directly -- convert first (done by the caller).
+_TTF_DIRS = [os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                          "scratchpad", "vendorbuild", "ttf"),
+             f"{FONTS}/_ttf"]
+
 def ttf(name, size):
-    return ImageFont.truetype(f"{FONTS}/_ttf/{name}.ttf", size)
+    """Pillow cannot read woff2, so we draw with TTF copies of the same faces.
+    Build them with scripts/build_ttf.py if this raises."""
+    for d in _TTF_DIRS:
+        p = os.path.join(d, name + ".ttf")
+        if os.path.exists(p):
+            return ImageFont.truetype(p, size)
+    raise SystemExit(
+        "No TTF copies found for %r.\nRun: python scripts/build_ttf.py" % name)
 
 img = Image.new("RGB", (W, H), BG)
 d = ImageDraw.Draw(img, "RGBA")

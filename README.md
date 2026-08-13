@@ -7,7 +7,7 @@ Static site, no build step. Two complete, independently maintainable designs shi
 | Route | Design | File |
 |---|---|---|
 | `/` | **Mission Control** — ops-console aesthetic | `index.html` |
-| `/neural.html` | **Neural** — 3D cortex hero (Three.js) | `neural.html` |
+| `/neural` | **Neural** — 3D cortex hero (Three.js) | `neural.html` |
 
 Both pages carry the same content and the same claims. Each links to the other in its footer, so a visitor can switch editions without leaving the site.
 
@@ -27,17 +27,30 @@ Both are kept current. If a number changes, change it in both files.
 
 ```
 index.html                      Mission Control (homepage)
-neural.html                     Neural edition
-favicon.svg  og.png  robots.txt Shared assets
+neural.html                     Neural edition            -> /neural
+404.html                        Branded not-found page
+vercel.json                     Caching, security headers, cleanUrls
+sitemap.xml  robots.txt         Discoverability
+site.webmanifest  favicon.svg   Install / icon
+og.png  og-neural.png           Link preview cards, one per edition
 resume.pdf                      Linked from both pages
+vendor/
+  fonts/*.woff2                 21 self-hosted faces (see vendor/README.md)
+  three.min.js                  r128, lazy-loaded by neural.html only
+docs/
+  DESIGN-SYSTEM.md              Tokens, components, rules for editing
+  CHANGELOG-v7.md               v7 through v7.4, with the reasoning
+  AUDIT-2026-08-12.md           The audit that started the rebuild
+scripts/
+  make_og.py  make_og_neural.py Regenerate the link preview cards
+  verify-demos.ps1              Check the live demo links resolve
+  applied/                      One-shot migrations, already applied - do not re-run
 design-candidates/
   mission-control-v3.html       Snapshot of the shipped homepage
   neural-v3.html                Snapshot of the shipped neural page
-  editorial-dossier.html        Light editorial/Swiss direction (not shipped)
-  brutalist.html                Loud brutalist direction (not shipped)
-  archive/v6-brain-hero.html    Previous production homepage (scroll-jacked 3D brain)
-  ...                           Earlier exploration
-docs/  scripts/  vendor/        Supporting material
+  editorial-dossier.html        Light editorial direction (not shipped)
+  brutalist.html                Brutalist direction (not shipped)
+  archive/                      Previous production homepages
 ```
 
 ---
@@ -58,7 +71,9 @@ Opening the files directly with `file://` will not work properly: the root-relat
 
 ## Deployment
 
-Vercel, connected to `github.com/bmath8/portfolio`. Static output, no framework, no `vercel.json` needed — Vercel serves the repo root and maps `neural.html` to `/neural.html` automatically. Push to the default branch to deploy.
+Vercel, connected to `github.com/bmath8/portfolio`. Static output, no framework. `vercel.json` sets caching (fonts and vendored JS immutable for a year), a security header set (CSP, Referrer-Policy, nosniff, X-Frame-Options, Permissions-Policy) and `cleanUrls`, which is why the Neural edition is linked as **`/neural`** and not `/neural.html` — the `.html` form 308s, so pointing canonical tags or the sitemap at it would send crawlers through a redirect. Push to the default branch to deploy.
+
+Web Analytics is enabled in the Vercel dashboard; both pages load the first-party, cookieless script, so no consent banner is required.
 
 ---
 
