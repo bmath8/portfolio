@@ -1,0 +1,1595 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brian Mathew — I build systems, then I keep them running</title>
+<link rel="canonical" href="https://bmath8.vercel.app/" />
+<meta name="description" content="Brian Mathew builds and operates working software: a 26-agent Windows automation fleet with 81 passing tests, a real-time collaborative music prototype, and a live squares app that ran a real event. New Jersey - open to work." />
+
+<!-- Open Graph / link preview. Without these the link unfurls as a bare URL in
+     LinkedIn, email and DMs -- which is where most of these links get pasted. -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://bmath8.vercel.app/" />
+<meta property="og:title" content="Brian Mathew - I build systems, then I keep them running" />
+<meta property="og:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
+<meta property="og:image" content="https://bmath8.vercel.app/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Brian Mathew - I build systems, then I keep them running. 26 agents live, 81 tests green, 3 systems shipped." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Brian Mathew - I build systems, then I keep them running" />
+<meta name="twitter:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
+<meta name="twitter:image" content="https://bmath8.vercel.app/og.png" />
+<!-- theme-color follows the page: this build is dark, the old one was paper -->
+<meta name="theme-color" content="#0c1014" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<!--
+  CONCEPT A — "LIVE INSTRUMENT"          2026-08-05
+
+  WHAT IS ACTUALLY NEW HERE, in one sentence:
+  the hero is a live readout of a real operating system rendered as working anatomy -
+  26 nodes, one per real scheduled agent, each sitting on the cortical surface and
+  firing on its actual cron time.
+
+  This is NOT seeded from priors. It is seeded from:
+   - lab/03-real-mesh-opaque.html, which PROVED this morning that the real opaque mesh
+     reads as anatomy (26 candidates had assumed it couldn't)
+   - everest.suraj.work: canvas behind, ALL editorial text in DOM in front, a live metric
+     strip in the hero, quality that degrades explicitly
+   - wc26.bogachev.fr: the object is DERIVED from real data, not decorated to imply it
+   - Brian's own Claude Design palette (built 2026-07-20, never used until now)
+   - the ENDORSED register: contact top-right, live demos, verification blocks,
+     Selected Work -> Capabilities -> Experience -> Contact
+
+  DELIBERATELY ABSENT (every one is a documented rejection):
+  no bloom · no additive blending · no transparency on the mesh · no scroll-driven 3D ·
+  no morphing · no cream/serif/terracotta · no numbered sections · no hairline-rule
+  dividers · no glassmorphism · no cards with uniform 16px radius · no generated images
+
+  LICENSE: SHIPPABLE. Uses vendor/mesh/brain-icbm152.bin, generated from the MNI
+  ICBM152 2009c template, whose licence grants use "for any purpose and without
+  fee" provided the copyright notice travels with it. The notice is in the page
+  footer and in vendor/mesh/README-LICENSE.md. The old AGPL brain-mni.bin is gone.
+-->
+<style>
+  @font-face{font-family:Bricolage;src:url(/vendor/fonts/BricolageGrotesque-800.woff2) format('woff2');font-weight:800;font-display:swap}
+  @font-face{font-family:Bricolage;src:url(/vendor/fonts/BricolageGrotesque-600.woff2) format('woff2');font-weight:600;font-display:swap}
+  @font-face{font-family:PlexSans;src:url(/vendor/fonts/IBMPlexSans-400.woff2) format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:PlexSans;src:url(/vendor/fonts/IBMPlexSans-600.woff2) format('woff2');font-weight:600;font-display:swap}
+  @font-face{font-family:PlexMono;src:url(/vendor/fonts/IBMPlexMono-400.woff2) format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:PlexMono;src:url(/vendor/fonts/IBMPlexMono-500.woff2) format('woff2');font-weight:500;font-display:swap}
+
+  /* ================================================================
+     PALETTE v9. Brian, 2026-08-05: "everything is blue and blends into
+     eachother. There is no contrast, flow, clear distinct areas and borders."
+
+     WHY THE OLD ONE FAILED: it was a single hue at five lightnesses.
+     #050a12 -> #0a1420 -> #0e1c2b -> #1b2f44 are all the same blue, and the
+     jumps between them are tiny. Nothing could separate from anything else,
+     so every surface dissolved into its neighbour.
+
+     WHAT CHANGED, three things:
+     1. THE BASE IS NEUTRAL NOW, not blue. Near-black greys carry a faint cool
+        cast but no dominant hue - which is what lets an accent actually read as
+        an accent instead of one more blue.
+     2. REAL VALUE STEPS between surfaces. Each level is a visible jump, not a
+        nudge, so a card is obviously a card sitting on a page.
+     3. BORDERS ARE VISIBLE. --edge is light enough to see. The old #1b2f44 was
+        barely distinguishable from the panel it was supposed to bound.
+     Plus --lift: one genuinely LIGHT surface, because he asked for "contrasts
+     with light" and previously endorsed a light/dark rhythm.
+     ================================================================ */
+  /* ============================================================================
+     PALETTE, rebuilt 2026-08-07. Brian, verbatim: "It's just basically dark grey
+     and cyan throughout. The same AI design color slop we continue to get over
+     and over." He is right, and it could not be fixed by adjusting the greys -
+     dark-mode-plus-cyan-accent IS the generated-design default, so the scheme
+     itself had to go.
+
+     What changed structurally: the page is now LIGHT-DOMINANT with deep ink zones,
+     instead of dark-everywhere with one light island. Inverting the dominance is
+     the strongest single move away from that default, and it produces the flow and
+     the distinct areas he keeps asking for. Adjacent bands now swing ~85 points of
+     perceptual lightness; before, the biggest step anywhere was 11.
+
+     Colour: warm paper against cool ink, rust as the primary accent, ochre for
+     data. No cyan anywhere.
+
+     SEMANTIC TOKENS. Components reference --bg/--surface/--fg/--edge/--accent, and
+     each band REDEFINES those. That is why a card knows to be light inside a paper
+     band and dark inside an ink band without a single per-section override - and it
+     is why the "cards blend into the background" bug cannot come back by omission.
+     ============================================================================ */
+  :root{
+    /* RAW PALETTE. Second attempt, and the first one is worth recording: it was warm
+       cream (#f2eee6) with a rust accent - which the frontend-design calibration names
+       as generated-design default #1, "warm cream near #F4F1EA with a terracotta
+       accent". I had escaped dark-grey-plus-cyan by walking straight into the next
+       cliche. Caught before it shipped.
+
+       This palette is derived from the subject instead of from a mood. The hero is a
+       real MNI ICBM152 neuroimaging volume and the page's whole argument is that every
+       number on it is checkable - so the vernacular is radiology and instrumentation:
+
+         FILM  a light-BOX ground. Cool neutral, faintly blue-green - deliberately NOT
+               warm cream. This is the axis that separates it from default #1.
+         SCAN  cool near-black panels, the field a greyscale volume is read against.
+               Dark is a ZONE here, never the page, which is what separates it from
+               default #2 (near-black page + one acid accent).
+         AMBER a warning-lamp warm against a cool ground. The temperature clash is the
+               deliberate move; cream + terracotta is warm on warm, which is why it
+               reads as a filter rather than a decision.
+         RED   reserved for genuine failure. It is not decoration and appears nowhere
+               on the page today, because nothing is failing.
+
+       Display stays Bricolage Grotesque - Brian approved it, and it keeps us off
+       default #3 (broadsheet hairlines + high-contrast serif). */
+    --film:#e7ecee;    --film2:#d8e0e3;   --film3:#c7d1d6;
+    --scan:#0c1014;    --scan2:#151c22;   --scan3:#1f2830;
+    --rule-l:#b3c0c6;  --rule-d:#333f49;
+    --hair-l:#cdd7db;  --hair-d:#1b232a;
+    --txt-l:#0d1215;   --txt-l2:#3d4a52;  --txt-l3:#5d6a72;
+    --txt-d:#eef3f5;   --txt-d2:#a8b6bf;  --txt-d3:#7d8b95;
+    /* the accent needs two values; one cannot pass AA on both grounds */
+    --amb-l:#8a5300;   --amb-d:#f5a623;
+    --fail-l:#a3231b;  --fail-d:#ff7a6b;
+
+    /* DEFAULT ZONE = the scan panel. Hero and footer live here. */
+    --bg:var(--scan); --surface:var(--scan2); --surface2:var(--scan3);
+    --fg:var(--txt-d); --fg2:var(--txt-d2); --fg3:var(--txt-d3);
+    --edge:var(--rule-d); --hair:var(--hair-d);
+    --accent:var(--amb-d); --accent2:var(--fail-d);
+    --on-accent:#180f00;
+
+    --maxw:min(1560px, 94vw);
+    --maxw-read:min(1180px, 92vw);
+    --gutter:clamp(20px, 4vw, 64px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--fg);
+    font:400 17px/1.6 PlexSans,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{overflow-x:hidden}
+  a{color:inherit}
+  /* 1240px on a 2527px monitor left ~640px dead on each side and the page read as a
+     ribbon down the middle. One token, used everywhere, that grows with the screen. */
+  .wrap{max-width:var(--maxw-read);margin:0 auto;padding:0 var(--gutter)}
+
+  /* ---------- contact header: ENDORSED, monogram left, buttons right ---------- */
+  /* The header was rgba(25,27,28,.88) - the OLD void colour, left behind by the
+     palette swap. So it was a stale grey bar on a differently-coloured page, which is
+     exactly why Brian said it "just blends into the rest".
+
+     It is now LIGHT chrome: the toolbar of a scan viewer sitting above the dark scan
+     panel. That is unambiguous separation rather than one more dark value, and it
+     takes the light-zone token set so the nav buttons, borders and accent all flip
+     with it instead of needing per-element overrides. */
+  header{
+    --bg:var(--film); --surface:var(--film2); --surface2:var(--film3);
+    --fg:var(--txt-l); --fg2:var(--txt-l2); --fg3:var(--txt-l3);
+    --edge:var(--rule-l); --hair:var(--hair-l);
+    --accent:var(--amb-l); --accent2:var(--fail-l); --on-accent:#f6fafb;
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb, var(--film) 88%, transparent);
+    color:var(--fg);
+    backdrop-filter:blur(14px) saturate(1.1);
+    border-bottom:1px solid var(--rule-l);
+    box-shadow:0 1px 0 rgba(12,16,20,.28), 0 8px 24px -18px rgba(12,16,20,.7)}
+  @supports not (background: color-mix(in srgb, red 50%, transparent)){
+    header{background:rgba(231,236,238,.92)}
+  }
+  .hbar{display:flex;align-items:center;justify-content:space-between;
+    max-width:var(--maxw);margin:0 auto;padding:12px var(--gutter);gap:20px}
+  .mono-badge{display:flex;align-items:center;gap:12px;min-width:0}
+  .mk{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:3px;
+    background:var(--accent);color:var(--on-accent);font:800 15px/1 Bricolage;letter-spacing:.02em}
+  .who{font:600 15px/1.25 PlexSans;white-space:nowrap}
+  .who small{display:block;font:400 12.5px/1.3 PlexMono;color:var(--fg3)}
+  nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  nav a{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:3px;
+    border:1px solid var(--edge);background:var(--surface);color:var(--fg2);
+    font:500 13.5px/1 PlexMono;text-decoration:none;transition:.16s}
+  nav a:hover{border-color:var(--accent);color:var(--accent);background:var(--surface2)}
+  nav a.cta{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:500}
+  nav a.cta:hover{background:var(--accent);filter:brightness(1.12);color:var(--on-accent)}
+  nav svg{width:14px;height:14px;flex:none}
+  nav a b{font-weight:500}
+  @media(max-width:900px){nav a b{display:none}nav a{padding:8px 12px}}
+
+  /* ---------- hero: brain is the CENTREPIECE, not a corner box ---------- */
+  /* PHASE 4 - FLOW. Brian: "I want each part to flow into each other."
+     Every section previously ended on a hard 1px border, which is what made the
+     page read as stacked blocks. Borders are replaced by long gradient seams so
+     each band dissolves into the next. */
+  /* min-height was min(92vh,860px) with align-items:center, so on a tall window the
+     hero content floated in ~215px of dead space top AND bottom. Sized to its
+     content now, with a floor rather than a target. */
+  .hero{position:relative;min-height:min(76vh,720px);display:flex;align-items:center;
+    overflow:hidden}
+  .hero::before{content:'';position:absolute;left:0;right:0;bottom:0;height:190px;z-index:3;
+    pointer-events:none;background:linear-gradient(to bottom,rgba(25,27,28,0),var(--bg))}
+  /* v16: the cortex is its OWN ELEMENT on the right, not a full-bleed wash behind
+     the copy. A real left edge gives it a boundary to be an object at. */
+  /* THE LAYOUT BUG, fixed 2026-08-07. #stage was position:absolute;right:0;width:53%
+     - positioned against the VIEWPORT - while .hero-grid is capped at a max-width and
+     centred. Two unrelated coordinate systems. At 2527px the grid spanned x643-1883
+     but the canvas spanned x1188-2527, so the brain was flung to the far edge with a
+     dead gap between it and the copy. It now lives INSIDE the grid's right column, so
+     it is positioned relative to the same box as the text at every width. */
+  #stage{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:auto}
+  /* readability scrim: the copy must win over the mesh, always */
+  /* v16: this full-bleed scrim is what made the brain 'blend'. Off. */
+  .hero::after{content:'';display:none;position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(100deg,var(--bg) 24%,rgba(25,27,28,.88) 44%,rgba(25,27,28,0) 64%)}
+  @media(max-width:940px){.hero::after{background:linear-gradient(180deg,rgba(25,27,28,.92),rgba(25,27,28,.62))}}
+  .hero-grid{position:relative;z-index:2;width:100%;max-width:var(--maxw);margin:0 auto;
+    padding:64px var(--gutter);display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);
+    gap:40px;align-items:center;pointer-events:none}
+  .hero-copy{pointer-events:auto}
+  .live{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:100px;
+    border:1px solid var(--edge);background:var(--surface);color:var(--accent);
+    font:500 13.5px/1 PlexMono;margin-bottom:24px}
+  .pip{width:7px;height:7px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 0 rgba(245,166,35,.7);animation:pip 2.4s infinite}
+  @keyframes pip{70%{box-shadow:0 0 0 9px rgba(245,166,35,0)}100%{box-shadow:0 0 0 0 rgba(245,166,35,0)}}
+  h1{font:800 clamp(40px,5.4vw,74px)/1.02 Bricolage;letter-spacing:-.03em;margin:0 0 24px}
+  h1 em{font-style:normal;color:var(--accent)}
+  /* Type scale tightened to five real steps - 12 / 13.5 / 15 / 17 / 21 - roughly
+     a 1.25 ratio. It previously ran 12/12.5/13/15/15.5/16/17/19, which is eight
+     sizes inside seven pixels and reads as no hierarchy at all. */
+  .lede{font-size:21px;line-height:1.58;color:var(--fg2);max-width:33em;margin:0 0 32px}
+  .lede b{color:var(--fg);font-weight:600}
+
+  /* live metric strip - everest.suraj.work pattern, real numbers */
+  .strip{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--edge);border-radius:4px;
+    background:var(--surface);overflow:hidden;max-width:560px}
+  .met{flex:1 1 118px;padding:16px 16px;border-right:1px solid var(--edge)}
+  .met:last-child{border-right:0}
+  .met .v{font:500 26px/1 PlexMono;letter-spacing:-.02em}
+  .met .k{font:400 11.5px/1.4 PlexMono;color:var(--fg3);margin-top:8px;
+    text-transform:uppercase;letter-spacing:.07em}
+  /* all four are the same KIND of fact, so same treatment. Colour is reserved for
+     the one number that is genuinely live. */
+  .met .v{color:var(--fg)} .met.c .v{color:var(--accent)}
+
+  .hero-right{position:relative;min-height:clamp(380px,52vh,620px)}
+  /* Instrument readout, bottom-left of the scan panel. Monospace, small, quiet -
+     it labels the animation rather than decorating it. */
+  .scanhud{position:absolute;left:0;bottom:0;z-index:4;display:flex;align-items:baseline;
+    gap:10px;padding:8px 12px;pointer-events:none;
+    border:1px solid var(--edge);border-radius:3px;background:rgba(12,16,20,.72);
+    backdrop-filter:blur(6px)}
+  .scanhud-k{font:400 10.5px/1 PlexMono;color:var(--fg3);text-transform:uppercase;
+    letter-spacing:.10em}
+  .scanhud-t{font:500 17px/1 PlexMono;color:var(--accent);letter-spacing:.02em;
+    font-variant-numeric:tabular-nums}
+  @media(max-width:940px){.scanhud{display:none}}
+  .nodelabel{position:absolute;z-index:6;transform:translate(-50%,-150%);pointer-events:none;
+    font:500 12px/1 PlexMono;color:var(--accent);background:rgba(25,27,28,.94);
+    border:1px solid var(--edge);padding:4px 8px;border-radius:3px;white-space:nowrap;
+    opacity:0;transition:opacity .18s}
+  #glfail{position:absolute;inset:0;display:none;place-items:center;color:var(--fg3);
+    font:400 14px PlexMono;text-align:center;padding:24px}
+
+  /* ---------- content bands ---------- */
+  section{padding:0;position:relative}   /* .band > .wrap owns the rhythm now */
+  /* the deep band fades in and out rather than starting and stopping */
+  .band-deep{background:linear-gradient(to bottom,
+    var(--bg) 0%, var(--surface) 16%, var(--surface) 84%, var(--bg) 100%)}
+  /* REMOVED 2026-08-07. This was a 1px cyan line at left:50% running the full height
+     of the page - it read as an unexplained seam down the middle of the layout, which is
+     exactly what Brian reported. An earlier note already said "too subtle to see -
+     either raise it or cut it". Cut. */
+  /* Alternating full-bleed bands. Previously every dark section sat on --void and the
+     page was one flat grey from top to bottom with a single light island. Now each band
+     is a real step, and the light one is no longer the only relief. */
+  .band{position:relative;background:var(--bg);color:var(--fg)}
+  /* Each band REDEFINES the semantic tokens, so every component inside it - cards,
+     borders, muted text, the accent - flips automatically. No per-section overrides.
+     Flow in perceptual lightness:  8 -> 94 -> 8 -> 89 -> 8  (was 9.6 -> 20.7 -> 95 ->
+     14.7 -> 9.6, i.e. one light island in a flat grey page). */
+  .band-paper{
+    --bg:var(--film); --surface:var(--film2); --surface2:var(--film3);
+    --fg:var(--txt-l); --fg2:var(--txt-l2); --fg3:var(--txt-l3);
+    --edge:var(--rule-l); --hair:var(--hair-l);
+    --accent:var(--amb-l); --accent2:var(--fail-l);
+    --on-accent:#f6fafb;
+  }
+  .band-paper2{
+    --bg:var(--film2); --surface:var(--film); --surface2:var(--film3);
+    --fg:var(--txt-l); --fg2:var(--txt-l2); --fg3:var(--txt-l3);
+    --edge:var(--rule-l); --hair:var(--hair-l);
+    --accent:var(--amb-l); --accent2:var(--fail-l);
+    --on-accent:#f6fafb;
+  }
+  /* A hard 1px rule at every zone change, so areas are DISTINCT rather than fading
+     into one another. Brian asked for "borders and distinct lines and areas". */
+  .band + .band{border-top:1px solid var(--edge)}
+  .sec-h{display:flex;align-items:baseline;gap:16px;margin:0 0 12px}
+  .sec-h h2{font:800 clamp(26px,3vw,38px)/1.1 Bricolage;letter-spacing:-.02em;margin:0}
+  .sec-sub{color:var(--fg3);font-size:15px;max-width:56ch;margin:0 0 44px}
+
+  .work{display:grid;gap:24px}
+  .proj{border:1px solid var(--edge);border-radius:6px;background:var(--surface);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    overflow:hidden;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+  .proj-body{padding:32px 32px}
+  .proj h3{font:800 25px/1.15 Bricolage;letter-spacing:-.02em;margin:0 0 4px}
+  /* Each project owns an accent, but NOT as a 3px bar down the left edge -
+     that side-tab is one of the most recognisable AI-UI tells there is, and
+     it was flagged as such. The colour now lives in a solid chip and a tinted
+     frame, so the whole card carries its identity instead of wearing a slab. */
+  .tag{font:500 11.5px/1 PlexMono;text-transform:uppercase;letter-spacing:.09em;
+    display:inline-block;margin-bottom:16px;padding:8px 12px;border-radius:3px;
+    color:var(--on-accent)}
+  /* ONE accent. Four hues were doing three unrelated jobs at once - hero node
+     schedule-class, card identity, metric strip - and read as confetti. Cards are
+     told apart by their content, not by each wearing a different colour. */
+  .proj .tag{background:transparent;border:1px solid var(--accent);color:var(--accent)}
+  .p1,.p2,.p3{border-color:var(--edge)}
+  .proj p{color:var(--fg2);font-size:15px;margin:0 0 20px}
+  /* verification block - ENDORSED: every claim says where it came from */
+  .verify{border-top:1px solid var(--edge);padding-top:16px;margin-top:4px}
+  .verify li{list-style:none;display:flex;gap:12px;align-items:flex-start;
+    font:400 13.5px/1.55 PlexMono;color:var(--fg2);margin-bottom:8px}
+  .verify ul{margin:0;padding:0}
+  .verify .ck{color:var(--accent);flex:none}
+  .verify .src{color:var(--fg3)}
+  .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+  .links a{padding:8px 16px;border:1px solid var(--edge);border-radius:3px;
+    font:500 13px/1 PlexMono;text-decoration:none;color:var(--fg);transition:.16s}
+  .links a:hover{border-color:var(--accent);color:var(--accent)}
+  .demo{background:var(--surface);border-left:1px solid var(--edge);min-height:290px;
+    position:relative;display:grid;place-items:center}
+  .demo canvas{display:block;width:100%;height:100%}
+  .demo .cap{position:absolute;left:14px;bottom:12px;font:400 11.5px/1 PlexMono;color:var(--fg3);z-index:3}
+  /* click-to-load poster for the live Squares app */
+  .demo-live{padding:0}
+  .poster{position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;cursor:pointer;
+    background:var(--bg);display:grid;place-items:center;color:var(--fg)}
+  .poster canvas{position:absolute;inset:0;opacity:.5;transition:opacity .25s}
+  .poster:hover canvas{opacity:.72}
+  .play{position:relative;z-index:2;display:inline-flex;align-items:center;gap:8px;
+    padding:12px 20px;border-radius:3px;background:var(--accent);color:var(--on-accent);
+    font:500 13.5px/1 PlexMono;transition:.16s}
+  .poster:hover .play{background:var(--accent);filter:brightness(1.12)}
+  .play svg{width:15px;height:15px}
+  .poster-note{position:absolute;bottom:34px;left:0;right:0;z-index:2;text-align:center;
+    font:400 10.5px/1 PlexMono;color:var(--fg3)}
+  .demo-live iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+  /* hover readout shared by the interactive demos */
+  .readout{position:absolute;right:12px;top:12px;z-index:3;text-align:right;
+    font:400 11px/1.55 PlexMono;color:var(--fg2);pointer-events:none;
+    background:rgba(25,27,28,.9);border:1px solid var(--edge);border-radius:3px;
+    padding:8px 12px;opacity:0;transition:opacity .15s}
+  .readout.on{opacity:1}
+  .readout b{color:var(--accent);font-weight:500}
+  @media(max-width:880px){.proj{grid-template-columns:1fr}.demo{border-left:0;border-top:1px solid var(--edge)}}
+
+  /* THE LIGHT BAND. Brian asked for "contrasts with light", and he endorsed a
+     light/dark rhythm back in v3. One genuinely light surface in the middle of
+     a dark page does more for contrast than any amount of tuning within the
+     darks - and it gives the eye a place to rest before Experience. */
+  .caps{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:1px;
+    background:var(--edge);border:1px solid var(--edge);border-radius:6px;overflow:hidden}
+  .cap-cell{background:var(--surface);padding:24px 24px}
+  .cap-cell h4{font:600 13px/1 PlexMono;color:var(--accent);margin:0 0 12px;
+    text-transform:uppercase;letter-spacing:.08em}
+  .cap-cell p{margin:0;font-size:15px;color:var(--txt-l2);line-height:1.55}
+
+  .exp{display:grid;gap:0;border:1px solid var(--edge);border-radius:5px;overflow:hidden}
+  .row{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:24px;
+    padding:24px 28px;background:var(--surface);border-bottom:1px solid var(--edge)}
+  .row:last-child{border-bottom:0}
+  .row .r-role{font:600 16px/1.35 PlexSans}
+  .row .r-meta{font:400 13px/1.5 PlexMono;color:var(--fg3);margin-top:4px}
+  .row p{margin:0;color:var(--fg2);font-size:15px}
+
+  /* SPECIFICITY, twice bitten. `section`/`footer` are element selectors so the
+     `.wrap` class rule outranks them - originally that gave every section ZERO
+     vertical padding and Experience butted into the CTA. The 2026-08-07 re-nest
+     (sections became full-bleed .band wrappers with .wrap inside) broke the
+     `section.wrap` fix too, because .wrap is no longer ON the section. Padding now
+     lives on .band > .wrap, which matches the actual structure, and the vertical
+     rhythm is a token so bands cannot drift apart. */
+  :root{--band-y:clamp(64px,7vw,112px)}
+  .band > .wrap{padding-top:var(--band-y);padding-bottom:var(--band-y)}
+  footer.band > .wrap{padding-bottom:calc(var(--band-y) + 24px)}
+  footer{text-align:center}
+  footer h2{font:800 clamp(28px,3.6vw,46px)/1.1 Bricolage;letter-spacing:-.025em;margin:0 0 16px}
+  footer p{color:var(--fg2);max-width:46ch;margin:0 auto 32px}
+  .fbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .fbtns a{padding:12px 24px;border-radius:3px;border:1px solid var(--edge);
+    background:var(--surface);text-decoration:none;font:500 14px/1 PlexMono;transition:.16s}
+  .fbtns a.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .fbtns a:hover{border-color:var(--accent);color:var(--accent)}
+  .fbtns a.pri:hover{background:var(--accent);filter:brightness(1.12);color:var(--on-accent)}
+  /* the licence notice was wrapping mid-phrase inside the 46ch paragraph width */
+  .foot-note{margin-top:40px;font:400 12.5px/1.7 PlexMono;color:var(--fg3);
+    max-width:74ch;margin-left:auto;margin-right:auto}
+
+  /* MOBILE HERO. Previously the canvas stayed inset:0 behind the copy, so on a phone
+     the cortex became a washed-out wallpaper under the headline -- which is the exact
+     thing that was rejected once already ("having the brain in the background").
+     On narrow screens it becomes a contained exhibit ABOVE the copy instead: still the
+     centrepiece, still the first thing you see, but no longer fighting the text. */
+  @media(max-width:940px){
+    .hero{display:block;min-height:auto;overflow:visible}
+    /* The canvas now lives inside .hero-right, which sets the height at this width,
+       so the canvas just fills it. (The old rule here fought a viewport-positioned
+       canvas that no longer exists.) */
+    #stage{position:absolute;inset:0;width:100%;height:100%}
+    .hero::after{display:none}
+    .hero::before{display:none}
+    .hero-grid{grid-template-columns:1fr;padding:12px var(--gutter) 60px;gap:28px}
+    /* was display:none, which now would delete the canvas itself. Keep it, put it
+       ABOVE the copy, and give it a contained height. */
+    .hero-right{display:block;order:-1;min-height:0;height:min(42vh,340px)}
+    #glfail{position:static;height:250px}
+  }
+  /* the contact bar stacks instead of colliding with the name on small screens */
+  @media(max-width:620px){
+    .hbar{flex-direction:column;align-items:stretch;gap:12px;padding:12px 24px}
+    nav{justify-content:flex-start}
+    .who{white-space:normal}
+  }
+  @media(prefers-reduced-motion:reduce){.pip{animation:none}}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+</style>
+
+<header>
+  <div class="hbar">
+    <div class="mono-badge">
+      <div class="mk">BM</div>
+      <div class="who">Brian Mathew<small>New Jersey · open to work</small></div>
+    </div>
+    <nav>
+      <a href="mailto:mathew.brian@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><b>Email</b></a>
+      <a href="tel:+16098151685"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><b>Phone</b></a>
+      <a href="https://github.com/bmath8"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A12 12 0 0 0 8.2 23.9c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C16.9 4.7 18 5 18 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg><b>GitHub</b></a>
+      <a href="https://linkedin.com/in/brian-mathew-66235556"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.5 4.7 5.8V21h-4v-5.5c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9V21H9z"/></svg><b>LinkedIn</b></a>
+      <a class="cta" href="/resume.pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg><b>Résumé</b></a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <div class="live"><span class="pip"></span><span id="nextrun">26 agents scheduled on real cron lines</span></div>
+      <h1>I build systems,<br>then I <em>keep them running.</em></h1>
+      <p class="lede">Self-taught developer in New Jersey. That cortex is not decoration —
+        it carries <b>one node for every scheduled agent on my machine</b>, each firing on the cron
+        line it actually runs on. Everything below is code you can open.</p>
+      <div class="strip">
+        <div class="met c"><div class="v" id="m1">26</div><div class="k">agents live</div></div>
+        <div class="met"><div class="v">81<span style="color:var(--fg3)">/81</span></div><div class="k">tests green</div></div>
+        <!-- was "3 public repos", which was simply false: there are 8 public repos on the
+             account. "3 systems shipped" is what the three case studies below actually
+             argue, it matches the OG image alt text, and unlike a repo count it cannot
+             rot the next time a repo is published or made private. -->
+        <div class="met a"><div class="v">3</div><div class="k">systems shipped</div></div>
+        <div class="met v_"><div class="v">0</div><div class="k">manual triggers</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <canvas id="stage" aria-label="A cortical surface carrying 26 nodes, one for each scheduled agent running on Brian's machine. Each node brightens at the time its job actually runs."></canvas>
+      <div id="glfail">26 scheduled agents are running on this machine right now.<br>81 tests green.</div>
+      <div class="nodelabel" id="nlabel"></div>
+      <!-- Scan-viewer readout. Without it the orbit is just motion; with it the
+           animation is legibly a 24-hour day compressed to 24 seconds, and the
+           burst you see at 06:40 is the real morning cluster. -->
+      <div class="scanhud" aria-hidden="true">
+        <span class="scanhud-k">simulated day</span>
+        <span class="scanhud-t" id="dayclock">00:00</span>
+        <span class="scanhud-k">26 agents &middot; real cron</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="band band-paper band-work"><div class="wrap">
+  <div class="sec-h"><h2>Selected work</h2></div>
+  <p class="sec-sub">Three systems I built, tested, documented, and still operate. Every number
+    below says where it came from, so you can check it rather than trust it.</p>
+
+  <div class="work">
+    <article class="proj p1">
+      <div class="proj-body">
+        <span class="tag">Brian OS · running now</span>
+        <h3>A 26-agent fleet that runs my day</h3>
+        <p>Native-Windows AI agent fleet in Python. Local LLM routing through Ollama, Telegram
+          control, structured shared state, self-healing health checks — and draft-only
+          guardrails, so nothing sends, spends, deploys or deletes without my approval.</p>
+        <div class="verify"><ul>
+          <li><span class="ck">✓</span><span>26 scheduled agents <span class="src">— count from <code>hermes cron list</code>, 2026-08-05</span></span></li>
+          <li><span class="ck">✓</span><span>81/81 tests passing <span class="src">— live <code>pytest</code> run, 31s, 2026-08-05</span></span></li>
+          <li><span class="ck">✓</span><span>Recovered a silent process-guardian failure <span class="src">— traced, fixed, prevention check written</span></span></li>
+        </ul></div>
+        <div class="links"><a href="https://github.com/bmath8/brian-os">Read the source →</a></div>
+      </div>
+      <div class="demo"><canvas id="clock"></canvas>
+        <div class="readout" id="clock-readout"></div>
+        <span class="cap">24h — hover any mark to name the agent</span></div>
+    </article>
+
+    <article class="proj p2">
+      <div class="proj-body">
+        <span class="tag">Super Bowl LX Squares · live</span>
+        <h3>A real-time app that ran a real event</h3>
+        <p>100-square grid, randomized draw, live score-driven winner resolution, chat, host
+          controls and a security write-lock. It ran in front of a real audience on game day,
+          with no second chance to get it right.</p>
+        <div class="verify"><ul>
+          <li><span class="ck">✓</span><span>Publicly usable right now <span class="src">— no login, open it and click</span></span></li>
+          <li><span class="ck">✓</span><span>React + Firebase Realtime DB <span class="src">— source public</span></span></li>
+        </ul></div>
+        <div class="links">
+          <a href="https://fam-super-bowl-squares-2026.vercel.app">Open the live app →</a>
+          <a href="https://github.com/bmath8/fam-super-bowl-squares-2026">Source</a>
+        </div>
+      </div>
+      <!-- PHASE 5: the real app, click-to-load. Nothing third-party is requested
+           until the visitor asks for it, so the page still loads at zero external
+           requests - but one click puts the actual game-day app in front of them. -->
+      <div class="demo demo-live" id="squares-demo">
+        <button class="poster" id="squares-load" aria-label="Load the live Super Bowl Squares app">
+          <canvas id="grid" aria-hidden="true"></canvas>
+          <span class="play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>Load the live app</span>
+          <span class="poster-note">loads fam-super-bowl-squares-2026.vercel.app in this frame</span>
+        </button>
+        <span class="cap">the real app — click to interact</span>
+      </div>
+    </article>
+
+    <article class="proj p3">
+      <div class="proj-body">
+        <span class="tag">BoomBox · prototype</span>
+        <h3>Durable state, separated from transient state</h3>
+        <p>Real-time social music app on Next.js and TypeScript. The interesting decision is the
+          split: Postgres holds what must survive a restart, WebSockets and Redis Pub/Sub carry
+          what must not outlive the session.</p>
+        <div class="verify"><ul>
+          <li><span class="ck">✓</span><span>Jest/RTL tests + Docker Compose <span class="src">— in the repo</span></span></li>
+          <li><span class="ck">✓</span><span>No live deployment <span class="src">— stated plainly; it is a prototype</span></span></li>
+        </ul></div>
+        <div class="links"><a href="https://github.com/bmath8/boombox">Read the source →</a></div>
+      </div>
+      <div class="demo"><canvas id="arch"></canvas>
+        <span class="cap">why the split matters</span></div>
+    </article>
+  </div>
+</div></section>
+
+<section class="band band-caps"><div class="wrap">
+  <div class="sec-h"><h2>What I actually do</h2></div>
+  <p class="sec-sub">Only things I can demonstrate or talk through in a live screen share.</p>
+  <div class="caps">
+    <div class="cap-cell"><h4>Build</h4><p>Python and TypeScript. React/Next.js front ends, Flask and Node back ends, Postgres and Supabase, Docker.</p></div>
+    <div class="cap-cell"><h4>Operate</h4><p>Windows administration, PowerShell, scheduled jobs, log analysis, health monitoring, self-healing watchdogs.</p></div>
+    <div class="cap-cell"><h4>Test</h4><p>pytest and Jest/RTL. I write the suite, run it, and fix what it catches before shipping.</p></div>
+    <div class="cap-cell"><h4>Support</h4><p>Years of customer-facing work. Diagnose the real problem, explain it plainly, own it to a verified fix.</p></div>
+  </div>
+</div></section>
+
+<section class="band band-paper2 band-before"><div class="wrap">
+  <div class="sec-h"><h2>Before this</h2></div>
+  <p class="sec-sub">Short and honest. The projects above are the strongest evidence I have.</p>
+  <div class="exp">
+    <div class="row">
+      <div><div class="r-role">Independent Software Developer</div><div class="r-meta">2025 — Present</div></div>
+      <p>Building and operating the three systems above, end to end: design, implementation, tests, documentation, and the running of them afterwards.</p>
+    </div>
+    <div class="row">
+      <div><div class="r-role">Driver, Independent Contractor</div><div class="r-meta">Uber · New Jersey · 2022</div></div>
+      <p>About a year of customer-facing work — navigation, scheduling, safety and time-sensitive problems, handled independently and calmly.</p>
+    </div>
+    <div class="row">
+      <div><div class="r-role">Appliances Department Lead</div><div class="r-meta">Best Buy</div></div>
+      <p>Led the appliances sales floor: advised customers through major purchases, resolved complaints and post-sale problems in person, supported the team day to day.</p>
+    </div>
+  </div>
+</div></section>
+
+<footer class="band band-foot"><div class="wrap">
+  <h2>The machine is running. Come look at it.</h2>
+  <p>Open to remote, hybrid, on-site or relocation, and available to start quickly.</p>
+  <div class="fbtns">
+    <a class="pri" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+    <a href="tel:+16098151685">(609) 815-1685</a>
+    <a href="https://github.com/bmath8">github.com/bmath8</a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+  </div>
+  <p class="foot-note">Every number on this page is checkable, and says where it came from.<br>
+    No third-party requests · no generated images · renders with JavaScript disabled.<br>
+    <span style="opacity:.72">Cortical surface built from the MNI ICBM152 2009c template.
+    Copyright &copy; 1993&ndash;2004 Louis Collins, McConnell Brain Imaging Centre,
+    Montreal Neurological Institute, McGill University. Used by permission of its licence.</span></p>
+</footer>
+
+<script type="importmap">
+{ "imports": { "three": "/vendor/three.module.min.js" } }
+</script>
+<script type="module">
+  /* The demo canvases used to be drawn with hardcoded dark-zone colours. They now sit
+     inside a LIGHT band, so they read their palette from the element they are drawn on -
+     the same semantic tokens the CSS uses. Move a canvas to another band and it follows. */
+  function zone(el){
+    const cs = getComputedStyle(el);
+    const v = n => cs.getPropertyValue(n).trim();
+    return {fg:v('--fg'), fg2:v('--fg2'), fg3:v('--fg3'), edge:v('--edge'),
+            hair:v('--hair'), surface:v('--surface'), bg:v('--bg'),
+            accent:v('--accent'), accent2:v('--accent2')};
+  }
+
+/* ============================================================
+   HERO — real cortical mesh + one node per real scheduled agent
+   ============================================================ */
+const AGENTS = await fetch('/agents.json').then(r=>r.json()).catch(()=>[]);
+document.getElementById('m1').textContent = AGENTS.length || 26;
+
+/* next real run, computed from the real cron lines */
+function nextRun(){
+  const now = new Date(); let best = null;
+  for (const a of AGENTS){
+    const [mi,hr] = a.cron.split(/\s+/);
+    const mins = mi.includes('*') ? [now.getMinutes()] : mi.split(',').map(Number);
+    const hrs  = hr.includes('*') ? [...Array(24).keys()] : hr.split(',').map(Number);
+    for (const h of hrs) for (const m of mins){
+      const d = new Date(now); d.setHours(h,m,0,0);
+      if (d <= now) d.setDate(d.getDate()+1);
+      if (!best || d < best.d) best = {d, n:a.n};
+    }
+  }
+  if (!best) return;
+  const hh = String(best.d.getHours()).padStart(2,'0'), mm = String(best.d.getMinutes()).padStart(2,'0');
+  document.getElementById('nextrun').textContent =
+    `${AGENTS.length} agents scheduled · next: ${best.n} at ${hh}:${mm}`;
+}
+nextRun(); setInterval(nextRun, 30000);
+
+const canvas = document.getElementById('stage');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let THREE;
+try { THREE = await import('three'); } catch(e){ document.getElementById('glfail').style.display='grid'; }
+
+if (THREE) {
+  /* BRN2 wire format (2026-08-06). Rebuild with scratchpad/pack_mesh_v2.py, which
+     refuses to write unless 11 round-trip checks pass, including a negative control.
+
+     The CDN was measured compressing this asset at brotli q3 -- weak -- so the win
+     came from handing it low-entropy bytes rather than from a stronger compressor:
+     836,324 -> 662,624 on disk, and 748,625 -> 469,248 on the wire (37.3% off).
+     Positions are plane-split zigzag-delta varints; indices are per-triangle deltas
+     after a winding-preserving rotation and sort; normals were left alone because
+     delta-encoding them cost 22KB on disk to save 4KB on the wire.
+
+     Vertex order is UNCHANGED on purpose -- the agent nodes are seated by
+     farthest-point sampling over a strided walk of the vertex array, so permuting
+     vertices (what a normal vertex-cache optimiser does) would silently move every
+     node on the cortex. It also compressed slightly worse.
+
+     Indices stay Uint16. v3 has 61,889 vertices - real headroom is now only ~3,600,
+     so any future rebuild must keep build_mesh.py's --verts under 65,535. The
+     packer refuses to write above that rather than producing a silently broken file.
+
+     REBUILT 2026-08-07. The v2 mesh had lost its folds: 71.4% of its surface was
+     essentially flat and its area was 940 cm2 against ~1800 for a real cortex, so
+     "the colours erased the detail" was only half true - half the geometry was not
+     there. scratchpad/build_mesh.py now exists and regenerates from the MNI ICBM152
+     2009c volume with NO smoothing: marching cubes at 1 mm, largest component, then
+     QUADRIC DECIMATION to the vertex budget. Quadric error collapses flat regions
+     first and defends creases; Taubin is a low-pass filter and the gyri ARE the high
+     frequencies. Measured at 0/1/2/5 smoothing passes and every pass made it flatter,
+     so zero were used.
+       flat 71.4% -> 49.7%    fold area 940 -> 1342 cm2 (1.43x)    V 39,828 -> 61,889
+     Cost, stated plainly: 469 KB -> 814 KB over the wire. */
+  const buf = await (await fetch('/vendor/mesh/brain-icbm152-v3.bin')).arrayBuffer();
+  const u8 = new Uint8Array(buf), dv = new DataView(buf);
+  if (dv.getUint32(0,false) !== 0x42524e32) throw new Error('brain mesh: bad magic, expected BRN2');
+  const nV = dv.getUint32(4,true), nT = dv.getUint32(8,true), pLen = dv.getUint32(12,true);
+  let o = 20;
+  /* LEB128 into `out`; returns the offset just past the last value read. */
+  const rd = (out,n,p)=>{
+    for (let k=0;k<n;k++){
+      let v=0, s=0, b;
+      do { b=u8[p++]; v |= (b & 0x7f) << s; s += 7; } while (b & 0x80);
+      out[k]=v;
+    }
+    return p;
+  };
+  const vtmp = new Int32Array(Math.max(nV,nT));
+  const qp = new Int16Array(nV*3);
+  for (let k=0;k<3;k++){                       /* three planes, each a delta chain */
+    o = rd(vtmp,nV,o);
+    let run=0;
+    for (let i=0;i<nV;i++){ const z=vtmp[i]; run += (z>>>1) ^ -(z & 1); qp[i*3+k]=run; }
+  }
+  o = 20 + pLen;
+  const qn = new Int8Array(buf,o,nV*3); o += nV*3;
+  const idx = new Uint16Array(nT*3);
+  o = rd(vtmp,nT,o);
+  let run=0;
+  for (let t=0;t<nT;t++){ run += vtmp[t]; idx[t*3]=run; }
+  o = rd(vtmp,nT,o);
+  for (let t=0;t<nT;t++){ const z=vtmp[t]; idx[t*3+1]=idx[t*3] + (((z>>>1) ^ -(z & 1))|0); }
+  o = rd(vtmp,nT,o);
+  for (let t=0;t<nT;t++){ const z=vtmp[t]; idx[t*3+2]=idx[t*3] + (((z>>>1) ^ -(z & 1))|0); }
+  const pos = new Float32Array(nV*3), nrm = new Float32Array(nV*3);
+  for (let i=0;i<nV*3;i++){ pos[i]=qp[i]/32767; nrm[i]=qn[i]/127; }
+
+  /* curvature -> sulci read as grooves, not noise (proved in lab 03) */
+  const curv = new Float32Array(nV), deg = new Float32Array(nV);
+  const acc = (a,b)=>{
+    let dx=pos[b*3]-pos[a*3], dy=pos[b*3+1]-pos[a*3+1], dz=pos[b*3+2]-pos[a*3+2];
+    const L=Math.hypot(dx,dy,dz)||1e-9; dx/=L; dy/=L; dz/=L;
+    curv[a]+=dx*nrm[a*3]+dy*nrm[a*3+1]+dz*nrm[a*3+2]; deg[a]++;
+  };
+  for (let t=0;t<nT;t++){ const a=idx[t*3],b=idx[t*3+1],c=idx[t*3+2];
+    acc(a,b);acc(b,c);acc(c,a);acc(b,a);acc(c,b);acc(a,c); }
+  for(let i=0;i<nV;i++) curv[i]/=deg[i]||1;
+  /* Normalise on PERCENTILES, not min/max. Min/max is hostage to a handful of
+     outlier vertices, and the two meshes have very different curvature
+     statistics -- on the ICBM152 surface it pushed most of the mesh to the top
+     of the range and the shading blew out to white. 3rd/97th is robust. */
+  const sorted = Float32Array.from(curv).sort();
+  const lo = sorted[Math.floor(nV*0.03)], hi = sorted[Math.floor(nV*0.97)];
+  for(let i=0;i<nV;i++) curv[i]=Math.min(1,Math.max(0,(curv[i]-lo)/((hi-lo)||1)));
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('normal',   new THREE.BufferAttribute(nrm,3));
+  geo.setAttribute('aCurv',    new THREE.BufferAttribute(curv,1));
+  geo.setIndex(new THREE.BufferAttribute(idx,1));
+
+  /* ---------------------------------------------------------------
+     PHASE 1 - MAKE IT POP.
+     The old matcap spent most of its area in #33566f..#12283c, which is
+     within ~10% luminance of the #050a12 page. The mesh was the SAME VALUE
+     as its background, so it read as a silhouette instead of an object.
+     That is a value problem, not a colour problem - so the palette Brian
+     approved does not change. Only the range does.
+     --------------------------------------------------------------- */
+  const mc=(()=>{ const s=256,c=document.createElement('canvas'); c.width=c.height=s;
+    const g=c.getContext('2d');
+    const gr=g.createRadialGradient(s*.34,s*.28,s*.02,s*.5,s*.5,s*.56);
+    /* v16: a BONE ramp, not a blue one. Object, rim glow and UI accent were all
+       the same blue-cyan family, so they dissolved into each other. A warm object
+       against cool UI cannot blend. No pure white at the top - that was the chrome. */
+    /* The bone ramp read as GOLD - #bcb0a0 / #837868 / #4a443b are warm mid-tones and
+       on a black page that is brass, not tissue. Neutral grey with a faint cool cast,
+       and the top pulled down from near-white so the surface is MATTE: the blown
+       specular was itself erasing fold detail. */
+    /* Brightened 2026-08-07 after the v3 rebuild. v3 carries far more curvature, so
+       the cavity term darkens much more of the surface than it did on the smooth v2 -
+       with the old ramp the whole cortex sank to roughly the value of the (now lifted)
+       page and read as a shadow. The object has to sit clearly ABOVE the page ground. */
+    gr.addColorStop(0.00,'#f4f6f7');
+    gr.addColorStop(0.13,'#e0e5e9');
+    gr.addColorStop(0.34,'#bcc4ca');
+    gr.addColorStop(0.58,'#949ca3');
+    gr.addColorStop(0.78,'#646b71');
+    gr.addColorStop(1.00,'#33383c');
+    g.fillStyle=gr; g.beginPath(); g.arc(s/2,s/2,s/2,0,7); g.fill();
+    const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
+
+  /* Uniform storage for the activation field. Fixed-size arrays because GLSL wants a
+     constant bound; uN carries how many are actually live. */
+  const MAXN = 32;
+  const NODE_UNIFORM = Array.from({length:MAXN}, () => new THREE.Vector3());
+  const ACT_UNIFORM  = new Float32Array(MAXN);
+
+  const mat = new THREE.MeshMatcapMaterial({matcap:mc, fog:true});
+  mat.onBeforeCompile = s => {
+    s.uniforms.uAct = { value: ACT_UNIFORM };
+    s.vertexShader = s.vertexShader
+      .replace('void main() {', [
+        'attribute float aCurv;',
+        'varying float vCurv;',
+        'varying float vAct;',
+        'attribute float aSeedA;',
+        'attribute float aSeedB;',
+        'attribute float aGeoA;',
+        'attribute float aGeoB;',
+        'uniform float uAct[' + MAXN + '];',
+        'void main() {' ].join('\n'))
+      .replace('#include <begin_vertex>', [
+        '#include <begin_vertex>',
+        'vCurv = aCurv;',
+        /* Two lookups, not 26 sphere tests - and the distances are ALONG THE
+           SURFACE, precomputed by the Dijkstra pass above. This is what makes the
+           glow travel through the folds instead of through the tissue. */
+        'float fA = exp(-aGeoA * aGeoA * 26.0);',
+        'float fB = exp(-aGeoB * aGeoB * 26.0);',
+        'vAct = uAct[int(aSeedA)] * fA + uAct[int(aSeedB)] * fB;' ].join('\n'));
+    s.fragmentShader = s.fragmentShader
+      .replace('void main() {','varying float vCurv;\nvarying float vAct;\nvoid main() {')
+      // `normal` and `vViewPosition` are both in scope after this include.
+      // vViewPosition points surface -> camera, so 1-dot(n,v) peaks at the rim.
+      .replace('#include <normal_fragment_maps>',
+        '#include <normal_fragment_maps>\n' +
+        'float fres = pow(1.0 - clamp(abs(dot(normalize(normal), normalize(vViewPosition))),0.0,1.0), 2.4);')
+      .replace('#include <dithering_fragment>',
+        '#include <dithering_fragment>\n' +
+        // cavity: sulci go dark, ridges go bright - a WIDER spread than before
+        /* WIDER, not narrower. A narrow window maps almost everything to full-bright or
+           full-dark, which is exactly what wiped the mid-tones where the fine folds
+           live. Widening it puts more of the surface in the readable middle. */
+        'float cav = smoothstep(0.12, 0.88, vCurv);\n' +
+        // ceiling pulled back from 1.28: the ICBM152 surface is smoother, so more
+        // of it sits in the bright band and 1.28 clipped large areas to white
+        'gl_FragColor.rgb *= mix(0.58, 1.04, cav);\n' +
+        // two-tone: cool violet down in the folds, neutral-bright on the ridges
+        // Violet is a HINT in the deepest folds, not a tint over the whole mesh.
+        // At vec3(0.70,0.63,1.18) this turned the brain purple - overcooked, and
+        // purple-dominant reads as the exact AI-gradient tell we avoid.
+        // cyan fresnel rim - separates the silhouette hard from the background
+        // and puts the approved accent ON the object, not just in the UI
+        /* --------------------------------------------------------------------
+           Three things a bare matcap cannot do, which is why this read as a "low
+           definition 3D rendering" regardless of how many triangles the mesh has.
+
+           1. SCREEN-SPACE CREASE AO. fwidth(normal) is large exactly where the
+              normal turns fastest - i.e. in a sulcus - and it is measured per
+              PIXEL, so crease definition no longer depends on mesh density. This
+              is the single biggest legibility win available here.
+           2. A FORM LIGHT. A matcap is view-locked, so the object has no fixed
+              light and therefore no consistent sense of volume. A soft directional
+              term gives it one, kept gentle so the matcap still leads.
+           3. A NARROW SPECULAR, so the surface reads as damp tissue rather than
+              flat clay. Small and tight: broad highlights were erasing folds.
+           -------------------------------------------------------------------- */
+        'vec3 nv = normalize(normal);\n' +
+        'float crease = clamp(length(fwidth(nv)) * 5.2, 0.0, 1.0);\n' +
+        'gl_FragColor.rgb *= (1.0 - 0.62 * crease);\n' +
+        'vec3 Ldir = normalize(vec3(-0.35, 0.78, 0.52));\n' +
+        'float ndl = clamp(dot(nv, Ldir), 0.0, 1.0);\n' +
+        'gl_FragColor.rgb *= (0.78 + 0.34 * ndl);\n' +
+        'vec3 Vv = normalize(vViewPosition);\n' +
+        'float spec = pow(clamp(dot(reflect(-Ldir, nv), Vv), 0.0, 1.0), 42.0);\n' +
+        'gl_FragColor.rgb += vec3(0.85,0.90,0.94) * spec * 0.30 * (1.0 - crease);\n' +
+        'gl_FragColor.rgb += vec3(0.72,0.68,0.62) * fres * 0.14;\n' +
+        /* ------------------------------------------------------------------
+           THE ACTIVATION OVERLAY. This is how neuroimaging actually shows
+           activity: a hot colormap composited over greyscale anatomy. It is not
+           decoration - each blob is one scheduled agent, blooming at the real
+           cron minute it fires, so a compressed 24 hours sweeps across the
+           cortex and the 06:40-07:00 cluster arrives as a burst because twelve
+           agents genuinely wake inside those twenty minutes. Replaces 26 flat
+           dots, which is the part that read as junior work.
+           ------------------------------------------------------------------ */
+        'float A = clamp(vAct, 0.0, 1.0);\n' +
+        'vec3 hot = clamp(vec3(A * 2.6, A * 2.6 - 0.85, A * 2.6 - 1.9), 0.0, 1.0);\n' +
+        'gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * 0.42, smoothstep(0.02, 0.5, A));\n' +
+        'gl_FragColor.rgb += hot * (0.30 + 0.70 * A) * A;');
+  };
+
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  /* was capped at 1.5, which is what made a 2560px canvas look like a low-resolution
+     render. 2.0 doubles the sample count on the diagonal creases. */
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+  renderer.localClippingEnabled = true;
+  const scene = new THREE.Scene();
+  /* Depth fog tied to the page ground. Without it the far side of the cortex renders
+     at the same value as the near side and the object reads as a flat cut-out - a
+     large part of why this looked like a cheap render. */
+  scene.fog = new THREE.Fog(0x0c1014, 2.35, 5.20);
+  const cam = new THREE.PerspectiveCamera(30,1,.01,60);
+  const pivot = new THREE.Group(); scene.add(pivot);
+  const brain = new THREE.Mesh(geo,mat); pivot.add(brain);
+
+  /* ==========================================================================
+     THE SECTION.
+
+     A spinning shell with lights on it is a shell with lights on it. This opens the
+     cortex instead: a clipping plane cuts the near half away and the exposed face
+     shows the REAL T1-weighted MRI at that depth - the same ICBM152 scan the surface
+     mesh was generated from, so the section always agrees with the anatomy around it.
+
+     The volume ships as one tiled atlas (10x10 sagittal slices, 284 KB WebP) rather
+     than a 3D texture, so it needs no WebGL2-only path; the shader samples two
+     adjacent cells and blends, which is the third dimension recovered by hand.
+
+     The clip plane is defined in the brain's LOCAL frame and pushed into world space
+     from pivot.matrixWorld each frame - otherwise the cut would stay fixed in the room
+     while the brain turned through it, which reads as a glitch rather than a cutaway.
+     ========================================================================== */
+  const ATLAS_GRID = 10, ATLAS_CELL = 160, ATLAS_SLICES = 100;
+  /* The atlas cell spans the brain's own bounding box - build_slices.py crops to the
+     mask before tiling. So the quad must be that same box, measured from the mesh, not
+     a guessed square: a fixed +/-1.15 stretched the anatomy and let it overhang the
+     silhouette. */
+  let bMinY= 1e9,bMaxY=-1e9,bMinZ= 1e9,bMaxZ=-1e9, bMinX= 1e9,bMaxX=-1e9;
+  for (let i=0;i<nV;i++){
+    const x=pos[i*3], y=pos[i*3+1], z=pos[i*3+2];
+    if(x<bMinX)bMinX=x; if(x>bMaxX)bMaxX=x;
+    if(y<bMinY)bMinY=y; if(y>bMaxY)bMaxY=y;
+    if(z<bMinZ)bMinZ=z; if(z>bMaxZ)bMaxZ=z;
+  }
+  const atlasTex = new THREE.TextureLoader().load('/vendor/mesh/t1-atlas.webp');
+  atlasTex.colorSpace = THREE.SRGBColorSpace;
+  atlasTex.minFilter = THREE.LinearFilter; atlasTex.magFilter = THREE.LinearFilter;
+  atlasTex.generateMipmaps = false;
+  atlasTex.wrapS = atlasTex.wrapT = THREE.ClampToEdgeWrapping;
+
+  const sliceGeo = new THREE.BufferGeometry();
+  sliceGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+    0,bMinY,bMinZ,  0,bMaxY,bMinZ,  0,bMaxY,bMaxZ,  0,bMinY,bMaxZ ]),3));
+  sliceGeo.setIndex([0,1,2, 0,2,3]);
+
+  const sliceMat = new THREE.ShaderMaterial({
+    transparent:true, depthWrite:true, side:THREE.DoubleSide,
+    uniforms:{ uAtlas:{value:atlasTex}, uSlice:{value:50.0}, uFade:{value:0.0},
+               uTint:{value:new THREE.Color(0xf5a623)},
+               uYZmin:{value:new THREE.Vector2(bMinY,bMinZ)},
+               uYZspan:{value:new THREE.Vector2(bMaxY-bMinY, bMaxZ-bMinZ)} },
+    vertexShader:[
+      'varying vec2 vYZ;',
+      'void main(){ vYZ = position.yz;',
+      '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }'
+    ].join('\n'),
+    fragmentShader:[
+      'uniform sampler2D uAtlas; uniform float uSlice; uniform float uFade;',
+      'uniform vec3 uTint; uniform vec2 uYZmin; uniform vec2 uYZspan; varying vec2 vYZ;',
+      'const float G = ' + ATLAS_GRID + '.0;',
+      /* one cell of the atlas, inset by half a texel so neighbours cannot bleed in */
+      'float cell(float ci, vec2 uv){',
+      '  float gx = mod(ci, G), gy = floor(ci / G);',
+      '  vec2 inset = vec2(0.5 / (G * ' + ATLAS_CELL + '.0));',
+      '  vec2 t = clamp(uv, inset, vec2(1.0) - inset);',
+      '  return texture2D(uAtlas, (vec2(gx, gy) + t) / G).r;',
+      '}',
+      'void main(){',
+      /* the atlas is laid out cols = z, rows = -y (top-down), matching build_slices.py */
+      '  vec2 uv = vec2((vYZ.y - uYZmin.y) / uYZspan.y,',
+      '                 1.0 - (vYZ.x - uYZmin.x) / uYZspan.x);',
+      '  if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) discard;',
+      '  float c0 = floor(uSlice), f = uSlice - c0;',
+      '  float v = mix(cell(c0, uv), cell(min(c0 + 1.0, ' + (ATLAS_SLICES - 1) + '.0), uv), f);',
+      '  if (v < 0.012) discard;',                       // outside the brain mask
+      /* Greyscale anatomy, warmed very slightly toward the page accent so the section
+         belongs to this palette instead of looking like a pasted screenshot. */
+      '  vec3 col = mix(vec3(v), uTint * v, 0.14 * v);',
+      '  col += uTint * pow(v, 6.0) * 0.10;',
+      '  gl_FragColor = vec4(col, uFade);',
+      '}'
+    ].join('\n')
+  });
+  const sliceMesh = new THREE.Mesh(sliceGeo, sliceMat);
+  sliceMesh.renderOrder = 2;
+  pivot.add(sliceMesh);
+
+  /* Local-space cut, rebuilt in world space every frame from the pivot. */
+  const clipLocal = new THREE.Plane(new THREE.Vector3(-1,0,0), 0);
+  const clipWorld = new THREE.Plane();
+  mat.clippingPlanes = [clipWorld];
+  mat.clipShadows = false;
+  // lateral view: ICBM voxel axes were remapped to (x, z, -y) when the mesh was
+  // built, so this orients it to a left-lateral three-quarter, frontal lobe left
+  pivot.rotation.set(-0.10, -1.75, 0.06);
+
+  /* ---------------------------------------------------------------
+     PHASE 2 - MAKE THE NODES ACTUALLY READ.
+     They were invisible: placed by scaling the position vector, which
+     buries them in sulci, and hashed by name, which clustered several
+     into the same region. This is the whole concept - one node per real
+     agent - so it has to be legible.
+       1. lift along the VERTEX NORMAL, so they sit ON the cortex
+       2. farthest-point sampling, so all 26 are spatially separated
+       3. depth-tested against the mesh, so back-facing ones vanish -
+          that occlusion is what proves the brain is solid
+       4. coloured by schedule class, using the approved accents
+     --------------------------------------------------------------- */
+  function scheduleClass(cron){
+    const p = cron.split(/\s+/);
+    const hr = p[1], dom = p[2], dow = p[4];
+    if (dom !== '*') return {k:'monthly', c:0xf5a623};
+    if (dow !== '*') return {k:'weekly',  c:0xf5a623};
+    if (hr.includes('*')) return {k:'hourly', c:0xf5a623};
+    return {k:'daily', c:0xf5a623};
+  }
+
+  // Farthest-point sampling over a candidate subsample of the surface.
+  function farthestPoints(count){
+    const CAND = 1400, step = Math.max(1, Math.floor(nV/CAND));
+    const cand = [];
+    for (let i=0;i<nV;i+=step) cand.push(i);
+    const picked = [cand[0]];
+    const d2 = new Float32Array(cand.length).fill(Infinity);
+    while (picked.length < count && picked.length < cand.length){
+      const l = picked[picked.length-1]*3;
+      let bi=-1, bd=-1;
+      for (let j=0;j<cand.length;j++){
+        const v = cand[j]*3;
+        const dx=pos[v]-pos[l], dy=pos[v+1]-pos[l+1], dz=pos[v+2]-pos[l+2];
+        const dd = dx*dx+dy*dy+dz*dz;
+        if (dd < d2[j]) d2[j] = dd;
+        if (d2[j] > bd){ bd = d2[j]; bi = j; }
+      }
+      picked.push(cand[bi]);
+    }
+    return picked;
+  }
+
+  const nodeGeo = new THREE.SphereGeometry(.017,14,14);
+  const nodeMat = new THREE.MeshBasicMaterial({vertexColors:false, color:0xffffff});
+  const nodes = new THREE.InstancedMesh(nodeGeo,nodeMat,Math.max(AGENTS.length,1));
+  nodes.instanceColor = new THREE.InstancedBufferAttribute(
+    new Float32Array(Math.max(AGENTS.length,1)*3), 3);
+  const dummy = new THREE.Object3D(), nodePos = [];
+  const seats = farthestPoints(AGENTS.length || 26);
+  const col = new THREE.Color();
+  AGENTS.forEach((a,i)=>{
+    const v = seats[i % seats.length]*3;
+    // lift ALONG THE NORMAL - this is the fix. Scaling the position vector
+    // pushed nodes sideways into folds; the normal pushes them straight out.
+    const p = new THREE.Vector3(
+      pos[v]   + nrm[v]  *0.030,
+      pos[v+1] + nrm[v+1]*0.030,
+      pos[v+2] + nrm[v+2]*0.030);
+    const sc = scheduleClass(a.cron);
+    nodePos.push({p, name:a.n, cron:a.cron, cls:sc.k});
+    col.setHex(sc.c); nodes.setColorAt(i, col);
+    dummy.position.copy(p); dummy.updateMatrix(); nodes.setMatrixAt(i,dummy.matrix);
+  });
+  if (nodes.instanceColor) nodes.instanceColor.needsUpdate = true;
+  pivot.add(nodes);
+
+  /* ===============================================================
+     PHASE 3 - THE DAY, TRAVELLING.
+     Brian: "turn that into an amazing 3D animation and interaction
+     that just takes this to another level."
+
+     The concept in one sentence: the hero shows a day passing through
+     his machine. Agents are ordered by the time they ACTUALLY run, and
+     a signal travels the chain in that order, so the 06:40-07:00 stack
+     is a visible burst because twelve agents genuinely wake in those
+     twenty minutes. The motion means something - which is the standing
+     objection to "animations for the sake of."
+
+     LineSegmentsGeometry extends InstancedBufferGeometry, so the whole
+     tract bundle is ONE instanced draw call no matter how many segments.
+     =============================================================== */
+  const { LineSegments2 }        = await import('/vendor/lines/LineSegments2.js');
+  const { LineSegmentsGeometry } = await import('/vendor/lines/LineSegmentsGeometry.js');
+  const { LineMaterial }         = await import('/vendor/lines/LineMaterial.js');
+
+  /* order the nodes by real time-of-day */
+  const timeOf = cron => {
+    const p = cron.split(/\s+/);
+    const mi = parseInt(p[0]) || 0;
+    const hr = p[1].includes('*') ? 0 : (parseInt(p[1]) || 0);
+    return hr + mi/60;
+  };
+  const order = AGENTS.map((a,i)=>({i, t:timeOf(a.cron)})).sort((x,y)=>x.t-y.t);
+  /* ==========================================================================
+     GEODESIC ACTIVATION FIELDS.
+
+     The obvious way to bloom a glow around a node is a sphere: distance(position,
+     node). It is also wrong, and it looks wrong - a sphere bleeds straight THROUGH
+     the tissue, so the glow crosses a sulcus as if the fold were not there and the
+     whole effect reads as a decal pasted on a spinning object.
+
+     Real cortical spread follows the SURFACE. So this walks the mesh: one
+     multi-source Dijkstra over the 61,889-vertex edge graph, seeded from all 26
+     agent nodes at once, keeping for every vertex the TWO nearest seeds and their
+     true along-surface distances.
+
+     Two seeds is the whole trick. Storing all 26 fields would be 1.6M floats and
+     26 texture lookups per vertex; two covers every blend that actually occurs
+     (blobs only ever overlap in pairs at this radius) and costs 4 attributes and
+     2 lookups - so this is both more correct AND cheaper than the sphere version
+     it replaces.
+
+     Edge weights are geometric length scaled by (1 + 0.9*sulcal depth), so the
+     wavefront moves faster along gyral crowns than down inside a fold. That is
+     what makes it look like it belongs to the anatomy rather than sitting on it.
+     ========================================================================== */
+  nodePos.forEach((n,i)=>{ if(i<MAXN) NODE_UNIFORM[i].copy(n.p); });
+
+  /* Attributes exist immediately, filled with "unreachable" so the shader is valid and
+     the first frame paints straight away. The Dijkstra runs one frame later and then
+     flips needsUpdate - the hero is never blocked on it. */
+  const FAR = 9.9;
+  const seedA = new Float32Array(nV), seedB = new Float32Array(nV);
+  const geoA  = new Float32Array(nV).fill(FAR), geoB = new Float32Array(nV).fill(FAR);
+  const aSeedA = new THREE.BufferAttribute(seedA,1), aSeedB = new THREE.BufferAttribute(seedB,1);
+  const aGeoA  = new THREE.BufferAttribute(geoA,1),  aGeoB  = new THREE.BufferAttribute(geoB,1);
+  geo.setAttribute('aSeedA', aSeedA); geo.setAttribute('aSeedB', aSeedB);
+  geo.setAttribute('aGeoA',  aGeoA);  geo.setAttribute('aGeoB',  aGeoB);
+
+  function buildGeodesics(){
+    const t0 = performance.now();
+    // CSR adjacency from the triangle list
+    const deg = new Uint32Array(nV);
+    for (let t=0;t<nT;t++){ deg[idx[t*3]]+=2; deg[idx[t*3+1]]+=2; deg[idx[t*3+2]]+=2; }
+    const off = new Uint32Array(nV+1);
+    for (let i=0;i<nV;i++) off[i+1]=off[i]+deg[i];
+    const cur = off.slice(0,nV), adj = new Uint32Array(off[nV]);
+    for (let t=0;t<nT;t++){
+      const a=idx[t*3],b=idx[t*3+1],c=idx[t*3+2];
+      adj[cur[a]++]=b; adj[cur[a]++]=c;
+      adj[cur[b]++]=a; adj[cur[b]++]=c;
+      adj[cur[c]++]=a; adj[cur[c]++]=b;
+    }
+    const RMAX = 0.55;
+    const d = new Float32Array(nV).fill(Infinity);
+    const done = new Uint8Array(nV);
+    const touched = new Uint32Array(nV);
+    // flat binary heap, explicit swaps (destructuring swaps in a hot loop are slow)
+    const hd = new Float64Array(nV+8), hv = new Uint32Array(nV+8);
+    let hn = 0;
+    const hpush=(dd,vv)=>{
+      let i=hn++; hd[i]=dd; hv[i]=vv;
+      while(i>0){ const pa=(i-1)>>1; if(hd[pa]<=hd[i])break;
+        const td=hd[pa]; hd[pa]=hd[i]; hd[i]=td;
+        const tv=hv[pa]; hv[pa]=hv[i]; hv[i]=tv; i=pa; } };
+    const hpop=()=>{
+      const rv=hv[0], rd=hd[0]; hn--;
+      hd[0]=hd[hn]; hv[0]=hv[hn];
+      let i=0;
+      for(;;){ const l=2*i+1, r=l+1; let m=i;
+        if(l<hn&&hd[l]<hd[m])m=l; if(r<hn&&hd[r]<hd[m])m=r; if(m===i)break;
+        const td=hd[m]; hd[m]=hd[i]; hd[i]=td;
+        const tv=hv[m]; hv[m]=hv[i]; hv[i]=tv; i=m; }
+      return [rd,rv]; };
+
+    const N = Math.min(nodePos.length, MAXN);
+    let visitedTotal = 0;
+    for (let k=0;k<N;k++){
+      // ONE bounded single-source run per seed. Every vertex is settled at most once
+      // per run, so this provably terminates - the previous version re-pushed vertices
+      // whenever a better second-best appeared and never finished.
+      let nTouched = 0;
+      const src = seats[k % seats.length];
+      hn = 0; d[src]=0; done[src]=0; touched[nTouched++]=src; hpush(0,src);
+      while (hn){
+        const [dv,v] = hpop();
+        if (done[v]) continue;
+        done[v] = 1;
+        // fold into the running best-two for this vertex
+        if (dv < geoA[v]){ geoB[v]=geoA[v]; seedB[v]=seedA[v]; geoA[v]=dv; seedA[v]=k; }
+        else if (dv < geoB[v]){ geoB[v]=dv; seedB[v]=k; }
+        for (let e=off[v];e<off[v+1];e++){
+          const w=adj[e];
+          if (done[w]) continue;
+          const dx=pos[w*3]-pos[v*3], dy=pos[w*3+1]-pos[v*3+1], dz=pos[w*3+2]-pos[v*3+2];
+          // geometric length, made more expensive inside a fold: curv is 0 in a sulcal
+          // fundus and 1 on a gyral crown, so the wavefront runs along crowns first.
+          const nd = dv + Math.sqrt(dx*dx+dy*dy+dz*dz) * (1 + 0.9*(1-curv[w]));
+          if (nd > RMAX) continue;
+          if (nd < d[w]){ if(d[w]===Infinity) touched[nTouched++]=w; d[w]=nd; hpush(nd,w); }
+        }
+      }
+      for (let i=0;i<nTouched;i++){ const v=touched[i]; d[v]=Infinity; done[v]=0; }
+      visitedTotal += nTouched;
+    }
+    aSeedA.needsUpdate = aSeedB.needsUpdate = aGeoA.needsUpdate = aGeoB.needsUpdate = true;
+    console.log('[brain] geodesic fields: '+N+' seeds, '+visitedTotal.toLocaleString()+
+                ' vertex visits over '+nV.toLocaleString()+' vertices, '+
+                Math.round(performance.now()-t0)+'ms');
+  }
+  /* Deferred off the first paint, but NOT via requestAnimationFrame: rAF never fires in
+     a background tab, so a page opened in a new tab would sit there with no activation
+     field until it was focused. setTimeout runs regardless. */
+  setTimeout(buildGeodesics, 60);
+  /* Each agent's REAL time of day, normalised to 0..1. The old loop used each
+     agent's RANK in the sorted order instead, which spaced all 26 evenly and
+     destroyed the actual clustering - the thing the hero claim is about. */
+  const dayOf = AGENTS.map(a => timeOf(a.cron) / 24);
+
+  /* a tract = a bezier from one node to the next, bulged off the surface
+     so it reads as a pathway over the cortex rather than a chord through it */
+  const SEG = 26;
+  const segs = [];
+  const tmp = new THREE.Vector3(), mid = new THREE.Vector3();
+  for (let k=0; k<order.length-1; k++){
+    const A = nodePos[order[k].i].p, B = nodePos[order[k+1].i].p;
+    mid.copy(A).add(B).multiplyScalar(0.5);
+    // Hug the surface. An unclamped lift proportional to distance sends the
+    // long hops (consecutive agents that sit on opposite sides of the brain)
+    // swinging way out into space, where they read as stray lines rather than
+    // as tracts. Cap it.
+    const lift = 1 + Math.min(0.085, 0.055 * A.distanceTo(B));
+    mid.normalize().multiplyScalar(((A.length()+B.length())/2) * lift);
+    let prev = null;
+    for (let s=0; s<=SEG; s++){
+      const u = s/SEG, iu = 1-u;
+      tmp.set(
+        iu*iu*A.x + 2*iu*u*mid.x + u*u*B.x,
+        iu*iu*A.y + 2*iu*u*mid.y + u*u*B.y,
+        iu*iu*A.z + 2*iu*u*mid.z + u*u*B.z);
+      if (prev) segs.push(prev.x,prev.y,prev.z, tmp.x,tmp.y,tmp.z);
+      prev = tmp.clone();
+    }
+  }
+
+  const tractGeo = new LineSegmentsGeometry();
+  tractGeo.setPositions(segs);
+  const tractMat = new LineMaterial({
+    color: 0xf5a623, linewidth: 1.35, dashed: true,
+    dashSize: 0.02, gapSize: 0.0001, transparent: true, depthTest: true,
+  });
+  tractMat.resolution.set(innerWidth, innerHeight);   // required or lines vanish
+
+  /* Replace the dash discard with a Gaussian head. The resting tract stays
+     dim and keeps describing the path; the pulse is the activity. */
+  tractMat.onBeforeCompile = sh => {
+    sh.uniforms.uHead = { value: 0 };
+    sh.fragmentShader = sh.fragmentShader
+      .replace('uniform float dashOffset;', 'uniform float dashOffset;\nuniform float uHead;')
+      .replace(
+        'if ( mod( vLineDistance + dashOffset, dashSize + gapSize ) > dashSize ) discard;',
+        'float d = abs(fract(vLineDistance * 0.06 - uHead) - 0.5);\n' +
+        'float pulse = exp(-d * d * 120.0);\n' +
+        'diffuseColor.rgb += pulse * 1.9;\n' +
+        // resting tract stays visible enough to describe the path it takes
+        'diffuseColor.a = 0.20 + pulse * 0.78;');
+    tractMat.userData.shader = sh;
+  };
+
+  const tracts = new LineSegments2(tractGeo, tractMat);
+  tracts.computeLineDistances();     // required for vLineDistance
+  /* v16: tract chords cut across the silhouette and read as a web pasted over a
+     sculpture. The travelling day is carried by the nodes instead. */
+  // pivot.add(tracts);
+
+  function layout(){
+    const w=canvas.clientWidth||innerWidth, h=canvas.clientHeight||600;
+    renderer.setSize(w,h,false); cam.aspect=w/h;
+    /* The off-axis framing below (camera x -1.58 looking at -0.46) existed to shove
+       the brain into the right half of a canvas that spanned the WHOLE viewport. The
+       canvas is now the right-hand grid column itself, so that offset was pushing the
+       object out of its own frame - which is why it read as small and adrift. Camera x
+       now matches lookAt x, so it is centred in its column, and z is pulled in from
+       3.62 to 2.95 so it fills the frame. The viewing ANGLE is unchanged: that comes
+       from pivot rotation (BASE_YAW), not from the camera offset. */
+    if (w > 940){
+      cam.position.set(0, .04, 2.95); cam.lookAt(0,-.05,0);
+    } else {
+      // Narrow screens used to sit dead-on at x=0, which showed the brain from the
+      // FRONT -- much harder to read as anatomy than the lateral three-quarter, and
+      // z=3.18 cropped it top and bottom because the vertical FOV is the binding
+      // constraint here. Keep the lateral character, dolly back for margin.
+      cam.position.set(0, .05, 3.30); cam.lookAt(0,-.02,0);
+    }
+    cam.updateProjectionMatrix();
+  }
+  layout(); addEventListener('resize',()=>{layout(); tractMat.resolution.set(innerWidth,innerHeight);});
+
+  /* ---------------- INTERACTION ----------------
+     Hover a node and it names the real agent and its real cron line.
+     This is what turns a pretty object into something a recruiter can
+     interrogate - the claim becomes checkable in the hero itself. */
+  const label = document.getElementById('nlabel');
+  const ray = new THREE.Raycaster();
+  ray.params.Mesh = ray.params.Mesh || {};
+  const ndc = new THREE.Vector2(-10,-10);
+  let hoverIdx = -1, mx = 0, my = 0;   // mx/my also drive the parallax
+
+  canvas.parentElement.addEventListener('pointermove', e => {
+    const r = canvas.getBoundingClientRect();
+    ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+    ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    mx = ndc.x; my = ndc.y;
+    ray.setFromCamera(ndc, cam);
+    const hit = ray.intersectObject(nodes, false)[0];
+    hoverIdx = hit ? hit.instanceId : -1;
+    if (hoverIdx >= 0){
+      const n = nodePos[hoverIdx];
+      label.innerHTML = n.name + '<span style="color:var(--fg3)">  ' + n.cron + '</span>';
+      label.style.left = (e.clientX - r.left) + 'px';
+      label.style.top  = (e.clientY - r.top)  + 'px';
+      label.style.opacity = 1;
+      canvas.style.cursor = 'crosshair';
+    } else {
+      label.style.opacity = 0;
+      canvas.style.cursor = 'default';
+    }
+  });
+  canvas.parentElement.addEventListener('pointerleave', () => {
+    hoverIdx = -1; label.style.opacity = 0; mx = my = 0;
+  });
+
+  /* BASE_YAW / BASE_PITCH are the orientation the mesh was actually tuned to -- the
+     left-lateral three-quarter where the gyri read. They were being thrown away: rotY
+     started at 0 while pivot.rotation.y was set to -1.75, so within ~2 seconds the
+     brain eased 100 degrees round to a near-frontal view and then kept spinning. The
+     good orientation only ever existed on the first frame. */
+  const BASE_YAW = -1.75, BASE_PITCH = -0.10;
+  const clockLabel = document.getElementById('dayclock');
+  let t0=performance.now(), running=true, rotY=BASE_YAW, tiltX=0;
+  document.addEventListener('visibilitychange',()=>{running=!document.hidden; if(running)requestAnimationFrame(tick);});
+  function tick(){
+    if(!running) return;
+    const now=performance.now(), el=(now-t0)/1000;
+
+    /* drift + cursor parallax with weight. It eases toward the pointer and
+       carries momentum rather than snapping - float-and-bob is the thing to
+       avoid; this should feel like an object with mass. */
+    if(!reduce){
+      // A slow SWAY around the tuned orientation, not an unbounded spin. A full
+      // rotation guarantees the brain spends most of its time in a view that does not
+      // read as anatomy, and "a box with an animation that spins" is a documented
+      // rejection. +/- 9 degrees over ~57s keeps it alive and always legible.
+      /* v16: the +/-9deg sway read as STUCK. Continuous yaw, one revolution per
+         ~40s, so it is unmistakably a 3D object being turned. */
+      /* A CONTINUOUS ORBIT, one revolution per ~46s. The +/-38 degree wobble it
+         replaces was the 'basic and boring' motion: it never showed a new face, so
+         the object never actually read as three-dimensional. The v3 mesh is a
+         complete brain including the cerebellum, so every angle is presentable -
+         which was not true of the old hemisphere-with-an-open-face mesh. */
+      rotY = BASE_YAW + el * (Math.PI * 2 / 46);
+      pivot.rotation.y += ((rotY + mx*0.30) - pivot.rotation.y) * 0.045;
+      tiltX += ((-my*0.16) - tiltX) * 0.045;
+      pivot.rotation.x = BASE_PITCH + tiltX;
+    }
+
+    /* THE SIGNAL. uHead sweeps 0->1 over ~14s, which is one simulated day.
+       Because the tracts were built in real time-of-day order, the pulse
+       arrives at each node when that agent's turn in the day comes round. */
+    /* One simulated day every 24 s. Each agent's activation is a Gaussian in TIME
+       around its own cron minute, so blooms arrive when that job actually runs and
+       overlap where the schedule genuinely clusters. */
+    const DAY = 24;
+    const clock = (el / DAY) % 1;
+    for (let i=0;i<AGENTS.length && i<MAXN;i++){
+      /* Time SINCE this agent fired, wrapped over midnight. Not a symmetric Gaussian:
+         a symmetric one gave each agent a +/-23 minute window, which is under a second
+         of real time, so with 26 agents spread over a 24 s day you almost never caught
+         a bloom and the cortex just looked grey.
+
+         This is the shape a haemodynamic response actually has - a fast rise and a long
+         decay - so a firing leaves a trail that fades over about two simulated hours.
+         The effect is continuous activity with a real burst where the schedule clusters,
+         instead of 26 invisible flashes. */
+      let dt = clock - dayOf[i];
+      if (dt < 0) dt += 1;
+      const rise  = 1 - Math.exp(-dt / 0.0040);
+      const decay = Math.exp(-dt / 0.0450);
+      ACT_UNIFORM[i] = Math.min(1, rise * decay * 1.45);
+    }
+    /* ---- the section sweep -------------------------------------------------
+       One pass per simulated day, easing in and out at the extremes so it dwells on
+       the midline where the anatomy is most legible rather than running at constant
+       speed. The cortex is only cut while the plane is inside it; at the extremes the
+       shell closes up and the piece reads as a whole object again. */
+    {
+      const phase = (el / DAY) % 1;
+      const eased = 0.5 - 0.5*Math.cos(phase * Math.PI * 2);      // 0..1..0
+      const cutX  = bMinX + eased * (bMaxX - bMinX);
+      sliceMesh.position.x = cutX;
+      sliceMat.uniforms.uSlice.value = THREE.MathUtils.clamp(
+        (cutX - bMinX) / (bMaxX - bMinX) * (ATLAS_SLICES - 1), 0, ATLAS_SLICES - 1);
+      /* Fade the section in only while the plane is actually inside the brain.
+         smoothstep(x,min,max) needs min < max - passing (0.94, 0.70) inverted it and
+         `inside` was always 0, so nothing ever opened. */
+      /* 0 at either end of the sweep, 1 through the middle, expressed against the
+         mesh's real X extent rather than an assumed +/-1 */
+      const halfX = (bMaxX - bMinX) * 0.5, midX = (bMaxX + bMinX) * 0.5;
+      const inside = 1 - THREE.MathUtils.smoothstep(
+        Math.abs(cutX - midX) / halfX, 0.72, 0.97);
+      sliceMat.uniforms.uFade.value = inside;
+      /* -x normal, so the half with x <= cutX survives and the near side is removed.
+         The plane is kept ATTACHED at all times and simply pushed out past the mesh
+         when the section is closed: swapping clippingPlanes between [plane] and null
+         changes the clipping count, which makes three.js recompile the shader on the
+         frame it happens. */
+      clipLocal.constant = inside > 0.002 ? cutX : bMaxX + 3.0;
+      clipWorld.copy(clipLocal).applyMatrix4(pivot.matrixWorld);
+    }
+
+    if (clockLabel){
+      const hh = Math.floor(clock*24), mm = Math.floor((clock*24 - hh)*60);
+      clockLabel.textContent = String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+    }
+
+    // a node swells as the signal reaches its place in the day
+    AGENTS.forEach((a,i)=>{
+      /* the marker still swells, but now on the SAME real-time signal that drives
+         the activation bloom underneath it, so mark and glow agree */
+      let s = 1 + (ACT_UNIFORM[i]||0) * 1.5;
+      if (i === hoverIdx) s = Math.max(s, 2.3);
+      dummy.position.copy(nodePos[i].p); dummy.scale.setScalar(s);
+      dummy.updateMatrix(); nodes.setMatrixAt(i,dummy.matrix);
+    });
+    nodes.instanceMatrix.needsUpdate=true;
+    renderer.render(scene,cam);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ============================================================
+   DEMO 1 - Brian OS: the day, interactive.
+   Same real data as the hero, a different view of it. Hover any mark
+   to name the agent and read its actual cron line.
+   ============================================================ */
+(function(){
+  const c=document.getElementById('clock'); if(!c) return;
+  const ctx=c.getContext('2d');
+  const ro=document.getElementById('clock-readout');
+  const CLS = cron => {
+    const p=cron.split(/\s+/);
+    /* One accent here too. The dial's job is showing WHEN things run, so the class is
+       carried by mark LENGTH, not by a fourth colour. The amber/cyan pair in the
+       BoomBox diagram below is kept, because there it means something specific -
+       transient versus durable - rather than just labelling a category. */
+    if (p[2]!=='*') return {k:'monthly', len:1.00};
+    if (p[4]!=='*') return {k:'weekly', len:0.82};
+    if (p[1].includes('*')) return {k:'hourly', len:0.64};
+    return {k:'daily', len:0.46};
+  };
+  let marks=[];
+
+  function draw(){
+    const Z = zone(c);   /* re-read each frame: the canvas follows its band */
+    const w=c.clientWidth,h=c.clientHeight,d=Math.min(devicePixelRatio||1,2);
+    c.width=w*d;c.height=h*d; ctx.setTransform(d,0,0,d,0,0);
+    ctx.clearRect(0,0,w,h);
+    const cx=w/2, cy=h/2, R=Math.min(w,h)*0.34;
+    marks=[];
+
+    ctx.strokeStyle=Z.hair; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.stroke();
+    ctx.font='400 9.5px PlexMono,monospace'; ctx.fillStyle=Z.fg3; ctx.textAlign='center';
+    for(let hh=0;hh<24;hh+=3){
+      const ang=(hh/24)*Math.PI*2-Math.PI/2;
+      ctx.beginPath();
+      ctx.moveTo(cx+Math.cos(ang)*(R-4),cy+Math.sin(ang)*(R-4));
+      ctx.lineTo(cx+Math.cos(ang)*R,cy+Math.sin(ang)*R);
+      ctx.strokeStyle=Z.edge; ctx.stroke();
+      if(hh%6===0) ctx.fillText(String(hh).padStart(2,'0'),
+        cx+Math.cos(ang)*(R+15),cy+Math.sin(ang)*(R+15)+3);
+    }
+
+    AGENTS.forEach(a=>{
+      const p=a.cron.split(/\s+/); const mi=parseInt(p[0])||0;
+      const hrRaw=p[1]; const every=hrRaw.includes('*');
+      const hours = every
+        ? (hrRaw==='*' ? [0,3,6,9,12,15,18,21] : [0,4,8,12,16,20])
+        : hrRaw.split(',').map(Number);
+      const cl=CLS(a.cron);
+      hours.forEach(H2=>{
+        const ang=((H2+mi/60)/24)*Math.PI*2-Math.PI/2;
+        /* Mark LENGTH carries the schedule class now that colour does not: the rarer
+           the job, the further it reaches inward, so the unusual ones stand out. */
+        const IN = 6 + 16*(cl.len||0.5);
+        const x1=cx+Math.cos(ang)*(R-IN), y1=cy+Math.sin(ang)*(R-IN);
+        const x2=cx+Math.cos(ang)*(R+7),  y2=cy+Math.sin(ang)*(R+7);
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+        ctx.strokeStyle=Z.accent; ctx.lineWidth=2.2; ctx.globalAlpha=.92; ctx.stroke();
+        ctx.globalAlpha=1;
+        marks.push({x:(x1+x2)/2,y:(y1+y2)/2,name:a.n,cron:a.cron,cls:cl.k,
+                    t:String(H2).padStart(2,'0')+':'+String(mi).padStart(2,'0')});
+      });
+    });
+
+    /* the 06:40-07:00 cluster is the story this dial tells - annotate it */
+    const ca=((6+50/60)/24)*Math.PI*2-Math.PI/2;
+    ctx.strokeStyle=Z.accent; ctx.globalAlpha=.34; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(cx,cy,R+13,ca-0.17,ca+0.17); ctx.stroke(); ctx.globalAlpha=1;
+    ctx.fillStyle=Z.accent; ctx.font='400 9.5px PlexMono,monospace'; ctx.textAlign='left';
+    ctx.fillText('06:40-07:00', cx+Math.cos(ca)*(R+27)-8, cy+Math.sin(ca)*(R+27));
+
+    const now=new Date(), na=((now.getHours()+now.getMinutes()/60)/24)*Math.PI*2-Math.PI/2;
+    ctx.strokeStyle=Z.fg; ctx.lineWidth=1.2; ctx.globalAlpha=.8;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(na)*(R-14),cy+Math.sin(na)*(R-14));
+    ctx.stroke(); ctx.globalAlpha=1;
+
+    ctx.textAlign='center';
+    ctx.fillStyle=Z.fg; ctx.font='500 26px PlexMono,monospace';
+    ctx.fillText(String(AGENTS.length||26),cx,cy+2);
+    ctx.fillStyle=Z.fg3; ctx.font='400 9px PlexMono,monospace';
+    ctx.fillText('SCHEDULED',cx,cy+16);
+  }
+
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
+    let best=null,bd=1e9;
+    for(const m of marks){ const dd=(m.x-mx)*(m.x-mx)+(m.y-my)*(m.y-my); if(dd<bd){bd=dd;best=m;} }
+    if(best && bd<460){
+      ro.innerHTML='<b>'+best.name+'</b><br>'+best.t+' &middot; '+best.cls+
+                   '<br><span style="color:#6b7581">'+best.cron+'</span>';
+      ro.classList.add('on');
+    } else ro.classList.remove('on');
+  });
+  c.addEventListener('mouseleave',()=>ro.classList.remove('on'));
+
+  draw(); addEventListener('resize',draw); setInterval(draw,30000);
+})();
+
+/* ============================================================
+   DEMO 2 - Squares: poster frame, then the REAL app on click.
+   Zero third-party requests until the visitor asks for one.
+   ============================================================ */
+(function(){
+  const c=document.getElementById('grid');
+  if(c){
+    const ctx=c.getContext('2d');
+    function draw(){
+      const Z = zone(c);   /* re-read each frame: the canvas follows its band */
+      const w=c.clientWidth,h=c.clientHeight,d=Math.min(devicePixelRatio||1,2);
+      c.width=w*d;c.height=h*d;ctx.setTransform(d,0,0,d,0,0); ctx.clearRect(0,0,w,h);
+      const S=Math.min(w,h)*0.66, x0=(w-S)/2, y0=(h-S)/2, cell=S/10;
+      for(let r=0;r<10;r++)for(let q=0;q<10;q++){
+        ctx.fillStyle=Z.surface;
+        ctx.fillRect(x0+q*cell+1,y0+r*cell+1,cell-2,cell-2);
+      }
+      ctx.strokeStyle=Z.edge; ctx.lineWidth=1; ctx.strokeRect(x0,y0,S,S);
+    }
+    draw(); addEventListener('resize',draw);
+  }
+  const btn=document.getElementById('squares-load');
+  if(btn) btn.addEventListener('click',()=>{
+    const host=document.getElementById('squares-demo');
+    const f=document.createElement('iframe');
+    f.src='https://fam-super-bowl-squares-2026.vercel.app';
+    f.loading='lazy'; f.title='Super Bowl LX Squares - live app';
+    f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms');
+    btn.remove(); host.appendChild(f);
+    host.querySelector('.cap').textContent='live app - running in this frame';
+  });
+})();
+
+/* ============================================================
+   DEMO 3 - BoomBox: the durable / transient split, explained.
+   This is the actual interesting decision in the project, so the
+   diagram draws the DIVIDING LINE rather than three anonymous boxes.
+   ============================================================ */
+(function(){
+  const c=document.getElementById('arch'); if(!c) return;
+  const ctx=c.getContext('2d'); let t=0, run=true;
+  const Z = zone(c);
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.addEventListener('visibilitychange',()=>{run=!document.hidden; if(run)loop();});
+  if(!ctx.roundRect) ctx.roundRect=function(x,y,w,h){this.rect(x,y,w,h);return this;};
+
+  function box(x,y,w,h,label,sub,col){
+    ctx.fillStyle=Z.surface; ctx.strokeStyle=col; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.roundRect(x,y,w,h,3); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=col; ctx.font='500 11.5px PlexMono,monospace'; ctx.textAlign='center';
+    ctx.fillText(label,x+w/2,y+h/2-1);
+    if(sub){ ctx.fillStyle=Z.fg3; ctx.font='400 9.5px PlexMono,monospace';
+             ctx.fillText(sub,x+w/2,y+h/2+13); }
+  }
+
+  function loop(){
+    if(!run) return;
+    const w=c.clientWidth,h=c.clientHeight,d=Math.min(devicePixelRatio||1,2);
+    c.width=w*d;c.height=h*d;ctx.setTransform(d,0,0,d,0,0); ctx.clearRect(0,0,w,h);
+    const BW=Math.min(w*0.62,196), cx=w/2, bx=cx-BW/2;
+    const yTop=h*0.12, yMid=h*0.43, yBot=h*0.74, BH=40;
+    const divide=(yMid+BH+yBot)/2;
+
+    ctx.strokeStyle=Z.edge; ctx.setLineDash([3,4]); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(w*0.05,divide); ctx.lineTo(w*0.95,divide); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.textAlign='left'; ctx.font='400 9px PlexMono,monospace';
+    ctx.fillStyle=Z.accent2; ctx.fillText('TRANSIENT - dies with the session', w*0.05, divide-7);
+    ctx.fillStyle=Z.accent; ctx.fillText('DURABLE - survives a restart',      w*0.05, divide+14);
+
+    ctx.strokeStyle=Z.edge; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(cx,yTop+BH); ctx.lineTo(cx,yMid); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx,yMid+BH); ctx.lineTo(cx,yBot); ctx.stroke();
+
+    if(!reduce){
+      const p=(t%150)/150;
+      ctx.fillStyle=Z.accent2;
+      ctx.beginPath(); ctx.arc(cx, yTop+BH+(yMid-yTop-BH)*p, 3.2, 0, 7); ctx.fill();
+      if(p>0.55){
+        const q=(p-0.55)/0.45;
+        ctx.fillStyle=Z.accent;
+        ctx.beginPath(); ctx.arc(cx, yMid+BH+(yBot-yMid-BH)*q, 3.2, 0, 7); ctx.fill();
+      }
+    }
+
+    box(bx,yTop,BW,BH,'clients','listening together','#9db2c6');
+    box(bx,yMid,BW,BH,'WebSocket + Redis','playback position',Z.accent2);
+    box(bx,yBot,BW,BH,'Postgres','queue, users, rooms',Z.accent);
+
+    t++; requestAnimationFrame(loop);
+  }
+  loop();
+})();
+</script>
+</html>

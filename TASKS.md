@@ -1,5 +1,27 @@
 # Active Tasks
 
+## Done 2026-08-12 - v7 dual-design rebuild
+- [x] **Full top-to-bottom redesign shipped.** Two complete designs now live in the repo:
+      Mission Control at `/` (`index.html`) and Neural at `/neural.html`. The pages this
+      replaced are archived under `design-candidates/archive/`.
+- [x] **Fixed what made the old page feel wrong:** scroll-jacked hero, multi-viewport dead
+      zones between sections, a duplicated header and white-bar artifact, metrics stranded
+      below the fold, and a 3D brain that outcompeted the headline.
+- [x] **Metrics moved into the first screen** on both pages, with count-up and a source line
+      under every number.
+- [x] **Live demos beside every project.** Squares loads the real deployed app on click;
+      Brian OS and BoomBox have purpose-built visualisations.
+- [x] **Docs rewritten** - new `README.md`, `docs/DESIGN-SYSTEM.md`, `docs/CHANGELOG-v7.md`,
+      `docs/AUDIT-2026-08-12.md`.
+
+## Open - follow-ups from v7
+- [ ] **Self-host the fonts** (and Three.js) to restore the "no third-party requests" property.
+      Both pages pull Google Fonts; `neural.html` pulls Three.js r128 from cdnjs. `vendor/`
+      already holds self-hosted faces.
+- [ ] **Refresh og.png** - it still advertises the previous hero.
+- [ ] **Prune vendor/** - the mesh, tract-line and font assets served the retired brain hero
+      and are no longer referenced by either live page.
+
 ## Current task
 Portfolio supports the job search — it is not the resume source. Keep it accurate and public-safe.
 

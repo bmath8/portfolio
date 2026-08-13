@@ -1,5 +1,11 @@
 # Portfolio & Resume Hub — Master Inventory
 
+> **Update 2026-08-12 - v7.** The live site is now two designs, not one: **Mission Control**
+> at `/` (`index.html`) and **Neural** at `/neural.html`. Both carry identical content and
+> cross-link in their footers. Replaced pages are archived under `design-candidates/archive/`.
+> See `README.md` for structure, `docs/DESIGN-SYSTEM.md` for tokens and components, and
+> `docs/CHANGELOG-v7.md` for what changed and why.
+
 _The one place. Everything you built across ChatGPT, Codex, and Claude, cataloged so you
 can finish it and send it. Last consolidated: 2026-07-20._
 
