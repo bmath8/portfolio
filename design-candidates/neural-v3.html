@@ -370,6 +370,27 @@ body{ font-size:10.5pt; }
   border:1px dashed var(--line); border-radius:16px;
 }
 </style>
+
+<style id="m1n">
+@media(max-width:560px){
+  /* this hint line was 399px wide in a 390px viewport and clipped */
+  .brainbox .tag{
+    position:static; transform:none; white-space:normal; text-align:center;
+    line-height:1.9; margin-top:.6rem; font-size:.58rem;
+  }
+  .brainbox .callout{
+    position:static; transform:none; text-align:center; display:block;
+    margin-bottom:.4rem; font-size:.6rem;
+  }
+  #brain{ height:340px; }
+  h1{ font-size:clamp(2.1rem,9vw,2.9rem); }
+  .hero-copy p{ font-size:.98rem; }
+  .card .inner{ padding:1.5rem 1.25rem; gap:1.3rem; }
+  .vis{ min-height:250px; }
+  .island{ padding:2.4rem 1.3rem 2.8rem; }
+  .agentpanel{ padding:1.1rem 1.15rem; }
+}
+</style>
 </head>
 <body>
 <a class="skip" href="#work">Skip to the work</a>
