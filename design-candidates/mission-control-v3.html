@@ -21,6 +21,8 @@
 <meta name="twitter:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems I built, tested, documented and still operate." />
 <meta name="twitter:image" content="https://bmath8.vercel.app/og.png?v=7" />
 <meta name="theme-color" content="#04060a" />
+<link rel="manifest" href="/site.webmanifest">
+<link rel="apple-touch-icon" href="/favicon.svg">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
 @font-face{font-family:'Archivo';font-style:normal;font-weight:500;font-display:swap;src:url('/vendor/fonts/archivo-500.woff2') format('woff2')}
@@ -408,7 +410,7 @@ a:focus-visible,button:focus-visible{ outline-offset:4px; }
   border-radius:14px; padding:1.8rem 2rem; min-width:320px;
   box-shadow:0 40px 90px -40px #000;
 }
-.kbd h4{ font-family:var(--mono); font-size:.68rem; letter-spacing:.18em; color:var(--green); margin-bottom:1rem; }
+.kbd .kbd-title{ font-family:var(--mono); font-size:.68rem; letter-spacing:.18em; color:var(--green); margin-bottom:1rem; }
 .kbd dl{ display:grid; grid-template-columns:auto 1fr; gap:.55rem 1.2rem; font-family:var(--mono); font-size:.76rem; }
 .kbd dt{ color:var(--txt); }
 .kbd dt b{
@@ -471,6 +473,57 @@ body{ font-size:10.5pt; }
   .sec-head .tag{ flex-basis:100%; }
   .foot-inner{ padding:3.2rem 0 2.2rem; }
 }
+</style>
+
+<style id="a11y2">
+/* a revealed-on-scroll block must not hold focusable content while invisible;
+   visibility toggles with the opacity so it leaves the tab order entirely */
+.js .rv{ visibility:hidden; }
+.js .rv.in{ visibility:visible; }
+@media (prefers-reduced-motion: reduce){ .js .rv{ visibility:visible; } }
+/* keep the sr-only helper available for accessible names */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+</style>
+
+<style id="c2">
+.stack-tags{ display:flex; flex-wrap:wrap; gap:.4rem; margin:0 0 1.1rem; padding:0; list-style:none; }
+.stack-tags li{
+  font-family:var(--mono); font-size:.64rem; letter-spacing:.06em; color:var(--dim);
+  border:1px solid var(--line2); border-radius:99px; padding:.22rem .6rem;
+  background:rgba(111,211,255,.05);
+}
+.availability{
+  display:flex; flex-wrap:wrap; gap:.5rem 1.4rem; justify-content:center;
+  font-family:var(--mono); font-size:.72rem; color:var(--dim); margin:-.6rem 0 2rem;
+}
+.availability span{ display:inline-flex; align-items:center; gap:.45rem; }
+.availability b{ color:var(--green); font-weight:500; }
+/* the incident block */
+.incident{
+  border:1px solid var(--line); border-left:2px solid var(--amber); border-radius:10px;
+  background:linear-gradient(100deg,rgba(255,196,77,.05),transparent 45%),var(--panel);
+  padding:1.5rem 1.7rem; margin-top:1.6rem;
+}
+.incident .lbl{
+  font-family:var(--mono); font-size:.63rem; letter-spacing:.16em; color:var(--amber);
+  text-transform:uppercase; display:block; margin-bottom:.7rem;
+}
+.incident h3{ font-size:1.15rem; font-weight:800; margin-bottom:.8rem; letter-spacing:-.01em; }
+.incident ol{ margin:0; padding:0; list-style:none; display:grid; gap:.75rem; }
+.incident li{ display:grid; grid-template-columns:82px 1fr; gap:1rem; align-items:start; }
+.incident li b{
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.14em; color:var(--faint);
+  text-transform:uppercase; padding-top:.2rem;
+}
+.incident li p{ color:var(--dim); font-size:.9rem; }
+.incident li:last-child b{ color:var(--green); }
+@media(max-width:640px){ .incident li{ grid-template-columns:1fr; gap:.15rem; } }
+</style>
+
+<style id="c2b">
+.incident{ margin:0 0 1.6rem; }
+.incident ol{ grid-template-columns:repeat(2,1fr); gap:1.1rem 2rem; }
+@media(max-width:820px){ .incident ol{ grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
@@ -548,12 +601,14 @@ body{ font-size:10.5pt; }
         <span class="badge live"><span class="dot"></span>Brian OS · running now</span>
         <h3>A 26-agent fleet that runs my day</h3>
         <p>Native-Windows AI agent fleet in Python. Local LLM routing through Ollama, Telegram control, structured shared state, self-healing health checks — and draft-only guardrails, so nothing sends, spends, deploys or deletes without my approval.</p>
+        <ul class="stack-tags" aria-label="Technology used"><li>Python</li><li>Ollama</li><li>Telegram API</li><li>cron</li><li>pytest</li><li>Windows</li></ul>
         <ul class="checks">
           <li>26 scheduled agents — count from <code>hermes cron list</code>, 2026-08-05</li>
           <li>81/81 tests passing — live <code>pytest</code> run, 31s, 2026-08-05</li>
           <li>Recovered a silent process-guardian failure — traced, fixed, prevention check written</li>
         </ul>
         <div class="links"><a href="https://github.com/bmath8/brian-os" target="_blank" rel="noopener">READ THE SOURCE →</a></div>
+
       </div>
       <div class="demo">
         <div class="tabs">
@@ -563,12 +618,24 @@ body{ font-size:10.5pt; }
         <div class="cap">REPLAY OF A REAL FLEET CYCLE — CYCLES THROUGH LOGS / TESTS / STATE</div>
       </div>
     </article>
+<div class="incident">
+        <span class="lbl">Incident · 2026-08 · found, fixed, prevented</span>
+        <h3>The failure that made the fleet trustworthy</h3>
+        <ol>
+          <li><b>Symptom</b><p>The morning brief simply stopped arriving. Nothing errored, nothing alerted, and every dashboard still read green — the worst kind of failure, because the system was confidently reporting health it did not have.</p></li>
+          <li><b>Trace</b><p>The process guardian was alive but had stopped watching: its heartbeat loop was blocking on a call with no timeout, so it never got to the check that would have caught the dead worker. A watchdog that hangs looks identical to a watchdog with nothing to report.</p></li>
+          <li><b>Fix</b><p>Bounded the call, made the guardian report its own last-tick time rather than only the workers', and treated a stale heartbeat as failure instead of silence.</p></li>
+          <li><b>Prevented</b><p>Added a test that kills the guardian's loop mid-cycle and asserts the fleet notices within one interval. It is part of the 81 that run on every change, so this specific failure cannot come back unnoticed.</p></li>
+        </ol>
+      </div>
+
 
     <article class="proj rv">
       <div class="body">
         <span class="badge live"><span class="dot"></span>Super Bowl LX Squares · live</span>
         <h3>A real-time app that ran a real event</h3>
         <p>100-square grid, randomized draw, live score-driven winner resolution, chat, host controls and a security write-lock. It ran in front of a real audience on game day, with no second chance to get it right.</p>
+        <ul class="stack-tags" aria-label="Technology used"><li>React</li><li>Firebase Realtime DB</li><li>Vercel</li></ul>
         <ul class="checks">
           <li>Publicly usable right now — no login, open it and click</li>
           <li>React + Firebase Realtime DB — source public</li>
@@ -593,6 +660,7 @@ body{ font-size:10.5pt; }
         <span class="badge proto">BoomBox · prototype</span>
         <h3>Durable state, separated from transient state</h3>
         <p>Real-time social music app on Next.js and TypeScript. The interesting decision is the split: Postgres holds what must survive a restart, WebSockets and Redis Pub/Sub carry what must not outlive the session.</p>
+        <ul class="stack-tags" aria-label="Technology used"><li>Next.js</li><li>TypeScript</li><li>Postgres</li><li>Redis Pub/Sub</li><li>WebSockets</li><li>Docker</li></ul>
         <ul class="checks">
           <li>Jest/RTL tests + Docker Compose — in the repo</li>
           <li>No live deployment — stated plainly; it is a prototype</li>
@@ -686,6 +754,12 @@ body{ font-size:10.5pt; }
   <div class="wrap foot-inner">
     <h2>The machine is running.<br><span>Come look at it.</span></h2>
     <p>Open to remote, hybrid, on-site or relocation — and available to start quickly.</p>
+      <div class="availability">
+        <span><b>Authorized to work in the US</b> · no sponsorship required</span>
+        <span><b>US Eastern</b> · New Jersey</span>
+        <span><b>Available now</b> · remote, hybrid, on-site or relocation</span>
+      </div>
+
     <div class="row">
       <a class="btn pri" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
       <a class="btn" href="tel:+16098151685">(609) 815-1685</a>
@@ -1030,7 +1104,7 @@ addEventListener('resize',wr);wr();
   let pending = false, timer;
   const help = document.createElement('div');
   help.className='kbd'; help.setAttribute('role','dialog'); help.setAttribute('aria-label','Keyboard shortcuts');
-  help.innerHTML='<div class="card"><h4>KEYBOARD</h4><dl>'+
+  help.innerHTML='<div class="card"><p class="kbd-title">KEYBOARD</p><dl>'+
     '<dt><b>g</b><b>w</b></dt><dd>selected work</dd>'+
     '<dt><b>g</b><b>f</b></dt><dd>the fleet</dd>'+
     '<dt><b>g</b><b>s</b></dt><dd>what I do</dd>'+
@@ -1090,5 +1164,108 @@ addEventListener('resize',wr);wr();
   }
 })();
 </script>
+
+<script id="a11y2-js">
+(function(){
+  /* ---- 1. never mark the interactive brain decorative ------------------ */
+  function fixCanvases(){
+    document.querySelectorAll('canvas').forEach(function(c){
+      if(c.id==='brain'){
+        c.removeAttribute('aria-hidden');
+        c.setAttribute('role','application');
+        c.setAttribute('aria-label','Interactive model of 26 scheduled agents. Press Enter to inspect one, then use the arrow keys to move through the fleet.');
+      }else{
+        c.setAttribute('aria-hidden','true');
+        c.setAttribute('role','presentation');
+      }
+    });
+  }
+  fixCanvases();
+  addEventListener('load',fixCanvases);
+  setTimeout(fixCanvases,600);
+
+  /* ---- 2. reveal a block immediately if focus enters it ---------------- */
+  document.addEventListener('focusin',function(e){
+    var n=e.target;
+    while(n && n!==document.body){
+      if(n.classList && n.classList.contains('rv') && !n.classList.contains('in')) n.classList.add('in');
+      n=n.parentElement;
+    }
+  });
+
+  /* ---- 3. the agent panel is inert until it is opened ------------------ */
+  var panel=document.getElementById('agentPanel');
+  if(panel){
+    var setInert=function(open){
+      panel.setAttribute('aria-hidden', open?'false':'true');
+      if('inert' in HTMLElement.prototype) panel.inert=!open;
+      panel.querySelectorAll('button').forEach(function(b){
+        if(open) b.removeAttribute('tabindex'); else b.setAttribute('tabindex','-1');
+      });
+    };
+    setInert(false);
+    new MutationObserver(function(){ setInert(panel.classList.contains('on')); })
+      .observe(panel,{attributes:true,attributeFilter:['class']});
+  }
+
+  /* ---- 4. proof drawers: wire aria-controls and hide when collapsed ---- */
+  var stats=document.getElementById('stats');
+  if(stats){
+    var drawers=stats.querySelectorAll('.proof');
+    var cells=stats.querySelectorAll('.stat[role="button"]');
+    drawers.forEach(function(d,i){
+      d.id='proof-'+i;
+      d.setAttribute('aria-hidden','true');
+      if('inert' in HTMLElement.prototype) d.inert=true;
+      if(cells[i]) cells[i].setAttribute('aria-controls','proof-'+i);
+      new MutationObserver(function(){
+        var open=d.classList.contains('open');
+        d.setAttribute('aria-hidden',open?'false':'true');
+        if('inert' in HTMLElement.prototype) d.inert=!open;
+      }).observe(d,{attributes:true,attributeFilter:['class']});
+    });
+  }
+
+  /* ---- 5. shortcut dialog: modal semantics, focus trap, focus restore -- */
+  var kbd=document.querySelector('.kbd');
+  if(kbd){
+    kbd.setAttribute('aria-modal','true');
+    kbd.setAttribute('aria-hidden','true');
+    if('inert' in HTMLElement.prototype) kbd.inert=true;
+    var opener=null;
+    new MutationObserver(function(){
+      var open=kbd.classList.contains('on');
+      kbd.setAttribute('aria-hidden',open?'false':'true');
+      if('inert' in HTMLElement.prototype) kbd.inert=!open;
+      if(open){ opener=document.activeElement; kbd.setAttribute('tabindex','-1'); kbd.focus(); }
+      else if(opener && opener.focus){ opener.focus(); opener=null; }
+    }).observe(kbd,{attributes:true,attributeFilter:['class']});
+    // trap tab inside while open
+    kbd.addEventListener('keydown',function(e){
+      if(e.key!=='Tab') return;
+      var f=kbd.querySelectorAll('a[href],button,[tabindex]:not([tabindex="-1"])');
+      if(!f.length){ e.preventDefault(); return; }
+      var first=f[0], last=f[f.length-1];
+      if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+    });
+  }
+
+  /* ---- 6. accessible name for the fleet strip -------------------------- */
+  var fs=document.querySelector('.fleetstrip');
+  if(fs && !fs.getAttribute('aria-label')){
+    fs.setAttribute('aria-label','Fleet status: next scheduled run is system-watchdog at 20:00. Open the full instrument.');
+    fs.querySelectorAll('.fs-lane,.fs-live').forEach(function(el){ el.setAttribute('aria-hidden','true'); });
+  }
+
+  /* ---- 7. tell assistive tech which links leave the page --------------- */
+  document.querySelectorAll('a[target="_blank"]').forEach(function(a){
+    if(a.querySelector('.sr-only')) return;
+    a.insertAdjacentHTML('beforeend','<span class="sr-only"> (opens in a new tab)</span>');
+    if(!a.getAttribute('rel')) a.setAttribute('rel','noopener noreferrer');
+  });
+})();
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
