@@ -61,7 +61,7 @@ Fixed aurora backdrop: three radial gradients (violet top-right, teal left, rose
 
 ### The 3D hero
 
-Three.js r128, ~5,300 points across four clouds: cortex, cerebellum, brainstem, and a faint outer halo. The cortex sampler shapes an ellipsoid with a long front-back axis, frontal taper, occipital fullness, widened temporal lobes, a flattened underside and an interhemispheric fissure; two layered sinusoids add gyri. Points render as additive glow sprites, coloured rose → violet → teal by height.
+Three.js r128, self-hosted at `/vendor/three.min.js`, ~5,300 points across four clouds: cortex, cerebellum, brainstem, and a faint outer halo. The cortex sampler shapes an ellipsoid with a long front-back axis, frontal taper, occipital fullness, widened temporal lobes, a flattened underside and an interhemispheric fissure; two layered sinusoids add gyri. Points render as additive glow sprites, coloured rose → violet → teal by height.
 
 26 agent nodes sit on the surface, joined by synapse lines under 0.85 units apart. Five sprite pulses travel between nodes on an eased path. Interaction: drag to spin with inertia decay (0.95 rotational, 0.92 vertical), idle auto-rotation, a subtle breathing scale, raycast hover that names the agent and shows its cron line, and a callout that cycles through all 26 agents every 3.6s.
 
@@ -87,3 +87,4 @@ The capabilities section is a cream card floating on the dark page — 32px radi
 4. **Accent meanings are fixed.** Don't use green for a prototype or amber for a healthy state.
 5. **Test with JS off** before shipping a change to the reveal logic — all content must remain visible.
 6. **Third-party frames load only on click.** Don't autoload the Squares iframe.
+7. **Keep the pages request-free.** Fonts and three.js are self-hosted; do not reintroduce a CDN link without also removing the `no third-party requests` claim from both footers.

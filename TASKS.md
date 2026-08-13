@@ -17,11 +17,21 @@ Portfolio supports the job search — it is not the resume source. Keep it accur
 - [x] **Docs rewritten** — new `README.md`, `docs/DESIGN-SYSTEM.md`, `docs/CHANGELOG-v7.md`,
       `docs/AUDIT-2026-08-12.md`.
 
-## Open — follow-ups from v7
-- [ ] **Self-host the fonts** (and Three.js) to restore the old "no third-party requests"
-      property. Both new pages currently pull Google Fonts, and `neural.html` pulls Three.js
-      r128 from cdnjs. `vendor/` already holds self-hosted faces from the v6 build.
-- [ ] **Refresh og.png** — it still advertises the v6 hero.
+## Done 2026-08-12 - v7.1 follow-ups
+- [x] **Fonts and Three.js self-hosted.** Installed via npm (@fontsource + three@0.128.0);
+      16 latin-subset woff2 faces and the r128 UMD build copied into `vendor/`. Both pages
+      now make **zero third-party requests** - verified in-browser with the Resource Timing
+      API returning an empty external list. The "no third-party requests" line is back in
+      both footers, and it is true again.
+- [x] **og.png regenerated** for the new hero - 1200x630, Mission Control palette, drawn by
+      `scripts/make_og.py` using the same self-hosted faces the page serves. Meta points at
+      `og.png?v=7` so LinkedIn and Twitter refetch instead of serving the cached old card.
+- [x] **vendor/ pruned** - 44 files deleted (meshes and .npy sources, tract lines, bloom and
+      bokeh pipeline, HDR map, MarchingCubes, GSAP, ScrollTrigger, Lenis, three module build,
+      old font set). 12.7 MB -> 0.8 MB. `.vercelignore` rewritten, since every rule in it
+      guarded a file that no longer exists, and `vendor/README.md` added.
+
+## Open
 - [ ] **Decide whether Neural stays a second page** or becomes a toggle on one page.
 
 ## Done 2026-07-29

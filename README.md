@@ -44,7 +44,7 @@ docs/  scripts/  vendor/        Supporting material
 
 ## Local development
 
-No toolchain required. Serve the folder over HTTP (needed because both pages fetch fonts and, on the neural page, Three.js from CDN):
+No toolchain required. Serve the folder over HTTP (needed because both pages load fonts and three.js from `/vendor/`, which are root-relative paths):
 
 ```bash
 cd C:\Brian\02_Projects\portfolio
@@ -52,7 +52,7 @@ python -m http.server 8080
 # then open http://127.0.0.1:8080/  and  http://127.0.0.1:8080/neural.html
 ```
 
-Opening the files directly with `file://` mostly works, but root-relative asset paths (`/favicon.svg`, `/resume.pdf`) resolve against the drive root and will 404. Use the server.
+Opening the files directly with `file://` will not work properly: the root-relative asset paths (`/vendor/fonts/*`, `/vendor/three.min.js`, `/favicon.svg`, `/resume.pdf`) resolve against the drive root and 404, so you get fallback fonts and no 3D brain. Use the server.
 
 ---
 
@@ -64,7 +64,7 @@ Vercel, connected to `github.com/bmath8/portfolio`. Static output, no framework,
 
 ## Technical notes
 
-**No build, no dependencies to install.** Each page is one self-contained HTML file with inline CSS and JS. The only external requests are Google Fonts on both pages, and cdnjs Three.js r128 on the neural page.
+**No build, no dependencies to install.** Each page is one self-contained HTML file with inline CSS and JS. Fonts and three.js are self-hosted from `vendor/`, so the pages make **zero third-party requests** — the only outbound traffic is a link a visitor clicks, or the Super Bowl Squares iframe, which loads only after an explicit click. See `vendor/README.md` for what is vendored and how it was installed.
 
 **Graceful degradation.** Both pages set a `.js` class at runtime; reveal animations only apply when JS is on, so all content is visible with JS disabled. If WebGL is unavailable the neural page hides the canvas and the rest of the page is unaffected. `prefers-reduced-motion` disables reveal transitions.
 
