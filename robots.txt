@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://bmath8.vercel.app/sitemap.xml

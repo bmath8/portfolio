@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — no agent handles this route · Brian Mathew</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#04060a">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+@font-face{font-family:'Archivo';font-style:normal;font-weight:900;font-display:swap;src:url('/vendor/fonts/archivo-900.woff2') format('woff2')}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:600;font-display:swap;src:url('/vendor/fonts/archivo-600.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url('/vendor/fonts/ibm-plex-mono-400.woff2') format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url('/vendor/fonts/ibm-plex-mono-500.woff2') format('woff2')}
+:root{--bg:#04060a;--panel:#0c1520;--line:#1d3042;--line2:#2c4a63;--txt:#eaf3fb;--dim:#93aabf;--faint:#8199ad;--green:#4af0a0;--ice:#6fd3ff;--red:#ff6161;--mono:'IBM Plex Mono',monospace;--sans:'Archivo',sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);min-height:100vh;display:grid;place-items:center;padding:2rem;position:relative;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(0deg,rgba(255,255,255,.016) 0 1px,transparent 1px 3px)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(900px 500px at 50% -10%,rgba(255,97,97,.07),transparent 60%),radial-gradient(700px 400px at 50% 110%,rgba(74,240,160,.06),transparent 60%)}
+main{position:relative;z-index:2;max-width:620px;width:100%}
+.card{background:linear-gradient(170deg,#122031,var(--panel));border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 40px 90px -50px #000}
+.bar{display:flex;gap:.4rem;padding:.6rem .8rem;border-bottom:1px solid var(--line);align-items:center}
+.bar i{width:9px;height:9px;border-radius:50%;background:#3a4c5e;display:block}
+.bar i:first-child{background:var(--red)}
+.bar span{margin-left:.6rem;color:var(--faint);font-family:var(--mono);font-size:.68rem}
+.card pre{padding:1.1rem 1.2rem;font-family:var(--mono);font-size:.78rem;line-height:1.9;color:var(--dim);overflow-x:auto}
+.card .c{color:var(--ice)}.card .r{color:var(--red)}.card .g{color:var(--green)}
+h1{font-size:clamp(2.6rem,8vw,4rem);font-weight:900;letter-spacing:-.02em;line-height:1;margin:2rem 0 .8rem}
+h1 span{color:var(--red)}
+p{color:var(--dim);margin-bottom:1.8rem;max-width:44ch}
+.row{display:flex;gap:.8rem;flex-wrap:wrap}
+a.btn{font-family:var(--mono);font-size:.78rem;padding:.72rem 1.25rem;border-radius:6px;border:1px solid var(--line2);color:var(--txt);text-decoration:none;transition:all .3s var(--ease)}
+a.btn:hover{border-color:var(--green);color:var(--green);transform:translateY(-2px)}
+a.btn.pri{background:linear-gradient(110deg,var(--green),#7cf7c6);border:none;color:#03130a;font-weight:700}
+a.btn.pri:hover{color:#03130a;box-shadow:0 12px 30px -10px rgba(74,240,160,.55)}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:3px}
+.kicker{font-family:var(--mono);font-size:.72rem;color:var(--red);letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:.5rem}
+.kicker::before{content:"";width:24px;height:1px;background:var(--red)}
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">HTTP 404 · route not found</div>
+  <h1>No agent handles<br><span>this route.</span></h1>
+  <p>That page isn't on the schedule. Everything that is still runs — here's the way back.</p>
+
+  <div class="card">
+    <div class="bar"><i></i><i></i><i></i><span>brian@brian-os — hermes</span></div>
+<pre><span class="c">$</span> hermes route resolve <span class="r">$REQUESTED_PATH</span>
+<span class="r">no handler registered</span>
+<span class="c">$</span> hermes route list --public
+<span class="g">/</span>             mission control · the systems, the fleet, the work
+<span class="g">/neural.html</span>  the same content, rendered as a working cortex
+<span class="g">/resume.pdf</span>   one page, current</pre>
+  </div>
+
+  <div class="row" style="margin-top:1.8rem">
+    <a class="btn pri" href="/">Back to the work</a>
+    <a class="btn" href="/neural.html">Neural edition</a>
+    <a class="btn" href="mailto:mathew.brian@gmail.com">Email me</a>
+  </div>
+</main>
+<script>
+// show the path that actually missed, rather than a placeholder
+document.querySelector('.r').textContent = location.pathname.slice(0,80) || '/';
+</script>
+</body>
+</html>
