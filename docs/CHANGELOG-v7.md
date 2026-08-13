@@ -44,3 +44,60 @@ The v6 homepage had strong content and a weak vehicle. Audit findings:
 - Both pages served over HTTP and loaded end to end; no console errors.
 - `/`, `/neural.html`, `/favicon.svg`, `/og.png`, `/resume.pdf` all return 200.
 - Fleet visualisations, all three demo panes, count-ups, reveals and cross-links confirmed working.
+
+
+---
+
+# v7.1 - Self-hosted assets, new OG card, vendor prune (2026-08-12)
+
+Three follow-ups from v7, all closed.
+
+## Fonts and three.js are self-hosted
+
+v7 shipped pulling Google Fonts on both pages and three.js r128 from cdnjs. That broke a
+property the old site had been careful about, so the "no third-party requests" claim was
+removed rather than left false. It is now true again and the claim is back.
+
+Installed as npm packages so provenance and versions are reproducible:
+`@fontsource/{archivo,syne,dm-sans,dm-mono,ibm-plex-mono}` and `three@0.128.0`. Sixteen
+latin-subset woff2 faces - one per weight each page actually uses - plus the r128 UMD build
+now live in `vendor/`, with `@font-face` blocks inline at the top of each page.
+
+Verified in-browser: the Resource Timing API reports an empty list of non-origin requests on
+both pages. The only outbound traffic left is a link a visitor clicks, or the Super Bowl
+Squares iframe, which still loads only after an explicit click.
+
+## og.png regenerated
+
+The old card advertised the retired hero. The new one is drawn by `scripts/make_og.py` -
+1200x630, Mission Control palette, the same self-hosted faces the page serves, with the
+headline, the four metrics and the scheduler radar. Nothing generated, nothing stock.
+
+Meta on both pages points at `og.png?v=7`, because LinkedIn and Twitter cache aggressively
+by URL and would otherwise keep serving the old card.
+
+## vendor/ pruned
+
+Neither live page referenced anything in `vendor/` after the v7 rebuild. Forty-four files
+were deleted: the ICBM152 meshes and their `.npy` sources, the tract-line bundle, the
+bloom and bokeh post-processing pipeline, the HDR environment map, MarchingCubes, GSAP,
+ScrollTrigger, Lenis, the three.js module build, and the previous font set.
+
+12.7 MB -> 0.8 MB.
+
+`.vercelignore` was rewritten as a consequence: every exclusion rule in it guarded a file
+that no longer exists. The one hard-won rule is preserved - never use a directory-level
+negation like `vendor/*` plus `!vendor/fonts/`, because Vercel did not honour the
+re-include and shipped a deploy with every font 404ing. A new `vendor/README.md` records
+what is vendored, how it was installed, and its licences.
+
+The archived pages under `design-candidates/archive/` still reference some deleted assets.
+They are kept as a record of what shipped, not as runnable pages; recover from git history if
+one ever needs to run again.
+
+## Verification
+
+Both pages: no console errors, zero external resource requests, correct fonts applied
+(Archivo/IBM Plex Mono and Syne/DM Sans/DM Mono), three.js r128 loaded from `/vendor/`, the
+3D cortex rendering. `/`, `/neural.html`, `/og.png`, `/resume.pdf`, `/favicon.svg`
+and every vendored font return 200.

@@ -1,47 +1,57 @@
-# vendor/ — what is here, and why
+# vendor/
 
-**Every file in this folder is either fetched by the live page or load-bearing at build time.
-There is no third category.** Keep it that way: this folder had accumulated 2.3 MB of libraries
-from abandoned approaches, and the cost was not bytes — nothing here ships — but that every
-session opening it reasonably concluded the project used a bloom pipeline and HDR lighting.
+Third-party assets, self-hosted so the live pages make **zero third-party requests**.
 
-Verified 2026-08-11 by loading the page and recording every request it makes.
+Everything in here is loaded by `index.html` or `neural.html`. If a file stops being
+referenced, delete it — this folder previously grew to 12.7 MB of assets belonging to
+approaches that had already been abandoned.
 
-## Fetched at runtime — 1.4 MB
+## Contents
 
-| File | Size | Why |
+| Path | Used by | Notes |
 |---|---|---|
-| `three.core.min.js` + `three.module.min.js` | 740 KB | The renderer. ~r168–r175 (contains WebGPU + TSL, lacks `ClippingGroup`). |
-| `lines/LineSegments2.js`, `lines/LineSegmentsGeometry.js`, `lines/LineMaterial.js` | 36 KB | The tract bundle — one instanced draw call regardless of segment count. |
-| `mesh/brain-icbm152-v2.bin` | 648 KB | The cortical mesh, `BRN2` format, 39,828 verts. |
-| `fonts/*.woff2` (6 faces) + `fonts.css` | 336 KB | Self-hosted — the zero-third-party-request rule depends on this. |
+| `fonts/archivo-{500,600,700,800,900}.woff2` | `index.html` | Display and UI |
+| `fonts/ibm-plex-mono-{400,500,600}.woff2` | `index.html` | Machine output, labels, cron lines |
+| `fonts/syne-{600,700,800}.woff2` | `neural.html` | Display |
+| `fonts/dm-sans-{400,500,700}.woff2` | `neural.html` | Body |
+| `fonts/dm-mono-{400,500}.woff2` | `neural.html` | Machine output |
+| `three.min.js` | `neural.html` | three.js r128 UMD build, for the 3D cortex |
+| `three-LICENSE.txt` | — | MIT licence text for the above |
 
-## ⛔ NOT fetched, and MUST NOT BE DELETED
+Total: ~0.8 MB.
 
-**`mesh/brain-icbm152.bin` (820 KB).** Nothing requests it, so every dead-code sweep flags it.
-It is the **only surviving source** for building `brain-icbm152-v2.bin`: the `build_mesh.py` that
-generated it **has never existed in git history** (`git log --all --diff-filter=A` returns
-nothing). `scratchpad/pack_mesh_v2.py` reads this file to produce the v2 mesh. Delete it and the
-mesh becomes unregenerable — it would mean rewriting the pipeline from scratch (threshold
-combined GM+WM probability maps of MNI ICBM152 2009c, marching cubes, Taubin smoothing).
+## Where these came from
 
-Licence notice for both meshes: `mesh/README-LICENSE.md`. The notice must travel with the asset —
-that is the licence condition, and it is why the footer carries it.
+Installed as npm packages rather than downloaded ad hoc, so the provenance and version
+are reproducible:
 
-## Kept deliberately, not yet wired
+```bash
+npm install @fontsource/archivo @fontsource/syne @fontsource/dm-sans \
+            @fontsource/dm-mono @fontsource/ibm-plex-mono three@0.128.0
+```
 
-| File | Size | Why kept |
-|---|---|---|
-| `gsap.min.js` + `ScrollTrigger.min.js` | 116 KB | GSAP became **100% free including every plugin** at v3.13 under Webflow's sponsorship. `RESEARCH-2026-08-11.md` recommends it for the DOM choreography (word-by-word heading reveals) that is still hand-rolled. Use it or remove it — do not let it sit here for another six months. |
+Fonts are the `latin` subset, one file per weight actually used — not the full family.
+They are copied out of `node_modules/@fontsource/<family>/files/<family>-latin-<weight>-normal.woff2`
+and renamed to `<family>-<weight>.woff2`. The `@font-face` blocks live inline at the top
+of each page.
 
-## Removed 2026-08-11, and why — do not re-add without a reason
+Licences: Archivo, Syne, DM Sans, DM Mono and IBM Plex Mono are all SIL Open Font License 1.1.
+three.js is MIT.
 
-| Removed | Size | Why it was dead |
-|---|---|---|
-| `postprocessing.module.js`, `postprocessing/`, `shaders/` | 720 KB | A bloom/bokeh pipeline. **"no bloom" is a documented rejection** in `V6-PLAN` and the page's own DELIBERATELY ABSENT list. |
-| `hdr/`, `loaders/RGBELoader.js`, `loaders/HDRLoader.js`, `RoomEnvironment.js` | 1.6 MB | Image-based lighting, abandoned when the matcap approach was adopted. |
-| `objects/MarchingCubes.js` | 40 KB | The particle-brain era. Dead since `lab/03` proved the real mesh reads. |
-| `lines/Line2.js`, `lines/LineGeometry.js` | 8 KB | Superseded by the `LineSegments2` pair above. |
-| `lenis.min.js` | 16 KB | Smooth-scroll hijacking. Specced in Phase 4, never wired, and recommended against — it carries an accessibility cost that sits badly beside a `prefers-reduced-motion` fix. |
+## The 2026-08-12 prune
 
-All recoverable from git history if a decision changes.
+The v7 rebuild retired the cortical-mesh hero. The assets that served it were deleted:
+the ICBM152 meshes and their `.npy` sources, the tract-line bundle, the bloom/bokeh
+post-processing pipeline, the HDR environment map, MarchingCubes, GSAP, ScrollTrigger,
+Lenis, the three.js module build, and the previous font set — 44 files, 11.9 MB.
+
+The archived pages under `design-candidates/archive/` still reference some of them. Those
+are kept as a record of what shipped, not as runnable pages. Recover an asset from git
+history if one ever needs to run again.
+
+## Rule
+
+Do not exclude anything here in `.vercelignore` with a directory-level negation
+(`vendor/*` plus `!vendor/fonts/`). Vercel did not honour that re-include — the deploy on
+2026-08-05 returned 404 for every font and the site silently fell back to system faces.
+Exclude by explicit filename if it is ever needed again.
