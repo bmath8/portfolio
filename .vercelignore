@@ -28,6 +28,8 @@ scratchpad/
 #   vendor/lines/LineSegmentsGeometry.js  call regardless of segment count
 #   vendor/lines/LineMaterial.js
 #   vendor/mesh/brain-icbm152-v3.bin      1.08 MB, 61,889 verts (BRN2 format)
+#   vendor/mesh/t1-atlas.webp             284 KB, the real T1 volume as 100
+#                                         tiled sagittal slices for the section
 #
 # Two rules learned the hard way, both still in force:
 #

@@ -7,6 +7,13 @@ This repo (`bmath8/portfolio`, live at **bmath8.vercel.app**) is the hub. The po
 site and the polished resume already live here — this file is the index that ties every
 resume version and every project to it, with an honest status on each.
 
+
+> **Update 2026-08-12 — v7.** The live site is now two designs, not one: **Mission Control**
+> at `/` (`index.html`) and **Neural** at `/neural.html`. Both carry identical content and
+> cross-link in their footers. The previous single-page build is archived at
+> `design-candidates/archive/v6-brain-hero.html`. See `README.md` for structure,
+> `docs/DESIGN-SYSTEM.md` for tokens and components, and `docs/CHANGELOG-v7.md` for what
+> changed and why.
 ---
 
 ## 1. Resumes — ⚠️ THIS REPO IS NO LONGER THE RESUME SOURCE (changed 2026-07-29)

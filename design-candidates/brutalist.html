@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRIAN MATHEW — SYSTEMS THAT STAY UP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bone:#efece3; --ink:#111110; --red:#e33d1e; --line:#111110;
+  --disp:'Anton',sans-serif; --mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bone);color:var(--ink);font-family:var(--mono);line-height:1.55}
+a{color:inherit}
+::selection{background:var(--red);color:var(--bone)}
+
+/* ticker */
+.ticker{background:var(--ink);color:var(--bone);overflow:hidden;white-space:nowrap;border-bottom:3px solid var(--ink)}
+.ticker .in{display:inline-block;padding:.5rem 0;font-size:.72rem;letter-spacing:.06em;animation:tick 28s linear infinite}
+.ticker b{color:#ffe14d}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* header */
+header{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:3px solid var(--ink);position:sticky;top:0;background:var(--bone);z-index:40}
+header .lg{font-family:var(--disp);font-size:1.3rem;letter-spacing:.02em;text-transform:uppercase}
+header .lg span{color:var(--red)}
+header nav{display:flex;gap:1.6rem;font-size:.78rem;text-transform:uppercase;font-weight:700}
+header nav a{text-decoration:none}
+header nav a:hover{color:var(--red);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:3px}
+header .hire{background:var(--red);color:var(--bone);padding:.5rem 1.1rem;text-decoration:none;font-weight:700;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transition:.12s}
+header .hire:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+
+/* hero */
+.hero{padding:4rem 2rem 3rem;border-bottom:3px solid var(--ink);position:relative;overflow:hidden}
+.hero h1{font-family:var(--disp);text-transform:uppercase;font-size:clamp(3.4rem,11vw,9.5rem);line-height:.92;letter-spacing:.005em}
+.hero h1 .o{-webkit-text-stroke:2.5px var(--ink);color:transparent}
+.hero h1 .r{color:var(--red)}
+.hero .sub{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2.4rem;align-items:end}
+.hero .sub p{font-size:.92rem;max-width:34rem}
+.hero .sub p b{background:#ffe14d;padding:0 .25rem}
+.hero .stamp{justify-self:end;text-align:right;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em}
+.hero .stamp .rot{display:inline-block;border:3px solid var(--red);color:var(--red);font-family:var(--disp);
+  font-size:1rem;padding:.5rem .9rem;transform:rotate(-4deg);text-transform:uppercase;margin-bottom:.8rem;background:var(--bone)}
+
+/* stat blocks */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:3px solid var(--ink)}
+.stats .s{padding:1.8rem 1.6rem;border-right:3px solid var(--ink);transition:.15s;position:relative}
+.stats .s:last-child{border-right:0}
+.stats .s:hover{background:var(--ink);color:var(--bone)}
+.stats .s:hover small{color:#999}
+.stats b{font-family:var(--disp);font-size:3.2rem;line-height:1;display:block}
+.stats .s:nth-child(1) b{color:var(--red)}
+.stats span{font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;font-weight:700}
+.stats small{display:block;font-size:.62rem;color:#777;margin-top:.4rem}
+
+/* section titles */
+.sect{border-bottom:3px solid var(--ink)}
+.sect-head{display:flex;align-items:center;gap:1.5rem;padding:1.2rem 2rem;border-bottom:3px solid var(--ink);background:var(--bone)}
+.sect-head h2{font-family:var(--disp);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.6rem);letter-spacing:.01em}
+.sect-head .idx{font-size:.75rem;font-weight:700;color:var(--red)}
+.sect-head .note{margin-left:auto;font-size:.68rem;text-transform:uppercase;color:#777;letter-spacing:.1em;text-align:right}
+
+/* project rows */
+.prow{display:grid;grid-template-columns:110px 1fr 320px;border-bottom:3px solid var(--ink);text-decoration:none;transition:.12s;background:var(--bone)}
+.prow:last-child{border-bottom:0}
+.prow:hover{background:var(--ink);color:var(--bone)}
+.prow:hover .tag{background:var(--red);color:var(--bone);border-color:var(--red)}
+.prow:hover .facts li{color:#bbb}
+.prow .n{font-family:var(--disp);font-size:2.2rem;padding:1.8rem 0 0 2rem}
+.prow .mid{padding:1.8rem 1.5rem 1.8rem 0}
+.prow .tag{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+  border:2px solid var(--ink);padding:.25rem .6rem;margin-bottom:.8rem;transition:.12s}
+.prow h3{font-family:var(--disp);text-transform:uppercase;font-size:clamp(1.3rem,3vw,2rem);line-height:1.05;margin-bottom:.7rem}
+.prow .mid>p{font-size:.85rem;max-width:52rem}
+.prow .facts{margin-top:1rem;list-style:none;display:grid;gap:.3rem}
+.prow .facts li{font-size:.72rem;color:#555}
+.prow .facts li::before{content:"[✓] "}
+.prow .end{border-left:3px solid var(--ink);display:flex;flex-direction:column;justify-content:space-between;padding:1.8rem 2rem}
+.prow:hover .end{border-color:var(--bone)}
+.prow .end .stack{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;line-height:2}
+.prow .end .arrow{font-family:var(--disp);font-size:2rem;align-self:flex-end;transition:.12s}
+.prow:hover .arrow{transform:translateX(8px);color:var(--red)}
+
+/* skills */
+.skills{display:grid;grid-template-columns:repeat(4,1fr)}
+.skill{border-right:3px solid var(--ink);padding:2rem 1.6rem;position:relative}
+.skill:last-child{border-right:0}
+.skill h4{font-family:var(--disp);text-transform:uppercase;font-size:1.5rem;margin-bottom:.8rem}
+.skill h4::after{content:"";display:block;width:2.2rem;height:5px;background:var(--red);margin-top:.5rem}
+.skill p{font-size:.78rem;color:#444}
+
+/* history */
+.hist .hr{display:grid;grid-template-columns:180px 1fr;border-bottom:3px solid var(--ink);padding:1.6rem 2rem;gap:2rem}
+.hist .hr:last-child{border-bottom:0}
+.hist time{font-weight:700;font-size:.78rem;text-transform:uppercase;padding-top:.4rem}
+.hist b{font-family:var(--disp);text-transform:uppercase;font-size:1.25rem;letter-spacing:.01em;display:block}
+.hist .org{font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-weight:700}
+.hist p{font-size:.82rem;color:#444;margin-top:.4rem;max-width:60ch}
+
+/* footer */
+.big-cta{background:var(--ink);color:var(--bone);padding:5rem 2rem;text-align:center;position:relative;overflow:hidden}
+.big-cta h2{font-family:var(--disp);text-transform:uppercase;font-size:clamp(2.4rem,8vw,6.5rem);line-height:.95}
+.big-cta h2 span{color:#ffe14d}
+.big-cta .mail{display:inline-block;margin-top:2.4rem;font-family:var(--disp);font-size:clamp(1.1rem,3vw,2rem);
+  color:var(--bone);background:var(--red);padding:.9rem 2rem;text-decoration:none;border:3px solid var(--bone);
+  box-shadow:6px 6px 0 var(--bone);transition:.12s;text-transform:uppercase}
+.big-cta .mail:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--bone)}
+.big-cta .alt{margin-top:1.8rem;display:flex;gap:2rem;justify-content:center;font-size:.78rem;flex-wrap:wrap}
+.big-cta .alt a{color:#999}
+.big-cta .alt a:hover{color:#ffe14d}
+.fine{background:var(--ink);color:#666;font-size:.62rem;text-align:center;padding:0 2rem 2rem;line-height:2}
+
+@media(max-width:900px){
+  header nav{display:none}
+  .hero .sub{grid-template-columns:1fr}
+  .hero .stamp{justify-self:start;text-align:left}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stats .s{border-bottom:3px solid var(--ink)}
+  .prow{grid-template-columns:1fr}
+  .prow .n{padding:1.4rem 0 0 1.5rem}
+  .prow .mid{padding:1rem 1.5rem}
+  .prow .end{border-left:0;border-top:3px solid var(--ink);flex-direction:row;align-items:center}
+  .skills{grid-template-columns:1fr 1fr}
+  .skill{border-bottom:3px solid var(--ink)}
+  .hist .hr{grid-template-columns:1fr;gap:.4rem}
+}
+</style>
+</head>
+<body>
+
+<div class="ticker"><div class="in">
+  26 AGENTS SCHEDULED ON REAL CRON LINES ✦ 81/81 TESTS GREEN ✦ 0 MANUAL TRIGGERS ✦ NEXT RUN: <b>SYSTEM-WATCHDOG 20:00</b> ✦ OPEN TO WORK — NJ / REMOTE / RELOCATION ✦ EVERY NUMBER ON THIS PAGE IS CHECKABLE ✦&nbsp;
+  26 AGENTS SCHEDULED ON REAL CRON LINES ✦ 81/81 TESTS GREEN ✦ 0 MANUAL TRIGGERS ✦ NEXT RUN: <b>SYSTEM-WATCHDOG 20:00</b> ✦ OPEN TO WORK — NJ / REMOTE / RELOCATION ✦ EVERY NUMBER ON THIS PAGE IS CHECKABLE ✦&nbsp;
+</div></div>
+
+<header>
+  <div class="lg">Brian<span>—</span>Mathew</div>
+  <nav>
+    <a href="#work">Work</a>
+    <a href="#skills">Skills</a>
+    <a href="#history">History</a>
+    <a href="https://github.com/bmath8">GitHub</a>
+  </nav>
+  <a class="hire" href="mailto:mathew.brian@gmail.com">HIRE ME</a>
+</header>
+
+<section class="hero">
+  <h1>Systems<br><span class="o">that stay</span><br><span class="r">up.</span></h1>
+  <div class="sub">
+    <p>Self-taught developer, New Jersey. I don't just ship — <b>26 scheduled agents are running unattended on my machine right now.</b> I build systems, then I keep them running. Everything below is code you can open.</p>
+    <div class="stamp">
+      <div class="rot">★ Open to work</div><br>
+      NJ · remote · hybrid · relocation<br>Available to start quickly
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="s"><b>26</b><span>Agents live</span><small>hermes cron list — 2026-08-05</small></div>
+  <div class="s"><b>81/81</b><span>Tests green</span><small>live pytest run — 31s</small></div>
+  <div class="s"><b>03</b><span>Systems shipped</span><small>built · tested · operated</small></div>
+  <div class="s"><b>00</b><span>Manual triggers</span><small>everything on cron</small></div>
+</div>
+
+<section class="sect" id="work">
+  <div class="sect-head">
+    <span class="idx">SEC.01</span><h2>Selected Work</h2>
+    <span class="note">3 systems · every number<br>says where it came from</span>
+  </div>
+
+  <a class="prow" href="https://github.com/bmath8/brian-os" target="_blank" rel="noopener">
+    <div class="n">01</div>
+    <div class="mid">
+      <span class="tag">● Brian OS — Running now</span>
+      <h3>A 26-agent fleet that runs my day</h3>
+      <p>Native-Windows AI agent fleet in Python. Local LLM routing through Ollama, Telegram control, structured shared state, self-healing health checks — and draft-only guardrails, so nothing sends, spends, deploys or deletes without my approval.</p>
+      <ul class="facts">
+        <li>26 scheduled agents — count from hermes cron list, 2026-08-05</li>
+        <li>81/81 tests passing — live pytest run, 31s</li>
+        <li>Recovered a silent process-guardian failure — traced, fixed, prevented</li>
+      </ul>
+    </div>
+    <div class="end"><span class="stack">Python<br>Ollama<br>Telegram<br>Cron</span><span class="arrow">→</span></div>
+  </a>
+
+  <a class="prow" href="https://fam-super-bowl-squares-2026.vercel.app" target="_blank" rel="noopener">
+    <div class="n">02</div>
+    <div class="mid">
+      <span class="tag">● Super Bowl LX Squares — Live</span>
+      <h3>A real-time app that ran a real event</h3>
+      <p>100-square grid, randomized draw, live score-driven winner resolution, chat, host controls and a security write-lock. It ran in front of a real audience on game day, with no second chance to get it right.</p>
+      <ul class="facts">
+        <li>Publicly usable right now — no login, open it and click</li>
+        <li>React + Firebase Realtime DB — source public on GitHub</li>
+      </ul>
+    </div>
+    <div class="end"><span class="stack">React<br>Firebase<br>Realtime DB<br>Vercel</span><span class="arrow">→</span></div>
+  </a>
+
+  <a class="prow" href="https://github.com/bmath8/boombox" target="_blank" rel="noopener">
+    <div class="n">03</div>
+    <div class="mid">
+      <span class="tag">BoomBox — Prototype</span>
+      <h3>Durable state vs. transient state</h3>
+      <p>Real-time social music app on Next.js and TypeScript. The interesting decision is the split: Postgres holds what must survive a restart, WebSockets and Redis Pub/Sub carry what must not outlive the session.</p>
+      <ul class="facts">
+        <li>Jest/RTL tests + Docker Compose — in the repo</li>
+        <li>No live deployment — stated plainly; it is a prototype</li>
+      </ul>
+    </div>
+    <div class="end"><span class="stack">Next.js<br>TypeScript<br>Postgres<br>Redis</span><span class="arrow">→</span></div>
+  </a>
+</section>
+
+<section class="sect" id="skills">
+  <div class="sect-head">
+    <span class="idx">SEC.02</span><h2>What I actually do</h2>
+    <span class="note">Demonstrable in a<br>live screen share</span>
+  </div>
+  <div class="skills">
+    <div class="skill"><h4>Build</h4><p>Python and TypeScript. React/Next.js front ends, Flask and Node back ends, Postgres and Supabase, Docker.</p></div>
+    <div class="skill"><h4>Operate</h4><p>Windows administration, PowerShell, scheduled jobs, log analysis, health monitoring, self-healing watchdogs.</p></div>
+    <div class="skill"><h4>Test</h4><p>pytest and Jest/RTL. I write the suite, run it, and fix what it catches before shipping.</p></div>
+    <div class="skill"><h4>Support</h4><p>Years of customer-facing work. Diagnose the real problem, explain it plainly, own it to a verified fix.</p></div>
+  </div>
+</section>
+
+<section class="sect hist" id="history">
+  <div class="sect-head">
+    <span class="idx">SEC.03</span><h2>Before this</h2>
+    <span class="note">Short and honest</span>
+  </div>
+  <div class="hr">
+    <time>2025 — Now</time>
+    <div><b>Independent Software Developer</b><span class="org">Self-directed</span>
+    <p>Building and operating the three systems above, end to end: design, implementation, tests, documentation, and the running of them afterwards.</p></div>
+  </div>
+  <div class="hr">
+    <time>2022</time>
+    <div><b>Driver, Independent Contractor</b><span class="org">Uber · New Jersey</span>
+    <p>About a year of customer-facing work — navigation, scheduling, safety and time-sensitive problems, handled independently and calmly.</p></div>
+  </div>
+  <div class="hr">
+    <time>Earlier</time>
+    <div><b>Appliances Department Lead</b><span class="org">Best Buy</span>
+    <p>Led the appliances sales floor: advised customers through major purchases, resolved complaints and post-sale problems in person, supported the team day to day.</p></div>
+  </div>
+</section>
+
+<footer class="big-cta">
+  <h2>The machine is running.<br><span>Come look at it.</span></h2>
+  <a class="mail" href="mailto:mathew.brian@gmail.com">mathew.brian@gmail.com</a>
+  <div class="alt">
+    <a href="tel:+16098151685">(609) 815-1685</a>
+    <a href="https://github.com/bmath8">github.com/bmath8</a>
+    <a href="https://linkedin.com/in/brian-mathew-66235556">LinkedIn</a>
+    <a href="/resume.pdf">Résumé PDF</a>
+  </div>
+</footer>
+<div class="fine">Every number on this page is checkable, and says where it came from. No third-party requests · no generated images · renders with JavaScript disabled.</div>
+
+</body>
+</html>

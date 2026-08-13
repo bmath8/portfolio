@@ -3,6 +3,27 @@
 ## Current task
 Portfolio supports the job search — it is not the resume source. Keep it accurate and public-safe.
 
+## Done 2026-08-12 — v7 dual-design rebuild
+- [x] **Full top-to-bottom redesign shipped.** Two complete designs now live in the repo:
+      Mission Control at `/` (`index.html`) and Neural at `/neural.html`. Previous homepage
+      archived to `design-candidates/archive/v6-brain-hero.html`.
+- [x] **Fixed the v6 problems** that made the old page feel wrong: scroll-jacked hero,
+      multi-viewport dead zones between sections, a duplicated header and white-bar artifact,
+      metrics stranded below the fold, and a 3D brain that outcompeted the headline.
+- [x] **Metrics moved into the first screen** on both pages, with count-up and a source line
+      under every number.
+- [x] **Live demos beside every project.** Squares loads the real deployed app on click;
+      Brian OS and BoomBox have purpose-built visualisations.
+- [x] **Docs rewritten** — new `README.md`, `docs/DESIGN-SYSTEM.md`, `docs/CHANGELOG-v7.md`,
+      `docs/AUDIT-2026-08-12.md`.
+
+## Open — follow-ups from v7
+- [ ] **Self-host the fonts** (and Three.js) to restore the old "no third-party requests"
+      property. Both new pages currently pull Google Fonts, and `neural.html` pulls Three.js
+      r128 from cdnjs. `vendor/` already holds self-hosted faces from the v6 build.
+- [ ] **Refresh og.png** — it still advertises the v6 hero.
+- [ ] **Decide whether Neural stays a second page** or becomes a toggle on one page.
+
 ## Done 2026-07-29
 - [x] **LinkedIn added** to the site (hero + contact). It was never actually blocked — the
       handle had been sitting in `03_Career/evidence-bank.md` since 2026-07-24 while this file
