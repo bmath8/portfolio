@@ -449,6 +449,29 @@ a[href^="http"]::after{ content:" (" attr(href) ")"; font-size:.8em; color:#555 
 h1{ font-size:26pt !important; } h2{ font-size:15pt !important; } h3{ font-size:12pt !important; }
 body{ font-size:10.5pt; }
 </style>
+
+<style id="m1">
+/* --- phone polish -------------------------------------------------------- */
+@media(max-width:560px){
+  /* the status bar was crushing the call to action onto two lines */
+  .statusbar{ gap:.6rem; padding:.5rem .85rem; }
+  .statusbar > span:nth-of-type(3){ display:none; }      /* "NJ · OPEN TO WORK" */
+  .statusbar .id{ font-size:.7rem; }
+  .statusbar .cta{ white-space:nowrap; flex:0 0 auto; padding:.4rem .7rem; }
+  h1{ font-size:clamp(2.1rem,9vw,2.9rem); }
+  .hero{ padding-top:2.4rem; }
+  .hero p.lede{ font-size:.98rem; }
+  /* the fleet strip stacks; keep it legible rather than cramming four columns */
+  .fleetstrip{ gap:.6rem; padding:.75rem .9rem; }
+  .fs-lane{ height:16px; }
+  .fs-go{ font-size:.62rem; }
+  .proj .body{ padding:1.4rem 1.25rem; }
+  .demo{ min-height:260px; }
+  .sec-head{ flex-wrap:wrap; gap:.5rem; }
+  .sec-head .tag{ flex-basis:100%; }
+  .foot-inner{ padding:3.2rem 0 2.2rem; }
+}
+</style>
 </head>
 <body>
 <a class="skip" href="#work">Skip to the work</a>
