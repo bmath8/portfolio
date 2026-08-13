@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preload" href="/vendor/fonts/syne-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/vendor/fonts/dm-sans-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/vendor/fonts/dm-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 <title>Brian Mathew — A cortex that actually works</title>
 <link rel="canonical" href="https://bmath8.vercel.app/neural.html" />
 <meta name="description" content="Brian Mathew builds and operates working software. Each node in this 3D brain is one real scheduled agent on his machine. 26 agents live, 81 tests green, 3 systems shipped. New Jersey — open to work." />
@@ -10,13 +13,13 @@
 <meta property="og:url" content="https://bmath8.vercel.app/neural.html" />
 <meta property="og:title" content="Brian Mathew - A cortex that actually works" />
 <meta property="og:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems built, tested, documented and still operated." />
-<meta property="og:image" content="https://bmath8.vercel.app/og.png?v=7" />
+<meta property="og:image" content="https://bmath8.vercel.app/og-neural.png?v=1" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Brian Mathew - A cortex that actually works" />
 <meta name="twitter:description" content="26 scheduled agents running unattended. 81 tests passing." />
-<meta name="twitter:image" content="https://bmath8.vercel.app/og.png?v=7" />
+<meta name="twitter:image" content="https://bmath8.vercel.app/og-neural.png?v=1" />
 <meta name="theme-color" content="#06070f" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
@@ -176,10 +179,10 @@ h2{font-family:var(--disp);font-size:clamp(1.7rem,3.4vw,2.4rem);font-weight:800;
 .skill-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;position:relative;z-index:2}
 .skill{border:1px solid #ddd7c8;border-radius:18px;padding:1.6rem;background:#fcfaf5;transition:.3s var(--spring);box-shadow:0 1px 0 #e8e2d4}
 .skill:hover{transform:translateY(-5px);box-shadow:0 22px 44px -26px rgba(22,19,31,.4)}
-.skill h4{font-family:var(--disp);font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--paper-ink)}
-.skill h4::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:.55rem;transform:rotate(45deg)}
-.skill:nth-child(1) h4::before{background:#0fae8d} .skill:nth-child(2) h4::before{background:#6c56f0}
-.skill:nth-child(3) h4::before{background:#e0517e} .skill:nth-child(4) h4::before{background:#d9a013}
+.skill h3{font-family:var(--disp);font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--paper-ink)}
+.skill h3::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:.55rem;transform:rotate(45deg)}
+.skill:nth-child(1) h3::before{background:#0fae8d} .skill:nth-child(2) h3::before{background:#6c56f0}
+.skill:nth-child(3) h3::before{background:#e0517e} .skill:nth-child(4) h3::before{background:#d9a013}
 .skill p{font-size:.84rem;color:var(--paper-dim)}
 
 /* timeline */
@@ -216,9 +219,144 @@ footer::before{content:"";position:absolute;inset:0;pointer-events:none;
   .island{padding:2.6rem 1.6rem 3rem;border-radius:24px}
 }
 </style>
+
+<style id="a11y">
+/* --- Tier 1 accessibility ---------------------------------------------
+   --faint was 2.95:1 on panel: below AA, and it carried the source lines
+   under every metric. Raised to ~5.1:1. Caption sizes floored at 11px. */
+:root{ --faint:#8087b0; }
+.orb small,.vis .cap,.fine,.brainbox .tag,.tl-item time{
+  font-size:.7rem; letter-spacing:.06em;
+}
+.vis .cap,.fine{ font-size:.68rem; }
+/* keyboard focus: nothing was visible before */
+:focus-visible{
+  outline:2px solid var(--teal);
+  outline-offset:3px;
+  border-radius:3px;
+}
+a:focus-visible,button:focus-visible{ outline-offset:4px; }
+.skip{
+  position:absolute; left:-9999px; top:0; z-index:200;
+  background:var(--teal); color:#071018; font-family:var(--mono);
+  font-size:.8rem; font-weight:700; padding:.7rem 1.2rem; border-radius:0 0 6px 0;
+}
+.skip:focus{ left:0; }
+/* honour reduced motion across the whole page, not just reveals */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important; animation-iteration-count:1 !important;
+    transition-duration:.001ms !important; scroll-behavior:auto !important;
+  }
+}
+/* larger tap targets on touch */
+@media (pointer:coarse){
+  .statusbar nav a,.links a,.foot .row a,.btn{ min-height:44px; display:inline-flex; align-items:center; }
+}
+</style>
+<style id="sr">.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}</style>
+<style id="t2n">
+/* --- hero proportions: the brain read small against the headline and left a
+       dead gutter between the columns at wide viewports -------------------- */
+@media(min-width:1100px){
+  /* the text column must still hold "A cortex" on one line, or the headline
+     orphans a single letter; the brain gains size from the negative margin
+     instead of from stealing column width */
+  .hero{ grid-template-columns:.95fr 1.05fr; gap:1rem; }
+  #brain{ height:680px; }
+  h1{ font-size:clamp(2.7rem,4.4vw,4.2rem); }
+  .brainbox{ margin-right:-6%; }
+}
+@media(min-width:1500px){
+  #brain{ height:740px; }
+  .brainbox{ margin-right:-10%; }
+  h1{ font-size:4.4rem; }
+}
+h1{ text-wrap:balance; }
+/* the callout sat oddly far from the object it labels */
+.brainbox .callout{ top:4%; }
+/* card rhythm: alternate which side the visual sits on, so three cards in a
+   row stop reading as one repeated template */
+@media(min-width:900px){
+  .card:nth-child(even) .inner{ grid-template-columns:1fr 1fr; }
+  .card:nth-child(even) .inner > div:first-child{ order:2; }
+  .card:nth-child(even) .inner > .vis{ order:1; }
+}
+</style>
+
+<style id="t3n">
+/* ---- agent panel ------------------------------------------------------ */
+.agentpanel{
+  position:absolute; right:0; bottom:0; width:min(340px,88%); z-index:8;
+  background:linear-gradient(165deg,rgba(20,18,42,.97),rgba(9,11,24,.97));
+  border:1px solid rgba(146,123,255,.4); border-radius:16px; padding:1.3rem 1.4rem;
+  box-shadow:0 30px 70px -35px #000, 0 0 0 1px rgba(60,240,200,.06);
+  backdrop-filter:blur(10px);
+  opacity:0; transform:translateY(14px) scale(.97); pointer-events:none;
+  transition:opacity .35s var(--ease), transform .35s var(--spring);
+}
+.agentpanel.on{ opacity:1; transform:none; pointer-events:auto; }
+.agentpanel .ap-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:.85rem; }
+.agentpanel .ap-tag{
+  font-family:var(--mono); font-size:.58rem; letter-spacing:.18em; color:var(--teal);
+  border:1px solid rgba(60,240,200,.35); background:rgba(60,240,200,.07);
+  border-radius:99px; padding:.22rem .6rem;
+}
+.agentpanel .ap-x{
+  background:none; border:0; color:var(--faint); font-family:var(--mono); font-size:.9rem;
+  cursor:pointer; padding:.1rem .3rem; line-height:1;
+}
+.agentpanel .ap-x:hover{ color:var(--rose); }
+.agentpanel h4{ font-family:var(--disp); font-size:1.12rem; font-weight:700; margin-bottom:.35rem; }
+.agentpanel .ap-cron{
+  font-family:var(--mono); font-size:.72rem; color:var(--teal); margin-bottom:.7rem;
+}
+.agentpanel p{ font-size:.83rem; color:var(--dim); margin-bottom:.9rem; }
+.agentpanel .ap-meta{
+  display:grid; grid-template-columns:auto 1fr; gap:.3rem .8rem;
+  font-family:var(--mono); font-size:.66rem; border-top:1px solid rgba(146,123,255,.16); padding-top:.7rem;
+}
+.agentpanel .ap-meta dt{ color:var(--faint); letter-spacing:.1em; }
+.agentpanel .ap-meta dd{ color:var(--ink); }
+.agentpanel .ap-nav{
+  display:flex; gap:.6rem; margin-top:.9rem; font-family:var(--mono); font-size:.62rem;
+}
+.agentpanel .ap-nav button{
+  flex:1; background:rgba(146,123,255,.1); border:1px solid rgba(146,123,255,.3);
+  color:var(--dim); border-radius:7px; padding:.42rem; cursor:pointer;
+  transition:.25s var(--ease); letter-spacing:.08em;
+}
+.agentpanel .ap-nav button:hover{ color:var(--ink); border-color:var(--teal); background:rgba(60,240,200,.12); }
+.brainbox .tag b.click{ color:var(--rose); }
+@media(max-width:900px){ .agentpanel{ position:relative; width:100%; margin-top:1rem; right:auto; bottom:auto; } }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Brian Mathew","jobTitle":"Software Developer",
+"email":"mailto:mathew.brian@gmail.com","telephone":"+1-609-815-1685","url":"https://bmath8.vercel.app/",
+"address":{"@type":"PostalPlace","addressRegion":"NJ","addressCountry":"US"},
+"sameAs":["https://github.com/bmath8","https://linkedin.com/in/brian-mathew-66235556"],
+"knowsAbout":["Python","TypeScript","React","Next.js","Flask","Node.js","PostgreSQL","Supabase","Docker",
+"Windows administration","PowerShell","job scheduling","log analysis","health monitoring","pytest","Jest"],
+"seeks":{"@type":"Demand","name":"Software developer and operations roles - remote, hybrid, on-site or relocation"}}
+</script>
+<style id="print" media="print">
+/* recruiters print and PDF portfolios; make that produce something readable */
+*{ background:#fff !important; color:#111 !important; box-shadow:none !important; text-shadow:none !important; }
+canvas,.rail,.kbdtip,.kbd,.skip,.fleetstrip .fs-lane,.demo,.vis,.agentpanel{ display:none !important; }
+a{ text-decoration:underline; }
+a[href^="http"]::after{ content:" (" attr(href) ")"; font-size:.8em; color:#555 !important; }
+.statusbar,nav{ position:static !important; border:0 !important; }
+.band,.island,section{ padding:.6rem 0 !important; border:0 !important; page-break-inside:avoid; }
+.proj,.card,.xp-row,.cap-card,.skill{ border:1px solid #ccc !important; page-break-inside:avoid; }
+h1{ font-size:26pt !important; } h2{ font-size:15pt !important; } h3{ font-size:12pt !important; }
+body{ font-size:10.5pt; }
+</style>
 </head>
 <body>
+<a class="skip" href="#work">Skip to the work</a>
 <div class="aurora"></div>
+<main id="main">
+
 <div class="shell">
 
 <nav>
@@ -244,16 +382,30 @@ footer::before{content:"";position:absolute;inset:0;pointer-events:none;
   </div>
   <div class="brainbox">
     <canvas id="brain"></canvas>
+    <p class="sr-only" id="sr-brain">An interactive three-dimensional model of a brain. Each of its 26 glowing nodes represents one real scheduled agent running on Brian's machine; hovering a node names the agent and shows its cron line. The same 26 agents and their schedules are described in the Selected work section below.</p>
     <div class="tip" id="tip"></div>
     <div class="callout" id="callout"></div>
-    <div class="tag">DRAG TO SPIN · <b>HOVER A NODE TO NAME THE AGENT</b></div>
+    <div class="tag">DRAG TO SPIN · <b>HOVER TO NAME</b> · <b class="click">CLICK A NODE FOR DETAIL</b></div>
+    <div class="agentpanel" id="agentPanel" role="dialog" aria-label="Agent detail" aria-live="polite">
+      <div class="ap-top"><span class="ap-tag" id="apTag">SCHEDULED</span><button class="ap-x" id="apX" aria-label="Close agent detail">&times;</button></div>
+      <h4 id="apName">agent</h4>
+      <div class="ap-cron" id="apCron">* * * * *</div>
+      <p id="apDesc"></p>
+      <dl class="ap-meta">
+        <dt>RUNS</dt><dd id="apRuns"></dd>
+        <dt>WRITES</dt><dd id="apWrites"></dd>
+        <dt>GUARDRAIL</dt><dd id="apGuard">draft-only · nothing sends without approval</dd>
+      </dl>
+      <div class="ap-nav"><button id="apPrev">&larr; PREV</button><button id="apNext">NEXT &rarr;</button></div>
+    </div>
+
   </div>
 </header>
 
 <div class="orbs rv" id="orbs">
-  <div class="orb"><b data-n="26">0</b><span>agents live</span><small>hermes cron list · 08-05</small></div>
-  <div class="orb"><b data-n="81" data-suffix="/81">0</b><span>tests green</span><small>live pytest · 31s</small></div>
-  <div class="orb"><b data-n="3">0</b><span>systems shipped</span><small>built &amp; operated</small></div>
+  <div class="orb"><b data-n="26">26</b><span>agents live</span><small>hermes cron list · 08-05</small></div>
+  <div class="orb"><b data-n="81" data-suffix="/81">81/81</b><span>tests green</span><small>live pytest · 31s</small></div>
+  <div class="orb"><b data-n="3">3</b><span>systems shipped</span><small>built &amp; operated</small></div>
   <div class="orb"><b data-n="0">0</b><span>manual triggers</span><small>all on cron</small></div>
 </div>
 
@@ -333,10 +485,10 @@ footer::before{content:"";position:absolute;inset:0;pointer-events:none;
       <h2>What I actually do</h2>
       <p class="sub">Only things I can demonstrate or talk through in a live screen share.</p>
       <div class="skill-grid">
-        <div class="skill rv"><h4>Build</h4><p>Python and TypeScript. React/Next.js front ends, Flask and Node back ends, Postgres and Supabase, Docker.</p></div>
-        <div class="skill rv d1"><h4>Operate</h4><p>Windows administration, PowerShell, scheduled jobs, log analysis, health monitoring, self-healing watchdogs.</p></div>
-        <div class="skill rv d2"><h4>Test</h4><p>pytest and Jest/RTL. I write the suite, run it, and fix what it catches before shipping.</p></div>
-        <div class="skill rv d3"><h4>Support</h4><p>Years of customer-facing work. Diagnose the real problem, explain it plainly, own it to a verified fix.</p></div>
+        <div class="skill rv"><h3>Build</h3><p>Python and TypeScript. React/Next.js front ends, Flask and Node back ends, Postgres and Supabase, Docker.</p></div>
+        <div class="skill rv d1"><h3>Operate</h3><p>Windows administration, PowerShell, scheduled jobs, log analysis, health monitoring, self-healing watchdogs.</p></div>
+        <div class="skill rv d2"><h3>Test</h3><p>pytest and Jest/RTL. I write the suite, run it, and fix what it catches before shipping.</p></div>
+        <div class="skill rv d3"><h3>Support</h3><p>Years of customer-facing work. Diagnose the real problem, explain it plainly, own it to a verified fix.</p></div>
       </div>
     </div>
   </div>
@@ -367,6 +519,8 @@ footer::before{content:"";position:absolute;inset:0;pointer-events:none;
 </section>
 </div>
 
+
+</main>
 <footer id="contact">
   <div class="shell f-inner">
     <h2>The machine is running.<br><span class="grad">Come look at it.</span></h2>
@@ -397,8 +551,19 @@ addEventListener('scroll',revealInView,{passive:true});addEventListener('resize'
 const so=new IntersectionObserver(es=>es.forEach(e=>{
   if(!e.isIntersecting)return;so.unobserve(e.target);
   e.target.querySelectorAll('b[data-n]').forEach(b=>{
+    // the markup already holds the true value, so it is correct with JS off.
+    // animate only as an enhancement, and guarantee we land back on the truth.
+    const truth=b.dataset.final||(b.dataset.final=b.textContent);
+    const settle=()=>{b.textContent=truth};
+    if(document.hidden||matchMedia('(prefers-reduced-motion: reduce)').matches){settle();return}
     const n=+b.dataset.n,suf=b.dataset.suffix||'';const t0=performance.now();
-    (function f(t){const p=Math.min((t-t0)/1200,1);b.textContent=Math.round(EASE(p)*n)+suf;if(p<1)requestAnimationFrame(f)})(t0);
+    setTimeout(settle,2000);                       // safety net, never strand on 0
+    document.addEventListener('visibilitychange',settle,{once:true});
+    (function f(t){
+      const p=Math.min((t-t0)/1200,1);
+      b.textContent=p<1?(Math.round(EASE(p)*n)+suf):truth;
+      if(p<1)requestAnimationFrame(f);
+    })(t0);
   });
 }),{threshold:.4});
 so.observe(document.getElementById('orbs'));
@@ -569,8 +734,8 @@ function glowTexture(inner){
     nodes.material.size=0.15+Math.sin(t*2.1)*0.02;
     ray.setFromCamera(mv,camera);
     const hit=ray.intersectObject(nodes)[0];
-    if(hit){tip.innerHTML='<b>'+AGENTS[hit.index]+'</b> · '+CRON[hit.index];tip.style.opacity=1;canvas.style.cursor='pointer'}
-    else{tip.style.opacity=0;canvas.style.cursor=drag?'grabbing':'grab'}
+    if(hit){window.__hoverIdx=hit.index;tip.innerHTML='<b>'+AGENTS[hit.index]+'</b> · '+CRON[hit.index];tip.style.opacity=1;canvas.style.cursor='pointer'}
+    else{window.__hoverIdx=null;tip.style.opacity=0;canvas.style.cursor=drag?'grabbing':'grab'}
     renderer.render(scene,camera);
     requestAnimationFrame(loop);
   })();
@@ -684,6 +849,110 @@ setInterval(()=>{
 function loadSquares(){
   document.getElementById('squaresDemo').innerHTML='<iframe src="https://fam-super-bowl-squares-2026.vercel.app" title="Super Bowl Squares live app" loading="lazy"></iframe>';
 }
+</script>
+
+<script id="a11y-js">
+/* Tier 1 behaviour ---------------------------------------------------------
+   1. Respect reduced motion for canvas work and timers, not just CSS.
+   2. Pause every loop when the tab is hidden; a portfolio left open in a
+      background tab should cost nothing.
+   Both are opt-in wrappers so the page still works if this block is removed. */
+(function(){
+  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)');
+  const paused = () => document.hidden || REDUCE.matches;
+
+  // wrap setInterval so every ticker in the page obeys the rules above
+  const realInterval = window.setInterval.bind(window);
+  const timers = [];
+  window.setInterval = function(fn, ms){
+    const wrapped = function(){ if(!paused()) fn.apply(this, arguments); };
+    const id = realInterval(wrapped, ms); timers.push(id); return id;
+  };
+
+  // wrap rAF: while paused, keep polling for the next frame without running the
+  // callback body, so the loop survives and resumes the moment the tab returns
+  const realRaf = window.requestAnimationFrame.bind(window);
+  window.requestAnimationFrame = function(cb){
+    function tick(t){ if(paused()){ realRaf(tick); return; } cb(t); }
+    return realRaf(tick);
+  };
+
+  // canvases are decorative: keep them out of the accessibility tree
+  addEventListener('load', function(){
+    document.querySelectorAll('canvas').forEach(function(c){
+      c.setAttribute('aria-hidden','true');
+      c.setAttribute('role','presentation');
+    });
+  });
+})();
+</script>
+
+<script id="t3n-js">
+(function(){
+  const AGENTS=["morning-brief","inbox-triage","system-watchdog","log-rotator","health-check","market-digest","backup-verify","telegram-bridge","weather-brief","todo-sync","disk-audit","news-digest","cal-sync","process-guardian","cache-cleaner","dep-audit","evening-brief","metrics-roll","screenshot-ocr","file-organizer","net-monitor","battery-guard","update-check","sleep-report","week-review","standup-draft"];
+  const CRON=["0 6 * * *","20 6 * * *","0 */2 * * *","0 3 * * *","0 * * * *","30 9 * * 1-5","40 2 * * *","*/15 * * * *","10 6 * * *","0 7,19 * * *","0 4 * * 0","0 13 * * *","*/30 * * * *","*/5 * * * *","0 5 * * *","0 15 * * 1","0 18 * * *","55 23 * * *","0 12 * * *","0 20 * * 5","*/10 * * * *","*/20 * * * *","0 16 * * 2","5 0 * * *","0 17 * * 0","45 8 * * 1-5"];
+  const DESC=[
+   ["Pulls overnight sources, ranks what changed, and drafts a single morning brief to Telegram.","daily 06:00","telegram draft"],
+   ["Classifies the inbox into act / read / archive and flags anything time-sensitive.","daily 06:20","labels only"],
+   ["Checks every other agent answered its last heartbeat and restarts what did not.","every 2 hours","process control"],
+   ["Rotates and compresses logs before they can fill the disk.","daily 03:00","log files"],
+   ["Samples CPU, memory and disk, and records the trend for the evening brief.","hourly","metrics store"],
+   ["Summarises the tickers I follow into six lines. Draft only, never a trade.","weekdays 09:30","telegram draft"],
+   ["Verifies last night's backup by checksum rather than trusting that it ran.","daily 02:40","report only"],
+   ["The control channel: routes commands in and drafts out, with approval gates.","every 15 min","message queue"],
+   ["Attaches a forecast to the morning brief so I do not check it separately.","daily 06:10","brief payload"],
+   ["Reconciles tasks between the capture inbox and the real list.","07:00 and 19:00","task store"],
+   ["Audits disk usage and clears temp once it crosses a threshold.","weekly, Sunday 04:00","temp files"],
+   ["Ranks the day's news and writes a digest. Draft only.","daily 13:00","telegram draft"],
+   ["Reconciles calendars and surfaces conflicts before they bite.","every 30 min","calendar cache"],
+   ["Watches the watchers: the guardian that caught a silent failure and now tests for it.","every 5 min","process control"],
+   ["Clears application caches on a schedule so nothing creeps.","daily 05:00","cache dirs"],
+   ["Scans dependencies for advisories and drafts a ticket when one lands.","weekly, Monday 15:00","ticket draft"],
+   ["Assembles what actually happened today from the other agents' output.","daily 18:00","telegram draft"],
+   ["Rolls the day's counters into the long-run metrics file.","daily 23:55","metrics store"],
+   ["OCRs the day's screenshots so they are searchable later.","daily 12:00","search index"],
+   ["Files loose downloads by rule instead of by good intentions.","Fridays 20:00","file system"],
+   ["Samples latency and packet loss, and notes anything unusual.","every 10 min","metrics store"],
+   ["Watches battery and thermal state on the laptop and warns before a shutdown.","every 20 min","alert only"],
+   ["Checks for updates and stages them; installation stays manual on purpose.","Tuesdays 16:00","staging only"],
+   ["Summarises how the machine behaved overnight.","daily 00:05","report only"],
+   ["Compiles the week: what shipped, what broke, what is still open.","Sundays 17:00","telegram draft"],
+   ["Drafts a standup note from the last day's real activity.","weekdays 08:45","telegram draft"]
+  ];
+
+  const panel=document.getElementById('agentPanel'); if(!panel) return;
+  const el=id=>document.getElementById(id);
+  let cur=0;
+
+  function show(i){
+    cur=(i+26)%26;
+    el('apName').textContent=AGENTS[cur];
+    el('apCron').textContent=CRON[cur];
+    el('apDesc').textContent=DESC[cur][0];
+    el('apRuns').textContent=DESC[cur][1];
+    el('apWrites').textContent=DESC[cur][2];
+    el('apTag').textContent='AGENT '+String(cur+1).padStart(2,'0')+' / 26';
+    panel.classList.add('on');
+  }
+  function hide(){ panel.classList.remove('on'); }
+
+  const canvas=document.getElementById('brain');
+  canvas.addEventListener('click',()=>{ if(window.__hoverIdx!=null) show(window.__hoverIdx); });
+  // keyboard access: the canvas is focusable and arrows walk the fleet
+  canvas.setAttribute('tabindex','0');
+  canvas.setAttribute('role','application');
+  canvas.setAttribute('aria-label','Interactive brain. Press Enter to inspect an agent, then arrow keys to move through all 26.');
+  canvas.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); show(window.__hoverIdx!=null?window.__hoverIdx:cur); }
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'){ e.preventDefault(); show(cur+1); }
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ e.preventDefault(); show(cur-1); }
+    if(e.key==='Escape') hide();
+  });
+  el('apX').addEventListener('click',hide);
+  el('apNext').addEventListener('click',()=>show(cur+1));
+  el('apPrev').addEventListener('click',()=>show(cur-1));
+  addEventListener('keydown',e=>{ if(e.key==='Escape') hide(); });
+})();
 </script>
 </body>
 </html>
