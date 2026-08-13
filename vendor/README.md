@@ -15,10 +15,12 @@ approaches that had already been abandoned.
 | `fonts/syne-{600,700,800}.woff2` | `neural.html` | Display |
 | `fonts/dm-sans-{400,500,700}.woff2` | `neural.html` | Body |
 | `fonts/dm-mono-{400,500}.woff2` | `neural.html` | Machine output |
-| `three.min.js` | `neural.html` | three.js r128 UMD build, for the 3D cortex |
+| `fonts/bricolage-{700,800}.woff2` | `index.html` | Display face, added in the v7.4 design pass |
+| `fonts/fraunces-{400,600,700}.woff2` | `neural.html` | Serif, used **only** inside the light island |
+| `three.min.js` | `neural.html` | three.js r128 UMD build, **lazy-loaded** by `#brain-loader` when the canvas nears the viewport |
 | `three-LICENSE.txt` | — | MIT licence text for the above |
 
-Total: ~0.8 MB.
+Total: 21 faces, ~0.89 MB.
 
 ## Where these came from
 
@@ -27,7 +29,8 @@ are reproducible:
 
 ```bash
 npm install @fontsource/archivo @fontsource/syne @fontsource/dm-sans \
-            @fontsource/dm-mono @fontsource/ibm-plex-mono three@0.128.0
+            @fontsource/dm-mono @fontsource/ibm-plex-mono \
+            @fontsource/bricolage-grotesque @fontsource/fraunces three@0.128.0
 ```
 
 Fonts are the `latin` subset, one file per weight actually used — not the full family.
@@ -35,7 +38,8 @@ They are copied out of `node_modules/@fontsource/<family>/files/<family>-latin-<
 and renamed to `<family>-<weight>.woff2`. The `@font-face` blocks live inline at the top
 of each page.
 
-Licences: Archivo, Syne, DM Sans, DM Mono and IBM Plex Mono are all SIL Open Font License 1.1.
+Licences: Archivo, Syne, DM Sans, DM Mono, IBM Plex Mono, Bricolage Grotesque and Fraunces are
+all SIL Open Font License 1.1.
 three.js is MIT.
 
 ## The 2026-08-12 prune

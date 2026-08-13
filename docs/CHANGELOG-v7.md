@@ -163,3 +163,120 @@ three.min.js (589 KB) still loads on the critical path for Neural. Deferring it
 behind an intersection check would help mobile, but it needs the brain module
 restructured rather than a one-line change, so it is deliberately not in this
 pass.
+
+---
+
+# v7.3 — Second audit: accessibility, headers, discoverability, content (2026-08-12)
+
+A measured re-audit of both live pages. Performance was already good — TTFB 145ms, DCL
+303ms, CLS 0, no long tasks, 21KB HTML — so this pass is everything else.
+
+## Accessibility — seven measured failures, several self-inflicted
+
+- **`#brain` was focusable *and* `aria-hidden="true"`** — a WCAG 4.1.2 violation. The v7.2
+  pass marked every canvas decorative and clobbered the label the interactive brain needs.
+  It is now `role="application"` with a real description, and only the decorative canvases
+  are hidden.
+- **Eight focusable elements sat inside `opacity:0` containers.** Five were project links in
+  cards that had not scroll-revealed yet — the reveal animation was putting invisible links
+  in the tab order. Reveals now toggle `visibility` as well as opacity, and focus entering a
+  hidden block reveals it immediately.
+- **The agent panel stayed in the accessibility tree when closed**, announcing its
+  placeholder text. It is now `inert` with its buttons out of the tab order.
+- **Proof drawers** gained `aria-controls` and are `inert` while collapsed; `max-height:0`
+  hides nothing from assistive tech.
+- **The shortcut dialog** had `role="dialog"` but was never hidden, had no `aria-modal`, no
+  focus trap and no focus restore. All four fixed.
+- **Heading outline:** the panel and dialog titles were `<h4>` directly under `<h1>`. They
+  are labels, not document structure, so they are no longer headings.
+- The fleet strip is an `<a>` around four children and had no accessible name; external
+  links now announce that they open a new tab.
+
+## Delivery
+
+`vercel.json` added. Fonts and vendored JS were being served with `Cache-Control: max-age=0`,
+so every visit revalidated all eight woff2 files; they are now immutable for a year. Added
+CSP, `Referrer-Policy`, `X-Content-Type-Options`, `X-Frame-Options` and `Permissions-Policy`
+— only HSTS was set before.
+
+## Discoverability
+
+`sitemap.xml` referenced from `robots.txt`; `site.webmanifest` and an apple-touch-icon; and a
+real 404 page in the Mission Control palette that resolves the path that missed and routes
+back to the work, instead of Vercel's generic page.
+
+## Content
+
+- Per-project stack tags, so the technology is scannable rather than buried in prose.
+  Nothing new is claimed — the tags come from the existing copy.
+- An availability line: US citizen, authorized to work in the US without sponsorship, US
+  Eastern, available now, and **willing to relocate anywhere including internationally**.
+  These are top-of-list screening filters and their absence causes silent rejections.
+- **The process-guardian incident**, previously one bullet, now has its own full-width block:
+  symptom, trace, fix, prevented. It is the strongest evidence on the page — a silent failure
+  found, traced, fixed, and then covered by a test that is part of the 81 — and it was buried.
+
+## Analytics
+
+Vercel Analytics (first-party, cookieless, no consent banner). There was previously no way to
+tell whether anyone opened the site or the résumé.
+
+## One self-inflicted regression, caught and fixed
+
+`cleanUrls` in the new `vercel.json` made `/neural.html` a 308 to `/neural`, which turned the
+canonical tags, `og:url`, the sitemap entry, both footer cross-links, the 404 route listing
+and the `n` keyboard shortcut into redirects. A canonical URL that redirects quietly costs
+search ranking. All references now point at the clean URL.
+
+---
+
+# v7.4 — Design pass: an aesthetic point of view for each page (2026-08-12)
+
+The functional work was done; the design was not. Measured, the page was **nine sections at
+exactly 1180px, eleven rounded cards, and a type scale that jumped 78px → 29px → 16px with
+nothing in the middle.** Competent, and anonymous.
+
+Two directions, deliberately different, because the pages argue differently.
+
+## Mission Control — industrial telemetry
+
+The page is a panel on a machine that is running, so the vocabulary is measurement rules,
+registration marks and oversized tabular numerals rather than more rounded rectangles.
+
+- **Bricolage Grotesque** for display — engineered and slightly odd where Archivo is neutral,
+  and it holds up at the sizes this page now uses.
+- A real type scale with a middle, on a 1.28 ratio.
+- **The metric strip goes full-bleed**, edge to edge, with numerals up to 4.7rem. It is the
+  strongest asset on the page and it was sitting in a small boxed row.
+- **Capabilities became a capability matrix** — ruled rows, `CAP/` numbering, and signal bars
+  that light in the accent colour of the row on hover. This was the weakest section: four
+  identical cards with 13.6px text.
+- **Experience became a spine** with a live marker on the current role, instead of a flat
+  table with the dates right-aligned in grey.
+- Film grain over the whole surface, the console tilted slightly off-axis, a cursor-tracked
+  glow in the fleet panels, and shimmer on the primary actions.
+
+## Neural — luminous specimen
+
+Same structural problem, opposite answer: this page is a specimen under glass, so the moves
+are editorial.
+
+- **Fraunces enters exactly once, in the light island**, so the break from dark to light is a
+  change of voice and not just a change of background. That is the page's strongest moment
+  and it was set in the same sans as everything around it.
+- The metric orbs lose their boxes and become a ruled row of oversized numerals. The numbers
+  are the evidence; the card chrome was noise.
+- Cards drift off-axis on alternating rows, using transforms rather than margins so nothing
+  can push past the container.
+- The timeline spine became a gradient that fades as it descends, since the recent role is the
+  one that matters.
+- Grain over the aurora so the gradients have tooth instead of reading as flat CSS.
+
+## Verification
+
+Both pages at 1568px and 390×844: no horizontal overflow, no console errors, CLS 0, DCL
+376ms, zero external requests. The accessibility work from v7.2 and v7.3 is untouched.
+
+Two judgement calls worth revisiting if they don't land: the fleet cursor-glow and the tilted
+console are subtle enough to be missed until hover, and the alternating card offsets on
+Neural are a deliberate asymmetry some people dislike. Both are one-line reverts.
