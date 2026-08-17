@@ -1,0 +1,4 @@
+# Project-scoped capability: this repository deploys through Vercel.
+# The plugin remains disabled globally and is mounted only in this trusted repo.
+[plugins."vercel@openai-curated"]
+enabled = true

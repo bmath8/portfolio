@@ -1,24 +1,6 @@
 # Hero rebuild — particle brain. Live brief.
 
-> # ⛔ SUPERSEDED 2026-08-11 — see `SCENE-BRIEF.md`
->
-> **This file is kept as a record. Do not build from it.** It said "IN PROGRESS" for eleven
-> days after the approach it describes had been abandoned, which is exactly how layers
-> accumulate: nothing is ever marked finished, so every session inherits all of them.
->
-> What is wrong with it now:
-> - It describes a **~14,000-point particle brain**. We ship a real **39,828-vertex cortical
->   mesh**. The particle approach was abandoned.
-> - It says **25 named nodes**. There are **26** agents.
-> - Its rule *"suggest the form, don't model it — if it needs to be anatomically correct, it's
->   wrong"* was **disproved** by `lab/03-real-mesh-opaque.html`, which showed the real
->   anatomical mesh reads correctly when rendered opaque. The material was the problem, not
->   the accuracy. That finding is what unlocked the current hero.
-> - Its rule *"NEVER edit an existing candidate, new file every time"* produced 26 dead
->   candidates and is not how the current work proceeds.
->
-> Still true and worth keeping: **one node per real scheduled agent, pulsing on its real
-> schedule, hoverable to name it.** That idea survived everything and is what the hero is.
+**Status: IN PROGRESS, started 2026-07-31.** Update this file as work lands.
 
 ## Why the previous 26 candidates failed
 
