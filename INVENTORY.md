@@ -14,6 +14,12 @@ resume version and every project to it, with an honest status on each.
 > `design-candidates/archive/v6-brain-hero.html`. See `README.md` for structure,
 > `docs/DESIGN-SYSTEM.md` for tokens and components, and `docs/CHANGELOG-v7.md` for what
 > changed and why.
+> **Update 2026-08-12 (v7.4).** `HERO-BRIEF.md`, `BRAIN-TECHNIQUE-2026-08-05.md` and
+> `V6-PLAN-2026-08-05.md` describe the retired v6 brain hero and moved to
+> `docs/archive/v6/` (see the README there — the licensing record is the reason
+> `BRAIN-TECHNIQUE` was kept). `AGENTS.md` and `CURRENT_SESSION.md` were rewritten
+> against the current two-design site.
+
 ---
 
 ## 1. Resumes — ⚠️ THIS REPO IS NO LONGER THE RESUME SOURCE (changed 2026-07-29)
