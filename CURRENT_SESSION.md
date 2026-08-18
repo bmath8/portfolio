@@ -54,10 +54,11 @@ Nothing is broken or half-applied. Genuinely open:
 - [ ] **Decide whether Neural stays a second page** or becomes a toggle on one page. Two
       pages means every content change must be made twice — currently handled by discipline
       and a note in `AGENTS.md`, not by tooling.
-- [ ] **Public-safe showcase mirrors** for the private case-study repos (pre-existing item,
-      see `TASKS.md`). The resume points at work nobody can open.
-- [ ] **Revoke the leaked Tenor/Google API key** still in `boombox-v5` git history
-      (pre-existing, `TASKS.md`).
+- [ ] **Confirm the leaked Tenor/Google API key is revoked and not in public history.**
+      Logged against `boombox-v5` (not public). `boombox` **is** public and linked from the
+      site; if they share history the key is readable. Scan and revoke — see `TASKS.md`.
+- [x] ~~Public-safe showcase mirrors~~ — **not needed.** All three featured repos were
+      verified public on 2026-08-12; every "read the source" link resolves anonymously.
 - [ ] Two v7.4 judgement calls worth a second opinion: the fleet cursor-glow and tilted
       console are subtle enough to miss, and Neural's alternating card offsets are a
       deliberate asymmetry some dislike. Both are one-line reverts.
