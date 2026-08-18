@@ -33,6 +33,22 @@ Portfolio supports the job search — it is not the resume source. Keep it accur
 
 ## Open
 - [ ] **Decide whether Neural stays a second page** or becomes a toggle on one page.
+- [ ] **Confirm the old Tenor/Google API key is revoked, and that it is not in the public
+      `boombox` history.** The key was logged against `boombox-v5`, which is not public
+      (404). `boombox` **is** public and is linked from the live site. If the two share
+      history the key is publicly readable. Run GitHub secret scanning or gitleaks against
+      `bmath8/boombox`, and revoke the key in the Google console regardless - a key that
+      was ever committed should be treated as burned.
+
+## Verified 2026-08-12
+- [x] **All three "read the source" links resolve for an anonymous visitor.** Checked
+      unauthenticated: `brian-os`, `fam-super-bowl-squares-2026` and `boombox` all return
+      200, and the Super Bowl Squares app is live. This matters more than it looks - the
+      page's central claim is *"Everything below is code you can open"*, and that claim is
+      now checked rather than assumed. The older concern that the featured case studies
+      were private repos is resolved; no public-safe mirrors are needed.
+      (LinkedIn returns 403 to unauthenticated requests. That is LinkedIn blocking bots,
+      not a broken link - it opens normally for a human.)
 
 ## Done 2026-07-29
 - [x] **LinkedIn added** to the site (hero + contact). It was never actually blocked — the
