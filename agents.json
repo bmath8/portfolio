@@ -114,5 +114,9 @@
   {
     "n": "autoresearch",
     "cron": "20 7 * * *"
+  },
+  {
+    "n": "catchup",
+    "cron": "35 * * * *"
   }
 ]
