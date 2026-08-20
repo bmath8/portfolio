@@ -60,7 +60,7 @@ d=ImageDraw.Draw(img,"RGBA")
 
 PAD=72
 d.ellipse([PAD,60,PAD+10,70],fill=TEAL)
-d.text((PAD+22,54),"26 AGENTS SCHEDULED",font=f("dm-mono-500",18),fill=TEAL)
+d.text((PAD+22,54),"29 AGENTS SCHEDULED",font=f("dm-mono-500",18),fill=TEAL)
 h=f("syne-800",62)
 d.text((PAD,116),"A cortex that",font=h,fill=INK)
 acc=Image.new("RGBA",(W,H),(0,0,0,0)); ad=ImageDraw.Draw(acc)
@@ -71,7 +71,7 @@ sub=f("dm-sans-400",22)
 d.text((PAD,300),"Every glowing node is one real scheduled agent",font=sub,fill=DIM)
 d.text((PAD,332),"running on my machine right now.",font=sub,fill=DIM)
 
-cells=[("26","AGENTS LIVE",TEAL),("81/81","TESTS GREEN",VIOLET),("3","SYSTEMS SHIPPED",ROSE),("0","MANUAL TRIGGERS",GOLD)]
+cells=[("29","AGENTS LIVE",TEAL),("157","TESTS GREEN",VIOLET),("3","SYSTEMS SHIPPED",ROSE),("0","MANUAL TRIGGERS",GOLD)]
 BY=430; cw=176
 for i,(n,l,c) in enumerate(cells):
     x=PAD+i*(cw+14)
