@@ -30,7 +30,7 @@ resume version and every project to it, with an honest status on each.
 | Version | Where it lives | Status |
 |---|---|---|
 | **The 4-lane arsenal** | `C:\Brian\03_Career\resumes\` | ✅ **CANONICAL.** Built from `evidence-bank.md` via `build_strong_resumes.py` + `render_pdfs.py`. Every build date-stamped into `resumes/versions/<date>/`. |
-| `resume.pdf` (this repo) | copied from canonical `Brian_Mathew_Customer_Ops.pdf` | ✅ Served by the live site. Refresh by re-copying after a canonical rebuild. |
+| `resume.pdf` (this repo) | copied from `variants/L3_strong/Brian_Mathew_AI_Builder_L3_strong.pdf` (2026-08-19) | ✅ Served by the live site. Refresh by re-copying after a canonical rebuild. |
 | `resume/resume.html` | this repo | 🗄️ **SUPERSEDED** — see `resume/SUPERSEDED-2026-07-29.md`. Was a separately-maintained 5th resume. Kept as an original, not deleted. |
 
 **Why this changed.** A 2026-07-29 machine-wide sweep found **five** competing resume systems

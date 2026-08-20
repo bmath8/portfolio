@@ -26,6 +26,8 @@ reintroduce a gate without Brian's approval.
 ## ⚠️ The resume: do not edit it here
 
 `resume.pdf` in this repo is a **copy** of canonical output built in `C:\Brian\03_Career\`.
+Currently: `resumes/variants/L3_strong/Brian_Mathew_AI_Builder_L3_strong.pdf` (deployed
+2026-08-19). Swap lane or strength by copying a different file from `variants/`.
 Do not hand-edit it, and **do not regenerate it from `resume/resume.html`** — that file is
 superseded (see `resume/SUPERSEDED-2026-07-29.md`) and rendering it would overwrite the
 canonical resume with an older, incomplete one that lacks LinkedIn.
