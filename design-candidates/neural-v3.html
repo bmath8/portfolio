@@ -9,18 +9,18 @@
 <link rel="preload" href="/vendor/fonts/dm-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 <title>Brian Mathew — A cortex that actually works</title>
 <link rel="canonical" href="https://bmath8.vercel.app/neural" />
-<meta name="description" content="Brian Mathew builds and operates working software. Each node in this 3D brain is one real scheduled agent on his machine. 26 agents live, 81 tests green, 3 systems shipped. New Jersey — open to work." />
+<meta name="description" content="Brian Mathew builds and operates working software. Each node in this 3D brain is one real scheduled agent on his machine. 29 agents live, 157 tests green, 3 systems shipped. New Jersey — open to work." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://bmath8.vercel.app/neural" />
 <meta property="og:title" content="Brian Mathew - A cortex that actually works" />
-<meta property="og:description" content="26 scheduled agents running unattended. 81 tests passing. Three systems built, tested, documented and still operated." />
-<meta property="og:image" content="https://bmath8.vercel.app/og-neural.png?v=1" />
+<meta property="og:description" content="29 scheduled agents running unattended. 157 tests passing. Three systems built, tested, documented and still operated." />
+<meta property="og:image" content="https://bmath8.vercel.app/og-neural.png?v=2" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Brian Mathew - A cortex that actually works" />
-<meta name="twitter:description" content="26 scheduled agents running unattended. 81 tests passing." />
-<meta name="twitter:image" content="https://bmath8.vercel.app/og-neural.png?v=1" />
+<meta name="twitter:description" content="29 scheduled agents running unattended. 157 tests passing." />
+<meta name="twitter:image" content="https://bmath8.vercel.app/og-neural.png?v=2" />
 <meta name="theme-color" content="#06070f" />
 <link rel="manifest" href="/site.webmanifest">
 <link rel="apple-touch-icon" href="/favicon.svg">
@@ -367,7 +367,7 @@ body{ font-size:10.5pt; }
 @keyframes bl{ 50%{ opacity:.35 } }
 .brainbox.brain-off .tag{ display:none; }
 .brainbox.brain-off::after{
-  content:"26 scheduled agents \00B7 the fleet is listed in full below";
+  content:"29 scheduled agents \00B7 the fleet is listed in full below";
   display:block; text-align:center; padding:3.5rem 1rem;
   font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; color:var(--dim);
   border:1px dashed var(--line); border-radius:16px;
@@ -582,7 +582,7 @@ section{ padding-top:6rem; }
 
 <header class="hero">
   <div class="hero-copy">
-    <span class="status"><i></i>26 agents scheduled · next: system-watchdog 20:00</span>
+    <span class="status"><i></i>29 agents scheduled · next: system-watchdog every 4h</span>
     <h1>A cortex that <span class="grad">actually works.</span></h1>
     <p>I'm a self-taught developer in New Jersey. Each glowing node in this brain is <b>one real scheduled agent on my machine</b>, firing on the cron line it actually runs on. I build systems — then I keep them running.</p>
     <div class="hero-cta">
@@ -592,7 +592,7 @@ section{ padding-top:6rem; }
   </div>
   <div class="brainbox">
     <canvas id="brain"></canvas>
-    <p class="sr-only" id="sr-brain">An interactive three-dimensional model of a brain. Each of its 26 glowing nodes represents one real scheduled agent running on Brian's machine; hovering a node names the agent and shows its cron line. The same 26 agents and their schedules are described in the Selected work section below.</p>
+    <p class="sr-only" id="sr-brain">An interactive three-dimensional model of a brain. Each of its 29 glowing nodes represents one real scheduled agent running on Brian's machine; hovering a node names the agent and shows its cron line. The same 29 agents and their schedules are described in the Selected work section below.</p>
     <div class="tip" id="tip"></div>
     <div class="callout" id="callout"></div>
     <div class="tag">DRAG TO SPIN · <b>HOVER TO NAME</b> · <b class="click">CLICK A NODE FOR DETAIL</b></div>
@@ -613,8 +613,8 @@ section{ padding-top:6rem; }
 </header>
 
 <div class="orbs rv" id="orbs">
-  <div class="orb"><b data-n="26">26</b><span>agents live</span><small>hermes cron list · 08-05</small></div>
-  <div class="orb"><b data-n="81" data-suffix="/81">81/81</b><span>tests green</span><small>live pytest · 31s</small></div>
+  <div class="orb"><b data-n="29">29</b><span>agents live</span><small>hermes cron list · 08-05</small></div>
+  <div class="orb"><b data-n="157" data-suffix="/157">157/157</b><span>tests green</span><small>live pytest · 28.87s</small></div>
   <div class="orb"><b data-n="3">3</b><span>systems shipped</span><small>built &amp; operated</small></div>
   <div class="orb"><b data-n="0">0</b><span>manual triggers</span><small>all on cron</small></div>
 </div>
@@ -629,12 +629,12 @@ section{ padding-top:6rem; }
       <div class="inner">
         <div>
           <span class="chip live"><i></i>Brian OS · running now</span>
-          <h3>A 26-agent fleet that runs my day</h3>
+          <h3>A 29-agent fleet that runs my day</h3>
           <p>Native-Windows AI agent fleet in Python. Local LLM routing through Ollama, Telegram control, structured shared state, self-healing health checks — and draft-only guardrails, so nothing sends, spends, deploys or deletes without my approval.</p>
           <ul class="stack-tags" aria-label="Technology used"><li>Python</li><li>Ollama</li><li>Telegram API</li><li>cron</li><li>pytest</li><li>Windows</li></ul>
         <ul class="facts">
-            <li>26 scheduled agents — count from <code>hermes cron list</code>, 2026-08-05</li>
-            <li>81/81 tests passing — live <code>pytest</code> run, 31s, 2026-08-05</li>
+            <li>29 scheduled agents — count from <code>hermes cron list</code>, 2026-08-19</li>
+            <li>157/157 tests passing — live <code>pytest</code> run, 28.87s, 2026-08-19</li>
             <li>Recovered a silent process-guardian failure — traced, fixed, prevention written</li>
           </ul>
           <div class="go"><a href="https://github.com/bmath8/brian-os" target="_blank" rel="noopener">Read the source →</a></div>
@@ -650,7 +650,7 @@ section{ padding-top:6rem; }
           <li><b>Symptom</b><p>The morning brief simply stopped arriving. Nothing errored, nothing alerted, and every dashboard still read green — the worst kind of failure, because the system was confidently reporting health it did not have.</p></li>
           <li><b>Trace</b><p>The process guardian was alive but had stopped watching: its heartbeat loop was blocking on a call with no timeout, so it never got to the check that would have caught the dead worker. A watchdog that hangs looks identical to a watchdog with nothing to report.</p></li>
           <li><b>Fix</b><p>Bounded the call, made the guardian report its own last-tick time rather than only the workers', and treated a stale heartbeat as failure instead of silence.</p></li>
-          <li><b>Prevented</b><p>Added a test that kills the guardian's loop mid-cycle and asserts the fleet notices within one interval. It is part of the 81 that run on every change, so this specific failure cannot come back unnoticed.</p></li>
+          <li><b>Prevented</b><p>Added a test that kills the guardian's loop mid-cycle and asserts the fleet notices within one interval. It is part of the 157 that run on every change, so this specific failure cannot come back unnoticed.</p></li>
         </ol>
       </div>
 
@@ -800,8 +800,8 @@ const so=new IntersectionObserver(es=>es.forEach(e=>{
 so.observe(document.getElementById('orbs'));
 
 /* ================= 3D BRAIN v3 ================= */
-const AGENTS=["morning-brief","inbox-triage","system-watchdog","log-rotator","health-check","market-digest","backup-verify","telegram-bridge","weather-brief","todo-sync","disk-audit","news-digest","cal-sync","process-guardian","cache-cleaner","dep-audit","evening-brief","metrics-roll","screenshot-ocr","file-organizer","net-monitor","battery-guard","update-check","sleep-report","week-review","standup-draft"];
-const CRON=["0 6 * * *","20 6 * * *","0 */2 * * *","0 3 * * *","0 * * * *","30 9 * * 1-5","40 2 * * *","*/15 * * * *","10 6 * * *","0 7,19 * * *","0 4 * * 0","0 13 * * *","*/30 * * * *","*/5 * * * *","0 5 * * *","0 15 * * 1","0 18 * * *","55 23 * * *","0 12 * * *","0 20 * * 5","*/10 * * * *","*/20 * * * *","0 16 * * 2","5 0 * * *","0 17 * * 0","45 8 * * 1-5"];
+const AGENTS=["daily-brief","system-watchdog","overnight-worker","learning-agent","harmony-backup","model-review","finance","health","weekly-review","scout","memory-index","feedback","calendar","research","skill-miner","career","inbox","dashboard","currency","currency-weekly","wiki","outcome-learner","gig-scanner","ceo-report","fleet-health","career-scout","freshness-monitor","governance-review","autoresearch"];
+const CRON=["0 7 * * *","0 */4 * * *","0 2 * * *","45 6 * * *","30 1 * * *","0 3 * * 0","50 6 * * *","52 6 * * *","0 17 * * 0","40 6 * * *","20 1 * * *","0 17 * * 0","55 6 * * *","0 18 * * 0","30 18 * * 0","53 6 * * *","48 6 * * *","5 * * * *","58 6 * * 1-6","30 16 * * 0","45 16 * * 0","50 16 * * 0","10 7 * * 1-6","30 7 1 * *","59 6 * * *","15 7 * * *","0 */4 * * *","0 8 * * 0","20 7 * * *"];
 
 function glowTexture(inner){
   const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');
@@ -889,15 +889,15 @@ function initBrain(){
 
   /* agent nodes */
   const aVecs=[];
-  for(let i=0;i<26;i++){let p;do{p=cortexPoint()}while(p.length()<0.9);aVecs.push(p)}
-  const aPos=new Float32Array(26*3);aVecs.forEach((p,i)=>aPos.set([p.x,p.y,p.z],i*3));
+  for(let i=0;i<29;i++){let p;do{p=cortexPoint()}while(p.length()<0.9);aVecs.push(p)}
+  const aPos=new Float32Array(29*3);aVecs.forEach((p,i)=>aPos.set([p.x,p.y,p.z],i*3));
   const aGeo=new THREE.BufferGeometry();aGeo.setAttribute('position',new THREE.BufferAttribute(aPos,3));
   const nodes=new THREE.Points(aGeo,new THREE.PointsMaterial({color:0xbfffea,size:0.15,map:tex,transparent:true,opacity:1,depthWrite:false,blending:THREE.AdditiveBlending}));
   root.add(nodes);
 
   /* synapse lines */
   const lp=[];
-  for(let i=0;i<26;i++)for(let j=i+1;j<26;j++){
+  for(let i=0;i<29;i++)for(let j=i+1;j<29;j++){
     if(aVecs[i].distanceTo(aVecs[j])<0.85)lp.push(aVecs[i].x,aVecs[i].y,aVecs[i].z,aVecs[j].x,aVecs[j].y,aVecs[j].z);
   }
   const lGeo=new THREE.BufferGeometry();
@@ -909,7 +909,7 @@ function initBrain(){
   for(let k=0;k<5;k++){
     const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,color:0x3cf0c8,transparent:true,opacity:0.95,blending:THREE.AdditiveBlending}));
     sp.scale.set(0.16,0.16,1);root.add(sp);
-    pulses.push({m:sp,a:Math.floor(rnd()*26),b:Math.floor(rnd()*26),t:rnd()});
+    pulses.push({m:sp,a:Math.floor(rnd()*29),b:Math.floor(rnd()*29),t:rnd()});
   }
 
   /* interaction: inertia drag */
@@ -960,7 +960,7 @@ function initBrain(){
     root.scale.set(breathe,breathe,breathe);
     pulses.forEach(p=>{
       p.t+=dt*0.55;
-      if(p.t>=1){p.t=0;p.a=p.b;p.b=Math.floor(Math.random()*26)}
+      if(p.t>=1){p.t=0;p.a=p.b;p.b=Math.floor(Math.random()*29)}
       const k=EASE(p.t);
       p.m.position.lerpVectors(aVecs[p.a],aVecs[p.b],k);
       p.m.material.opacity=0.95*Math.sin(Math.PI*p.t);
@@ -1123,8 +1123,8 @@ function loadSquares(){
 
 <script id="t3n-js">
 (function(){
-  const AGENTS=["morning-brief","inbox-triage","system-watchdog","log-rotator","health-check","market-digest","backup-verify","telegram-bridge","weather-brief","todo-sync","disk-audit","news-digest","cal-sync","process-guardian","cache-cleaner","dep-audit","evening-brief","metrics-roll","screenshot-ocr","file-organizer","net-monitor","battery-guard","update-check","sleep-report","week-review","standup-draft"];
-  const CRON=["0 6 * * *","20 6 * * *","0 */2 * * *","0 3 * * *","0 * * * *","30 9 * * 1-5","40 2 * * *","*/15 * * * *","10 6 * * *","0 7,19 * * *","0 4 * * 0","0 13 * * *","*/30 * * * *","*/5 * * * *","0 5 * * *","0 15 * * 1","0 18 * * *","55 23 * * *","0 12 * * *","0 20 * * 5","*/10 * * * *","*/20 * * * *","0 16 * * 2","5 0 * * *","0 17 * * 0","45 8 * * 1-5"];
+  const AGENTS=["daily-brief","system-watchdog","overnight-worker","learning-agent","harmony-backup","model-review","finance","health","weekly-review","scout","memory-index","feedback","calendar","research","skill-miner","career","inbox","dashboard","currency","currency-weekly","wiki","outcome-learner","gig-scanner","ceo-report","fleet-health","career-scout","freshness-monitor","governance-review","autoresearch"];
+  const CRON=["0 7 * * *","0 */4 * * *","0 2 * * *","45 6 * * *","30 1 * * *","0 3 * * 0","50 6 * * *","52 6 * * *","0 17 * * 0","40 6 * * *","20 1 * * *","0 17 * * 0","55 6 * * *","0 18 * * 0","30 18 * * 0","53 6 * * *","48 6 * * *","5 * * * *","58 6 * * 1-6","30 16 * * 0","45 16 * * 0","50 16 * * 0","10 7 * * 1-6","30 7 1 * *","59 6 * * *","15 7 * * *","0 */4 * * *","0 8 * * 0","20 7 * * *"];
   const DESC=[
    ["Pulls overnight sources, ranks what changed, and drafts a single morning brief to Telegram.","daily 06:00","telegram draft"],
    ["Classifies the inbox into act / read / archive and flags anything time-sensitive.","daily 06:20","labels only"],
@@ -1151,21 +1151,23 @@ function loadSquares(){
    ["Checks for updates and stages them; installation stays manual on purpose.","Tuesdays 16:00","staging only"],
    ["Summarises how the machine behaved overnight.","daily 00:05","report only"],
    ["Compiles the week: what shipped, what broke, what is still open.","Sundays 17:00","telegram draft"],
-   ["Drafts a standup note from the last day's real activity.","weekdays 08:45","telegram draft"]
-  ];
+   ["Drafts a standup note from the last day's real activity.","weekdays 08:45","telegram draft"],
+   ["Watches for facts on the site and in the resumes that have drifted from what the machine actually reports, and flags them before anyone else notices.","every 4 hours","report only"],
+   ["Weekly pass over agent permissions and workspace boundaries - what each agent may read, write and reach.","Sundays 08:00","report only"],
+   ["Runs a standing research queue overnight and files what it finds where the other agents can use it.","daily 07:20","research store"]];
 
   const panel=document.getElementById('agentPanel'); if(!panel) return;
   const el=id=>document.getElementById(id);
   let cur=0;
 
   function show(i){
-    cur=(i+26)%26;
+    cur=(i+29)%29;
     el('apName').textContent=AGENTS[cur];
     el('apCron').textContent=CRON[cur];
     el('apDesc').textContent=DESC[cur][0];
     el('apRuns').textContent=DESC[cur][1];
     el('apWrites').textContent=DESC[cur][2];
-    el('apTag').textContent='AGENT '+String(cur+1).padStart(2,'0')+' / 26';
+    el('apTag').textContent='AGENT '+String(cur+1).padStart(2,'0')+' / 29';
     panel.classList.add('on');
   }
   function hide(){ panel.classList.remove('on'); }
@@ -1175,7 +1177,7 @@ function loadSquares(){
   // keyboard access: the canvas is focusable and arrows walk the fleet
   canvas.setAttribute('tabindex','0');
   canvas.setAttribute('role','application');
-  canvas.setAttribute('aria-label','Interactive brain. Press Enter to inspect an agent, then arrow keys to move through all 26.');
+  canvas.setAttribute('aria-label','Interactive brain. Press Enter to inspect an agent, then arrow keys to move through all 29.');
   canvas.addEventListener('keydown',e=>{
     if(e.key==='Enter'||e.key===' '){ e.preventDefault(); show(window.__hoverIdx!=null?window.__hoverIdx:cur); }
     if(e.key==='ArrowRight'||e.key==='ArrowDown'){ e.preventDefault(); show(cur+1); }
@@ -1238,7 +1240,7 @@ function loadSquares(){
       if(c.id==='brain'){
         c.removeAttribute('aria-hidden');
         c.setAttribute('role','application');
-        c.setAttribute('aria-label','Interactive model of 26 scheduled agents. Press Enter to inspect one, then use the arrow keys to move through the fleet.');
+        c.setAttribute('aria-label','Interactive model of 29 scheduled agents. Press Enter to inspect one, then use the arrow keys to move through the fleet.');
       }else{
         c.setAttribute('aria-hidden','true');
         c.setAttribute('role','presentation');

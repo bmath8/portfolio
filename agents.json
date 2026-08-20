@@ -1,1 +1,118 @@
-[{"n": "daily-brief", "cron": "0 7 * * *"}, {"n": "system-watchdog", "cron": "0 */4 * * *"}, {"n": "overnight-worker", "cron": "0 2 * * *"}, {"n": "learning-agent", "cron": "45 6 * * *"}, {"n": "harmony-backup", "cron": "30 1 * * *"}, {"n": "model-review", "cron": "0 3 1 * *"}, {"n": "finance", "cron": "50 6 * * *"}, {"n": "health", "cron": "52 6 * * *"}, {"n": "weekly-review", "cron": "0 17 * * 0"}, {"n": "scout", "cron": "40 6 * * *"}, {"n": "memory-index", "cron": "20 1 * * *"}, {"n": "feedback", "cron": "0 17 * * 0"}, {"n": "calendar", "cron": "55 6 * * *"}, {"n": "research", "cron": "0 18 * * 0"}, {"n": "skill-miner", "cron": "30 18 * * 0"}, {"n": "career", "cron": "53 6 * * *"}, {"n": "inbox", "cron": "48 6 * * *"}, {"n": "dashboard", "cron": "5 * * * *"}, {"n": "currency", "cron": "58 6 * * 1-6"}, {"n": "currency-weekly", "cron": "30 16 * * 0"}, {"n": "wiki", "cron": "45 16 * * 0"}, {"n": "outcome-learner", "cron": "50 16 * * 0"}, {"n": "gig-scanner", "cron": "10 7 * * 1-6"}, {"n": "ceo-report", "cron": "30 7 1 * *"}, {"n": "fleet-health", "cron": "59 6 * * *"}, {"n": "career-scout", "cron": "15 7 * * *"}]
+[
+  {
+    "n": "daily-brief",
+    "cron": "0 7 * * *"
+  },
+  {
+    "n": "system-watchdog",
+    "cron": "0 */4 * * *"
+  },
+  {
+    "n": "overnight-worker",
+    "cron": "0 2 * * *"
+  },
+  {
+    "n": "learning-agent",
+    "cron": "45 6 * * *"
+  },
+  {
+    "n": "harmony-backup",
+    "cron": "30 1 * * *"
+  },
+  {
+    "n": "model-review",
+    "cron": "0 3 * * 0"
+  },
+  {
+    "n": "finance",
+    "cron": "50 6 * * *"
+  },
+  {
+    "n": "health",
+    "cron": "52 6 * * *"
+  },
+  {
+    "n": "weekly-review",
+    "cron": "0 17 * * 0"
+  },
+  {
+    "n": "scout",
+    "cron": "40 6 * * *"
+  },
+  {
+    "n": "memory-index",
+    "cron": "20 1 * * *"
+  },
+  {
+    "n": "feedback",
+    "cron": "0 17 * * 0"
+  },
+  {
+    "n": "calendar",
+    "cron": "55 6 * * *"
+  },
+  {
+    "n": "research",
+    "cron": "0 18 * * 0"
+  },
+  {
+    "n": "skill-miner",
+    "cron": "30 18 * * 0"
+  },
+  {
+    "n": "career",
+    "cron": "53 6 * * *"
+  },
+  {
+    "n": "inbox",
+    "cron": "48 6 * * *"
+  },
+  {
+    "n": "dashboard",
+    "cron": "5 * * * *"
+  },
+  {
+    "n": "currency",
+    "cron": "58 6 * * 1-6"
+  },
+  {
+    "n": "currency-weekly",
+    "cron": "30 16 * * 0"
+  },
+  {
+    "n": "wiki",
+    "cron": "45 16 * * 0"
+  },
+  {
+    "n": "outcome-learner",
+    "cron": "50 16 * * 0"
+  },
+  {
+    "n": "gig-scanner",
+    "cron": "10 7 * * 1-6"
+  },
+  {
+    "n": "ceo-report",
+    "cron": "30 7 1 * *"
+  },
+  {
+    "n": "fleet-health",
+    "cron": "59 6 * * *"
+  },
+  {
+    "n": "career-scout",
+    "cron": "15 7 * * *"
+  },
+  {
+    "n": "freshness-monitor",
+    "cron": "0 */4 * * *"
+  },
+  {
+    "n": "governance-review",
+    "cron": "0 8 * * 0"
+  },
+  {
+    "n": "autoresearch",
+    "cron": "20 7 * * *"
+  }
+]
