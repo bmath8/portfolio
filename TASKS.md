@@ -32,12 +32,15 @@ Portfolio supports the job search — it is not the resume source. Keep it accur
       guarded a file that no longer exists, and `vendor/README.md` added.
 
 ## Open
-- [ ] **Rebuild the resume arsenal with the current numbers.** The 16 variants were built
-      2026-08-05 and say 26 agents / 81 tests; the machine now reports 29 and 157. Update
-      `resumes/variants/facts.py`, then `build_variants.py --all` and `render_variants.py`
-      (Word COM - needs a desktop session). Then re-copy the chosen lane over
-      `portfolio/resume.pdf`. Until then the deployed resume understates by 3 agents and
-      76 tests.
+- [x] ~~**Rebuild the resume arsenal with the current numbers.**~~ **The deployed resume is
+      current — verified 2026-08-26 by extracting the PDF's own text.** `resume.pdf` reads
+      *"30 scheduled agents ... and a 221-test suite"*, which matches `agents.json` (30) and
+      the live pytest run (221). Shipped in `967d168` / `40fac17`.
+      ⚠️ **Still true upstream:** the 16 variants and `resumes/variants/facts.py` live on
+      Brian's machine, not in this repo, and were last built 2026-08-05 against 26 / 81.
+      Correct `facts.py` before the next `build_variants.py --all`, or a rebuild will
+      overwrite the good `resume.pdf` with stale numbers. This is the one that keeps
+      regressing.
 - [ ] **Decide whether Neural stays a second page** or becomes a toggle on one page.
 - [ ] **Confirm the old Tenor/Google API key is revoked, and that it is not in the public
       `boombox` history.** The key was logged against `boombox-v5`, which is not public

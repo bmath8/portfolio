@@ -1,6 +1,6 @@
 # AGENTS.md — portfolio
 
-Guidance for AI coding agents working in this repo. Accurate as of **v7.4, 2026-08-12**.
+Guidance for AI coding agents working in this repo. Accurate as of **2026-08-26**.
 Read `AGENT_RULES.md` for operating discipline; this file is about *this* codebase.
 
 ## What this is
@@ -45,7 +45,8 @@ checkable. Two consequences:
 - Never claim live data. The fleet visualisations animate a *real schedule*; they are not
   connected to the machine. Captions say "simulation" or "replay".
 - If a project fact changes, change it in **both** HTML files, and keep it consistent with
-  `resume.pdf`. Search `26`, `81/81`, `2026-08-05`.
+  `resume.pdf`. Search `30`, `221`, `2026-08-19`. See "The numbers" in README.md
+  for the one place these are defined and how to re-derive them.
 
 **Zero third-party requests.** Fonts and Three.js are self-hosted in `vendor/`. Do not add a
 CDN link without also deleting the "no third-party requests" claim from both footers. The

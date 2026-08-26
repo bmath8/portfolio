@@ -9,6 +9,7 @@ Two kinds of thing live here, and the distinction matters.
 | `make_og.py` | Regenerates `og.png` (1200×630, Mission Control palette). Run after any change to the headline or the four metrics. |
 | `make_og_neural.py` | Regenerates `og-neural.png` for the Neural edition. |
 | `verify-demos.ps1` | Checks the live demo links still resolve. |
+| `check_docs.py` | Checks every current doc against the repo — agent count vs `agents.json`, test count vs the page, and production links pointing at the `.html` form. Exits 1 on drift. Run it after changing any number. |
 | `build_ttf.py` | Converts the self-hosted woff2 faces to TTF so Pillow can draw with them. Run this first if either OG script complains. |
 
 Both OG scripts draw with the exact faces the site serves. Pillow cannot read woff2, so
@@ -24,6 +25,21 @@ python scripts/make_og_neural.py                 # Neural card
 The TTF copies are build artifacts and are not deployed. `make_og.py` looks for them in
 `scratchpad/vendorbuild/ttf/` and falls back to `vendor/fonts/_ttf/`; if neither exists it
 tells you to run `build_ttf.py` rather than failing with a Pillow error.
+
+## Cleanup, 2026-08-26
+
+**Twenty-five of these scripts existed twice** — byte-identical copies at the top level of
+`scripts/` and in `applied/`. This README said the one-shots live in `applied/` and must not be
+re-run, while the top-level copies sat exactly where someone would run one by accident. The
+duplicates were deleted; the documented `applied/` copies are untouched.
+
+`refresh_facts.py` and `boombox_cover.py` were also one-shots sitting at the top level. Both
+mutate `index.html` / `neural.html` and have already been applied, so both moved to `applied/`
+under this file's own rule. `refresh_facts.py` in particular is now doubly historical: it is
+hardcoded to the 26 → 29 agents / 81 → 157 tests refresh, and the machine has since moved on
+to **30 and 221**. Do not re-run it — it would walk the numbers backwards.
+
+The top level is now exactly the five reusable tools in the table above.
 
 ## `applied/` — historical record, do not re-run
 
@@ -55,6 +71,8 @@ content_round2.py  move_incident.py  incident_width.py    v7.3 content
 add_analytics.py  fix_cleanurls.py  update_availability.py
 design_mc.py  fix_design_mc.py                            v7.4 design pass
 design_neural.py  fix_design_nu.py
+refresh_facts.py                                          numbers -> 29 / 157 (since superseded)
+boombox_cover.py                                          BoomBox product cover
 ```
 
 A `fix_*` script always follows the pass it corrects — those are the mistakes caught in

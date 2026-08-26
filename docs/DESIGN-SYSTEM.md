@@ -1,7 +1,7 @@
 # Design system — both editions
 
 Reference for maintaining `index.html` (Mission Control) and `neural.html` (Neural).
-Both are single-file pages. Accurate as of **v7.4, 2026-08-12**.
+Both are single-file pages. Accurate as of **2026-08-26**.
 
 Each page carries **three `:root` blocks**, applied in order. This is deliberate — the
 later blocks are layers added by later passes, and keeping them separate makes it obvious
@@ -71,7 +71,7 @@ vignette (`body::after`), all non-interactive.
 - **Metric strip** — **full-bleed**, edge to edge, `width:100vw` with the container padded
   by `max(1.5rem, calc(50vw - 590px))`. Pad the *container*, never the first/last cells:
   cell padding steals width from equal grid columns and clips the first numeral. Numerals
-  at `--t-mega` with `white-space:nowrap`; "81/81" is the constraint that sets the ceiling.
+  at `--t-mega` with `white-space:nowrap`; "221/221" is the constraint that sets the ceiling.
 - **Proof drawers** — each metric is a `role="button"` with `aria-expanded` and
   `aria-controls`; the drawer is `inert` while collapsed. Opens to the command that produced
   the number, its output, and the date it ran.
@@ -134,7 +134,7 @@ in the dark sections.
 Three.js r128, self-hosted, **lazy-loaded**. The brain is a named `initBrain()` function, not
 an IIFE; `#brain-loader` fetches the library when the canvas comes within 300px of the
 viewport, or at first idle. It is **never fetched** for `prefers-reduced-motion` or when WebGL
-is unavailable — those visitors get a text statement pointing at the same 26 agents below.
+is unavailable — those visitors get a text statement pointing at the same 30 agents below.
 
 Four point clouds — cortex, cerebellum, brainstem, halo — with density scaled to 45% when
 `innerWidth < 820` or `devicePixelRatio < 1.5`. The cortex sampler shapes an ellipsoid with a
@@ -142,10 +142,10 @@ long front-back axis, frontal taper, occipital fullness, widened temporal lobes,
 underside and an interhemispheric fissure; two layered sinusoids add gyri. Additive glow
 sprites, coloured rose → violet → teal by height.
 
-26 agent nodes on the surface, joined by synapse lines under 0.85 units apart, with five
+30 agent nodes on the surface, joined by synapse lines under 0.85 units apart, with five
 sprite pulses travelling eased paths. Drag to spin with inertia (0.95 rotational, 0.92
 vertical), idle rotation, breathing scale, raycast hover naming the agent and its cron line,
-and a callout cycling all 26 every 3.6s.
+and a callout cycling all 30 every 3.6s.
 
 **Clicking a node opens the agent panel** — cron line, purpose, write scope, guardrail, with
 prev/next through the fleet. The canvas is `role="application"`, focusable, and answers Enter
@@ -171,7 +171,8 @@ and the arrow keys. The panel is `inert` when closed.
 
 ## Rules for editing
 
-1. **Change numbers in both files.** Search `26`, `81/81`, and the date `2026-08-05`.
+1. **Change numbers in both files.** Search `30`, `221`, and the date `2026-08-19`.
+   README.md's "The numbers" section is the single definition and says how to re-derive.
 2. **Keep the source line.** Every metric states where it came from. Never add a number
    without one.
 3. **The markup must hold the true value.** Metrics render correctly with JavaScript off;
