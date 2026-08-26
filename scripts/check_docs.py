@@ -19,6 +19,15 @@ Deliberately exempt, because a naive scan flags all of these wrongly:
     build_strong_resumes.py - referenced on purpose.
   * runtime URLs the host serves, e.g. /_vercel/insights/script.js.
   * files named as removed, e.g. "the old password gate (middleware.js)".
+
+WHAT THIS DOES NOT CHECK, deliberately:
+
+  Broken file references. A first attempt flagged 35, and every single one was
+  a false positive - paths in other repos, runtime URLs the host serves, files
+  correctly described as deleted, and prose whose whole point is that a file
+  does NOT exist ("option-1-mission-control.html was never committed"). A check
+  that cries wolf 35 times out of 35 trains you to ignore it, so it is not here.
+  If you add one, it needs the same exemption discipline as the rules above.
 """
 import json, pathlib, re, sys
 
