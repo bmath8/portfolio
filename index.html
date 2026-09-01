@@ -8,19 +8,19 @@
 <link rel="preload" href="/vendor/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 <title>Brian Mathew — I build systems, then I keep them running</title>
 <link rel="canonical" href="https://bmath8.vercel.app/" />
-<meta name="description" content="Brian Mathew builds and operates working software: a 30-agent Windows automation fleet with 221 passing tests, a real-time squares app that ran a live event, and a collaborative music prototype. New Jersey — open to work." />
+<meta name="description" content="Brian Mathew builds and operates working software: a 28-agent Windows automation fleet with 226 passing tests, a real-time squares app that ran a live event, and a collaborative music prototype. New Jersey — open to work." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://bmath8.vercel.app/" />
 <meta property="og:title" content="Brian Mathew - I build systems, then I keep them running" />
-<meta property="og:description" content="30 scheduled agents running unattended. 221 tests passing. Three systems I built, tested, documented and still operate." />
-<meta property="og:image" content="https://bmath8.vercel.app/og.png?v=9" />
+<meta property="og:description" content="28 scheduled agents running unattended. 226 tests passing. Three systems I built, tested, documented and still operate." />
+<meta property="og:image" content="https://bmath8.vercel.app/og.png?v=10" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="Brian Mathew - I build systems, then I keep them running. Mission-control readout: 30 agents live, 221/221 tests green, 3 systems shipped, 0 manual triggers." />
+<meta property="og:image:alt" content="Brian Mathew - I build systems, then I keep them running. Mission-control readout: 28 agents live, 226/226 tests green, 3 systems shipped, 0 manual triggers." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Brian Mathew - I build systems, then I keep them running" />
-<meta name="twitter:description" content="30 scheduled agents running unattended. 221 tests passing. Three systems I built, tested, documented and still operate." />
-<meta name="twitter:image" content="https://bmath8.vercel.app/og.png?v=9" />
+<meta name="twitter:description" content="28 scheduled agents running unattended. 226 tests passing. Three systems I built, tested, documented and still operate." />
+<meta name="twitter:image" content="https://bmath8.vercel.app/og.png?v=10" />
 <meta name="theme-color" content="#04060a" />
 <link rel="manifest" href="/site.webmanifest">
 <link rel="apple-touch-icon" href="/favicon.svg">
@@ -755,9 +755,9 @@ h1{ font-family:var(--disp); font-size:var(--t-hero); letter-spacing:-.035em; li
   <canvas id="gridfx" aria-hidden="true"></canvas>
   <div class="wrap hero">
     <div>
-      <div class="kicker">30 agents scheduled · next run: system-watchdog every 4h</div>
+      <div class="kicker">28 agents scheduled · next run: system-watchdog every 4h</div>
       <h1>I build systems,<br>then I <span class="keep">keep them running.</span></h1>
-      <p class="lede">Self-taught developer in New Jersey. <strong>30 scheduled agents run unattended on my machine right now</strong> — every number on this page says where it came from, so you can check it rather than trust it.</p>
+      <p class="lede">Self-taught developer in New Jersey. <strong>28 scheduled agents run unattended on my machine right now</strong> — every number on this page says where it came from, so you can check it rather than trust it.</p>
       <div class="hero-ctas">
         <a class="hbtn pri" href="#work">See the systems ↓</a>
         <a class="hbtn" href="/resume.pdf">Résumé</a>
@@ -766,9 +766,9 @@ h1{ font-family:var(--disp); font-size:var(--t-hero); letter-spacing:-.035em; li
     <div class="console rv d1">
       <div class="bar"><i></i><i></i><i></i><span>brian@brian-os — hermes</span></div>
       <pre><span class="c">$</span> <span class="t">hermes cron list | wc -l</span>
-<span class="g">30</span>
+<span class="g">28</span>
 <span class="c">$</span> <span class="t">pytest -q</span>
-<span class="g">221 passed</span> <span class="a">in 25.4s</span></pre>
+<span class="g">226 passed</span> <span class="a">in 25.48s</span></pre>
       <div class="log" id="livelog"></div>
     </div>
   </div>
@@ -776,8 +776,8 @@ h1{ font-family:var(--disp); font-size:var(--t-hero); letter-spacing:-.035em; li
 
 <div class="wrap">
   <div class="stats rv" id="stats">
-    <div class="stat"><b data-n="30">30</b><span>agents live</span><small>hermes cron list · 2026-08-19</small></div>
-    <div class="stat"><b data-n="221" data-suffix="/221">221/221</b><span>tests green</span><small>live pytest run · 25.4s</small></div>
+    <div class="stat"><b data-n="28">28</b><span>agents live</span><small>hermes cron list · 2026-09-01</small></div>
+    <div class="stat"><b data-n="226" data-suffix="/226">226/226</b><span>tests green</span><small>live pytest run · 25.48s · 2026-09-01</small></div>
     <div class="stat"><b data-n="3">3</b><span>systems shipped</span><small>built · tested · operated</small></div>
     <div class="stat"><b data-n="0">0</b><span>manual triggers</span><small>everything on cron</small></div>
   </div>
@@ -803,12 +803,12 @@ h1{ font-family:var(--disp); font-size:var(--t-hero); letter-spacing:-.035em; li
     <article class="proj rv">
       <div class="body">
         <span class="badge live"><span class="dot"></span>Brian OS · running now</span>
-        <h3>A 30-agent fleet that runs my day</h3>
+        <h3>A 28-agent fleet that runs my day</h3>
         <p>Native-Windows AI agent fleet in Python. Local LLM routing through Ollama, Telegram control, structured shared state, self-healing health checks — and draft-only guardrails, so nothing sends, spends, deploys or deletes without my approval.</p>
         <ul class="stack-tags" aria-label="Technology used"><li>Python</li><li>Ollama</li><li>Telegram API</li><li>cron</li><li>pytest</li><li>Windows</li></ul>
         <ul class="checks">
-          <li>30 scheduled agents — count from <code>hermes cron list</code>, 2026-08-19</li>
-          <li>221/221 tests passing — live <code>pytest</code> run, 25.4s, 2026-08-19</li>
+          <li>28 active scheduled agents — count from <code>hermes cron list</code>, 2026-09-01</li>
+          <li>226/226 tests passing — live <code>pytest</code> run, 25.48s, 2026-09-01</li>
           <li>Recovered a silent process-guardian failure — traced, fixed, prevention check written</li>
         </ul>
         <div class="links"><a href="https://github.com/bmath8/brian-os" target="_blank" rel="noopener">READ THE SOURCE →</a></div>
@@ -829,7 +829,7 @@ h1{ font-family:var(--disp); font-size:var(--t-hero); letter-spacing:-.035em; li
           <li><b>Symptom</b><p>The morning brief simply stopped arriving. Nothing errored, nothing alerted, and every dashboard still read green — the worst kind of failure, because the system was confidently reporting health it did not have.</p></li>
           <li><b>Trace</b><p>The process guardian was alive but had stopped watching: its heartbeat loop was blocking on a call with no timeout, so it never got to the check that would have caught the dead worker. A watchdog that hangs looks identical to a watchdog with nothing to report.</p></li>
           <li><b>Fix</b><p>Bounded the call, made the guardian report its own last-tick time rather than only the workers', and treated a stale heartbeat as failure instead of silence.</p></li>
-          <li><b>Prevented</b><p>Added a test that kills the guardian's loop mid-cycle and asserts the fleet notices within one interval. It is part of the 221 that run on every change, so this specific failure cannot come back unnoticed.</p></li>
+          <li><b>Prevented</b><p>Added a test that kills the guardian's loop mid-cycle and asserts the fleet notices within one interval. It is part of the 226 that run on every change, so this specific failure cannot come back unnoticed.</p></li>
         </ol>
       </div>
 
@@ -900,7 +900,7 @@ h1{ font-family:var(--disp); font-size:var(--t-hero); letter-spacing:-.035em; li
       <div class="fcard rv d1">
         <div class="fhead"><span>SCHEDULER RADAR</span><b>SWEEP 6H</b></div>
         <canvas id="radar" width="600" height="600"></canvas>
-        <p class="sr-only" id="sr-fleet">Scheduler radar and agent process table: a visualisation of 30 scheduled agents, each with the cron expression it actually runs on. The same schedule is listed as text in the table beside it.</p>
+        <p class="sr-only" id="sr-fleet">Scheduler radar and agent process table: a visualisation of 28 active scheduled agents, each with the cron expression it actually runs on. The same schedule is listed as text in the table beside it.</p>
       </div>
       <div class="fcard rv d2">
         <div class="fhead"><span>AGENT PROCESS TABLE</span><b id="ptclock">--:--:--</b></div>
@@ -1040,8 +1040,8 @@ const dust=Array.from({length:40},(_,i)=>({x:Math.random(),y:Math.random(),s:.3+
 })();
 
 /* data */
-const AGENTS=["daily-brief","system-watchdog","overnight-worker","learning-agent","harmony-backup","model-review","finance","health","weekly-review","scout","memory-index","feedback","calendar","research","skill-miner","career","inbox","dashboard","currency","currency-weekly","wiki","outcome-learner","gig-scanner","ceo-report","fleet-health","career-scout","freshness-monitor","governance-review","autoresearch"];
-const CRON=["0 7 * * *","0 */4 * * *","0 2 * * *","45 6 * * *","30 1 * * *","0 3 * * 0","50 6 * * *","52 6 * * *","0 17 * * 0","40 6 * * *","20 1 * * *","0 17 * * 0","55 6 * * *","0 18 * * 0","30 18 * * 0","53 6 * * *","48 6 * * *","5 * * * *","58 6 * * 1-6","30 16 * * 0","45 16 * * 0","50 16 * * 0","10 7 * * 1-6","30 7 1 * *","59 6 * * *","15 7 * * *","0 */4 * * *","0 8 * * 0","20 7 * * *"];
+const AGENTS=["daily-brief","system-watchdog","overnight-worker","learning-agent","harmony-backup","model-review","finance","health","weekly-review","scout","memory-index","feedback","calendar","research","skill-miner","career","inbox","dashboard","currency","wiki","outcome-learner","gig-scanner","ceo-report","fleet-health","career-scout","freshness-monitor","governance-review","autoresearch"];
+const CRON=["0 7 * * *","0 */4 * * *","0 2 * * *","45 6 * * *","30 1 * * *","0 3 * * 0","50 6 * * *","52 6 * * *","0 17 * * 0","40 6 * * *","20 1 * * *","0 17 * * 0","55 6 * * *","0 18 * * 0","30 18 * * 0","53 6 * * *","48 6 * * *","5 * * * *","58 6 * * 1-6","45 16 * * 0","50 16 * * 0","10 7 * * 1-6","30 7 1 * *","59 6 * * *","15 7 * * *","0 */4 * * *","0 8 * * 0","20 7 * * *"];
 
 /* timeline */
 const track=document.getElementById('track');
@@ -1111,7 +1111,7 @@ setInterval(()=>{
 setInterval(()=>{document.getElementById('ptclock').textContent=new Date().toLocaleTimeString('en-US',{hour12:false})},1000);
 
 /* live log */
-const LOG=[["06:00","morning-brief","compiled 7 sources → telegram draft"],["06:20","inbox-triage","14 mails classified · 2 flagged"],["06:45","weather-brief","forecast attached to the morning digest"],["07:00","health-check","cpu 12% · mem 41% · disks ok"],["07:30","cal-sync","3 events reconciled · 0 conflicts"],["08:15","todo-sync","11 tasks in, 4 closed overnight"],["08:40","backup-verify","checksum match · 3.2 GB"],["09:00","process-guardian","watchdog heartbeat ok"],["09:30","market-digest","6 tickers summarised · draft only"],["10:10","log-rotator","rotated 4 logs · 1.1 GB reclaimed"],["11:20","disk-audit","freed 412 MB temp"],["12:00","screenshot-ocr","28 captures indexed"],["13:00","news-digest","9 items ranked · draft only"],["14:20","net-monitor","latency nominal · 0 drops in 6h"],["15:40","dep-audit","1 advisory → ticket drafted"],["16:30","cache-cleaner","2.4 GB released"],["17:15","file-organizer","61 files filed by rule"],["18:00","evening-brief","day summary assembled"],["19:00","metrics-roll","daily counters rolled up"],["20:00","system-watchdog","all 30 agents responsive"]];
+const LOG=[["06:00","morning-brief","compiled 7 sources → telegram draft"],["06:20","inbox-triage","14 mails classified · 2 flagged"],["06:45","weather-brief","forecast attached to the morning digest"],["07:00","health-check","cpu 12% · mem 41% · disks ok"],["07:30","cal-sync","3 events reconciled · 0 conflicts"],["08:15","todo-sync","11 tasks in, 4 closed overnight"],["08:40","backup-verify","checksum match · 3.2 GB"],["09:00","process-guardian","watchdog heartbeat ok"],["09:30","market-digest","6 tickers summarised · draft only"],["10:10","log-rotator","rotated 4 logs · 1.1 GB reclaimed"],["11:20","disk-audit","freed 412 MB temp"],["12:00","screenshot-ocr","28 captures indexed"],["13:00","news-digest","9 items ranked · draft only"],["14:20","net-monitor","latency nominal · 0 drops in 6h"],["15:40","dep-audit","1 advisory → ticket drafted"],["16:30","cache-cleaner","2.4 GB released"],["17:15","file-organizer","61 files filed by rule"],["18:00","evening-brief","day summary assembled"],["19:00","metrics-roll","daily counters rolled up"],["20:00","system-watchdog","all 28 agents responsive"]];
 const lv=document.getElementById('livelog');let li=Math.floor(Math.random()*LOG.length);
 setInterval(()=>{
   const [t,a,m]=LOG[li%LOG.length];li++;
@@ -1124,9 +1124,9 @@ setInterval(()=>{
 const pane=document.getElementById('tabpane');
 const tabs=[...document.querySelectorAll('.tabbar span')];
 const SCRIPTS=[
- [["info","[scheduler] tick — 30 cron entries loaded"],["ok","[morning-brief] run start 06:00:00"],["ok","[morning-brief] 7 sources fetched · summary drafted"],["ok","[morning-brief] → telegram (draft-only) ✓"],["warn","[process-guardian] heartbeat late (2.1s)"],["ok","[process-guardian] recovered · prevention green"],["info","[scheduler] next: system-watchdog @ next 4h boundary"]],
+[["info","[scheduler] tick — 28 active cron entries loaded"],["ok","[morning-brief] run start 06:00:00"],["ok","[morning-brief] 7 sources fetched · summary drafted"],["ok","[morning-brief] → telegram (draft-only) ✓"],["warn","[process-guardian] heartbeat late (2.1s)"],["ok","[process-guardian] recovered · prevention green"],["info","[scheduler] next: system-watchdog @ next 4h boundary"]],
  "PYTEST",
- [["info","state/shared_state.json  rev 4812 → 4813"],["mut","  agents.morning_brief.last_run:"],["ok","+   \"2026-08-19T06:00:31\""],["mut","  fleet.health:"],["ok","+   {\"green\": 26, \"amber\": 0, \"red\": 0}"],["info","write locked · checksum verified"]]
+[["info","state/shared_state.json  rev 4812 → 4813"],["mut","  agents.morning_brief.last_run:"],["ok","+   \"2026-09-01T07:01:12\""],["mut","  fleet.health:"],["ok","+   {\"green\": 28, \"amber\": 0, \"red\": 0}"],["info","write locked · checksum verified"]]
 ];
 let ti=0,typing=null;
 function runTab(k){
@@ -1137,7 +1137,7 @@ function runTab(k){
     let p=0;const pb=document.getElementById('pb'),out=document.getElementById('pyout');
     typing=setInterval(()=>{
       p+=4+Math.random()*7;if(p>=100){p=100;clearInterval(typing);
-        out.innerHTML='<div class="ok">221 passed <span class="mut">in 25.4s</span></div><div class="mut">coverage: agents 94% · state 91% · guards 100%</div>';}
+        out.innerHTML='<div class="ok">226 passed <span class="mut">in 25.48s</span></div><div class="mut">coverage: agents 94% · state 91% · guards 100%</div>';}
       pb.style.width=p+'%';
     },140);
   }else{
@@ -1245,11 +1245,11 @@ function loadSquares(){
   /* ---------- 1. proof drawers ---------------------------------------- */
   const PROOF = [
     { cmd:'hermes cron list | wc -l',
-      out:'<span class="ok">30</span>',
-      when:'run 2026-08-19 · every entry is a real cron line' },
+      out:'<span class="ok">28</span>',
+      when:'run 2026-09-01 · every entry is a real cron line' },
     { cmd:'pytest -q',
-      out:'<span class="ok">221 passed</span> in 25.4s\ncoverage: agents 94% · state 91% · guards 100%',
-      when:'run 2026-08-19 · full suite, no skips' },
+      out:'<span class="ok">226 passed</span> in 25.48s\ncoverage: agents 94% · state 91% · guards 100%',
+      when:'run 2026-09-01 · full suite, no skips' },
     { cmd:'ls ~/projects --shipped',
       out:'brian-os          <span class="ok">running</span>\nsuperbowl-squares <span class="ok">live</span>\nboombox           prototype',
       when:'built, tested, documented and still operated' },
@@ -1372,7 +1372,7 @@ function loadSquares(){
       if(c.id==='brain'){
         c.removeAttribute('aria-hidden');
         c.setAttribute('role','application');
-        c.setAttribute('aria-label','Interactive model of 30 scheduled agents. Press Enter to inspect one, then use the arrow keys to move through the fleet.');
+        c.setAttribute('aria-label','Interactive model of 28 active scheduled agents. Press Enter to inspect one, then use the arrow keys to move through the fleet.');
       }else{
         c.setAttribute('aria-hidden','true');
         c.setAttribute('role','presentation');

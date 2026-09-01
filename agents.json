@@ -76,10 +76,6 @@
     "cron": "58 6 * * 1-6"
   },
   {
-    "n": "currency-weekly",
-    "cron": "30 16 * * 0"
-  },
-  {
     "n": "wiki",
     "cron": "45 16 * * 0"
   },
@@ -114,9 +110,5 @@
   {
     "n": "autoresearch",
     "cron": "20 7 * * *"
-  },
-  {
-    "n": "catchup",
-    "cron": "35 * * * *"
   }
 ]
