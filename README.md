@@ -102,18 +102,23 @@ iframe is the other one, and it is click-gated.
 
 **This section is the single definition.** The same four figures appear in `index.html`,
 `neural.html`, `resume.pdf`, `INVENTORY.md`, `cover-letter-template.md` and
-`docs/DESIGN-SYSTEM.md`. They have drifted three times — 25 → 26 → 29 → 30 agents, 81 → 157 →
-221 tests — because each one was hand-copied. When they change, change them here first, then
-grep.
+`docs/DESIGN-SYSTEM.md`. They have now drifted four times:
+
+    agents  25 → 26 → 29 → 30 → 28
+    tests   81 → 157 → 221 → 226
+
+They drift because each copy is maintained by hand, and they do not only go up — the agent
+count fell on 2026-09-01 when the fleet was re-counted. When they change, change them here
+first, then run `python3 scripts/check_docs.py`, which finds every copy that fell behind.
 
 | Figure | Current | How to re-derive |
 |---|---|---|
-| Agents | **30** | `hermes cron list \| wc -l` — must equal `len(agents.json)` |
-| Tests | **221** | live `pytest` run in the Brian OS repo |
+| Agents | **28** | `hermes cron list \| wc -l` — must equal `len(agents.json)` |
+| Tests | **226** | live `pytest` run in the Brian OS repo |
 | Systems shipped | **3** | Brian OS, Super Bowl LX Squares, BoomBox |
 | Manual triggers | **0** | every agent runs on a cron line |
 
-Last verified **2026-08-19**. To update: edit both pages (`data-n` attributes and the prose),
+Last verified **2026-09-01**. To update: edit both pages (`data-n` attributes and the prose),
 then `resume.pdf`, then the docs above. `agents.json` is the machine-readable source the pages
 actually read at runtime, so the fleet visualisations self-correct; the headline metrics do not.
 
@@ -125,8 +130,8 @@ the good `resume.pdf`. See `TASKS.md`.
 
 Every number on both pages is checkable and states its origin inline:
 
-- **30 agents live** — count from `hermes cron list | wc -l`, 2026-08-19
-- **221/221 tests green** — live `pytest` run, 2026-08-19
+- **28 agents live** — count from `hermes cron list | wc -l`, 2026-09-01
+- **226/226 tests green** — live `pytest` run, 25.48s, 2026-09-01
 - **3 systems shipped** — Brian OS, Super Bowl LX Squares, BoomBox
 - **0 manual triggers** — every agent runs on a cron line
 

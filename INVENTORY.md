@@ -142,7 +142,7 @@ You are not starting from zero — you're basically done for a first application
 ### Verified during consolidation (2026-07-20)
 The three featured projects are **substantial and real**, not throwaway:
 - `ai-job-hunter` — ~30k lines Python, 21 test modules, Docker + Render, GPT-4/Claude, ATS scorer. README status: ~85% (v0.9).
-- `brian-os-fleet` — **30 scheduled agents** on a local LLM, Telegram control, approval-gated actions, **221 tests** (green on Windows). Site cor
+- `brian-os-fleet` — **28 scheduled agents** on a local LLM, Telegram control, approval-gated actions, **226 tests** (green on Windows). Site cor
 - `boombox-v.5` — ~48k lines TypeScript, Next.js/Supabase/Redis/WebSockets, 20 test files, production-grade infra.
 
 > "Unfinished" is fine and honest — the site already labels each project's true status. The goal

@@ -34,8 +34,9 @@ Portfolio supports the job search — it is not the resume source. Keep it accur
 ## Open
 - [x] ~~**Rebuild the resume arsenal with the current numbers.**~~ **The deployed resume is
       current — verified 2026-08-26 by extracting the PDF's own text.** `resume.pdf` reads
-      *"30 scheduled agents ... and a 221-test suite"*, which matches `agents.json` (30) and
-      the live pytest run (221). Shipped in `967d168` / `40fac17`.
+      the same figures the site does. **Re-verified 2026-09-01:** `ce21008` refreshed
+      `resume.pdf` from the current L3 AI Builder build alongside the site, so both now carry
+      **28 agents / 226 tests** with 2026-09-01 receipts.
       ⚠️ **Still true upstream:** the 16 variants and `resumes/variants/facts.py` live on
       Brian's machine, not in this repo, and were last built 2026-08-05 against 26 / 81.
       Correct `facts.py` before the next `build_variants.py --all`, or a rebuild will

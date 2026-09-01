@@ -45,7 +45,7 @@ checkable. Two consequences:
 - Never claim live data. The fleet visualisations animate a *real schedule*; they are not
   connected to the machine. Captions say "simulation" or "replay".
 - If a project fact changes, change it in **both** HTML files, and keep it consistent with
-  `resume.pdf`. Search `30`, `221`, `2026-08-19`. See "The numbers" in README.md
+  `resume.pdf`. Search `28`, `226`, `2026-09-01`. See "The numbers" in README.md
   for the one place these are defined and how to re-derive them.
 
 **Zero third-party requests.** Fonts and Three.js are self-hosted in `vendor/`. Do not add a
