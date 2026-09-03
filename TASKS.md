@@ -32,12 +32,16 @@ Portfolio supports the job search — it is not the resume source. Keep it accur
       guarded a file that no longer exists, and `vendor/README.md` added.
 
 ## Open
-- [ ] **Rebuild the resume arsenal with the current numbers.** The 16 variants were built
-      2026-08-05 and say 26 agents / 81 tests; the machine now reports 29 and 157. Update
-      `resumes/variants/facts.py`, then `build_variants.py --all` and `render_variants.py`
-      (Word COM - needs a desktop session). Then re-copy the chosen lane over
-      `portfolio/resume.pdf`. Until then the deployed resume understates by 3 agents and
-      76 tests.
+- [x] ~~**Rebuild the resume arsenal with the current numbers.**~~ **The deployed resume is
+      current — verified 2026-08-26 by extracting the PDF's own text.** `resume.pdf` reads
+      the same figures the site does. **Re-verified 2026-09-01:** `ce21008` refreshed
+      `resume.pdf` from the current L3 AI Builder build alongside the site, so both now carry
+      **28 agents / 226 tests** with 2026-09-01 receipts.
+      ⚠️ **Still true upstream:** the 16 variants and `resumes/variants/facts.py` live on
+      Brian's machine, not in this repo, and were last built 2026-08-05 against 26 / 81.
+      Correct `facts.py` before the next `build_variants.py --all`, or a rebuild will
+      overwrite the good `resume.pdf` with stale numbers. This is the one that keeps
+      regressing.
 - [ ] **Decide whether Neural stays a second page** or becomes a toggle on one page.
 - [ ] **Confirm the old Tenor/Google API key is revoked, and that it is not in the public
       `boombox` history.** The key was logged against `boombox-v5`, which is not public
@@ -69,6 +73,64 @@ Portfolio supports the job search — it is not the resume source. Keep it accur
       implied a completed primary degree. Now plainly "undergraduate coursework."
 - [x] **Corrected INVENTORY.md** — the "21 repos backing up the claim" line was false; there
       are 27 repos and only 4 are public.
+
+## Reduced motion — load-order bug in the a11y wrapper, FIXED 2026-08-26
+
+`<script id="a11y-js">` wraps `setInterval` and `requestAnimationFrame` so every
+ticker obeys `prefers-reduced-motion` and tab visibility. The wrapper is right;
+it was **installed too late**. It only governs tickers registered after it runs,
+and it sat *below* the main page script — so **8 of the 11 intervals on Mission
+Control, and 4 of 5 on Neural, bound to the unwrapped `setInterval`** and kept
+running under `reduce`.
+
+Measured, not inferred:
+
+| | before | after |
+|---|---|---|
+| Mission Control, frames 1.2s apart under `reduce` (clock masked) | **differ** — 350×78px region over `#livelog` | **identical** |
+| Neural, same test | identical | identical |
+| canvas paints in a 3s window under `reduce` | **0** | 0 |
+| canvas paints with motion ON | 10,043 `gridfx` + 2,968 `radar` | unchanged |
+
+The canvas work was *already* correct: the rAF wrapper blocks the draw even when
+the interval feeding it escapes. That is why the defect surfaced only where a
+ticker mutates the DOM directly — `#livelog` prepending rows — and why it was
+invisible on Neural, whose escaping intervals only feed canvases.
+
+**Fix:** the block is self-contained (no page globals), so it was moved above the
+main `<script>`. Every ticker now registers after it — 0 before, 11 after on
+Mission Control; 0 before, 5 after on Neural. No logic changed.
+
+Verified after: 0 contrast failures, 0 console errors, 0 third-party requests,
+frames identical under `reduce` on both pages, and frames still differ with
+motion ON — which is what proves the guard suppresses motion rather than
+breaking the page.
+
+## Worth a look: /_vercel/insights/script.js vs the "no third-party" claim
+
+Both pages load `/_vercel/insights/script.js` (Vercel Analytics). It is
+same-origin by URL, so a host-based third-party check — including the one used
+here — reports 0 and is technically right. But it is analytics, and both pages
+still say **"No third-party requests."**
+
+Not changed: it was added deliberately and the wording is a judgement call.
+
+- [ ] Brian: either drop the script, or soften the claim to something like
+      "no third-party requests until you ask" / "first-party analytics only."
+
+## Salvage from the v17 branch
+
+- `scratchpad/oklch.py` — derives a palette in OKLCH and prints the hex
+  *alongside* the full contrast matrix, so the two cannot drift apart.
+- `design-candidates/archive/v17-schedule-field.html` — a homepage whose hero
+  geometry was generated from the cron lines rather than modelled. Not shipped;
+  kept for the technique.
+
+Both sit under paths `.vercelignore` already excludes.
+
+The five v6 mesh documents this branch had deleted were **archived to
+`docs/archive/v6/` on main instead** — the better call, and that deletion was
+dropped rather than re-applied.
 
 ## Open — needs Brian
 - [ ] **Public-safe showcase mirrors.** All 3 featured case studies are private repos, so the

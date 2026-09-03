@@ -868,6 +868,54 @@ section{ padding-top:6rem; }
   </div>
 </footer>
 
+<!-- HOISTED 2026-08-26. This block wraps setInterval and requestAnimationFrame
+     so every ticker obeys prefers-reduced-motion and tab-visibility. It only
+     governs tickers registered AFTER it runs, and it used to sit BELOW the main
+     page script - so 8 of the 11 intervals on this page (and 4 of 5 on Neural)
+     bound to the unwrapped setInterval and kept running under `reduce`.
+
+     Measured before the move: #livelog kept prepending rows under reduce, and
+     two viewport captures 1.2s apart differed in a 350x78px region over that
+     element. Canvas work was already correctly paused - 0 paints under reduce
+     versus 10,043 with motion on - because the rAF wrapper blocks the draw even
+     when the interval feeding it escapes. That is why the defect showed only
+     where a ticker mutates the DOM directly. -->
+<script id="a11y-js">
+/* Tier 1 behaviour ---------------------------------------------------------
+   1. Respect reduced motion for canvas work and timers, not just CSS.
+   2. Pause every loop when the tab is hidden; a portfolio left open in a
+      background tab should cost nothing.
+   Both are opt-in wrappers so the page still works if this block is removed. */
+(function(){
+  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)');
+  const paused = () => document.hidden || REDUCE.matches;
+
+  // wrap setInterval so every ticker in the page obeys the rules above
+  const realInterval = window.setInterval.bind(window);
+  const timers = [];
+  window.setInterval = function(fn, ms){
+    const wrapped = function(){ if(!paused()) fn.apply(this, arguments); };
+    const id = realInterval(wrapped, ms); timers.push(id); return id;
+  };
+
+  // wrap rAF: while paused, keep polling for the next frame without running the
+  // callback body, so the loop survives and resumes the moment the tab returns
+  const realRaf = window.requestAnimationFrame.bind(window);
+  window.requestAnimationFrame = function(cb){
+    function tick(t){ if(paused()){ realRaf(tick); return; } cb(t); }
+    return realRaf(tick);
+  };
+
+  // canvases are decorative: keep them out of the accessibility tree
+  addEventListener('load', function(){
+    document.querySelectorAll('canvas').forEach(function(c){
+      c.setAttribute('aria-hidden','true');
+      c.setAttribute('role','presentation');
+    });
+  });
+})();
+</script>
+
 <script>
 document.documentElement.classList.add('js');document.body.classList.add('js');
 const EASE=t=>1-Math.pow(1-t,3);
@@ -1151,41 +1199,6 @@ function loadWarranty(){
 }
 </script>
 
-<script id="a11y-js">
-/* Tier 1 behaviour ---------------------------------------------------------
-   1. Respect reduced motion for canvas work and timers, not just CSS.
-   2. Pause every loop when the tab is hidden; a portfolio left open in a
-      background tab should cost nothing.
-   Both are opt-in wrappers so the page still works if this block is removed. */
-(function(){
-  const REDUCE = matchMedia('(prefers-reduced-motion: reduce)');
-  const paused = () => document.hidden || REDUCE.matches;
-
-  // wrap setInterval so every ticker in the page obeys the rules above
-  const realInterval = window.setInterval.bind(window);
-  const timers = [];
-  window.setInterval = function(fn, ms){
-    const wrapped = function(){ if(!paused()) fn.apply(this, arguments); };
-    const id = realInterval(wrapped, ms); timers.push(id); return id;
-  };
-
-  // wrap rAF: while paused, keep polling for the next frame without running the
-  // callback body, so the loop survives and resumes the moment the tab returns
-  const realRaf = window.requestAnimationFrame.bind(window);
-  window.requestAnimationFrame = function(cb){
-    function tick(t){ if(paused()){ realRaf(tick); return; } cb(t); }
-    return realRaf(tick);
-  };
-
-  // canvases are decorative: keep them out of the accessibility tree
-  addEventListener('load', function(){
-    document.querySelectorAll('canvas').forEach(function(c){
-      c.setAttribute('aria-hidden','true');
-      c.setAttribute('role','presentation');
-    });
-  });
-})();
-</script>
 
 <script id="t3n-js">
 (function(){

@@ -73,7 +73,14 @@ Opening the files directly with `file://` will not work properly: the root-relat
 
 Vercel, connected to `github.com/bmath8/portfolio`. Static output, no framework. `vercel.json` sets caching (fonts and vendored JS immutable for a year), a security header set (CSP, Referrer-Policy, nosniff, X-Frame-Options, Permissions-Policy) and `cleanUrls`, which is why the Neural edition is linked as **`/neural`** and not `/neural.html` — the `.html` form 308s, so pointing canonical tags or the sitemap at it would send crawlers through a redirect. Push to the default branch to deploy.
 
-Web Analytics is enabled in the Vercel dashboard; both pages load the first-party, cookieless script, so no consent banner is required.
+Web Analytics is enabled in the Vercel dashboard. Both pages load the cookieless script from
+the site's own origin (`/_vercel/insights/script.js`), so no consent banner is required — but
+it does report to `vitals.vercel-insights.com` at runtime, which `vercel.json`'s CSP
+`connect-src` allows. **This is the one third-party connection the site makes.** A
+host-based request audit reports zero because the script itself is same-origin; that is
+technically true and worth not hiding behind. Any "no third-party requests" wording on the
+pages should be read as *no third-party requests until you ask for a demo* — the Squares
+iframe is the other one, and it is click-gated.
 
 ---
 
@@ -91,12 +98,40 @@ Web Analytics is enabled in the Vercel dashboard; both pages load the first-part
 
 ---
 
+## The numbers
+
+**This section is the single definition.** The same four figures appear in `index.html`,
+`neural.html`, `resume.pdf`, `INVENTORY.md`, `cover-letter-template.md` and
+`docs/DESIGN-SYSTEM.md`. They have now drifted four times:
+
+    agents  25 → 26 → 29 → 30 → 28
+    tests   81 → 157 → 221 → 226
+
+They drift because each copy is maintained by hand, and they do not only go up — the agent
+count fell on 2026-09-01 when the fleet was re-counted. When they change, change them here
+first, then run `python3 scripts/check_docs.py`, which finds every copy that fell behind.
+
+| Figure | Current | How to re-derive |
+|---|---|---|
+| Agents | **28** | `hermes cron list \| wc -l` — must equal `len(agents.json)` |
+| Tests | **226** | live `pytest` run in the Brian OS repo |
+| Systems shipped | **3** | Brian OS, Super Bowl LX Squares, BoomBox |
+| Manual triggers | **0** | every agent runs on a cron line |
+
+Last verified **2026-09-01**. To update: edit both pages (`data-n` attributes and the prose),
+then `resume.pdf`, then the docs above. `agents.json` is the machine-readable source the pages
+actually read at runtime, so the fleet visualisations self-correct; the headline metrics do not.
+
+⚠️ The 16 résumé variants and `resumes/variants/facts.py` live on Brian's machine, **not in
+this repo**, and still say 26 / 81. Correct `facts.py` before any rebuild or it will overwrite
+the good `resume.pdf`. See `TASKS.md`.
+
 ## Claims and their sources
 
 Every number on both pages is checkable and states its origin inline:
 
-- **26 agents live** — count from `hermes cron list`, 2026-08-05
-- **81/81 tests green** — live `pytest` run, 31.02s, 2026-08-05
+- **28 agents live** — count from `hermes cron list | wc -l`, 2026-09-01
+- **226/226 tests green** — live `pytest` run, 25.48s, 2026-09-01
 - **3 systems shipped** — Brian OS, Super Bowl LX Squares, BoomBox
 - **0 manual triggers** — every agent runs on a cron line
 

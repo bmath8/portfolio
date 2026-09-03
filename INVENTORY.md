@@ -9,11 +9,17 @@ resume version and every project to it, with an honest status on each.
 
 
 > **Update 2026-08-12 — v7.** The live site is now two designs, not one: **Mission Control**
-> at `/` (`index.html`) and **Neural** at `/neural.html`. Both carry identical content and
+> at `/` (`index.html`) and **Neural** at `/neural`. Both carry identical content and
 > cross-link in their footers. The previous single-page build is archived at
 > `design-candidates/archive/v6-brain-hero.html`. See `README.md` for structure,
 > `docs/DESIGN-SYSTEM.md` for tokens and components, and `docs/CHANGELOG-v7.md` for what
 > changed and why.
+> **Update 2026-08-26.** Five more v6-era documents — `TECHNIQUE.md`, `DESIGN-REFERENCE.md`,
+> `SCENE-BRIEF.md`, `REFERENCES-2026-08-05.md` and `RESEARCH-2026-08-11.md` — were moved to
+> `docs/archive/v6/`. They described the retired mesh hero and were still sitting at the repo
+> root, where they read as current. See that folder's README for what each one is still good
+> for.
+>
 > **Update 2026-08-12 (v7.4).** `HERO-BRIEF.md`, `BRAIN-TECHNIQUE-2026-08-05.md` and
 > `V6-PLAN-2026-08-05.md` describe the retired v6 brain hero and moved to
 > `docs/archive/v6/` (see the README there — the licensing record is the reason
@@ -136,7 +142,7 @@ You are not starting from zero — you're basically done for a first application
 ### Verified during consolidation (2026-07-20)
 The three featured projects are **substantial and real**, not throwaway:
 - `ai-job-hunter` — ~30k lines Python, 21 test modules, Docker + Render, GPT-4/Claude, ATS scorer. README status: ~85% (v0.9).
-- `brian-os-fleet` — **25 scheduled agents** on a local LLM, Telegram control, approval-gated actions, **81 tests** (green on Windows). Site corrected 24 → 25 agents.
+- `brian-os-fleet` — **28 scheduled agents** on a local LLM, Telegram control, approval-gated actions, **226 tests** (green on Windows). Site cor
 - `boombox-v.5` — ~48k lines TypeScript, Next.js/Supabase/Redis/WebSockets, 20 test files, production-grade infra.
 
 > "Unfinished" is fine and honest — the site already labels each project's true status. The goal

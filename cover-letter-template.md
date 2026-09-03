@@ -45,7 +45,7 @@ What I'd bring to **[COMPANY]**: [PICK 1–2 THAT MATCH THE POSTING]
 - **I integrate LLMs into real products,** not demos: provider-agnostic AI calls, local-model
   routing through Ollama, and guardrails that require human approval before anything sends.
 
-One example: Brian OS is a native-Windows agent fleet running **26 scheduled agents** on real
+One example: Brian OS is a native-Windows agent fleet running **28 scheduled agents** on r
 cron lines with local-LLM routing and Telegram control. While operating it, a failed process
 guardian silently left orphan processes that exhausted the machine's disk. I traced the root
 cause, recovered the system, restored monitoring, and added liveness checks so it cannot recur.
