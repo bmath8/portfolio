@@ -8,18 +8,18 @@
 <link rel="preload" href="/vendor/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 <title>Brian Mathew — I build systems, then I keep them running</title>
 <link rel="canonical" href="https://bmath8.vercel.app/" />
-<meta name="description" content="Brian Mathew builds and operates working software: a 28-agent Windows automation fleet with 226 passing tests, a real-time squares app that ran a live event, and a collaborative music prototype. New Jersey — open to work." />
+<meta name="description" content="Brian Mathew builds and operates working software: a 28-agent Windows automation fleet with 226 passing tests, a real-time squares app that ran a live event, a warranty tracker anyone can use with no account, and a collaborative music prototype. New Jersey — open to work." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://bmath8.vercel.app/" />
 <meta property="og:title" content="Brian Mathew - I build systems, then I keep them running" />
-<meta property="og:description" content="28 scheduled agents running unattended. 226 tests passing. Three systems I built, tested, documented and still operate." />
+<meta property="og:description" content="28 scheduled agents running unattended. 226 tests passing. Four systems I built, tested, documented and still operate. Two are live and one click away." />
 <meta property="og:image" content="https://bmath8.vercel.app/og.png?v=10" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="Brian Mathew - I build systems, then I keep them running. Mission-control readout: 28 agents live, 226/226 tests green, 3 systems shipped, 0 manual triggers." />
+<meta property="og:image:alt" content="Brian Mathew - I build systems, then I keep them running. Mission-control readout: 28 agents live, 226/226 tests green, 4 systems shipped, 0 manual triggers." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Brian Mathew - I build systems, then I keep them running" />
-<meta name="twitter:description" content="28 scheduled agents running unattended. 226 tests passing. Three systems I built, tested, documented and still operate." />
+<meta name="twitter:description" content="28 scheduled agents running unattended. 226 tests passing. Four systems I built, tested, documented and still operate. Two are live and one click away." />
 <meta name="twitter:image" content="https://bmath8.vercel.app/og.png?v=10" />
 <meta name="theme-color" content="#04060a" />
 <link rel="manifest" href="/site.webmanifest">
@@ -747,6 +747,25 @@ h1{ font-family:var(--disp); font-size:var(--t-hero); letter-spacing:-.035em; li
   </nav>
   <a class="cta" href="mailto:mathew.brian@gmail.com">HIRE →</a>
 </header>
+<style id="wtx">
+/* Warranty Tracker preview. Same click-to-load contract as the squares demo:
+   nothing third-party loads until a visitor asks for it. */
+.wt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:1.5rem 1.6rem;gap:.85rem}
+.wt-head{display:flex;gap:.5rem;font-family:var(--mono);font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.wt-head b{display:block;font-size:1.15rem;color:var(--ice);letter-spacing:0}
+.wt-head span{flex:1;border:1px solid var(--line);border-radius:6px;padding:.45rem .55rem;background:rgba(255,255,255,.015)}
+.wt-head span.g b{color:var(--green)} .wt-head span.a b{color:var(--amber)} .wt-head span.r b{color:var(--red)}
+.wt-row{display:flex;align-items:center;gap:.7rem;border:1px solid var(--line);border-left-width:3px;border-radius:6px;
+  padding:.5rem .65rem;background:rgba(255,255,255,.015)}
+.wt-row.g{border-left-color:var(--green)} .wt-row.a{border-left-color:var(--amber)} .wt-row.r{border-left-color:var(--red)}
+.wt-row u{flex:1;text-decoration:none;font-size:.78rem;color:#dfe9f2}
+.wt-row u i{display:block;font-style:normal;font-family:var(--mono);font-size:.6rem;color:var(--faint);margin-top:.15rem}
+.wt-row em{font-style:normal;font-family:var(--mono);font-size:.66rem;padding:.2rem .45rem;border-radius:99px}
+.wt-row.g em{color:var(--green);background:rgba(74,240,160,.1)}
+.wt-row.a em{color:var(--amber);background:rgba(255,196,77,.1)}
+.wt-row.r em{color:var(--red);background:rgba(255,97,97,.1)}
+.wt .sq-load{align-self:center;margin-top:.35rem}
+</style>
 <main id="main">
 
 
@@ -778,7 +797,7 @@ h1{ font-family:var(--disp); font-size:var(--t-hero); letter-spacing:-.035em; li
   <div class="stats rv" id="stats">
     <div class="stat"><b data-n="28">28</b><span>agents live</span><small>hermes cron list · 2026-09-01</small></div>
     <div class="stat"><b data-n="226" data-suffix="/226">226/226</b><span>tests green</span><small>live pytest run · 25.48s · 2026-09-01</small></div>
-    <div class="stat"><b data-n="3">3</b><span>systems shipped</span><small>built · tested · operated</small></div>
+    <div class="stat"><b data-n="4">4</b><span>systems shipped</span><small>built · tested · operated</small></div>
     <div class="stat"><b data-n="0">0</b><span>manual triggers</span><small>everything on cron</small></div>
   </div>
 </div>
@@ -856,6 +875,37 @@ h1{ font-family:var(--disp); font-size:var(--t-hero); letter-spacing:-.035em; li
           <button class="sq-load" onclick="loadSquares()">▶ &nbsp;LOAD THE REAL APP</button>
         </div>
         <div class="cap">SIMULATION ABOVE — BUTTON LOADS THE ACTUAL DEPLOYED APP</div>
+      </div>
+    </article>
+
+    <article class="proj rv">
+      <div class="body">
+        <span class="badge live"><span class="dot"></span>Warranty Tracker · live</span>
+        <h3>Usable in five seconds, by anyone</h3>
+        <p>A warranty and receipt tracker with no account, no server and no sign-up. It computes expiry from purchase date and term, colour-codes what is about to lapse, and keeps everything in the browser. One self-contained HTML file, zero dependencies, zero build step — the constraint is the feature.</p>
+        <ul class="stack-tags" aria-label="Technology used"><li>JavaScript</li><li>HTML/CSS</li><li>localStorage</li><li>Vercel</li></ul>
+        <ul class="checks">
+          <li>Open it and use it — nothing to install, nothing to sign up for</li>
+          <li>Source is private; the deployed app is the proof</li>
+        </ul>
+        <div class="links">
+          <a href="https://warranty-tracker-azure.vercel.app" target="_blank" rel="noopener">OPEN THE LIVE APP →</a>
+        </div>
+      </div>
+      <div class="demo" id="warrantyDemo">
+        <div class="wt">
+          <div class="wt-head">
+            <span class="g">Under warranty<b>6</b></span>
+            <span class="a">Expiring soon<b>2</b></span>
+            <span class="r">Expired<b>1</b></span>
+          </div>
+          <div class="wt-row g"><u>Dishwasher<i>Bosch · purchased 2025-03-14 · 3 yr</i></u><em>312 days</em></div>
+          <div class="wt-row a"><u>Laptop<i>Framework · purchased 2024-09-30 · 2 yr</i></u><em>18 days</em></div>
+          <div class="wt-row r"><u>Headphones<i>Sony · purchased 2023-06-02 · 2 yr</i></u><em>expired</em></div>
+          <button class="sq-load" onclick="loadWarranty()">▶ &nbsp;LOAD THE REAL APP</button>
+        </div>
+        <p class="sr-only">Preview of the Warranty Tracker: counters for items under warranty, expiring soon and expired, above a list of items colour-coded by how long is left.</p>
+        <div class="cap">PREVIEW ABOVE — BUTTON LOADS THE ACTUAL DEPLOYED APP</div>
       </div>
     </article>
 
@@ -1218,6 +1268,9 @@ setInterval(()=>{
 function loadSquares(){
   document.getElementById('squaresDemo').innerHTML='<iframe src="https://fam-super-bowl-squares-2026.vercel.app" title="Super Bowl Squares live app" loading="lazy"></iframe>';
 }
+function loadWarranty(){
+  document.getElementById('warrantyDemo').innerHTML='<iframe src="https://warranty-tracker-azure.vercel.app" title="Warranty Tracker live app" loading="lazy"></iframe>';
+}
 
 /* boombox waveform removed - the pane now shows the sign-in cover */
 
@@ -1264,7 +1317,7 @@ function loadSquares(){
       out:'<span class="ok">226 passed</span> in 25.48s\ncoverage: agents 94% · state 91% · guards 100%',
       when:'run 2026-09-01 · full suite, no skips' },
     { cmd:'ls ~/projects --shipped',
-      out:'brian-os          <span class="ok">running</span>\nsuperbowl-squares <span class="ok">live</span>\nboombox           prototype',
+      out:'brian-os          <span class="ok">running</span>\nsuperbowl-squares <span class="ok">live</span>\nwarranty-tracker  <span class="ok">live</span>\nboombox           prototype',
       when:'built, tested, documented and still operated' },
     { cmd:'hermes runs --manual --since 30d | wc -l',
       out:'<span class="ok">0</span>',

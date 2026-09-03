@@ -92,15 +92,15 @@ d = ImageDraw.Draw(img, "RGBA")
 
 # ---- sub line ----
 sub = ttf("archivo-500", 23)
-d.text((PAD, 402), "29 scheduled agents run unattended on my machine right now.", font=sub, fill=DIM)
+d.text((PAD, 402), "28 scheduled agents run unattended on my machine right now.", font=sub, fill=DIM)
 d.text((PAD, 434), "Every number says where it came from.", font=sub, fill=DIM)
 
 # ---- metric strip ----
 BX, BY, BW, BH = PAD, 486, W - PAD * 2, 92
 d.rounded_rectangle([BX, BY, BX + BW, BY + BH], radius=10, fill=PANEL, outline=LINE, width=1)
-cells = [("29", "AGENTS LIVE", GREEN),
-         ("157", "TESTS GREEN", ICE),
-         ("3", "SYSTEMS SHIPPED", AMBER),
+cells = [("28", "AGENTS LIVE", GREEN),
+         ("226", "TESTS GREEN", ICE),
+         ("4", "SYSTEMS SHIPPED", AMBER),
          ("0", "MANUAL TRIGGERS", VIOLET)]
 cw = BW / 4
 num_f = ttf("archivo-800", 38)
