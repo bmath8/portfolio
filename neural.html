@@ -9,7 +9,7 @@
 <link rel="preload" href="/vendor/fonts/dm-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 <title>Brian Mathew — A cortex that actually works</title>
 <link rel="canonical" href="https://bmath8.vercel.app/neural" />
-<meta name="description" content="Brian Mathew builds and operates working software. Each node in this 3D brain is one real scheduled agent on his machine. 28 agents live, 226 tests green, 3 systems shipped. New Jersey — open to work." />
+<meta name="description" content="Brian Mathew builds and operates working software. Each node in this 3D brain is one real scheduled agent on his machine. 28 agents live, 226 tests green, 4 systems shipped. New Jersey — open to work." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://bmath8.vercel.app/neural" />
 <meta property="og:title" content="Brian Mathew - A cortex that actually works" />
@@ -653,13 +653,29 @@ section{ padding-top:6rem; }
 <div class="orbs rv" id="orbs">
   <div class="orb"><b data-n="28">28</b><span>agents live</span><small>hermes cron list · 2026-09-01</small></div>
   <div class="orb"><b data-n="226" data-suffix="/226">226/226</b><span>tests green</span><small>live pytest · 25.48s</small></div>
-  <div class="orb"><b data-n="3">3</b><span>systems shipped</span><small>built &amp; operated</small></div>
+  <div class="orb"><b data-n="4">4</b><span>systems shipped</span><small>built &amp; operated</small></div>
   <div class="orb"><b data-n="0">0</b><span>manual triggers</span><small>all on cron</small></div>
 </div>
 
+<style id="wtx">
+.wt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:1.4rem 1.5rem;gap:.8rem}
+.wt-head{display:flex;gap:.5rem;font-family:var(--mono,monospace);font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;opacity:.75}
+.wt-head b{display:block;font-size:1.1rem;letter-spacing:0}
+.wt-head span{flex:1;border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:.4rem .5rem}
+.wt-row{display:flex;align-items:center;gap:.7rem;border:1px solid rgba(255,255,255,.12);border-left-width:3px;
+  border-radius:6px;padding:.45rem .6rem;background:rgba(255,255,255,.02)}
+.wt-row u{flex:1;text-decoration:none;font-size:.76rem}
+.wt-row u i{display:block;font-style:normal;font-family:var(--mono,monospace);font-size:.58rem;opacity:.6;margin-top:.15rem}
+.wt-row em{font-style:normal;font-family:var(--mono,monospace);font-size:.64rem;padding:.18rem .45rem;border-radius:99px}
+.wt-row.g{border-left-color:#4af0a0} .wt-row.g em{color:#4af0a0;background:rgba(74,240,160,.12)}
+.wt-row.a{border-left-color:#ffc44d} .wt-row.a em{color:#ffc44d;background:rgba(255,196,77,.12)}
+.wt-row.r{border-left-color:#ff6161} .wt-row.r em{color:#ff6161;background:rgba(255,97,97,.12)}
+.wt-head span.g b{color:#4af0a0} .wt-head span.a b{color:#ffc44d} .wt-head span.r b{color:#ff6161}
+.wt .sq-load{align-self:center;margin-top:.3rem}
+</style>
 <section id="work">
   <div class="eyebrow rv">Selected work</div>
-  <h2 class="rv">Three systems, still running</h2>
+  <h2 class="rv">Four systems, still running</h2>
   <p class="sub rv">Built, tested, documented — and operated afterwards. Every number below says where it came from, so you can check it rather than trust it.</p>
 
   <div class="cards">
@@ -716,6 +732,39 @@ section{ padding-top:6rem; }
             <button class="sq-load" onclick="loadSquares()">▶ &nbsp;LOAD THE REAL APP</button>
           </div>
           <div class="cap">SIMULATION — THE BUTTON LOADS THE ACTUAL DEPLOYED APP</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card rv pop">
+      <div class="inner">
+        <div>
+          <span class="chip live"><i></i>Warranty Tracker · live</span>
+          <h3>Usable in five seconds, by anyone</h3>
+          <p>A warranty and receipt tracker with no account, no server and no sign-up. It computes expiry from purchase date and term, colour-codes what is about to lapse, and keeps everything in the browser. One self-contained HTML file, zero dependencies, zero build step — the constraint is the feature.</p>
+          <ul class="stack-tags" aria-label="Technology used"><li>JavaScript</li><li>HTML/CSS</li><li>localStorage</li><li>Vercel</li></ul>
+          <ul class="facts">
+            <li>Open it and use it — nothing to install, nothing to sign up for</li>
+            <li>Source is private; the deployed app is the proof</li>
+          </ul>
+          <div class="go">
+            <a href="https://warranty-tracker-azure.vercel.app" target="_blank" rel="noopener">Open the live app →</a>
+          </div>
+        </div>
+        <div class="vis" id="warrantyDemo">
+          <div class="wt">
+            <div class="wt-head">
+              <span class="g">Under warranty<b>6</b></span>
+              <span class="a">Expiring soon<b>2</b></span>
+              <span class="r">Expired<b>1</b></span>
+            </div>
+            <div class="wt-row g"><u>Dishwasher<i>Bosch · purchased 2025-03-14 · 3 yr</i></u><em>312 days</em></div>
+            <div class="wt-row a"><u>Laptop<i>Framework · purchased 2024-09-30 · 2 yr</i></u><em>18 days</em></div>
+            <div class="wt-row r"><u>Headphones<i>Sony · purchased 2023-06-02 · 2 yr</i></u><em>expired</em></div>
+            <button class="sq-load" onclick="loadWarranty()">▶ &nbsp;LOAD THE REAL APP</button>
+          </div>
+          <p class="sr-only">Preview of the Warranty Tracker: counters for items under warranty, expiring soon and expired, above a list of items colour-coded by how long is left.</p>
+          <div class="cap">PREVIEW — THE BUTTON LOADS THE ACTUAL DEPLOYED APP</div>
         </div>
       </div>
     </article>
@@ -1096,6 +1145,9 @@ setInterval(()=>{
 },4200);
 function loadSquares(){
   document.getElementById('squaresDemo').innerHTML='<iframe src="https://fam-super-bowl-squares-2026.vercel.app" title="Super Bowl Squares live app" loading="lazy"></iframe>';
+}
+function loadWarranty(){
+  document.getElementById('warrantyDemo').innerHTML='<iframe src="https://warranty-tracker-azure.vercel.app" title="Warranty Tracker live app" loading="lazy"></iframe>';
 }
 </script>
 
